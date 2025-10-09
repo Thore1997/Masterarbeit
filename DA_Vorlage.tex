@@ -1,0 +1,158 @@
+\documentclass[a4paper, 	% Seitenformat
+		12pt, 								% Schriftgr��e
+		bibliography=totoc, 	% Literaturverzeichnis in das Inhaltsverzeichnis
+		index=totoc, 	% Index in das Inhaltsverzeichnis
+		abstracton, 	% mit Abstrakt
+		headsepline, 	% Trennlinie f�r die Kopfzeile
+		%footnosepline,	% Trennlinie f�r die Fusszeile
+		]{scrartcl}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+%\usepackage{ulem}
+% Bilder
+%\usepackage{pst-all}		% Zeichnungen in Latex (kein pdflatex)
+\usepackage{subfig}	  	% Unterteilungen von Abbildungen
+\usepackage{float}		  % Gleitobjekte
+\usepackage{graphicx}		% Einbinden von Graphiken aus Dateien
+\usepackage{rotating}   % Die folgenden Packages sind meist hilfreich f�r das Erstellen von Arbeiten
+\usepackage{mathrsfs}
+\usepackage{eurosym,bm,amsmath,amssymb,verbatim}
+\usepackage{listings}
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+\usepackage [round,authoryear] {natbib} % Notwendiges Package f�r den verwendeten Literaturstil
+%\usepackage{natbib}
+
+
+
+
+
+%------------------------------------------------------------------------
+
+\parindent0em 			% kein Einzug nach einer Leerzeile
+\topmargin-20.4mm   % F�r die R�nder
+\textheight245mm
+
+\textwidth157mm \oddsidemargin11mm \evensidemargin11mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}					% Start des Dokuments
+\begin{titlepage}
+
+\hspace{12cm}\scalebox{0.3}{\includegraphics{Unilogo.jpg}}
+
+\vspace*{1cm}
+\large\textbf{Disputation: }\\[0.5cm]
+\large\textbf{From Statistics to Representation Learning: \\ A Comparative Study on Outlier Detection Methods}\\[0.5cm]
+
+Studiengang: Betriebswirtschaftslehre\\
+
+Lehrstuhl für Statistik\\[1.5cm]
+%
+%
+\noindent\begin{tabular}[h]{@{}ll}
+%\begin{tabular}{l l}
+Eingereicht bei: &Prof. Dr. Yarema Okhrin \\
+\\
+Betreuer: &Herr Philipp Haid 			 \\
+\\
+Vorgelegt von:   &Thore Johannsen         \\
+\\
+Adresse: &Salomon-Idler-Straße 4         \\[0.2cm]
+                 &Augsburg                      \\
+\\
+Matrikel-Nr.:    &2231165                 \\
+\\
+Email:           &thore.johannsen@outlook.com     \\
+\\
+\end{tabular}
+
+\vfill
+Augsburg, im September 2010
+
+\end{titlepage}
+
+
+\newpage
+\pagenumbering{Roman}
+
+
+%\tableofcontents		    % Inhaltsverzeichnis
+%\newpage
+%\listoffigures			    % Abbildungsverzeichnis
+%\listoftables				  % Tabellenverzeichnis
+
+\clearpage
+\pagenumbering{arabic}
+\onehalfspacing 			     % F�r richtigen Zeilenabstand
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input{Kapitel/kapitel1}  % Zur besseren Strukturierung empfiehlt es sich das Dokument aufzuteilen.
+%\newpage
+%\input{Kapitel/kapitel2}
+%\newpage
+%\input{Kapitel/kapitel3}
+%\newpage
+%\input{Kapitel/kapitel4}
+%\newpage
+%\input{Kapitel/kapitel5}
+%\vspace{5em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Thesis Proposal}
+
+This thesis proposes a comparative analysis of FAST-MCD, KNN and a mothod based on contrastive learning proposed by \citep{shenkar2022anomaly}
+
+
+%%- Wieso ist ihre Themenstellung von wissenschaftlichem und praktischem Interesse? \\
+Outlier detection plays a significant role in scientific analysis and in private Enterprises.
+For instance, outliers influence the variance and standard deviation of variables.
+Hence, confidence intervals become wider and you might fail to reject the null hypothesis even if a true effect exists.
+In some contexts outliers are the main findings of dection methods.
+Banks use outlier detection to distinguish between fraudulent and normal useage of credit cards \citep{ramaswamy2000efficient}
+Thus outliers tend to interfere with the results of data analysis. 
+In medicine its been used to detect diseases like cervical cancer \citep{ijaz2020data} 
+In my thises I want to examine wich method will be the most effective one.
+I hypothesize, that the most effective method will be the KNN-algorithm.
+In addition I hypothesize, that contrastive learning algorithm will be more efficient than FAST-MCD but not as efficient than KNN. \\
+The minimum covariance determinant (MCD) will be the first algorithm I will describe in my thesis.
+Therefore I will describe the Mahalanobis distance \citep{mahalanobis2018generalized} bescause it will be used in MCD algorithm. \citep{rousseeuw1984least} 
+After that I will illustrate the expansion of MCD to FAST-MCD wich will be implemented into my thises.
+FAST-MCD has the advantages, that it is  
+
+
+%%- Welche empirischen Methoden sollen angewendet werden, um Ihren Datensatz zuuntersuchen? \\
+ 
+
+
+- Was versprechen Sie sich von verschiedenen empirischen Methoden, welche Sie in ihrer Arbeit anwenden werden? \\
+
+
+- Was sagt die wissenschaftliche Literatur zu den Vorzügen und Nachteilen verschiedener Methoden, welche Sie in ihrer Arbeit anwenden werden? \\
+
+
+- Welche Daten werden Sie verwenden, um ihre Fragestellung zu untersuchen?\\
+
+
+- Von welcher wissenschaftlichen Literatur werden Sie in Ihrer Arbeit ausgehen?\\
+
+
+\clearpage
+
+\bibliographystyle{autorjahrdidiDE}  % Dies ist der verwendete Stil f�r Zitation und Literaturverzeichnis
+																		 % Die Datei autorjahrdidiDE.bst muss in das aktuelle Arbeitsverzeichnis kopiert werden
+\bibliography{Literatur}	           % Literaturverzeichnis liegt in der Datei Literatur
+
+\end{document}											 % Ende des Dokuments

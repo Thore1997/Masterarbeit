@@ -1,0 +1,39 @@
+\begin{thebibliography}{5}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Ijaz et~al.(2020)Ijaz, Attique und Son}]{ijaz2020data}
+Ijaz, Muhammad~Fazal, Attique, Muhammad und Son, Youngdoo: Data-driven cervical
+  cancer prediction model with outlier detection and over-sampling methods.
+\newblock In: \emph{Sensors}, Band~20(10):S. 2809, 2020.
+
+\bibitem[{Mahalanobis(2018)}]{mahalanobis2018generalized}
+Mahalanobis, Prasanta~Chandra: On the generalized distance in statistics.
+\newblock In: \emph{Sankhy{\=a}: The Indian Journal of Statistics, Series A
+  (2008-)}, Band~80:S. S1--S7, 2018.
+
+\bibitem[{Ramaswamy et~al.(2000)Ramaswamy, Rastogi und
+  Shim}]{ramaswamy2000efficient}
+Ramaswamy, Sridhar, Rastogi, Rajeev und Shim, Kyuseok: Efficient algorithms for
+  mining outliers from large data sets.
+\newblock In: \emph{Proceedings of the 2000 ACM SIGMOD international conference
+  on Management of data}. 2000, S. 427--438.
+
+\bibitem[{Rousseeuw(1984)}]{rousseeuw1984least}
+Rousseeuw, Peter~J: Least median of squares regression.
+\newblock In: \emph{Journal of the American statistical association},
+  Band~79(388):S. 871--880, 1984.
+
+\bibitem[{Shenkar und Wolf(2022)}]{shenkar2022anomaly}
+Shenkar, Tom und Wolf, Lior: Anomaly detection for tabular data with internal
+  contrastive learning.
+\newblock In: \emph{International conference on learning representations}.
+  2022.
+
+\end{thebibliography}
