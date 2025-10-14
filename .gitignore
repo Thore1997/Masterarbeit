@@ -1,0 +1,70 @@
+# ========================
+# LaTeX .gitignore
+# ========================
+
+# Compiled PDF
+*.pdf
+
+# Auxiliary and intermediate files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.synctex.gz
+*.toc
+*.run.xml
+
+# Temporary files created by editors
+*.bak
+*.tmp
+*.swp
+*.synctex(busy)
+*~
+*.gz(busy)
+
+# Output folders (if you use one)
+out/
+build/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Overleaf local copy
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.xdy
+
+# TeXstudio / TeXShop backups
+*.bak
+*.backup
+*.sav
+
+# Auxiliary bibliography files
+*.run.xml
+*.bbl
+*.blg
+
+# Miscellaneous
+*.nav
+*.snm
+*.vrb

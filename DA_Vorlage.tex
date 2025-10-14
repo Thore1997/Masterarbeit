@@ -113,40 +113,27 @@ Augsburg, im September 2010
 
 \section*{Thesis Proposal}
 
-This thesis proposes a comparative analysis of FAST-MCD, KNN and a mothod based on contrastive learning proposed by \citep{shenkar2022anomaly}
+This thesis presents a comparative analysis of the FAST-MCD, k-Nearest Neighbors (kNN), and a contrastive learning–based approach proposed by \citet{shenkar2022anomaly}.
+Outlier detection plays a crucial role in both scientific research and industrial applications. 
+Outliers can substantially influence statistical measures such as the variance and standard deviation of variables. 
+Consequently, confidence intervals become wider, which may lead to a failure to reject the null hypothesis even when a true effect exists.
+In some contexts, however, outliers represent the primary objects of interest. 
+For example, banks employ outlier detection techniques to differentiate between fraudulent and legitimate credit card usage \citep{ramaswamy2000efficient}. 
+Similarly, in medicine, outlier detection has been applied to identify diseases such as cervical cancer \citep{ijaz2020data}.
+The objective of this thesis is to evaluate which of the three selected methods performs most effectively in detecting outliers. 
+It is hypothesized that the kNN algorithm will achieve the highest detection performance. 
+Furthermore, it is expected that the contrastive learning–based algorithm will outperform the FAST-MCD method but remain less effective than kNN.
+The Minimum Covariance Determinant (MCD) algorithm will be described first, as it constitutes the foundation of the FAST-MCD approach. 
+To this end, the Mahalanobis distance \citep{mahalanobis2018generalized}, which is integral to the MCD algorithm \citep{rousseeuw1984least}, will be explained. 
+Subsequently, the extension of MCD to FAST-MCD will be discussed, as this variant will be implemented in the empirical part of this thesis. 
+FAST-MCD offers computational advantages by being significantly faster and more suitable for high-dimensional datasets compared to the original MCD algorithm.
+Next, the k-Nearest Neighbor (kNN) algorithm \citep{ramaswamy2000efficient} will be introduced. 
+This distance-based method is straightforward to implement and produces results that are easy to interpret. 
+However, kNN is less suitable for large datasets because it requires comparison of each new observation with all training samples, resulting in slow prediction times.
+The third method examined in this thesis is the Internal Contrastive Learning (InterCont) approach proposed by \citet{shenkar2022anomaly}. 
+This recent method employs contrastive learning to train a model to differentiate between similar and dissimilar pairs of data samples. 
+A notable advantage of this approach is that it does not rely on prior assumptions or information about the underlying data structure.
 
-
-%%- Wieso ist ihre Themenstellung von wissenschaftlichem und praktischem Interesse? \\
-Outlier detection plays a significant role in scientific analysis and in private Enterprises.
-For instance, outliers influence the variance and standard deviation of variables.
-Hence, confidence intervals become wider and you might fail to reject the null hypothesis even if a true effect exists.
-In some contexts outliers are the main findings of dection methods.
-Banks use outlier detection to distinguish between fraudulent and normal useage of credit cards \citep{ramaswamy2000efficient}
-Thus outliers tend to interfere with the results of data analysis. 
-In medicine its been used to detect diseases like cervical cancer \citep{ijaz2020data} 
-In my thises I want to examine wich method will be the most effective one.
-I hypothesize, that the most effective method will be the KNN-algorithm.
-In addition I hypothesize, that contrastive learning algorithm will be more efficient than FAST-MCD but not as efficient than KNN. \\
-The minimum covariance determinant (MCD) will be the first algorithm I will describe in my thesis.
-Therefore I will describe the Mahalanobis distance \citep{mahalanobis2018generalized} bescause it will be used in MCD algorithm. \citep{rousseeuw1984least} 
-After that I will illustrate the expansion of MCD to FAST-MCD wich will be implemented into my thises.
-FAST-MCD has the advantages, that it is  
-
-
-%%- Welche empirischen Methoden sollen angewendet werden, um Ihren Datensatz zuuntersuchen? \\
- 
-
-
-- Was versprechen Sie sich von verschiedenen empirischen Methoden, welche Sie in ihrer Arbeit anwenden werden? \\
-
-
-- Was sagt die wissenschaftliche Literatur zu den Vorzügen und Nachteilen verschiedener Methoden, welche Sie in ihrer Arbeit anwenden werden? \\
-
-
-- Welche Daten werden Sie verwenden, um ihre Fragestellung zu untersuchen?\\
-
-
-- Von welcher wissenschaftlichen Literatur werden Sie in Ihrer Arbeit ausgehen?\\
 
 
 \clearpage
