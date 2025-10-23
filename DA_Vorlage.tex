@@ -2,7 +2,7 @@
 		12pt, 								% Schriftgr��e
 		bibliography=totoc, 	% Literaturverzeichnis in das Inhaltsverzeichnis
 		index=totoc, 	% Index in das Inhaltsverzeichnis
-		abstracton, 	% mit Abstrakt
+		abstract=true, 	% mit Abstrakt
 		headsepline, 	% Trennlinie f�r die Kopfzeile
 		%footnosepline,	% Trennlinie f�r die Fusszeile
 		]{scrartcl}
@@ -35,8 +35,9 @@
 \parindent0em 			% kein Einzug nach einer Leerzeile
 \topmargin-20.4mm   % F�r die R�nder
 \textheight245mm
-
 \textwidth157mm \oddsidemargin11mm \evensidemargin11mm
+\hyphenpenalty=100
+\exhyphenpenalty=100
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,8 +49,8 @@
 \hspace{12cm}\scalebox{0.3}{\includegraphics{Unilogo.jpg}}
 
 \vspace*{1cm}
-\large\textbf{Disputation: }\\[0.5cm]
-\large\textbf{From Statistics to Representation Learning: \\ A Comparative Study on Outlier Detection Methods}\\[0.5cm]
+\large\textbf{Disposition: }\\[0.5cm]
+\large\textbf{From Statistics to Machine Learning: \\ A Comparative Study on Outlier Detection \\ in multivariate Distributions}\\[0.5cm]
 
 Studiengang: Betriebswirtschaftslehre\\
 
@@ -111,29 +112,23 @@ Augsburg, im September 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section*{Thesis Proposal}
-
-This thesis presents a comparative analysis of the FAST-MCD, k-Nearest Neighbors (kNN), and a contrastive learning–based approach proposed by \citet{shenkar2022anomaly}.
-Outlier detection plays a crucial role in both scientific research and industrial applications. 
-Outliers can substantially influence statistical measures such as the variance and standard deviation of variables. 
-Consequently, confidence intervals become wider, which may lead to a failure to reject the null hypothesis even when a true effect exists.
-In some contexts, however, outliers represent the primary objects of interest. 
-For example, banks employ outlier detection techniques to differentiate between fraudulent and legitimate credit card usage \citep{ramaswamy2000efficient}. 
-Similarly, in medicine, outlier detection has been applied to identify diseases such as cervical cancer \citep{ijaz2020data}.
-The objective of this thesis is to evaluate which of the three selected methods performs most effectively in detecting outliers. 
-It is hypothesized that the kNN algorithm will achieve the highest detection performance. 
-Furthermore, it is expected that the contrastive learning–based algorithm will outperform the FAST-MCD method but remain less effective than kNN.
-The Minimum Covariance Determinant (MCD) algorithm will be described first, as it constitutes the foundation of the FAST-MCD approach. 
-To this end, the Mahalanobis distance \citep{mahalanobis2018generalized}, which is integral to the MCD algorithm \citep{rousseeuw1984least}, will be explained. 
-Subsequently, the extension of MCD to FAST-MCD will be discussed, as this variant will be implemented in the empirical part of this thesis. 
-FAST-MCD offers computational advantages by being significantly faster and more suitable for high-dimensional datasets compared to the original MCD algorithm.
-Next, the k-Nearest Neighbor (kNN) algorithm \citep{ramaswamy2000efficient} will be introduced. 
-This distance-based method is straightforward to implement and produces results that are easy to interpret. 
-However, kNN is less suitable for large datasets because it requires comparison of each new observation with all training samples, resulting in slow prediction times.
-The third method examined in this thesis is the Internal Contrastive Learning (InterCont) approach proposed by \citet{shenkar2022anomaly}. 
-This recent method employs contrastive learning to train a model to differentiate between similar and dissimilar pairs of data samples. 
-A notable advantage of this approach is that it does not rely on prior assumptions or information about the underlying data structure.
-
+This thesis undertakes a comparative performance analysis of three outlier detection methods: the FAST-MCD algorithm \citep{rousseeuw1999fast}, the k-Nearest Neighbors (kNN) approach \citep{ramaswamy2000efficient}, and the contrastive learning–based method proposed by \citet{shenkar2022anomaly}.
+Outlier detection constitutes an essential component across scientific research and industrial applications. \\
+The presence of anomalous data points can compromise statistical inference. 
+Specifically, outliers possess the capacity to inflate estimates of variability (e.g. variance and standard deviation), consequently widening confidence intervals. 
+This effect increases the probability of committing a Type II error (failure to reject a false null hypothesis). 
+Conversely, in certain domains, the outliers themselves represent the primary interest. 
+Prominent examples include the application in financial fraud detection \citep{ramaswamy2000efficient} and in medical diagnostics for identifying pathological conditions, such as cervical cancer \citep{ijaz2020data}. \\
+The primary objective of this investigation is to systematically evaluate the relative efficacy of the three selected algorithms in identifying outliers within a designated dataset.
+Following the formal definition and characterization of outliers, the study will detail the underlying mechanisms of the three analyzed methods. 
+This paper will begin with the robust statistical method of FAST-MCD. 
+Subsequently, the analysis will proceed to discuss the distance-based method of kNN. 
+Finally, the Intercont approach, a novel machine learning method will be presented.
+Different performance metrics will be discussed to supply a optimal view of the detection performance. 
+The empirical investigation will utilize financial datasets, drawing among other things primary research literature.
+The study is guided by the following formal hypotheses regarding detection efficacy:
+The kNN algorithm is hypothesized to yield the highest anomaly detection performance among the three candidates.
+The contrastive learning–based Intercont algorithm is anticipated to outperform the FAST-MCD method but is expected to demonstrate lower efficacy than the kNN algorithm.
 
 
 \clearpage
