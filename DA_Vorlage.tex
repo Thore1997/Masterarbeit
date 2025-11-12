@@ -167,19 +167,32 @@ Using the example as before, a single use of a credit card for a normal payment 
 a small payment, that would be considered a collective outlier.
 \end{enumerate}
 
-
 All 3 are closely related. A global outlier or a collective outlier can also be a contextualized and treated like a 
-contextual problem. \citep{chandola2009anomaly}
+contextual problem. 
+
+A different, but closley related, type of detection is novelty detection. Often both terms are being used synonymously. \citep{domingues2019probabilistic} 
+But it targets a different scenario. 
+Noveltey detection is been used to find new and previously unconsidered patterns in the data.
+The findings are normally incorporated into a new model and not like in outlier detection being removed or eximaned further. \citep{chandola2009anomaly}
+
+A fairly new approach in outlier detection is to provide meaningful explanations for outliers.
+There is a need to tell not just wich observation is a outlier, but to tell why that specific outlier is a outlier.
+E.g. in Fraud detection, analyst need to understand why a transaction was being flagged as fraudulent and wether it need human intervention.
+A common approach is to assign a importnace level to the outlier.
+The more far away an outlier is from the "normal" data distribution, the more likely it need human attention 
+Therefor a user can prioritize. 
+
+A different type a providing meaningfull insights in outliers to highlight causal interactions among outliers. 
+Causal in a sense, that one outlier produced other outliers in chronological way.
+So if you remove that first outlier, you would be removing the other outliers too.
+For example a traffic jam in one part of the city is beeing caused of another part of the city
+Users therefor can use that information to prevent the first outlier, so that other outliers don't develope. \citep{panjei2022survey}
 
 
 \newpage
 
 
-What is novelty detection?
-(C09 S.3)	wich aims at detectiting previously unobserved patterns in the data, for example, a new topic of discussion in a news group
-			The difference between novel patterns and anomalies is that the novel patterns are typically incorporated 
-			into the normal model after being detected. 
-			Solutions for these related problems are often used for anomaly detection and novelty detection
+
 
 What is outlier explanation?
 (P22 s.978)	In fields where ouliers do have meaningfull information, it is necessary to generate an importance level 
