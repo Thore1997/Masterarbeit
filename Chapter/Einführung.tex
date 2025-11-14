@@ -1,0 +1,66 @@
+\section{Definition}
+Outlier Analysis is an important task for research and real world applications like spam filters.
+Suspicious observations should be marked as Outliers and inliners should not be marked as outliers. 
+Nevertheless, a uniform definition of outliers could yet not be found. In 2017 \citet{ayadi2017outlier} found 12 different interpretations of outlier.
+All of them dont differ so much, so I will use the definition of Hawkins, because of the influece his paper had on this topic.
+Ouliers, also called anomalies \citep{chandola2009anomaly}, are observations, that deviate extremely from the defined norm.
+They are the product of a different mechanisms, that aren't included into the research question. \citep{hawkins1980identification}
+On the one hand, depending on the context they can be researchers target and provide useful information.
+For instance outliers develope by measuring recording errors, misreporting or sample errors.
+E.g. in financial domains, outliers are been used to identify criminal activity like creditcard fraud. 
+The usage of the stolen credit card by the criminal should be very different of the usage of the rightful credit card holder. \citep{rezapour2019anomaly}
+On the other hand, if they are not the target, they have to be identified and carefully treated. \citep{smiti2020critical}
+You can treat them by removing, transforming, winzoriesing or using robust alternatives.
+Every method has its advantages and disadvantages, but it would be out of scope of this thesis to go deeper into it. 
+
+
+Different from outliers is noisy data.
+Noisy data has no useful information and hinders the analysis. 
+It need to be identified and corrected because it makes computation difficult or impossible to do.
+Noisy data contains incorrect data types, missing values or incorrect data. \citep{smiti2020critical}
+There are 3 different types of outliers: 
+
+
+\begin{enumerate}
+\item Global outliers, sometimes named point anomalies, are the simplest type of anomaly. 
+When a obervation with respect to rest of the its distribution has extreme values, you could consider it a outlier.
+E.g. a Person spends 100€ a week and someday the person spends 1000€. that would be possibly be a global outlier, because it is 
+a extreme value out of the normal distribution. 
+\item Contextual outliers, sometimes named conditional outliers, are outliers that are outliers bescause of their specific contexts.
+A data instance is defined by it behavioral and contextual attributes. 
+Contextual attributes define contextual atrributes and behavioral attributes define non-contextual attributes.
+Using the credit card fraud example, behavioral atrributes are the amount of paymets done in a certain period.
+Contextual attribute is the time dimension of this longitudinal data. 
+If a person spends 100€ in a week, accept for christmas holiday. There the Person spends 1000€.
+the contextual outlier would be, if a transaction of 1000€ emerges in mid july.
+1000€ is not an extreme charakteristic, because it will be spend in a different time.
+But it is a unusual period of time. 
+\item Collective outliers are observations that are by itselfe not unsual but their accurance together as a collection. 
+Using the example as before, a single use of a credit card for a normal payment is not a outlier, but when a person pays 50 times
+a small payment, that would be considered a collective outlier.
+\end{enumerate}
+
+
+All 3 are closely related. A global outlier or a collective outlier can also be a contextualized and treated like a 
+contextual problem. 
+
+
+A different, but closley related, type of detection is novelty detection. Often both terms are being used synonymously. \citep{domingues2019probabilistic} 
+But it targets a different scenario. 
+Noveltey detection is been used to find new and previously unconsidered patterns in the data.
+The findings are normally incorporated into a new model and not like in outlier detection being removed or eximaned further. \citep{chandola2009anomaly}
+
+
+A fairly new approach in outlier detection is to provide meaningful explanations for outliers.
+There is a need to tell not just wich observation is a outlier, but to tell why that specific outlier is a outlier.
+E.g. in Fraud detection, analyst need to understand why a transaction was being flagged as fraudulent and wether it need human intervention.
+A common approach is to assign a importnace level to the outlier.
+The more far away an outlier is from the "normal" data distribution, the more likely it need human attention 
+Therefor a user can prioritize. 
+
+
+A different type a providing meaningfull insights in outliers to highlight causal interactions among outliers. 
+Causal in a sense, that one outlier produced other outliers in chronological way.
+So if you remove that first outlier, you would be removing the other outliers too.
+For example a traffic jam in one part of the city is beeing caused of another part of the city
+Users therefor can use that information to prevent the first outlier, so that other outliers don't develope. \citep{panjei2022survey}

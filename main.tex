@@ -1,0 +1,143 @@
+\documentclass[a4paper, 	% Seitenformat
+		12pt, 								% Schriftgr��e
+		bibliography=totoc, 	% Literaturverzeichnis in das Inhaltsverzeichnis
+		index=totoc, 	% Index in das Inhaltsverzeichnis
+		abstract=true, 	% mit Abstrakt
+		headsepline, 	% Trennlinie f�r die Kopfzeile
+		%footnosepline,	% Trennlinie f�r die Fusszeile
+		]{scrartcl}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+%\usepackage{ulem}
+% Bilder
+%\usepackage{pst-all}		% Zeichnungen in Latex (kein pdflatex)
+\usepackage{subfig}	  	% Unterteilungen von Abbildungen
+\usepackage{float}		  % Gleitobjekte
+\usepackage{graphicx}		% Einbinden von Graphiken aus Dateien
+\usepackage{rotating}   % Die folgenden Packages sind meist hilfreich f�r das Erstellen von Arbeiten
+\usepackage{mathrsfs}
+\usepackage{eurosym,bm,amsmath,amssymb,verbatim}
+\usepackage{listings}
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+\usepackage [round,authoryear] {natbib} % Notwendiges Package f�r den verwendeten Literaturstil
+%\usepackage{natbib}
+
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny,textwidth=2cm]{todonotes}
+%------------------------------------------------------------------------
+
+\parindent0em 			% kein Einzug nach einer Leerzeile
+\topmargin-20.4mm   % F�r die R�nder
+\textheight245mm
+\textwidth157mm \oddsidemargin11mm \evensidemargin11mm
+\hyphenpenalty=100
+\exhyphenpenalty=100
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}					% Start des Dokuments
+\begin{titlepage}
+
+\hspace{12cm}\scalebox{0.3}{\includegraphics{Unilogo.jpg}}
+
+\vspace*{1cm}
+\large\textbf{Disposition: }\\[0.5cm]
+\large\textbf{From Statistics to Machine Learning: \\ A Comparative Study of Outlier Detection Methods \\ in Multidimensional Data}\\[0.5cm]
+
+Studiengang: Betriebswirtschaftslehre\\
+
+Lehrstuhl für Statistik\\[1.5cm]
+%
+%
+\noindent\begin{tabular}[h]{@{}ll}
+%\begin{tabular}{l l}
+Eingereicht bei: &Prof. Dr. Yarema Okhrin \\
+\\
+Betreuer: &Herr Philipp Haid 			 \\
+\\
+Vorgelegt von:   &Thore Johannsen         \\
+\\
+Adresse: &Salomon-Idler-Straße 4         \\[0.2cm]
+                 &Augsburg                      \\
+\\
+Matrikel-Nr.:    &2231165                 \\
+\\
+Email:           &thore.johannsen@outlook.com     \\
+\\
+\end{tabular}
+\vfill
+Augsburg, im September 2010
+\end{titlepage}
+\newpage
+\pagenumbering{Roman}
+
+
+%\tableofcontents		    % Inhaltsverzeichnis
+%\newpage
+%\listoffigures			    % Abbildungsverzeichnis
+%\listoftables				  % Tabellenverzeichnis
+
+\clearpage
+\pagenumbering{arabic}
+\onehalfspacing 			     % F�r richtigen Zeilenabstand
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input{Kapitel/kapitel1}  % Zur besseren Strukturierung empfiehlt es sich das Dokument aufzuteilen.
+%\newpage
+%\input{Kapitel/kapitel2}
+%\newpage
+%\input{Kapitel/kapitel3}
+%\newpage
+%\input{Kapitel/kapitel4}
+%\newpage
+%\input{Kapitel/kapitel5}
+%\vspace{5em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\input{CHapter/Disposition}
+\newpage
+\input{Chapter/Einführung}
+\input{Chapter/Methods}
+\newpage
+
+
+
+Survey about 
+
+The fundamental idea of statistical-based techniques in labeling or identifying outliers depends on the relationship with
+the distribution model. These methods are usually classified into two main groups - the parametric and non-parametric
+methods. 
+The key idea for clustering-based techniques is the application of standard clustering techniques to detect outliers from
+given data. Outliers are considered as the observations that are not within or nearby any large or dense clusters.
+Learning-based methods such as active learning and deep learning, the underlying idea is to learn different models
+through the application of these learning methods to detect outliers (W19 S.107967 ff)
+
+
+
+
+
+
+
+
+
+\newpage 
+Für 13.11.2025: weiter machen mit Literaturrecherche: Progress in Outlier Detection Techniques: A Survey
+Ich habe gerade angefangen mit dem Methoden teil. Ich bin dabei generell zu schreiben, wleche methoden es gibt.
+Danach will ich schreiben, welche ich nutzen werde
+
+\clearpage
+\bibliographystyle{autorjahrdidiDE}  % Dies ist der verwendete Stil f�r Zitation und Literaturverzeichnis																	 % Die Datei autorjahrdidiDE.bst muss in das aktuelle Arbeitsverzeichnis kopiert werden
+\bibliography{Literatur}	           % Literaturverzeichnis liegt in der Datei Literatur
+\end{document}											 % Ende des Dokuments

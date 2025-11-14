@@ -1,0 +1,44 @@
+\section{Methods for detecting outliers}
+There are plentyfull of methods to detect outliers. Each with advantages and disadvantages.
+The most popular methods could be categorized as followes: statistical-based, distance-based, density-based,  clustering-based,
+graph-based, ensemble-based and learning-based.\citep{wang2019progress}
+In the last 25 years, computing performance incresed so much, that besides statistical methods evbry other method could be implemented and tested as well. 
+In this thesis, I will examine 3 different methods. A statistical, a clustering-based and a learning-based.
+Therefor I will first define those methods and present their 
+
+\subsection{Minimum Covariance Determinant}
+
+Minimum Coavariance Determinant is asymptotically normal and robust. But it is hard to compute.
+
+Therefor the authors constructed an algorithm, thats much faster than the first algorithm.
+\subsection{FAST-MCD}
+
+based on Mahalanobis distance.
+xi = observation 
+T - arithmic mean vector
+S - classical covariance matrix
+
+
+
+\newpage
+
+The Ordinary Least Squared was being critized because of its lack of robusteness. Just one outlier could have a large negative effect.
+
+Mahalanobis disctance cant detect multiple outliers because of the masking effect, by wich multiple outliers dont have necesssarly a large mahananobis disctance (R99 S.212)
+Main idea of MCD find h observations out of n whose classical covariance matrix has the lowest determinant. The MCD estimate is then rhe average of these h points 
+and the MCD estimate of scatter is their covariance matrix. 
+
+Procedure: 1. Creating initial subset. 
+2 Possibillities: draw a random h subset H1, or draw a random (p+1)-subset auf J, and then compute 
+technical terms:
+
+Determinant - Sie ist das Produkt der Hauptdiagonalen minus dem Produkt der Nebendiagonalen. Das ist stimmt bis zu einer 3x3 Matrix, darüberhinaus werden andere Methoden verwendet (Laplace'scher Entwicklungssatz)
+Es ist eine Eigenschaft die Auskunft über die Volumenverzerrung und Inventierbarkeit einer Matrix gibt. 
+Inventierbar ist eine Matrix, wenn det (A) =/ 0. 
+Geometrische Bedeutung:  Der Betrag der Determinante ist gleich dem Faktor, um den sich das Volumen (oder Fläche)  eines Einheitswürfels nach der Transformation vergrößert oder verkleinert.
+Das Vorzeichen der det(A) gibt Auskunft über die Orientierung. det (A) > 0 bleibt Orientierung erhalten (zb Drehung oder Streckung)
+Wenn det(A) < 0 wird die Orientierung umgekehrt (z.B. eine Spiegelung)
+
+Break-down value
+
+asymptotisch normalverteilt 

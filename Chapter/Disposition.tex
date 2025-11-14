@@ -1,0 +1,18 @@
+This thesis undertakes a comparative performance analysis of three outlier detection methods: the FAST-MCD algorithm \citep{rousseeuw1999fast}, the k-Nearest Neighbors (kNN) approach \citep{ramaswamy2000efficient}, and the contrastive learning–based method proposed by \citet{shenkar2022anomaly}.
+Outlier detection constitutes an essential component across scientific research and industrial applications. \\
+The presence of anomalous data points can compromise statistical inference. 
+Specifically, outliers possess the capacity to inflate estimates of variability (e.g. variance and standard deviation), consequently widening confidence intervals. 
+This effect increases the probability of committing a Type II error (failure to reject a false null hypothesis). 
+Conversely, in certain domains, the outliers themselves represent the primary interest. 
+Prominent examples include the application in financial fraud detection \citep{ramaswamy2000efficient} and in medical diagnostics for identifying pathological conditions, such as cervical cancer \citep{ijaz2020data}. \\
+The primary objective of this investigation is to systematically evaluate the relative efficacy of the three selected algorithms in identifying outliers within a designated dataset.
+Following the formal definition and characterization of outliers, the study will detail the underlying mechanisms of the three analyzed methods. 
+This paper will begin with the robust statistical method of FAST-MCD. 
+Subsequently, the analysis will proceed to discuss the distance-based method of kNN. 
+Finally, the Intercont approach, a novel machine learning method will be presented.
+Different performance metrics will be discussed to supply a optimal view of the detection performance. 
+The empirical investigation will utilize financial datasets, drawing among other things primary research literature.
+The study is guided by the following formal hypotheses regarding detection efficacy:
+The kNN algorithm is hypothesized to yield the highest anomaly detection performance among the three candidates.
+The contrastive learning–based Intercont algorithm is anticipated to outperform the FAST-MCD method but is expected to demonstrate lower efficacy than the kNN algorithm.
+
