@@ -1,22 +1,53 @@
 \section{Methods for detecting outliers}
 There are plentyfull of methods to detect outliers. Each with advantages and disadvantages.
 The most popular methods could be categorized as followes: statistical-based, distance-based, density-based,  clustering-based,
-graph-based, ensemble-based and learning-based.\citep{wang2019progress}
-In the last 25 years, computing performance incresed so much, that besides statistical methods evbry other method could be implemented and tested as well. 
-In this thesis, I will examine 3 different methods. A statistical, a clustering-based and a learning-based.
-Therefor I will first define those methods and present their 
+graph-based, ensemble-based and learning-based.\citep{wang2019progress} 
+In this thesis, I will examine 3 different methods. A statistical, a clustering-based and a learning-based Method.
+Statistical methods or distribution-based methods, consider a data point as an outlier, if it extremly deviates from its distribution.
+Statisticians used tools like Box-plots, mean-variance or regression models to detect extreme data points \citep[p.3]{smiti2020critical}.
 
-\subsection{Minimum Covariance Determinant}
 
+
+In this section I will begin describing the robust Mahalanobis Distance (MCD)
+Therefor I will describe the Minimum Covariance Determinant used in calculating Mahalanobis Distance.
+Afterwards I will transition to the FAST-MCD Methods, because that will be used in my thesis.
+
+\subsection{Mahalanobis Distance}
+The Mahalanobis Distance is a measurment in multidimensional space for the distance between a vector and its distribution mean.
+It considers the correlation between dimensions and calculates more reliable results.
+Not like Euclidean distance that just considers two different points, but ignores correlation between Variables. 
+But uncorrelated variables are further away from its distribution mean than highly correlated variables. 
+
+The Mahalanobis distance $D_M$ is defined as: 
+
+\begin{equation}
+D_M(\mathbf{x}, \mathbf{\mu}) = \sqrt{ (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x} - \mathbf{\mu}) }
+\label{eq:mahalanobis}
+\end{equation}
+
+where as $x$ is the vector of the obervation, $\mu$ is the mean vector and $\Sigma$ is the covariance matrix. 
+By multiplying the distance between the vektor and its mean and the inverse of the covariance matrix, we standardize the distances to their correlations.
+Resulting in a high Mahalanobis distance for uncorrelated vaiables and and a low $M_D$ for highly correlated variables.
+
+What advantages and disadvantages are there?
+
+What is the solution?
+The Minimum Covariance Determinant, first published in 1985 by \citet{article}, is a robust estimator of the covariance matrix in multidimensional dataset.
+Given a dataset of n observations and a predetermined subset sie h, the MCD searches for the h observations whose empirical covariance matrix has the smalltest possible determinant.
+A determinant is a mathematical property of a matrix.
+
+How does it work?
+
+
+What are the advantages?
+
+What are the disadvantages?
 Minimum Coavariance Determinant is asymptotically normal and robust. But it is hard to compute.
 
 Therefor the authors constructed an algorithm, thats much faster than the first algorithm.
 \subsection{FAST-MCD}
 
-based on Mahalanobis distance.
-xi = observation 
-T - arithmic mean vector
-S - classical covariance matrix
+
 
 
 
