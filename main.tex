@@ -29,8 +29,9 @@
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny,textwidth=2cm]{todonotes}
 %------------------------------------------------------------------------
 
-\parindent0em 			% kein Einzug nach einer Leerzeile
-\topmargin-20.4mm   % F�r die R�nder
+\parindent0em 					% kein Einzug nach einer Leerzeile
+\setlength{\parskip}{1em}			
+\topmargin-20.4mm   			% F�r die R�nder
 \textheight245mm
 \textwidth157mm \oddsidemargin11mm \evensidemargin11mm
 \hyphenpenalty=100
@@ -77,8 +78,8 @@ Augsburg, im September 2010
 \pagenumbering{Roman}
 
 
-%\tableofcontents		    % Inhaltsverzeichnis
-%\newpage
+\tableofcontents		    % Inhaltsverzeichnis
+\newpage
 %\listoffigures			    % Abbildungsverzeichnis
 %\listoftables				  % Tabellenverzeichnis
 
@@ -90,15 +91,15 @@ Augsburg, im September 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\input{CHapter/Disposition}  % Zur besseren Strukturierung empfiehlt es sich das Dokument aufzuteilen.
+\input{Chapter/Disposition}  % Zur besseren Strukturierung empfiehlt es sich das Dokument aufzuteilen.
 \newpage
 \input{Chapter/Einführung}
 \newpage
 \input{Chapter/Methods}
-%\newpage
-%\input{Kapitel/kapitel4}
-%\newpage
-%\input{Kapitel/kapitel5}
+\newpage
+\input{Chapter/Benchmarking}
+\newpage
+\input{Chapter/Results}
 %\vspace{5em}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,6 +124,9 @@ Für 13.11.2025: weiter machen mit Literaturrecherche: Progress in Outlier Detec
 Ich habe gerade angefangen mit dem Methoden teil. Ich bin dabei generell zu schreiben, wleche methoden es gibt.
 Danach will ich schreiben, welche ich nutzen werde
 
+20.11.2025 Woche 3. Geschrieben 2 Seiten. Habe mit der Mahalanobis Distanz angefangen und sie erklärt. bin dabei die Probleme aufzuschreiben.
+Freitag werde ich nur QPM machen. 
+Ich werde bald MCD definieren und danach FAST-MCD definieren. Dazu schreibe ich alternativen auf, welche gibt es noch außer die Mahalanobis distanz 
 \clearpage
 \bibliographystyle{autorjahrdidiDE}  % Dies ist der verwendete Stil f�r Zitation und Literaturverzeichnis																	 % Die Datei autorjahrdidiDE.bst muss in das aktuelle Arbeitsverzeichnis kopiert werden
 \bibliography{Literatur}	           % Literaturverzeichnis liegt in der Datei Literatur

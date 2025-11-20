@@ -6,17 +6,17 @@ In this thesis, I will examine 3 different methods. A statistical, a clustering-
 Statistical methods or distribution-based methods, consider a data point as an outlier, if it extremly deviates from its distribution.
 Statisticians used tools like Box-plots, mean-variance or regression models to detect extreme data points \citep[p.3]{smiti2020critical}.
 
-
-
 In this section I will begin describing the robust Mahalanobis Distance (MCD)
+I define the formal equation and describe its components.
 Therefor I will describe the Minimum Covariance Determinant used in calculating Mahalanobis Distance.
 Afterwards I will transition to the FAST-MCD Methods, because that will be used in my thesis.
 
 \subsection{Mahalanobis Distance}
 The Mahalanobis Distance is a measurment in multidimensional space for the distance between a vector and its distribution mean.
-It considers the correlation between dimensions and calculates more reliable results.
-Not like Euclidean distance that just considers two different points, but ignores correlation between Variables. 
+It considers the correlation between dimensions not like for example Euclidean distance that just considers two different points, but ignores correlation between variables. 
 But uncorrelated variables are further away from its distribution mean than highly correlated variables. 
+By considering the correlation between variables, it is effective for outlier detection in multidimensional datasets, because 
+observations that dont have extreme values in single variables, can be flagged as an outlier when considering all variable in combination. 
 
 The Mahalanobis distance $D_M$ is defined as: 
 
@@ -29,7 +29,46 @@ where as $x$ is the vector of the obervation, $\mu$ is the mean vector and $\Sig
 By multiplying the distance between the vektor and its mean and the inverse of the covariance matrix, we standardize the distances to their correlations.
 Resulting in a high Mahalanobis distance for uncorrelated vaiables and and a low $M_D$ for highly correlated variables.
 
-What advantages and disadvantages are there?
+The Mahalanobis distance is scale-invariant. In the appendix is a formal proof.
+It is not affected by the different scales of features because it measures the distance in units of standard deviations.
+So changes in feature units can be made without influencing the resulting distance and there is no need to manually tranform features with different
+units to ensure they contribute equally to the distance calculation.
+
+By assuming, that the dataset follows a multivariante normal distribution, you also can assume, that the squared Mahalanobis distance is following a $X^2$ distribution.
+You can construct a parametic $X^2$ test to spot outliers with a given significance level ($alpha$). 
+Therefor you determine the degrees of freedom, choose a significance level and find the critical $X^2$ value.
+If the Mahalanobis distance is bigger than the critical vlue, you can call this observation with a given percentage of uncertainty an outlier. 
+
+Unfortuantely the Mahalanobis distance suffers from a masking effect.
+And by simply testing the biggest Mahalanobis distance for outiers, you could get false negative results.
+Because it is not robust against outliers itselve.
+
+Both input variables, sample mean and covariance matrix, are highly influenced by outliers.
+If a outlier occurs, the sample mean will be draged into the direction of the outlier.
+Resulting in an artificial scaled down outlier. 
+The covariance matrix describes the shape and orientation of the distribution.
+The inflating effect of an outlier, streches the ellipsiod in the direction of the ourlier. 
+Resulting in an smaller values in the matrix, because you use the inverse.
+
+To solve the masking effect, plenty of robust Mahalanobis distance calculation were proposed in the literatur.
+An estimator is called robust, if an outlier has just a small effect of the estimators distribution. 
+To asses the robustness of an estimator, \citet{hampel1971general} proposed the breakdown point. 
+It measures the robustness by determing the smallest fraction of outlier needed, for the estimator to take on arbitrary values.
+Let the mean vector be defined as:
+
+\begin{equation}
+\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i 
+\label{eq:vector mean}
+\end{equation}
+
+That means, that one oulier can 
+
+
+
+
+ 
+
+
 
 What is the solution?
 The Minimum Covariance Determinant, first published in 1985 by \citet{article}, is a robust estimator of the covariance matrix in multidimensional dataset.
@@ -45,10 +84,8 @@ What are the disadvantages?
 Minimum Coavariance Determinant is asymptotically normal and robust. But it is hard to compute.
 
 Therefor the authors constructed an algorithm, thats much faster than the first algorithm.
-\subsection{FAST-MCD}
-
-
-
+\subsection{k-Nearest-Neighbor}
+\subsection{Contrastive Learning (Intercont)}
 
 
 \newpage
@@ -69,7 +106,5 @@ Inventierbar ist eine Matrix, wenn det (A) =/ 0.
 Geometrische Bedeutung:  Der Betrag der Determinante ist gleich dem Faktor, um den sich das Volumen (oder Fläche)  eines Einheitswürfels nach der Transformation vergrößert oder verkleinert.
 Das Vorzeichen der det(A) gibt Auskunft über die Orientierung. det (A) > 0 bleibt Orientierung erhalten (zb Drehung oder Streckung)
 Wenn det(A) < 0 wird die Orientierung umgekehrt (z.B. eine Spiegelung)
-
-Break-down value
 
 asymptotisch normalverteilt 
