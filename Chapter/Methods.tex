@@ -28,7 +28,7 @@ D_M(\mathbf{x}, \mathbf{\mu}) = \sqrt{ (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Si
 where as $x$ is the vector of the obervation, $\mu$ is the mean vector and $\Sigma$ is the covariance matrix. 
 By multiplying the distance between the vektor and its mean and the inverse of the covariance matrix, we standardize the distances to their correlations.
 Resulting in a high Mahalanobis distance for uncorrelated vaiables and and a low $M_D$ for highly correlated variables.
-
+\newpage
 The Mahalanobis distance is scale-invariant. In the appendix is a formal proof.
 It is not affected by the different scales of features because it measures the distance in units of standard deviations.
 So changes in feature units can be made without influencing the resulting distance and there is no need to manually tranform features with different
@@ -51,22 +51,112 @@ The inflating effect of an outlier, streches the ellipsiod in the direction of t
 Resulting in an smaller values in the matrix, because you use the inverse.
 
 To solve the masking effect, plenty of robust Mahalanobis distance calculation were proposed in the literatur.
-An estimator is called robust, if an outlier has just a small effect of the estimators distribution. 
-To asses the robustness of an estimator, \citet{hampel1971general} proposed the breakdown point. 
-It measures the robustness by determing the smallest fraction of outlier needed, for the estimator to take on arbitrary values.
-Let the mean vector be defined as:
+An estimator is called robust, if an outlier just has a small or no effect on the resulting estimators . 
+To asses the robustness of an estimator, \citet{hampel1971general} proposed the breakdown point.
+Given a dataset $X$ of size $n$, and an examined location estimator $T_n$, the breakdown value is define as:
 
 \begin{equation}
-\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i 
-\label{eq:vector mean}
+\epsilon_{n}^{*}(T_{n}, X_{n}) = \frac{1}{n} \min \left\{ m : \sup_{X_{n},{m}} \left\| T_{n}(X_{n,m}) - T_{n}(X_{n}) \right\| = +\infty \right\}
 \end{equation}
 
-That means, that one oulier can 
+where as $m$ is the minimum number of observations that need to be replaced with outliers, $X_m$ is the contaminated dataset where $m$ points from $X$ have been replaced by arbitrary values.
+It measures the robustness by determing the smallest fraction of outlier needed, for the estimator to take on arbitrary values.
+$epsilon_n^*$ is the smallest fraction that causes this unbounded change. 
+The maximum value of $epsilon_n^*$ is 0.4 because if the estimator reaches beyond this boundary, it would imply that the estimator would prefer the uncontaminated smaller portion 
+of the dataset. If the contaminted data reaches the majority of the dataset, no estimator can distinguish the true underlying distribution from the contaminated one. 
+The result could be wrong, because the estimator could have chosen the contaminated dataset as the core dataset.
 
+\subsubsection*{Minimum Covariance Determinant}
+Used for mahalanobis distance the breakdown point would be 0, because it takes just one outlier for the variance matrix and/or mean vector to take on arbitraty values. 
+To solve this problem, I will use the minimum covariance determinant (MCD). 
+The goal of MCD is to find the subset $H$ of $h$ observations in a given dataset with $n$ observations and $p$ variables that minimizes the determinant of the subset's sample covariance matrix.
+The determinant $det(A)$ is a scalar of a sqaure matrix $A$.
+It determines among other things  the change in orientation and volume.
+The absolut value of the determinant the factor of wich the volume changes by multiply the determinant with its matrix $A$.
+If the determinant is negative, additionally to changes in volume, the orientation changes as well.
+
+MCD is affine equivariant. That means that MCD estimations of the mean and covariance will follow accordingly to 
+affine transformations. For example in a change of measurement, the data will be roted, translated or rescaled but the resulting 
+mean and covariance will transform correctly and not stay the same.
+Thats important for outlier detection, because estimated outliers will stay outlier even affine transformation took place. \citet{hubert2018minimum}
+
+MCD estimators can only be calculated when the number of subset observations ($h$) exceeds the number of variables ($p$), becaus if not the determinant 
+of the resulting covariance matrix will be 0. \citet{hubert2018minimum} recommends at least five observations per dimension to avaid excessiv noise. 
+
+Following the equation (2), the breakdown value of MCD is givin as: 
+
+\begin{equation}
+\epsilon^* = \frac{m}{n} = \frac{n-h+1}{n}
+\end{equation}
+
+
+where $n-h+1$ ist the minimum number of observations that need to be replaced by outliers to met the breaking point.
+$n-h$ calculates the number of observations, that just do not meet breaking point.
+Whereas $h$ defines the potential inliers, hence the difference calculates the potential outliers. 
+To ensure, that the breakdown point is met, you have to ad another unit. 
+If you insert the maximum theoreticall breakdown point $epsilon = 0.5$, you will get the optimal
+
+\begin{equation}
+0.5 \approx \frac{n-h+1}{n} \quad \Rightarrow \quad 0.5n \approx n-h+1 \quad \Rightarrow \quad h \approx 0.5n + 1
+\end{equation}
+
+
+
+The subsets $h$ size is lays between $\lfloor \frac{n+p+1}{2} \rfloor \leq h \leq n$. It is not possible for $h$ to expand the number of observations $n$. 
+
+The term $(n+p+1)/2$ ensures, that $det(A) =/ 0$. Thats the case, if a matrix is squared.
+The MCD estimator is the most robust when 
+
+
+\begin{equation}
+h = \lfloor \frac{n+p+1}{2} \rfloor \approx \frac{n}{2}
+\end{equation}
 
 
 
  
+The MCD estimator is the most robust when taking $h = [(n + p + 1)/2]$ where $a$ is the largest integer $\leq$ a. At the popu-
+lation level this corresponds to $\alpha$ = 0.5. But unfortunately, the MCD then suffers from low efficiency at the normal model.
+For example, if $\alpha = 0.5$ the asymptotic relative efficiency of the diagonal elements of the MCD scatter matrix relative to the
+sample covariance matrix is only 6\% when p = 2, and 20.5\% when p = 10. This efficiency can be increased by considering
+a higher $\alpha$ such as $\alpha = 0.75$. This yields relative efficiencies of 26.2\% for p = 2 and 45.9\% for p = 10, see Croux and Haes-
+broeck (1999)On the other hand, this choice of $\alpha$ diminishes the robustness to possible outliers
+
+ The mean an covariance will be transformed accordingly.
+This means that for any nonsingular p × p matrix A and
+any p-dimensional column vector b it holds that
+
+\begin{equation}
+\hat{\boldsymbol{\mu}}_{\text{MCD}}(\mathbf{X}A^T + \mathbf{1}_n \mathbf{b}^T) = \hat{\boldsymbol{\mu}}_{\text{MCD}}(\mathbf{X}) A^T + \mathbf{b}
+\end{equation}
+
+\begin{equation}
+\hat{\boldsymbol{\Sigma}}_{\text{MCD}}(\mathbf{X}A^T + \mathbf{1}_n \mathbf{b}^T) = A \hat{\boldsymbol{\Sigma}}_{\text{MCD}}(\mathbf{X}) A^T
+\end{equation}
+
+where the vector 1n is (1, 1, …, 1)0 with n elements. This property follows from the fact that for each subset H of {1, 2, …,
+n} of size h and corresponding data set XH, the determinant of the covariance matrix of the transformed data equals:
+j S XH A0
+ð Þ j = j AS XHð ÞA0 j = Aj j2 j S XHð Þ j :
+
+Therefore, transforming an h-subset with lowest determinant yields an h-subset XHA0 with lowest determinant among all
+h-subsets of the transformed data set XA0, and its covariance matrix is transformed appropriately
+Finally, we note that the robust mahalanobis distances are affine invariant, meaning they stay the same after transforming the data, which implies that the weighted
+estimator is affine equivariant too.
+
+
+
+
+
+
+\newpage 
+\newpage
+MCD Alternative: for dataset with very few observations/ excessive noise use Minimum Regularized Covariance Determinant
+Insert: the curse of dimensionality
+
+For the end: how can I be sure, that my results are legit?
+
+for dataset analysis: multicolinearityt?
 
 
 
