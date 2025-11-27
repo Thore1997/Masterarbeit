@@ -6,10 +6,11 @@ In this thesis, I will examine 3 different methods. A statistical, a clustering-
 Statistical methods or distribution-based methods, consider a data point as an outlier, if it extremly deviates from its distribution.
 Statisticians used tools like Box-plots, mean-variance or regression models to detect extreme data points \citep[p.3]{smiti2020critical}.
 
-In this section I will begin describing the robust Mahalanobis Distance (MCD)
-I define the formal equation and describe its components.
-Therefor I will describe the Minimum Covariance Determinant used in calculating Mahalanobis Distance.
+In this section I will begin describing the robust Mahalanobis Distance and explain why it is adventageous to use the mininum covariance determinant.
 Afterwards I will transition to the FAST-MCD Methods, because that will be used in my thesis.
+In section 2.2 I will describe the k-nearest neighbor algorithm.
+After that I will explain a expansion of k-NN.
+In Section 2.3 I will define the newly published Intercont method, wich is based on contranstive learning.
 
 \subsection{Mahalanobis Distance}
 The Mahalanobis Distance is a measurment in multidimensional space for the distance between a vector and its distribution mean.
@@ -28,7 +29,7 @@ D_M(\mathbf{x}, \mathbf{\mu}) = \sqrt{ (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Si
 where as $x$ is the vector of the obervation, $\mu$ is the mean vector and $\Sigma$ is the covariance matrix. 
 By multiplying the distance between the vektor and its mean and the inverse of the covariance matrix, we standardize the distances to their correlations.
 Resulting in a high Mahalanobis distance for uncorrelated vaiables and and a low $M_D$ for highly correlated variables.
-\newpage
+
 The Mahalanobis distance is scale-invariant. In the appendix is a formal proof.
 It is not affected by the different scales of features because it measures the distance in units of standard deviations.
 So changes in feature units can be made without influencing the resulting distance and there is no need to manually tranform features with different
@@ -144,28 +145,35 @@ Moreover, DetMCD typically runs even faster than FastMCD and is less sensitive t
 
 
 \subsection{k-Nearest-Neighbor}
-The k-nearest neighbor (kNN) algorithm is a nonparametic classification algorithm. It is been known for its simplicity and computational and low computation time.
-It is a supervised learning algorithm, that means, that a labled traning dataset is been used to train the model and afterwards a class of unlabled data can be predicted.
-It is a "lazy learning" algorithm. It does not achieve generalizations. So the entire fundamental traningset needs be used for traning, because it does not calculate generalization.
-Outlier detection is a classical classification problem. 
+The k-nearest neighbor (kNN) algorithm is a nonparametic classification algorithm. It is been known for its simplicity and accuracy.
+It is a supervised learning algorithm, that means, that a labled traning dataset is been used to train the model and afterwards a class of unlabled data can be classified.
+It is a "lazy learning" algorithm that means it does not achieve generalizations. The entire traningset is being used for traning.
+When a new unlabled data is presented into the dataset, the k-NN algorithm determines in wich class the unlabled data should go by determining the wich classes the neighboring belong to.
+Outlier detection is a binary classification problem. That means, that the considered neighbors for a new tuple, only can be inliers or outliers. 
+If the 
 
-There are tweo steps in classification: 
-\begin{enumerate}
-\item Learning Step: A clasifier is constructed by using the datatset
-\item Assessment of the classifier
-\end{enumerate}
-
-When a new unlabled data is presented into the dataset, the k-NN algorithm determines in wich class the unlabled data should go 
-by determining the wich classes the neighboring belong to.
 There are two operations calculated, when new data is presented to the model:
-  \citep[p.1256 pp.]{9065747}
+\citep[p.1256 pp.]{9065747}
 
+$K$ is the number of neighbors that would be considered for classifying a new unlabled tuple. 
 Even though this classifier is simple, the value of ‘K’ plays an important role in classifying the unlabeled data.
 $K$ is an hyperparameter, that means it is an external configuration variable that need be determined befor the process begins.
 It is task of hyperparamatic tuning to find a optimal number of $k$. 
- 
-KNN is used as a classifier. It is used to classify data based on closest or neighboring training examples in a given region. 
-For continuous data, it uses the Euclidean distance to calculate its nearest neighbors.
+You have to consider a bias-variance-trade of when you choose the optimal $K$. 
+The smaller $K$ is, the more likley it is that the model suffers from overfitting, leading to higher variance and lower bias.
+The resulting decision boundaries will be complex and fragmented.
+The lager $K$ ist, the more likley it is, that the model suffers from underfitting, leading to smaller variance and lagrer bias.
+The resulting decision boundaries maybe missing local patterns.
+It is advised to choose a odd-number $K$, otherwiseat at an even classification the model could fail.  
+
+Cross-validation is often been used to hyperparamatic tuning.
+Alternatives are: Elbow Method, 
+
+To determine the nearest neighbor, you need to calculate the distance between the new tuple and the neighbors. 
+In classical k-NN, you use the Euclidean distance. 
+By using the Euclidean-distance , k-NN is not affine equivariant.
+Non-uniforly changes in the scale changes the distance landscap and thus leading to different set of nearest neighbors.
+Resulting in different classifications. 
 
 k-NN has many advantages. Its results are easy to understand and interpret.
 The algorithm stays efficient with large traning sets eventhough it is invfluence by the curse of dimensional
@@ -173,13 +181,16 @@ There is no need for complex mathematical calculations, making it user-friendly.
 Its is a non-paramatic model, that does not require any assumptions about the underlying distribution od the dataset.
 That makes it flexible for complex datasets.
 
-The biggest disadvantage of k-NN is the determinantion of $K$.
+Some disadvantage of k-NN might be: the computational complexity. 
+For a classification the model requires to store the entire dataset. Especially for large datasets, that could lead to slow prediction time. 
+Moreover, storing the entire dataset is memory-intensive.
+Because of the dependence of distance measurments, noisy data can influence the accurarcy negatively.
+Chosing $K$ is vital for the models results. Through hyperparamatric tuning, one has to optimize the model. 
 
 
 
 
-One of the major steps in KNN is determining the parameter K.
- KNN is a lazy learning algorithm as it doesn’t learn from the training data, it implies memorizes it and then uses that data to classify the new input.
+
 \subsection{Contrastive Learning (Intercont)}
 
 
