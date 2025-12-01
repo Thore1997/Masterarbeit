@@ -39,10 +39,38 @@ This is the case any time there are fewer samples than dimensions—the variable
 of the dimensions become redundant and expressible in terms of other dimensions, thus yielding perfect multiple correlation.
 Finally, overfitting is another CoD that occurs because the flexibility of prediction equations5 is in part determined
 by the number of variables involved. With increased flexibility, prediction and classification rules adapt to both the
-patterns in the population and the random idiosyncrasies of the training sample. %\citep[p.1pp]{altman2018curse}
+patterns in the population and the random idiosyncrasies of the training sample. \citep[p.1pp]{altman2018curse}
+\todo{research: embeddings to solve the curse of dimensionality}
 }
 
+\textcolor{red}
+{   There are three general concepts of machine learning. 
+    In supervised Learning, the model ist tranined on labled data. The label defines the correct anwer for the model in advance.
+    The goal is for the model to learn a mapping function, so if a new unseen data is presented to the model, the model predicts the correct label.
+    It learns by comparing its predictions to the correct labels and minimizes the error.
+    On the one hand, supervised learning leads to results with high accurarcy, reliable predictions and its performance is easy to measure.
+    On the other hand, it requires labled data, wich are highly cost and time intensive to generate.
+    Furthermore it could struggle with new unseen scenarios that are not in the training data.
+        In unsupervised learning, the training data is unlabled. It is only provided input data but no corresonding output lables or supervision.
+    Thre goal is to explore the data, find hidden patterns, and discover the underlying structure or distribution within the data on its own.
+    Its about drwaing inferences rather than making predictions with predefined answers.
+    For unsupervised learning there is no need for costly curated datasets, and the models can handle large data volumes.
+    It is perfect for finding hidden patterns, structures groupings and relationsships in the data.
+    But the models are not as accurate as supervised counterparts and its interpretability is more complex because there is no objective trith to measure against.
+    The models tend to be computational intensive espacially with large datasets. The results tend to be noisy.
+    Hyperparamatic tuning is required to mitigate 
+        A hybrid approach is semi-supervised learning. A small amount of labled data combied with a large amount of unlabeled data for trainin is used to gain 
+    to understand the overall structure and improve the models accurarcy. Therefor the initial tranining is been done with labled data and afterwards its predictions 
+    will be used on the unlabled data as "pseudo-lables".
+    Semi-Supervised learning tries to mitigate the disadvantages of the other ones. 
+    The labeling cost are reduce, because the labeled datasets are smaller than in supervised learning. It can use the vast amount of unlabled data available in many real world domains.
+    Its generalizations are improved By leveraging the large unlabeled dataset, the model gains a better understanding of the overall data structure,
+    which can lead to better performance on unseen data than purely supervised models trained on limited labels. 
+    The disadvantage lays in it initial small labled dataset. If its first predictions are  inaccurate, these errors can be amplified for the unlabled data.
+    Moreover it requires careful selection of tuning algorithms, as different semi-supervised methods have varying effectiveness based on the data. (Gemini)
+    }
 
+    
 \subsection{Mahalanobis Distance}
 The Mahalanobis Distance is a measurment in multidimensional space for the distance between a vector and its distribution mean.
 It considers the correlation between dimensions not like for example Euclidean distance that just considers two different points, but ignores correlation between variables. 
@@ -148,14 +176,14 @@ estimator is affine equivariant too.
 
 To compute the MCD estimator one has to evaluate $\binom{n}{h}$ of all subsets size $h$.
 Therefor \citet{rousseeuw1999fast} proposed an algorithn to increase calculation efficency. 
-The algorithm of the concentration steps has the following steps: 
+The algorithm of the concentration steps has the following steps \citep[p.214]{rousseeuw1999fast} 
 
 \begin{enumerate}
-\item Initialize by drawing a random number of random subsamples of size $p+1$ and calculate the sample meand and the sample covariance matrix
-\item Concentrate the subsamples by iteratively moving to a subsample with an smaller covariance matrix.
-Begin with the smallest 
- 
-\item 
+    \item Initialize by drawing a random number of random subsamples of size $p+1$ and calculate the sample meand and the sample covariance matrix
+    \item If $det(S1)=/0$ compute the mahalanobis distances for all $n$
+    \item To compute $H2$ sort the distances of (2) from smallest to biggest
+    \item Select the $h$ smallest distances and compute the mean and coverance matrix
+    \item Repeat until convergence
 \end{enumerate}
 
 Even recently reaseach has een done for new extension for MCD.
@@ -167,7 +195,21 @@ It uses the same iterative steps as FastMCD but avoids starting with random subs
 Unlike its predecessor, DetMCD is permutation invariant, meaning its result is independent of the order of observations in the dataset. 
 Moreover, DetMCD typically runs even faster than FastMCD and is less sensitive to data contamination (outliers).
 
-
+\todo{add Algorithm FAST-MCD}
+The general idea of FAST-MCD is not to compute all N over H combinations. That would be time consuming and not ressource efficient.
+Instead it takes many initial choices of Subsets and are applying the concentrantion steps to each until convergence and keept the solution 
+with the lowest determinant.
+The algorithm steps are as follows:
+\begin{enumerate}
+    \item Determine the number observations $h$ by applying $h = \frac{n+p+1}{2}$
+    \item carry out two concentration steps
+    \item for the 10 results with lowest $det(S3)$: carry out C-steps until convergence
+    \item report the mean and covariance matrix with the lowest $det(S)$
+\end{enumerate}
+If the resulting $det(S0)=0$ then add another random observation until $det(S0)>0$.
+Afterwards compute the Mahalanobis Distance and sort them from smallest to largest. 
+First you hav to create an initial subsets $H1$ 
+\todo{Add: related work: }
 
 
 
@@ -228,6 +270,8 @@ similar and dissimilar instances. In SCL, the model is trained on pairs of data 
 the data points are similar or dissimilar. The objective is to learn a representation space where similar instances are clustered 
 closer together, while dissimilar instances are pushed apart (https://encord.com/blog/guide-to-contrastive-learning/)
 }
+
+Embeddings
 \textcolor{red}
 { 
 Encoder network:
