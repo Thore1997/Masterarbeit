@@ -44,34 +44,34 @@ patterns in the population and the random idiosyncrasies of the training sample.
 }
 
 \textcolor{red}
-{   There are three general concepts of machine learning. 
-    In supervised Learning, the model ist tranined on labled data. The label defines the correct anwer for the model in advance.
-    The goal is for the model to learn a mapping function, so if a new unseen data is presented to the model, the model predicts the correct label.
-    It learns by comparing its predictions to the correct labels and minimizes the error.
-    On the one hand, supervised learning leads to results with high accurarcy, reliable predictions and its performance is easy to measure.
-    On the other hand, it requires labled data, wich are highly cost and time intensive to generate.
-    Furthermore it could struggle with new unseen scenarios that are not in the training data.
-        In unsupervised learning, the training data is unlabled. It is only provided input data but no corresonding output lables or supervision.
-    Thre goal is to explore the data, find hidden patterns, and discover the underlying structure or distribution within the data on its own.
-    Its about drwaing inferences rather than making predictions with predefined answers.
-    For unsupervised learning there is no need for costly curated datasets, and the models can handle large data volumes.
-    It is perfect for finding hidden patterns, structures groupings and relationsships in the data.
-    But the models are not as accurate as supervised counterparts and its interpretability is more complex because there is no objective trith to measure against.
-    The models tend to be computational intensive espacially with large datasets. The results tend to be noisy.
-    Hyperparamatic tuning is required to mitigate 
-        A hybrid approach is semi-supervised learning. A small amount of labled data combied with a large amount of unlabeled data for trainin is used to gain 
-    to understand the overall structure and improve the models accurarcy. Therefor the initial tranining is been done with labled data and afterwards its predictions 
-    will be used on the unlabled data as "pseudo-lables".
-    Semi-Supervised learning tries to mitigate the disadvantages of the other ones. 
-    The labeling cost are reduce, because the labeled datasets are smaller than in supervised learning. It can use the vast amount of unlabled data available in many real world domains.
-    Its generalizations are improved By leveraging the large unlabeled dataset, the model gains a better understanding of the overall data structure,
-    which can lead to better performance on unseen data than purely supervised models trained on limited labels. 
-    The disadvantage lays in it initial small labled dataset. If its first predictions are  inaccurate, these errors can be amplified for the unlabled data.
-    Moreover it requires careful selection of tuning algorithms, as different semi-supervised methods have varying effectiveness based on the data. (Gemini)
-    }
+{There are three general concepts of machine learning. 
+In supervised Learning, the model ist tranined on labled data. The label defines the correct anwer for the model in advance.
+The goal is for the model to learn a mapping function, so if a new unseen data is presented to the model, the model predicts the correct label.
+It learns by comparing its predictions to the correct labels and minimizes the error.
+On the one hand, supervised learning leads to results with high accurarcy, reliable predictions and its performance is easy to measure.
+On the other hand, it requires labled data, wich are highly cost and time intensive to generate.
+Furthermore it could struggle with new unseen scenarios that are not in the training data.
+In unsupervised learning, the training data is unlabled. It is only provided input data but no corresonding output lables or supervision.
+Thre goal is to explore the data, find hidden patterns, and discover the underlying structure or distribution within the data on its own.
+Its about drwaing inferences rather than making predictions with predefined answers.
+For unsupervised learning there is no need for costly curated datasets, and the models can handle large data volumes.
+It is perfect for finding hidden patterns, structures groupings and relationsships in the data.
+But the models are not as accurate as supervised counterparts and its interpretability is more complex because there is no objective trith to measure against.
+The models tend to be computational intensive espacially with large datasets. The results tend to be noisy.
+Hyperparamatic tuning is required to mitigate 
+A hybrid approach is semi-supervised learning. A small amount of labled data combied with a large amount of unlabeled data for trainin is used to gain 
+to understand the overall structure and improve the models accurarcy. Therefor the initial tranining is been done with labled data and afterwards its predictions 
+will be used on the unlabled data as "pseudo-lables".
+Semi-Supervised learning tries to mitigate the disadvantages of the other ones. 
+The labeling cost are reduce, because the labeled datasets are smaller than in supervised learning. It can use the vast amount of unlabled data available in many real world domains.
+Its generalizations are improved By leveraging the large unlabeled dataset, the model gains a better understanding of the overall data structure,
+which can lead to better performance on unseen data than purely supervised models trained on limited labels. 
+The disadvantage lays in it initial small labled dataset. If its first predictions are  inaccurate, these errors can be amplified for the unlabled data.
+Moreover it requires careful selection of tuning algorithms, as different semi-supervised methods have varying effectiveness based on the data. (Gemini)
+}
 
     
-\subsection{Mahalanobis Distance}
+\subsection{Oulier detection methods based on statistics}
 The Mahalanobis Distance is a measurment in multidimensional space for the distance between a vector and its distribution mean.
 It considers the correlation between dimensions not like for example Euclidean distance that just considers two different points, but ignores correlation between variables. 
 But uncorrelated variables are further away from its distribution mean than highly correlated variables. 
@@ -81,8 +81,8 @@ observations that dont have extreme values in single variables, can be flagged a
 The Mahalanobis distance $D_M$ is defined as: 
 
 \begin{equation}
-D_M(\mathbf{x}, \mathbf{\mu}) = \sqrt{ (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x} - \mathbf{\mu}) }
-\label{eq:mahalanobis}
+    D_M(\mathbf{x}, \mathbf{\mu}) = \sqrt{ (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x} - \mathbf{\mu}) }
+    \label{eq:mahalanobis}
 \end{equation}
 
 where as $x$ is the vector of the obervation, $\mu$ is the mean vector and $\Sigma$ is the covariance matrix. 
@@ -116,7 +116,7 @@ To asses the robustness of an estimator, \citet{hampel1971general} proposed the 
 Given a dataset $X$ of size $n$, and an examined location estimator $T_n$, the breakdown value is define as:
 
 \begin{equation}
-\epsilon_{n}^{*}(T_{n}, X_{n}) = \frac{1}{n} \min \left\{ m : \sup_{X_{n},{m}} \left\| T_{n}(X_{n,m}) - T_{n}(X_{n}) \right\| = +\infty \right\}
+    \epsilon_{n}^{*}(T_{n}, X_{n}) = \frac{1}{n} \min \left\{ m : \sup_{X_{n},{m}} \left\| T_{n}(X_{n,m}) - T_{n}(X_{n}) \right\| = +\infty \right\}
 \end{equation}
 
 where as $m$ is the minimum number of observations that need to be replaced with outliers, $X_m$ is the contaminated dataset where $m$ points from $X$ have been replaced by arbitrary values.
@@ -154,7 +154,7 @@ If the majority of a dataset contains added outliers, the estimator can't distin
 The MCD estimator is the most robust when 
 
 \begin{equation}
-h = \lfloor \frac{n+p+1}{2} \rfloor \approx \frac{n}{2}
+    h = \lfloor \frac{n+p+1}{2} \rfloor \approx \frac{n}{2}
 \end{equation}
 
 wich corresponds to 0.5 at the population level. But the robusteness is been paid by efficency. 
@@ -179,13 +179,44 @@ Therefor \citet{rousseeuw1999fast} proposed an algorithn to increase calculation
 The algorithm of the concentration steps has the following steps \citep[p.214]{rousseeuw1999fast} 
 
 \begin{enumerate}
-    \item Initialize by drawing a random number of random subsamples of size $p+1$ and calculate the sample meand and the sample covariance matrix
+    \item Initialize by drawing a random number $p+1$ subsamples $J$ and calculate the sample meand and the sample covariance matrix. If the resulting $det(S0)=0$ then add another random observation until $det(S0)>0$.
     \item If $det(S1)=/0$ compute the mahalanobis distances for all $n$
     \item To compute $H2$ sort the distances of (2) from smallest to biggest
     \item Select the $h$ smallest distances and compute the mean and coverance matrix
     \item Repeat until convergence
 \end{enumerate}
 
+
+\todo{add Algorithm FAST-MCD}
+The general idea of FAST-MCD is not to compute all N over H combinations. That would be time consuming and not ressource efficient.
+Instead it takes many initial choices of Subsets and are applying the concentrantion steps to each until convergence and keept the solution 
+with the lowest determinant.
+The algorithm steps are as follows:
+
+\begin{enumerate}
+    \item Determine the number observations $h$ by applying $h = \frac{n+p+1}{2}$
+    \item carry out two concentration steps
+    \item for the 10 results with lowest $det(S3)$: carry out C-steps until convergence
+    \item report the mean and covariance matrix with the lowest $det(S)$
+\end{enumerate}
+
+As above mentioned, I will calculate just two concentration steps with all initial subsets.
+After that I will select the ten results with the smallest determinants.
+I will do this selective iteration, because the distinction between robust and nonrobust solutions aleady becomes visible after two or three steps.  
+\todo{add:rousseeuw, Driessen (1999)p.216 pp, nested extensions and explain why the algorithm is like this}
+If one can be sure, that the dataset contains less then 25\% of outliers, you can choose $h=0.75n$ wich is a good compromise between breakdown value and statistical efficiency.
+If the dataset contains many observations (e.g. n > 600), then you can create
+
+\textcolor{green}{
+Briefly, statistical detection methods show efficient experi-
+mental results when probabilistic distribution models are given
+but suffer from high computational costs when applied in large
+data sets and the curse of dimensionality. Therefore these methods
+cannot be applied in both large and high dimensional data sets.
+Another disadvantage of these techniques is that they are not
+applicable to data sets where the distribution is unknown. \citep[p.5]{smiti2020critical}
+}
+\todo{Add: related work: }
 Even recently reaseach has een done for new extension for MCD.
 Because FAST-MCD begins by drawing random subsets, multiple runs of FastMCD on the same dataset may yield different results (a problem often mitigated by fixing the random seed in implementations). 
 Furthermore, it requires drawing many initial subsets to ensure at least one is free of outliers, which can be computationally intensive. 
@@ -195,25 +226,87 @@ It uses the same iterative steps as FastMCD but avoids starting with random subs
 Unlike its predecessor, DetMCD is permutation invariant, meaning its result is independent of the order of observations in the dataset. 
 Moreover, DetMCD typically runs even faster than FastMCD and is less sensitive to data contamination (outliers).
 
-\todo{add Algorithm FAST-MCD}
-The general idea of FAST-MCD is not to compute all N over H combinations. That would be time consuming and not ressource efficient.
-Instead it takes many initial choices of Subsets and are applying the concentrantion steps to each until convergence and keept the solution 
-with the lowest determinant.
-The algorithm steps are as follows:
-\begin{enumerate}
-    \item Determine the number observations $h$ by applying $h = \frac{n+p+1}{2}$
-    \item carry out two concentration steps
-    \item for the 10 results with lowest $det(S3)$: carry out C-steps until convergence
-    \item report the mean and covariance matrix with the lowest $det(S)$
-\end{enumerate}
-If the resulting $det(S0)=0$ then add another random observation until $det(S0)>0$.
-Afterwards compute the Mahalanobis Distance and sort them from smallest to largest. 
-First you hav to create an initial subsets $H1$ 
-\todo{Add: related work: }
+
+\subsection{Oulier detection methods based on machine learning}
+\textcolor{green}{Definition Machine Learning}
+
+\textcolor{red}{Loss function
+We need a performance measure to quantify the goodness of the learner, hence a loss function. 
+It is a function of the true targets and the learned predictions.
+The goal is to minimize the the loss, so that the model's predictions are more accurate.
+But a perfectly fitting model can lead to the problem of overfittig.
+There are plentyful of different options to choose from.
+The most common loss functions are Mean Squared Error (MSE), Mean Absolute Error (MAE) and Huber Loss.
+The Mean Squared Error is defined as: 
+\begin{equation}
+    \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (Y_i - \hat{Y}_i)^2
+\end{equation}
+The sum is squared because the difference between prediction and true target is defined as non-negative.
+The MSE penalizes large prediction errors more heavily.
+It is equivalent to the OLS objective function and is consistent with the normality assumption.
+The Mean Absolute Error is defined as: 
+\begin{equation}
+    \text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |Y_i - \hat{Y}_i|
+\end{equation}
+It uses the median instead of the mean for a more robust loss.
+The Huber loss is a combination of MSE and MAE to robustify MSE and id defined as:
+\begin{equation}
+    L_{\delta}(y, \hat{y}) =
+    \begin{cases}
+    \frac{1}{2}(y - \hat{y})^2 & \text{for } |y - \hat{y}| \le \delta \\
+    \delta |y - \hat{y}| - \frac{1}{2}\delta^2 & \text{otherwise}
+    \end{cases}
+\end{equation}
+}
+
+\textcolor{red}{Over and Underfitting
+Two common issues that affect a model's performance and generalization ability are overfitting and underfitting. 
+These problems are major contributors to poor performance in machine learning models.
+Bias and Variance: 
+Bias is the error that happens when a machine learning model is too simple and doesn't learn enough details from the data. 
+It's like assuming all birds can only be small and fly, so the model fails to recognize big birds like ostriches or penguins that can't fly and get biased with predictions.
+High bias typically leads to underfitting, where the model performs poorly on both training and testing data because it fails to learn enough from the data.
+These assumptions make the model easier to train but may prevent it from capturing the underlying complexities of the data.
+In this case, the model doesn’t work well on either the training or testing data.
+Variance: 
+Error that happens when a machine learning model learns too much from the data, including random noise and outliers.
+High variance typically leads to overfitting, where the model performs well on training data but poorly on testing data.
+A high-variance model learns not only the patterns but also the noise in the training data, which leads to poor generalization on unseen data.
+As a result, the model works great on training data but fails when tested on new data, because in other data can be other outliers and noise.
+Overfitting models are like students who memorize answers instead of understanding the topic. 
+They do well in practice tests (training) but struggle in real exams (testing)
+The relationship between bias and variance is often referred to as the bias-variance tradeoff, which highlights the need for balance.
+The goal is to find an optimal balance where both bias and variance are minimized, resulting in good generalization performance. 
+(https://www.geeksforgeeks.org/machine-learning/underfitting-and-overfitting-in-machine-learning/)
+Techniques to Reduce Underfitting: 
+Increase model complexity
+Increase the number of features, performing feature engineering.
+Remove noise from the data
+Increase the number of epochs or increase the duration of training to get better results.
+Techniques to Reduce Overfitting
+Improving the quality of training data reduces overfitting by focusing on meaningful patterns, mitigate the risk of fitting the noise or irrelevant features.
+Increase the training data can improve the model's ability to generalize to unseen data and reduce the likelihood of overfitting.
+Reduce model complexity.
+Early stopping during the training phase (have an eye over the loss over the training period as soon as loss begins to increase stop training)
+Use dropout for neural networks to tackle overfitting
+Ridge Regularization and Lasso Regularization.
+}
+
+\textcolor{red}{Cross-validation
+The problem is, that the test error depends on the test data  set.
+The question is, how to estimate the test error using the training data only?
+Cross-validation (CV) is often been used to hyperparamatic tuning.
+CV randomly and repeatedly slits the data into training and test data.
+Split the data set in $k$ equally large parts.
+Part $i$ is the validation data set 
+The model is trained using the remaining observations ans we compute the loss.
+We repeat it for each validation data set $i = 1. ...  k$.
+The final measure is 
+Alternatives are: Elbow Method, Regularisation (?) \todo{does it need to be in there?}
+}
 
 
-
-\subsection{k-Nearest-Neighbor}
+\subsubsection*{k-Nearest-Neighbor}
 The k-nearest neighbor (kNN) algorithm is a nonparametic classification algorithm. It is been known for its simplicity and accuracy.
 It is a supervised learning algorithm, that means, that a labled traning dataset is been used to train the model and afterwards a class of unlabled data can be classified.
 It is a "lazy learning" algorithm that means it does not achieve generalizations. The entire traningset is being used for traning.
@@ -228,15 +321,12 @@ $K$ is the number of neighbors that would be considered for classifying a new un
 Even though this classifier is simple, the value of ‘K’ plays an important role in classifying the unlabeled data.
 $K$ is an hyperparameter, that means it is an external configuration variable that need be determined befor the process begins.
 It is task of hyperparamatic tuning to find a optimal number of $k$. 
-You have to consider a bias-variance-trade of when you choose the optimal $K$. 
+You have to consider the bias-variance-trade of when you choose the optimal $K$. 
 The smaller $K$ is, the more likley it is that the model suffers from overfitting, leading to higher variance and lower bias.
 The resulting decision boundaries will be complex and fragmented.
 The lager $K$ ist, the more likley it is, that the model suffers from underfitting, leading to smaller variance and lagrer bias.
 The resulting decision boundaries maybe missing local patterns.
 It is advised to choose a odd-number $K$, otherwiseat at an even classification the model could fail.  
-
-Cross-validation is often been used to hyperparamatic tuning.
-Alternatives are: Elbow Method, 
 
 To determine the nearest neighbor, you need to calculate the distance between the new tuple and the neighbors. 
 In classical k-NN, you use the Euclidean distance. 
@@ -259,9 +349,8 @@ Chosing $K$ is vital for the models results. Through hyperparamatric tuning, one
 \textcolor{red}{\citep{yang2023outlier} for further information}
 
 
-\subsection{Contrastive Learning (Intercont)}
-\textcolor{red}
-{ 
+\subsubsection*{Contrastive Learning (Intercont)}
+\textcolor{red}{ 
 The idea of contrastive learning has emerged in metric learning. 
 Metric learning, or Distance Metric Learning (DML), is a subfield of machine learning focused on learning an optimal 
 distance function from data, rather than relying on a fixed, generic one like Euclidean distance (Gemini)
@@ -271,18 +360,18 @@ the data points are similar or dissimilar. The objective is to learn a represent
 closer together, while dissimilar instances are pushed apart (https://encord.com/blog/guide-to-contrastive-learning/)
 }
 
+
 Embeddings
-\textcolor{red}
-{ 
-Encoder network:
+\textcolor{red}{Encoder network:
 The encoder network takes the augmented instances as input and maps them to a latent representation space,
 where meaningful features and similarities are captured. 
 The encoder network is typically a deep neural network architecture.
 The network learns to extract and encode high-level representations from the augmented instances, facilitating the discrimination 
 between similar and dissimilar instances in the subsequent steps. (https://encord.com/blog/guide-to-contrastive-learning/)
 }
-\textcolor{red} { 
-Projection Network:
+
+
+\textcolor{red}{Projection Network 
 A projection network is employed to refine the learned representations further. 
 The projection network takes the output of the encoder network and projects it onto a lower-dimensional space, 
 often referred to as the projection or embedding space. 
@@ -290,8 +379,9 @@ This additional projection step helps enhance the discriminative power of the le
 By mapping the representations to a lower-dimensional space, the projection network reduces the complexity and redundancy 
 in the data, facilitating better separation between similar and dissimilar instances.(https://encord.com/blog/guide-to-contrastive-learning/)
 }
-\textcolor{red}{ 
-Contrastive Learning:
+
+
+\textcolor{red}{Contrastive Learning
 Once the augmented instances are encoded and projected into the embedding space, the contrastive learning objective is applied. 
 The objective is to maximize the agreement between positive pairs (instances from the same sample) and minimize the agreement between negative pairs (instances from different samples).
 This encourages the model to pull similar instances closer together while pushing dissimilar instances apart. 
@@ -299,9 +389,7 @@ The similarity between instances is typically measured using a distance metric, 
 The model is trained to minimize the distance between positive pairs and maximize the distance between negative pairs 
 in the embedding space. (https://encord.com/blog/guide-to-contrastive-learning/)
 }
-\textcolor{red}{ 
-Loss Function:
-}
+
 
 
 \textcolor{green}{
