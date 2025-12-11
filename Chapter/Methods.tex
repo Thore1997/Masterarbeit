@@ -292,6 +292,9 @@ Use dropout for neural networks to tackle overfitting
 Ridge Regularization and Lasso Regularization.
 }
 
+\subsubsection*{Cross-validation}
+
+\textcolor{green}{text}
 \textcolor{red}{Cross-validation
 The problem is, that the test error depends on the test data  set.
 The question is, how to estimate the test error using the training data only?
@@ -302,8 +305,10 @@ Part $i$ is the validation data set
 The model is trained using the remaining observations ans we compute the loss.
 We repeat it for each validation data set $i = 1. ...  k$.
 The final measure is 
-Alternatives are: Elbow Method, Regularisation (?) \todo{does it need to be in there?}
+Alternatives are: Elbow Method, Regularisation (?) 
 }
+
+
 
 
 \subsubsection*{k-Nearest-Neighbor}
@@ -350,6 +355,10 @@ Chosing $K$ is vital for the models results. Through hyperparamatric tuning, one
 
 
 \subsubsection*{Contrastive Learning (Intercont)}
+
+\textcolor{green}{Neural networks}
+
+
 \textcolor{red}{ 
 The idea of contrastive learning has emerged in metric learning. 
 Metric learning, or Distance Metric Learning (DML), is a subfield of machine learning focused on learning an optimal 
@@ -362,6 +371,8 @@ closer together, while dissimilar instances are pushed apart (https://encord.com
 
 
 Embeddings
+
+\textcolor{red}{Data Augmentation}
 \textcolor{red}{Encoder network:
 The encoder network takes the augmented instances as input and maps them to a latent representation space,
 where meaningful features and similarities are captured. 
@@ -369,6 +380,16 @@ The encoder network is typically a deep neural network architecture.
 The network learns to extract and encode high-level representations from the augmented instances, facilitating the discrimination 
 between similar and dissimilar instances in the subsequent steps. (https://encord.com/blog/guide-to-contrastive-learning/)
 }
+\textcolor{green}{In Paper}
+The contemporaneous NeuTraL AD work by Qiu et al. (2021) employs per-sample contrastive loss
+for identifying anomalies in tabular data, similar to our work. However, there are crucial differences:
+(1) NeuTraL AD learns specific masks, while we apply the entire set of the masks specified by a
+window size k. (2) The role of NeuTraL AD masks is to mask-out parts that are irrelevant for specific
+classes. In our case, we perform a two sided matching that identifies the masked part form the original.
+(3) NeuTraL AD learns a single feature extractor (“encoder”) for both the original and transformed
+data. In our case, the two sides of the contrastive loss are of very different dimensions $d - k$ and $k$
+and we employ two different encoders. \cite[p.3]{shenkar2022anomaly}
+
 
 
 \textcolor{red}{Projection Network 
@@ -390,7 +411,7 @@ The model is trained to minimize the distance between positive pairs and maximiz
 in the embedding space. (https://encord.com/blog/guide-to-contrastive-learning/)
 }
 
-
+\todo{add: Neural Network}
 
 \textcolor{green}{
 Example   

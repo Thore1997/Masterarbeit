@@ -1,2 +1,130 @@
-\section{Benchmarking}
+\section{Metrics}
+\textcolor{red}{Caution: This is from a Preprint}
+The selection of appropriate evaluation metrics at the heart of these challenges 
+is critical for an accurate and meaningful understanding of
+a model’s performance. Complicating this; different papers suggest using different metrics. While the Receiver
+Operating Characteristic Area Under Curve (ROC AUC) is the most commonly used metric, other studies argue that
+the Precision-Recall Curve Area Under Curve (AUCPR) should be used and mostly in applied papers the F1 score
+is commonly found. These metrics have been widely adopted because of their perceived distinctiveness in evaluating the model performance.
+However, their effectiveness and reliability, particularly under varying outlier fractions and contamination levels, have not
+been examined thoroughly. Our research is driven by the challenge of selecting the most appropriate metric from a
+set of available options, where each metric has its own unique strengths and weaknesses.
+The values used to calculate precision, recall, true positive
+rate (TPR) and false positive rate (FPR) come from confusion
+matrix. Table I shows how the confusion matrix is structured. 
+
+Insert Confusion Matrix
+
+Precision measures the accuracy of the positive predic-
+tions [24]. It is defined as the ratio of true positives to the
+total number of instances predicted as positive:
+ 
+
+Recall, also known as true positive rate, measures the
+model’s ability to identify all true positives within a
+dataset [24]. It is defined as the ratio of true positives to the
+actual total number of positives [25]:
+
+
+False positive rate measures the proportion of negative
+instances that are incorrectly classified as positive [25]. It is
+defined as the ratio of false positives to the total number of
+actual negative instances:
+
+
+F1 score: The F1 score is the harmonic mean of
+precision and recall, offering a balanced measure of model
+accuracy, particularly where both false positives and false
+negatives are consequential. It is defined as:
+
+
+The F1 score depends on a specific threshold setting to
+determine the binary classification of cases as normal or
+anomaly. The choice of this threshold influences both the
+precision and recall, thereby affecting the F1 score. This metric
+indicates the overall robustness of anomaly detection models
+in balanced class distributions [26].
+
+
+ROC AUC (Receiver Operating Characteristic Area Un-
+der Curve): ROC AUC assesses the likelihood of a random
+abnormal sample being more anomalous than a normal one. It
+is visualized as a curve plotting the true positive rate (TPR)
+against the false positive rate (FPR), and can be mathemati-
+cally expressed as an integral across all thresholds. The ROC
+AUC value ranges from 0 to 1, where a higher value indicates
+better model discrimination [25].
+
+
+AUCPR (Area Under the Precision-Recall Curve):
+AUCPR, designed for imbalanced datasets, emphasizes the mi-
+nority class by plotting precision against recall across various
+thresholds. It evaluates the model’s performance in scenarios
+where false negatives carry more weight than false positives,
+making it particularly useful in fields where the consequences
+of missing true positive cases are critical [27]. Similar to
+ROC AUC, AUCPR can be mathematically expressed as an
+integral across the entire precision-recall curve [28]. This
+integral representation provides a comprehensive assessment
+of the model’s performance over various threshold levels,
+reflecting its effectiveness in distinguishing between classes
+in imbalanced situations. \citep{ok2024exploring}
+
+
+\textcolor{green}{different types of metrics and defintitions}
+
+Supervised Machine Learning (ML) has several ways of evaluating the performance of
+learning algorithms and the classifiers they produce. Measures of the quality of clas-
+sification are built from a confusion matrix which records correctly and incorrectly
+recognized examples for each class. This paper argues that the measures commonly used now (accuracy, precision, recall,
+F-Score and ROC Analysis) do not fully meet the needs of learning problems in which the classes are 
+equally important and where several algorithms are compared. Our find-
+ings agree with those of [1] who surveys the comparison of algorithms on multiple data
+sets. His survey, based on the papers published at the International Conferences on ML
+2003–2004, notes that algorithms are mainly compared on accuracy.
+The vast majority of ML research focus on the settings where the examples are assumed
+to be identically and independently distributed (IID)
+
+
+the most used empirical measure, accuracy, does not distinguish be-
+tween the number of correct labels of different classes:
+
+
+Conversely, two measures that separately estimate a classifier’s performance on differ-
+ent classes are sensitivity and specificity (often employed in biomedical and medical
+applications, and in studies which involve image and visual data)
+
+
+Focus on one class prevails in text classification, information extraction, natural lan-
+guage processing and bioinformatics, where the number of examples belonging to one
+class is often substantially lower than the overall number of examples. The experimen-
+tal setting is as follows: within a set of classes there is a class of special interest (usually
+positive). Other classes are either left as is – multi-class classification – or combined into
+one – binary classification.
+
+The measures of choice calculated on the positive class1 are: precision, recall, F-measurement.
+All three measures distinguish the correct classification of labels within different classes.
+They concentrate on one class (positive examples). Recall is a function of its correctly
+classified examples (true positives) and its misclassified examples (false negatives). Pre-
+cision is a function of true positives and examples misclassified as positives (false pos-
+itives). The F-score is evenly balanced when beta = 1. It favours precision when beta > 1,
+and recall otherwise.
+
+A comprehensive evaluation of classifier performance can be obtained by the ROC 
+insert ROC equation 
+denotes the conditional probability that a data entry has the class label C. An
+ROC curve plots the classification results from the most positive to the most negative
+classification. Due to the wide use in cost/benefit decision analysis, ROC and the Area
+under the Curve (AUC) apply to learning with asymmetric cost functions and imbal-
+anced data sets
+
+\textcolor{red}{critique on traditional metrics}
+e argue that performance measures other than accuracy, F-score, precision, recall or
+ROC do apply and can be beneficial. 
+Following \citep[p.1017]{sokolova2006beyond}
+
+
+
+
+
 \section{Outlier Detection in Dataset}
