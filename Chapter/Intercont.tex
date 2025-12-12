@@ -1,0 +1,146 @@
+\subsubsection*{Contrastive Learning (Intercont)}
+
+\textcolor{red}{Neural networks}
+
+A neural network is a computationale model inspired by the structure and function of the human brain. It consists of different layers and neurons.
+The Layers are the input layer, n-many hidden layers and n-different output layers, depending on the problem. In this layers are the neurons.
+The Input layer is the first layer that receives the input data. Each neuron in the input layer corrensponds to a feature in the data.
+The hidden layers are the layers in between input and output layers. The neurons here perfom the complex comptation. A network with 2 or more layers is ofter
+refered to as deep neural network. The output layer produces the models prediction. 
+
+A single neuron receives input signals from the previous layer. Each connection has a weight, wich represents the strength or importance of that connection.
+Those weights are the parameters the network learns during training. The neuron calculated the weighted sum of it inputs and adds a bias term. 
+The bias term is an additional parameter that allwos the neuron to shift the activation functionresult, providing more flexibility.
+The weightes sum is then passed through the activation function and it induces non-linearity into the model, wich is necessesary to solve non linear problems. 
+
+The neural network has a training stage, in wich it learns the right weights and it been fed with labled data. 
+There it uses forward propagation. The inout data is passed through the hiddenlayers and to the output layer. 
+It predicts something. The result is compared to the actual target value by using the loss function. 
+This function quantifies the error or difference between the predicted and actual value.
+
+The error calculated is been send backward through the network again into the input layer.
+This process uses calculus o determin how much each weight and bias contributed to the final error - this is known as the gradient.
+An optimization function is been used to slightly adjust the bias and weights. The goal is to minimize the loss function.
+The cycle repeats for many times until the performance of the model is optimized.
+
+
+
+\textcolor{red}{Contrastive learning
+The idea of contrastive learning has emerged in metric learning. 
+Metric learning, or Distance Metric Learning (DML), is a subfield of machine learning focused on learning an optimal 
+distance function from data, rather than relying on a fixed, generic one like Euclidean distance (Gemini)
+Supervised contrastive learning (SCL) is a branch that uses labeled data to train models explicitly to differentiate between
+similar and dissimilar instances. In SCL, the model is trained on pairs of data points and their labels, indicating whether 
+the data points are similar or dissimilar. The objective is to learn a representation space where similar instances are clustered 
+closer together, while dissimilar instances are pushed apart (https://encord.com/blog/guide-to-contrastive-learning/)
+}
+
+\textcolor{green}{
+    The goal is to design a score that maps samples from the sample domain to a low vaulue if they are sampled from the underlying sample distribution from wich S is sampled.
+    If the sample is not from the underlying distribution it gets high score, thus is more likely a outlier. 
+}
+
+\textcolor{red}{Contrastive Loss function
+We need a performance measure to quantify the goodness of the learner, hence a loss function. 
+It is a function of the true targets and the learned predictions.
+The goal is to minimize the the loss, so that the model's predictions are more accurate.
+But a perfectly fitting model can lead to the problem of overfittig.
+There are plentyful of different options to choose from.
+The most common loss functions are Mean Squared Error (MSE), Mean Absolute Error (MAE) and Huber Loss.
+The Mean Squared Error is defined as: 
+\begin{equation}
+    \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (Y_i - \hat{Y}_i)^2
+\end{equation}
+The sum is squared because the difference between prediction and true target is defined as non-negative.
+The MSE penalizes large prediction errors more heavily.
+It is equivalent to the OLS objective function and is consistent with the normality assumption.
+The Mean Absolute Error is defined as: 
+\begin{equation}
+    \text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |Y_i - \hat{Y}_i|
+\end{equation}
+It uses the median instead of the mean for a more robust loss.
+The Huber loss is a combination of MSE and MAE to robustify MSE and id defined as:
+\begin{equation}
+    L_{\delta}(y, \hat{y}) =
+    \begin{cases}
+    \frac{1}{2}(y - \hat{y})^2 & \text{for } |y - \hat{y}| \le \delta \\
+    \delta |y - \hat{y}| - \frac{1}{2}\delta^2 & \text{otherwise}
+    \end{cases}
+\end{equation}
+}
+
+
+\textcolor{red}{Data Augmentation}
+\textcolor{red}{Encoder network:
+The encoder network takes the augmented instances as input and maps them to a latent representation space,
+where meaningful features and similarities are captured. 
+A latent space is a abstract, compressed and low-dimensional vector space of the input data, where essential features and underlying patterns are encoded.
+The goal is to filter out noise and redundant information. 
+It perserves semantic relationsships. Data points that are similar in the original, will be mapped to points that are close together. 
+Points that are dissimilar will be far apart.
+The latent space is produced by representation learning. 
+Autoencoders are the most common way to learn a latent space. They consists of two main parts:
+The encoder takes the high dimensional input and maps it to a much smaller vector in the latent space. This enforces the necessary compression.
+The middle layer of the autoencoder is the bottleneck, wich contains the ompressed, low dimensional representation. 
+The Decoder takes the compressed vector and attemps to reconstruct the original high dimensional input. 
+The autoencoder is trained to minimize the difference between the original input and the reconstructed output. By forcing the information through the bottleneck, the 
+enoder learns only the most essential features required for accurate reconstruction.
+}
+\textcolor{green}{Encoder Network}
+To maximize the mutual information gain, the Intercont methods uses an encoder network based on noise contrastive estimation. \citep{oord2018representation}
+
+
+
+
+\textcolor{green}{In Paper}
+The contemporaneous NeuTraL AD work by Qiu et al. (2021) employs per-sample contrastive loss
+for identifying anomalies in tabular data, similar to our work. However, there are crucial differences:
+(1) NeuTraL AD learns specific masks, while we apply the entire set of the masks specified by a
+window size k. (2) The role of NeuTraL AD masks is to mask-out parts that are irrelevant for specific
+classes. In our case, we perform a two sided matching that identifies the masked part form the original.
+(3) NeuTraL AD learns a single feature extractor (“encoder”) for both the original and transformed
+data. In our case, the two sides of the contrastive loss are of very different dimensions $d - k$ and $k$
+and we employ two different encoders. \cite[p.3]{shenkar2022anomaly}
+
+
+
+\textcolor{red}{Projection Network 
+A projection network is employed to refine the learned representations further. 
+The projection network takes the output of the encoder network and projects it onto a lower-dimensional space, 
+often referred to as the projection or embedding space. 
+This additional projection step helps enhance the discriminative power of the learned representations. 
+By mapping the representations to a lower-dimensional space, the projection network reduces the complexity and redundancy 
+in the data, facilitating better separation between similar and dissimilar instances.(https://encord.com/blog/guide-to-contrastive-learning/)
+}
+
+
+\textcolor{red}{Contrastive Learning
+Once the augmented instances are encoded and projected into the embedding space, the contrastive learning objective is applied. 
+The objective is to maximize the agreement between positive pairs (instances from the same sample) and minimize the agreement between negative pairs (instances from different samples).
+This encourages the model to pull similar instances closer together while pushing dissimilar instances apart. 
+The similarity between instances is typically measured using a distance metric, such as Euclidean distance or cosine similarity. 
+The model is trained to minimize the distance between positive pairs and maximize the distance between negative pairs 
+in the embedding space. (https://encord.com/blog/guide-to-contrastive-learning/)
+}
+
+
+
+\textcolor{green}{
+Example   
+}
+
+
+
+
+Contrastive Learning
+latent space
+embedding size / embedding space 
+temperatur constant of the loss 
+mutual information
+L2 Norm 
+cross entropy loss Adam optimzier 
+LeakyRELU activation 
+bagging efferct
+slope coefficient 
+tanh activation 
+Batch normalization 

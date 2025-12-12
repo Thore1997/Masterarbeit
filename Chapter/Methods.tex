@@ -230,34 +230,7 @@ Moreover, DetMCD typically runs even faster than FastMCD and is less sensitive t
 \subsection{Oulier detection methods based on machine learning}
 \textcolor{green}{Definition Machine Learning}
 
-\textcolor{red}{Loss function
-We need a performance measure to quantify the goodness of the learner, hence a loss function. 
-It is a function of the true targets and the learned predictions.
-The goal is to minimize the the loss, so that the model's predictions are more accurate.
-But a perfectly fitting model can lead to the problem of overfittig.
-There are plentyful of different options to choose from.
-The most common loss functions are Mean Squared Error (MSE), Mean Absolute Error (MAE) and Huber Loss.
-The Mean Squared Error is defined as: 
-\begin{equation}
-    \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (Y_i - \hat{Y}_i)^2
-\end{equation}
-The sum is squared because the difference between prediction and true target is defined as non-negative.
-The MSE penalizes large prediction errors more heavily.
-It is equivalent to the OLS objective function and is consistent with the normality assumption.
-The Mean Absolute Error is defined as: 
-\begin{equation}
-    \text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |Y_i - \hat{Y}_i|
-\end{equation}
-It uses the median instead of the mean for a more robust loss.
-The Huber loss is a combination of MSE and MAE to robustify MSE and id defined as:
-\begin{equation}
-    L_{\delta}(y, \hat{y}) =
-    \begin{cases}
-    \frac{1}{2}(y - \hat{y})^2 & \text{for } |y - \hat{y}| \le \delta \\
-    \delta |y - \hat{y}| - \frac{1}{2}\delta^2 & \text{otherwise}
-    \end{cases}
-\end{equation}
-}
+
 
 \textcolor{red}{Over and Underfitting
 Two common issues that affect a model's performance and generalization ability are overfitting and underfitting. 
@@ -354,70 +327,9 @@ Chosing $K$ is vital for the models results. Through hyperparamatric tuning, one
 \textcolor{red}{\citep{yang2023outlier} for further information}
 
 
-\subsubsection*{Contrastive Learning (Intercont)}
-
-\textcolor{green}{Neural networks}
-
-
-\textcolor{red}{ 
-The idea of contrastive learning has emerged in metric learning. 
-Metric learning, or Distance Metric Learning (DML), is a subfield of machine learning focused on learning an optimal 
-distance function from data, rather than relying on a fixed, generic one like Euclidean distance (Gemini)
-Supervised contrastive learning (SCL) is a branch that uses labeled data to train models explicitly to differentiate between
-similar and dissimilar instances. In SCL, the model is trained on pairs of data points and their labels, indicating whether 
-the data points are similar or dissimilar. The objective is to learn a representation space where similar instances are clustered 
-closer together, while dissimilar instances are pushed apart (https://encord.com/blog/guide-to-contrastive-learning/)
-}
-
-
-Embeddings
-
-\textcolor{red}{Data Augmentation}
-\textcolor{red}{Encoder network:
-The encoder network takes the augmented instances as input and maps them to a latent representation space,
-where meaningful features and similarities are captured. 
-The encoder network is typically a deep neural network architecture.
-The network learns to extract and encode high-level representations from the augmented instances, facilitating the discrimination 
-between similar and dissimilar instances in the subsequent steps. (https://encord.com/blog/guide-to-contrastive-learning/)
-}
-\textcolor{green}{In Paper}
-The contemporaneous NeuTraL AD work by Qiu et al. (2021) employs per-sample contrastive loss
-for identifying anomalies in tabular data, similar to our work. However, there are crucial differences:
-(1) NeuTraL AD learns specific masks, while we apply the entire set of the masks specified by a
-window size k. (2) The role of NeuTraL AD masks is to mask-out parts that are irrelevant for specific
-classes. In our case, we perform a two sided matching that identifies the masked part form the original.
-(3) NeuTraL AD learns a single feature extractor (“encoder”) for both the original and transformed
-data. In our case, the two sides of the contrastive loss are of very different dimensions $d - k$ and $k$
-and we employ two different encoders. \cite[p.3]{shenkar2022anomaly}
-
-
-
-\textcolor{red}{Projection Network 
-A projection network is employed to refine the learned representations further. 
-The projection network takes the output of the encoder network and projects it onto a lower-dimensional space, 
-often referred to as the projection or embedding space. 
-This additional projection step helps enhance the discriminative power of the learned representations. 
-By mapping the representations to a lower-dimensional space, the projection network reduces the complexity and redundancy 
-in the data, facilitating better separation between similar and dissimilar instances.(https://encord.com/blog/guide-to-contrastive-learning/)
-}
-
-
-\textcolor{red}{Contrastive Learning
-Once the augmented instances are encoded and projected into the embedding space, the contrastive learning objective is applied. 
-The objective is to maximize the agreement between positive pairs (instances from the same sample) and minimize the agreement between negative pairs (instances from different samples).
-This encourages the model to pull similar instances closer together while pushing dissimilar instances apart. 
-The similarity between instances is typically measured using a distance metric, such as Euclidean distance or cosine similarity. 
-The model is trained to minimize the distance between positive pairs and maximize the distance between negative pairs 
-in the embedding space. (https://encord.com/blog/guide-to-contrastive-learning/)
-}
-
-\todo{add: Neural Network}
-
-\textcolor{green}{
-Example   
-}
 \newpage
 
+\input{Chapter/Intercont.tex}
 The Ordinary Least Squared was being critized because of its lack of robusteness. Just one outlier could have a large negative effect.
 
 Mahalanobis disctance cant detect multiple outliers because of the masking effect, by wich multiple outliers dont have necesssarly a large mahananobis disctance (R99 S.212)
