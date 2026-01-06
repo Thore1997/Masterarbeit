@@ -26,9 +26,15 @@ The cycle repeats for many times until the performance of the model is optimized
 
 
 \textcolor{red}{Contrastive learning
-The idea of contrastive learning has emerged in metric learning. 
-Metric learning, or Distance Metric Learning (DML), is a subfield of machine learning focused on learning an optimal 
-distance function from data, rather than relying on a fixed, generic one like Euclidean distance (Gemini)
+The idea of contrastive learning has emerged in computer vision.
+In early research they tried to link a phrase with the right image and therefor needed to classification.
+The problem arised in applying supervied learning, where human labour is needed to label the data, because there is potentially a very large number of classes.
+Thus reducing the scalabillity.
+Introducing metric learning, where the goal is to generate a numerical representation of the input, sa a image, and putting it into an embedding space resulting in a vector.
+This initial vector is called anchor. New images are added and the network learns an embedding space, where simmiliar images are put cloder together and dissimiliar 
+images are put further away. When the network is presented with a slightly different version of the anchor image, the network is capable of recognizing the most important 
+aspects of this image, because it puts the new image near the anchor in the embedding space.  
+Those networks reduce complexity by reducing the dimensionality of the input.
 Supervised contrastive learning (SCL) is a branch that uses labeled data to train models explicitly to differentiate between
 similar and dissimilar instances. In SCL, the model is trained on pairs of data points and their labels, indicating whether 
 the data points are similar or dissimilar. The objective is to learn a representation space where similar instances are clustered 
@@ -36,8 +42,8 @@ closer together, while dissimilar instances are pushed apart (https://encord.com
 }
 
 \textcolor{green}{
-    The goal is to design a score that maps samples from the sample domain to a low vaulue if they are sampled from the underlying sample distribution from wich S is sampled.
-    If the sample is not from the underlying distribution it gets high score, thus is more likely a outlier. 
+The goal is to design a score that maps samples from the sample domain to a low vaulue if they are sampled from the underlying sample distribution from wich S is sampled.
+If the sample is not from the underlying distribution it gets high score, thus is more likely a outlier. 
 }
 
 \textcolor{red}{Contrastive Loss function

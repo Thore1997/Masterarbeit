@@ -120,13 +120,66 @@ through the application of these learning methods to detect outliers (W19 S.1079
 \newpage 
 
 
-Für 13.11.2025: weiter machen mit Literaturrecherche: Progress in Outlier Detection Techniques: A Survey
-Ich habe gerade angefangen mit dem Methoden teil. Ich bin dabei generell zu schreiben, wleche methoden es gibt.
-Danach will ich schreiben, welche ich nutzen werde
+Concept of my Thesis:
+My narrative compares a traditional distance-based method (k-NN) with a modern approach Contrasive Learning approach (Intercont). 
+MCD fits as the Classical Statistical Benchmark against which both techniques are measured.
+Chapter I: The Need for Robustness (MCD as the Theoretical Gold Standard)
+I want to introduce MCD as the foundational method developed in the statistical community to solve the problem of multivariate robust estimation.
+It represents the gold standard for defining a "true" outlier based on a well-defined theoretical model (multivariate normality).
+The key Concept to Highlight is its high breakdown point %\approx 50\%. 
+It can resist contamination that would utterly destroy traditional estimators like the sample mean and covariance. (how much contamination can the others hold up to?)
+MCD defines what a robust outlier detection method should achieve in terms of resistance to contamination. 
+This sets the bar for robustness.
 
-20.11.2025 Woche 3. Geschrieben 2 Seiten. Habe mit der Mahalanobis Distanz angefangen und sie erklärt. bin dabei die Probleme aufzuschreiben.
-Freitag werde ich nur QPM machen. 
-Ich werde bald MCD definieren und danach FAST-MCD definieren. Dazu schreibe ich alternativen auf, welche gibt es noch außer die Mahalanobis distanz 
+
+Chapter II: The Limitations (The Gap that my methods fill)
+I want to use MCD's weaknesses to establish the necessity of the methods you are actually comparing (k-NN and Modern ML).
+I want to shift the debate to the other methods.
+Limitations to Discuss:
+Computational Bottleneck: MCD struggles with large N and high P.
+I want to state clearly that MCD's strength is simultaneously its greatest weakness: it is a parametric method.
+It relies on the strong, central assumption that the clean data follows an elliptical distribution (most often multivariate normal). 
+This establishes the need for computationally scalable methods.
+Model Dependence: MCD is inherently tied to the assumption of a globally elliptical (e.g., multivariate normal) distribution. 
+Use MCD's strict assumptions to motivate the need for non-parametric methods.
+MCD's Constraint: Real-world datasets (especially in business, IT, or complex sensors) are rarely normally distributed. 
+They are often multi-modal or have complex, non-linear structures. MCD is designed to find global outliers relative to a single, central ellipse.
+The Thesis Problem: Because real-world data structures are complex, a method designed to find a single, central data "cloud" (MCD) will fail to identify local outliers or outliers
+in non-elliptical shapes. 
+This failure is what necessitates the shift to your two core methods.
+This assumption often fails in complex, real-world data, leading to the need for non-parametric (k-NN) or distribution-agnostic (Modern ML) methods.
+Therefor I will analyze real-world data about financial fraud that was used befor in papers.
+Thesis Fit: MCD is too slow and too model-dependent for the types of large, complex datasets you are using.
+This explains why k-NN and Modern ML are relevant contenders for modern outlier detection.
+
+
+Chapter III: Introducing k-NN and InterCont
+Defining the two methods and describing their assumptions
+Whats special about k-NN and what is special about InterCont?
+where are weaknesses?
+
+
+Chapter IV: Benchmark Comparison (MCD as the Control)
+Defining Benchmarks and describing short what "exotic" benchmarks are out there.
+Role of MCD: Include MCD in your empirical analysis as a control method or baseline benchmark.
+The Comparison Strategy:
+Data A (Ideal/Synthetic): Test all three methods on a dataset that is perfectly multivariate normal with scattered outliers. 
+Here, MCD should ideally perform the best or, at least, as well as the others in terms of detection rate (Area Under the Curve, AUC). 
+This validates the theoretical strength of MCD.
+Data B (Real/Complex): Test all three methods on a large, complex, non-elliptical dataset (the type of data where k-NN and Modern ML excel). 
+Here, MCD should perform poorly or fail to run efficiently due to its limitations, thereby highlighting the superior scalability and flexibility of k-NN and the Modern ML method.
+Thesis Fit: By showing MCD's success on ideal data and its failure on real-world data, you clearly demonstrate the shift in necessary methodology, creating a powerful contrast that
+elevates the performance of k-NN and Modern ML. Describe the advantages and disadvantages about the other methods as well
+
+
+Chapter V: Conclusion
+Maybe you can argue are ask a follow up question, if such a comlex method as Intercont is economically reasonable.
+You need specially trained employees do set it up and take care of.
+Maybe you can try to explain why k-NN is still performing good in comparison to InterCont.
+The necessary step from statistics to machine learing is clear and you proven it. 
+But is it so clear to implement a deep learing method, when a lazy learner method like k-NN can provide good results as well?
+
+
 \clearpage
 \bibliographystyle{autorjahrdidiDE}  % Dies ist der verwendete Stil f�r Zitation und Literaturverzeichnis																	 % Die Datei autorjahrdidiDE.bst muss in das aktuelle Arbeitsverzeichnis kopiert werden
 \bibliography{Literatur}	           % Literaturverzeichnis liegt in der Datei Literatur
