@@ -1,32 +1,81 @@
 \subsubsection*{Contrastive Learning (Intercont)}
 
-\textcolor{red}{Neural networks}
+\todo{insert whats about and how will you write this passage}
+\textcolor{green}{procedure}
+explain what contrastive learing is.
+1 whats a Neural network: whats are the differences between deep learning and statistical models?
+    a General informations
+        where do we use it 
+        what are these tasks
+        why do we use them
+        Types of NN
+        Feet forward vs feet backward networks
+        supervised and unsupervised learning
+        advantages disadvantages 
+        Differences between statistics and deep learning (k-NN defined as Machine Learning)
 
-A neural network is a computationale model inspired by the structure and function of the human brain. It consists of different layers and neurons.
-The Layers are the input layer, n-many hidden layers and n-different output layers, depending on the problem. In this layers are the neurons.
-The Input layer is the first layer that receives the input data. Each neuron in the input layer corrensponds to a feature in the data.
-The hidden layers are the layers in between input and output layers. The neurons here perfom the complex comptation. A network with 2 or more layers is ofter
-refered to as deep neural network. The output layer produces the models prediction. 
+    b Details: 
+        Arcitecture: Layers, defining, how many should you consider,
+        Nodes, defining, which number to choose,
+        Weights, definngm what happens to them
+        Bias, defining, why do you need bias
+        Activtion function, defining, hat type of af are there, differences
+        Loss function, defining, differences, 
+        Batch
+        learning rate
 
-A single neuron receives input signals from the previous layer. Each connection has a weight, wich represents the strength or importance of that connection.
-Those weights are the parameters the network learns during training. The neuron calculated the weighted sum of it inputs and adds a bias term. 
-The bias term is an additional parameter that allwos the neuron to shift the activation functionresult, providing more flexibility.
-The weightes sum is then passed through the activation function and it induces non-linearity into the model, wich is necessesary to solve non linear problems. 
+2 Contrastive learning: A specially used Neural Network - specific
+    a General informations  
+        what is it
+        where do we use it 
+        why do we use it
+        advantages and disadvantages
+        loss functions 
+    b Details   
+        Use the specific details used in paper
+        how is the 
+\textcolor{red}{Neural Networks}
 
-The neural network has a training stage, in wich it learns the right weights and it been fed with labled data. 
-There it uses forward propagation. The inout data is passed through the hiddenlayers and to the output layer. 
-It predicts something. The result is compared to the actual target value by using the loss function. 
-This function quantifies the error or difference between the predicted and actual value.
-
-The error calculated is been send backward through the network again into the input layer.
-This process uses calculus o determin how much each weight and bias contributed to the final error - this is known as the gradient.
-An optimization function is been used to slightly adjust the bias and weights. The goal is to minimize the loss function.
-The cycle repeats for many times until the performance of the model is optimized.
+A neural network is a model inspired by the structure and function of the human brain. 
+It is suitable for a lot of tasks: for example classification, clustering, pattern recognition and predictive tasks.
+\todo{insert example papers maybe in the financial domain?}
 
 
+The arcitecture of a neural network consists of layers. Those layers consist of nodes, wich are mathematical functions.
+The first layer is the input layer. It receives the input data. \colorbox{red}{Each node in the input layer corrensponds to a feature in the data.}
+After performing the first computation through the node, the result is pushed to the next layer, called hidden layer.
+The network can be made up of aribrary number of hidden layers. 
+Between layers there are the weights, biases and activation functions. 
+The weight determines how important the connection between these two nodes are. The more imporant it is, the higher the weight. 
+The bias is a threshold value that determines if the node should pass the result to the next layer.
+If the threshold is met, the node is passing the result to the next layer.
+The activation function is used to bring non-linearity into the model.
+\todo{insert Leaky RELU, its slope coefficient and Tanh activation functions}  
+Without an activation function, the model just ant predict linear results, because a linear function of a linear function is a linear function.
+The model passes the input and multiplies it with the weight and adds a bias. 
+The result is def into the activation function. If the function is met, the activation function passes the result onto another layer.
+The last layer is called an output layer. 
+The resulting output is compared to the known actual result, through a loss function.
+After calculating the loss, the model uses backpropagation to send the result backwards thought the layers.  
+By using the chain rule, the model calculates how much each weight and bias contributes to the loss, called gradient.
+An optimizer is been used to adjust the bias and weights. The goal is to minimize the loss function.
+The loss is calculated again, fulfilling an epoch. 
+Models that use more than two hidden layers are often referred to as "deep networks".
+\todo{insert: deep learning, differences, advantages and disadvantages}
+Models that use this iteration process are called feedforward neural neutworks. 
+The calculation are pushed in just one direction.
+A different type of neural networks are the so called feedback neural networks. 
+\todo{insert: feedbackward network, use cases disadvantages and advantages}
+\todo{insert Diagram}
 
-\textcolor{red}{Contrastive learning
-The idea of contrastive learning has emerged in computer vision.
+
+
+
+The neural network has a training stage, in wich it learns the right weights and it been fed with labled data.  
+
+
+\textcolor{red}{Contrastive learning}
+he idea of contrastive learning has emerged in computer vision.
 In early research they tried to link a phrase with the right image and therefor needed to classification.
 The problem arised in applying supervied learning, where human labour is needed to label the data, because there is potentially a very large number of classes.
 Thus reducing the scalabillity.
@@ -39,11 +88,31 @@ Supervised contrastive learning (SCL) is a branch that uses labeled data to trai
 similar and dissimilar instances. In SCL, the model is trained on pairs of data points and their labels, indicating whether 
 the data points are similar or dissimilar. The objective is to learn a representation space where similar instances are clustered 
 closer together, while dissimilar instances are pushed apart (https://encord.com/blog/guide-to-contrastive-learning/)
-}
+
+
+The methods uses quite similar networks. F has two hidden layers.
+The first one has u Nodes (units) and it uses the Tanh activation function.
+The second layer has 2u Nodes and uses the LeakyReLu activation function.
+G is similar but has u/4 and u/ Nodes bescause of smaller input sizes.
+In  all layers but the first layer of F the slope coefficient is set to 0.2
+The result are applied to a Batch Normalization so it re-centers and rescales the data for faster, more stable and less sensitive to hoe you initialize weights
+\todo{insert details how its done and why}
+
 
 \textcolor{green}{
+The input data of the InterCont Method is supposed to be of tabular data.
+The training set contains n in-class samples x. All of them are vectors of d dimensions.
 The goal is to design a score that maps samples from the sample domain to a low vaulue if they are sampled from the underlying sample distribution from wich S is sampled.
 If the sample is not from the underlying distribution it gets high score, thus is more likely a outlier. 
+First a subsample is taken of k consecutive variables and m = d + 1 - k pairs %(a,b)% are generated.
+Whereas k determines the number of variables that are considered and there cant exceed d dimensions.
+a is the vector including all variables k and b is the vector of the rest d - k. 
+The pairs are complementing each other. 
+The method learns mapping yb using two networks F,G. Each network facilitates a or b.
+The mutual information is been maximized by using the noise contrastive estimation framework of \citep{oord2018representation}.
+In this framwork b is used as a query and the complementary a vector is used as a positive sample. Otherwise it is a negative sample.
+Contrestive learning minimizes the distance bewteen query and positive sample and maximizes the distance bewteen query and negative sample.
+Thats calles a masking effect, because 
 }
 
 \textcolor{red}{Contrastive Loss function
@@ -75,8 +144,9 @@ The Huber loss is a combination of MSE and MAE to robustify MSE and id defined a
 \end{equation}
 }
 
+\todo{insert contrastive loss function of paper}
+\todo{insert double normalization}
 
-\textcolor{red}{Data Augmentation}
 \textcolor{red}{Encoder network:
 The encoder network takes the augmented instances as input and maps them to a latent representation space,
 where meaningful features and similarities are captured. 
