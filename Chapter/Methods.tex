@@ -42,34 +42,6 @@ by the number of variables involved. With increased flexibility, prediction and 
 patterns in the population and the random idiosyncrasies of the training sample. \citep[p.1pp]{altman2018curse}
 \todo{research: embeddings to solve the curse of dimensionality}
 }
-
-\textcolor{red}
-{There are three general concepts of machine learning. 
-In supervised Learning, the model ist tranined on labled data. The label defines the correct anwer for the model in advance.
-The goal is for the model to learn a mapping function, so if a new unseen data is presented to the model, the model predicts the correct label.
-It learns by comparing its predictions to the correct labels and minimizes the error.
-On the one hand, supervised learning leads to results with high accurarcy, reliable predictions and its performance is easy to measure.
-On the other hand, it requires labled data, wich are highly cost and time intensive to generate.
-Furthermore it could struggle with new unseen scenarios that are not in the training data.
-In unsupervised learning, the training data is unlabled. It is only provided input data but no corresonding output lables or supervision.
-Thre goal is to explore the data, find hidden patterns, and discover the underlying structure or distribution within the data on its own.
-Its about drwaing inferences rather than making predictions with predefined answers.
-For unsupervised learning there is no need for costly curated datasets, and the models can handle large data volumes.
-It is perfect for finding hidden patterns, structures groupings and relationsships in the data.
-But the models are not as accurate as supervised counterparts and its interpretability is more complex because there is no objective trith to measure against.
-The models tend to be computational intensive espacially with large datasets. The results tend to be noisy.
-Hyperparamatic tuning is required to mitigate 
-A hybrid approach is semi-supervised learning. A small amount of labled data combied with a large amount of unlabeled data for trainin is used to gain 
-to understand the overall structure and improve the models accurarcy. Therefor the initial tranining is been done with labled data and afterwards its predictions 
-will be used on the unlabled data as "pseudo-lables".
-Semi-Supervised learning tries to mitigate the disadvantages of the other ones. 
-The labeling cost are reduce, because the labeled datasets are smaller than in supervised learning. It can use the vast amount of unlabled data available in many real world domains.
-Its generalizations are improved By leveraging the large unlabeled dataset, the model gains a better understanding of the overall data structure,
-which can lead to better performance on unseen data than purely supervised models trained on limited labels. 
-The disadvantage lays in it initial small labled dataset. If its first predictions are  inaccurate, these errors can be amplified for the unlabled data.
-Moreover it requires careful selection of tuning algorithms, as different semi-supervised methods have varying effectiveness based on the data. (Gemini)
-}
-
     
 \subsection{Oulier detection methods based on statistics}
 The Mahalanobis Distance is a measurment in multidimensional space for the distance between a vector and its distribution mean.

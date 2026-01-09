@@ -8,9 +8,9 @@ explain what contrastive learing is.
         where do we use it 
         what are these tasks
         why do we use them
+        Learning Paradigms
         Types of NN
         Feet forward vs feet backward networks
-        supervised and unsupervised learning
         advantages disadvantages 
         Differences between statistics and deep learning (k-NN defined as Machine Learning)
 
@@ -23,6 +23,9 @@ explain what contrastive learing is.
         Loss function, defining, differences, 
         Batch
         learning rate
+        Unsupervised learning (its already in 2.0!)
+        supervised learning
+        reinforcement learning
 
 2 Contrastive learning: A specially used Neural Network - specific
     a General informations  
@@ -35,10 +38,64 @@ explain what contrastive learing is.
         Use the specific details used in paper
         how is the 
 \textcolor{red}{Neural Networks}
+This section is about the newly proposed Intercont method of \citep{shenkar2022anomaly}. 
+Included in the method, the authers used neural networks(NN).
+I will begin by explaining the most common learning paradigms.
+I will then describe what a NN is and briefly identify the use cases for it.
+After that I will analyse the architecture and explore different types of networks including feedforwanrd and feedbackward networks.
+Thereafter I will describe the training process and differentiate bewteen different types of learning methods.
+Finally I will describe InterCont method.
+
 
 A neural network is a model inspired by the structure and function of the human brain. 
 It is suitable for a lot of tasks: for example classification, clustering, pattern recognition and predictive tasks.
+The goal is to construct a generalizable model.
+That means, that the model performs on unseen data nearly as good as on the training data \todo{check statement}
 \todo{insert example papers maybe in the financial domain?}
+
+
+There are different learning paradigms in machine learning. Nevertheless those depicted afterwards are somewhat of the extremes, because there a mixtures of all paradigms.
+The most widley used paradigms is the supervised learning paradigm. 
+In supervised Learning, the model ist tranined on labled data. The label defines the correct anwer for the model in advance.
+The goal is for the model to learn a mapping function, so if a new unseen data is presented to the model, the model predicts the correct label.
+It learns by comparing its predictions to the correct labels and minimizes the loss.
+On the one hand, supervised learning leads to results with high accurarcy, reliable predictions and its performance is easy to measure.
+On the other hand, it requires labled data, wich are highly cost and time intensive to generate.
+Furthermore it could struggle with new unseen scenarios that are not in the training data.
+
+
+In unsupervised learning, the training data is unlabled. It is only provided input data but no corresonding output lables or supervision.
+Thre goal is to explore the data, find hidden patterns, and discover the underlying structure or distribution within the data on its own.
+Its about drwaing inferences rather than making predictions with predefined answers.
+For unsupervised learning there is no need for costly curated datasets, and the models can handle large data volumes.
+It is perfect for finding hidden patterns, structures groupings and relationsships in the data.
+But the models are not as accurate as supervised counterparts and its interpretability is more complex because there is no objective trith to measure against.
+The models tend to be computational intensive espacially with large datasets. The results tend to be noisy.
+\todo{insert example paper}
+
+
+A hybrid approach is semi-supervised learning. A small amount of labled data combied with a large amount of unlabeled data for trainin is used to gain 
+to understand the overall structure and improve the models accurarcy. Therefor the initial tranining is been done with labled data and afterwards its predictions 
+will be used on the unlabled data as "pseudo-lables".
+Semi-Supervised learning tries to mitigate the disadvantages of the other ones. 
+The labeling cost are reduce, because the labeled datasets are smaller than in supervised learning. It can use the vast amount of unlabled data available in many real world domains.
+Its generalizations are improved By leveraging the large unlabeled dataset, the model gains a better understanding of the overall data structure,
+which can lead to better performance on unseen data than purely supervised models trained on limited labels. 
+The disadvantage lays in it initial small labled dataset. If its first predictions are  inaccurate, these errors can be amplified for the unlabled data.
+Moreover it requires careful selection of tuning algorithms, as different semi-supervised methods have varying effectiveness based on the data. 
+
+
+\todo{consider: reinforcement learning}
+further information for every paradigm, see \citep{emmert2022taxonomy}
+
+Self-supervised learning can be used to mittigate the problem of costly data labeling.
+In cases, e.g. Computer Vision, where a potentially a high number of classes can emerge, it is more suitable to design a model wich can fulfill this task alone. 
+Introducing metric learning, where the goal is to generate a numerical representation of the input, as a image, and putting it into an embedding space resulting in a vector.
+This initial vector is called anchor. New images are added and the network learns an embedding space, where simmiliar images are put cloder together and dissimiliar 
+images are put further away. When the network is presented with a slightly different version of the anchor image, the network is capable of recognizing the most important 
+aspects of this image, because it puts the new image near the anchor in the embedding space.  
+Those networks reduce complexity by reducing the dimensionality of the input.
+If a new datapoint is introduced, the model embedds the data and and classifies the data accourdingly to the localtion in the embedding space. 
 
 
 The arcitecture of a neural network consists of layers. Those layers consist of nodes, wich are mathematical functions.
@@ -49,73 +106,17 @@ Between layers there are the weights, biases and activation functions.
 The weight determines how important the connection between these two nodes are. The more imporant it is, the higher the weight. 
 The bias is a threshold value that determines if the node should pass the result to the next layer.
 If the threshold is met, the node is passing the result to the next layer.
+
+
 The activation function is used to bring non-linearity into the model.
 \todo{insert Leaky RELU, its slope coefficient and Tanh activation functions}  
-Without an activation function, the model just ant predict linear results, because a linear function of a linear function is a linear function.
+Without an activation function, the model just predict linear results, because a linear function of a linear function is a linear function.
 The model passes the input and multiplies it with the weight and adds a bias. 
 The result is def into the activation function. If the function is met, the activation function passes the result onto another layer.
+
+
 The last layer is called an output layer. 
 The resulting output is compared to the known actual result, through a loss function.
-After calculating the loss, the model uses backpropagation to send the result backwards thought the layers.  
-By using the chain rule, the model calculates how much each weight and bias contributes to the loss, called gradient.
-An optimizer is been used to adjust the bias and weights. The goal is to minimize the loss function.
-The loss is calculated again, fulfilling an epoch. 
-Models that use more than two hidden layers are often referred to as "deep networks".
-\todo{insert: deep learning, differences, advantages and disadvantages}
-Models that use this iteration process are called feedforward neural neutworks. 
-The calculation are pushed in just one direction.
-A different type of neural networks are the so called feedback neural networks. 
-\todo{insert: feedbackward network, use cases disadvantages and advantages}
-\todo{insert Diagram}
-
-
-
-
-The neural network has a training stage, in wich it learns the right weights and it been fed with labled data.  
-
-
-\textcolor{red}{Contrastive learning}
-he idea of contrastive learning has emerged in computer vision.
-In early research they tried to link a phrase with the right image and therefor needed to classification.
-The problem arised in applying supervied learning, where human labour is needed to label the data, because there is potentially a very large number of classes.
-Thus reducing the scalabillity.
-Introducing metric learning, where the goal is to generate a numerical representation of the input, sa a image, and putting it into an embedding space resulting in a vector.
-This initial vector is called anchor. New images are added and the network learns an embedding space, where simmiliar images are put cloder together and dissimiliar 
-images are put further away. When the network is presented with a slightly different version of the anchor image, the network is capable of recognizing the most important 
-aspects of this image, because it puts the new image near the anchor in the embedding space.  
-Those networks reduce complexity by reducing the dimensionality of the input.
-Supervised contrastive learning (SCL) is a branch that uses labeled data to train models explicitly to differentiate between
-similar and dissimilar instances. In SCL, the model is trained on pairs of data points and their labels, indicating whether 
-the data points are similar or dissimilar. The objective is to learn a representation space where similar instances are clustered 
-closer together, while dissimilar instances are pushed apart (https://encord.com/blog/guide-to-contrastive-learning/)
-
-
-The methods uses quite similar networks. F has two hidden layers.
-The first one has u Nodes (units) and it uses the Tanh activation function.
-The second layer has 2u Nodes and uses the LeakyReLu activation function.
-G is similar but has u/4 and u/ Nodes bescause of smaller input sizes.
-In  all layers but the first layer of F the slope coefficient is set to 0.2
-The result are applied to a Batch Normalization so it re-centers and rescales the data for faster, more stable and less sensitive to hoe you initialize weights
-\todo{insert details how its done and why}
-
-
-\textcolor{green}{
-The input data of the InterCont Method is supposed to be of tabular data.
-The training set contains n in-class samples x. All of them are vectors of d dimensions.
-The goal is to design a score that maps samples from the sample domain to a low vaulue if they are sampled from the underlying sample distribution from wich S is sampled.
-If the sample is not from the underlying distribution it gets high score, thus is more likely a outlier. 
-First a subsample is taken of k consecutive variables and m = d + 1 - k pairs %(a,b)% are generated.
-Whereas k determines the number of variables that are considered and there cant exceed d dimensions.
-a is the vector including all variables k and b is the vector of the rest d - k. 
-The pairs are complementing each other. 
-The method learns mapping yb using two networks F,G. Each network facilitates a or b.
-The mutual information is been maximized by using the noise contrastive estimation framework of \citep{oord2018representation}.
-In this framwork b is used as a query and the complementary a vector is used as a positive sample. Otherwise it is a negative sample.
-Contrestive learning minimizes the distance bewteen query and positive sample and maximizes the distance bewteen query and negative sample.
-Thats calles a masking effect, because 
-}
-
-\textcolor{red}{Contrastive Loss function
 We need a performance measure to quantify the goodness of the learner, hence a loss function. 
 It is a function of the true targets and the learned predictions.
 The goal is to minimize the the loss, so that the model's predictions are more accurate.
@@ -142,12 +143,74 @@ The Huber loss is a combination of MSE and MAE to robustify MSE and id defined a
     \delta |y - \hat{y}| - \frac{1}{2}\delta^2 & \text{otherwise}
     \end{cases}
 \end{equation}
-}
-
 \todo{insert contrastive loss function of paper}
+\todo{insert: most common loss functions and paper examples}
+
+
+After calculating the loss, the model uses backpropagation to send the result backwards thought the layers.  
+By using the chain rule, the model calculates how much each weight and bias contributes to the loss, called gradient.
+An optimizer is been used to adjust the bias and weights. The goal is to minimize the loss function.
+The loss is calculated again, fulfilling an epoch. 
+\todo{consider: example of chain rule?}
+\todo{example of optimizer}
+
+
+Models that use more than two hidden layers are often referred to as "deep networks".
+\todo{insert: deep learning, differences, advantages and disadvantages}
+
+
+Models that use this iteration process are called feedforward neural neutworks. 
+The calculation are pushed in just one direction.
+A different type of neural networks are the so called feedback neural networks. 
+\todo{insert: feedbackward network, use cases disadvantages and advantages}
+\todo{insert Diagram}
+
+
+Once the augmented instances are encoded and projected into the embedding space, the contrastive learning objective is applied. 
+The objective is to maximize the agreement between positive pairs (instances from the same sample) and minimize the agreement between negative pairs (instances from different samples).
+This encourages the model to pull similar instances closer together while pushing dissimilar instances apart. 
+The similarity between instances is typically measured using a distance metric, such as Euclidean distance or cosine similarity. 
+The model is trained to minimize the distance between positive pairs and maximize the distance between negative pairs 
+in the embedding space. (https://encord.com/blog/guide-to-contrastive-learning/)
+\todo{decide: keep it, where should it go?}
+
+
+\textcolor{red}{Intercont Method}
+In the paper of \citeauthor{shenkar2022anomaly} they propose a novel outlier detection method, based on a self-supervised contrastive learning alorithm.
+First I will describe how the arcitecture is designed.
+
+
+The goal is to produce an score, that is low for similar data pairs and high for dissimilar pairs.
+The input data of the InterCont Method is supposed to be of tabular data.
+The training set contains n in-class samples x. All of them are vectors of d dimensions.
+If the sample is not from the underlying distribution it gets high score, thus is more likely a outlier. 
+First a subsample is taken of k consecutive variables and m = d + 1 - k pairs %(a,b)% are generated.
+Whereas k determines the number of variables that are considered and there cant exceed d dimensions.
+a is the vector including all variables k and b is the vector of the rest d - k. 
+The pairs are complementing each other. 
+The method learns mapping yb using two networks F,G. Each network facilitates a or b.
+The mutual information is been maximized by using the noise contrastive estimation framework of \citep{oord2018representation}.
+In this framwork b is used as a query and the complementary a vector is used as a positive sample. Otherwise it is a negative sample.
+Contrestive learning minimizes the distance bewteen query and positive sample and maximizes the distance bewteen query and negative sample.
+Thats calles a masking effect, because 
+
+The model consists two fully connected neural networks F and G. F has two hidden layers. The first hidden layer has 200 nodes and the secound has 400.
+The second Layer is equally build with two layers, but the input data is smaller, so the number of nodes differ.
+In the first hidden layer are 50 nodes and in the second are 100 nodes. As a gernalisation the authers specified the number of nodes as dependent on the embedding size u.
+They took the LeakyRELU activation function except of the first hidden layer of F. There they use a Tanh activation. 
+The LeakyRELU is different from the describtion above. It introduces a small non-zero slope coeficient for negative inputs. 
+The authers use a slope coefficient of 0.2.
+That prevents neurons from dying, so they still contribute. Moreover it ensures that gradients can propagate backwards through the network eben for negativ activations, 
+reducing the risk of vanishing gradients.
+
+
+The result are applied to a Batch Normalization so it re-centers and rescales the data for faster, more stable and less sensitive to hoe you initialize weights
+\todo{insert details how its done and why}
+
+
+
 \todo{insert double normalization}
 
-\textcolor{red}{Encoder network:
 The encoder network takes the augmented instances as input and maps them to a latent representation space,
 where meaningful features and similarities are captured. 
 A latent space is a abstract, compressed and low-dimensional vector space of the input data, where essential features and underlying patterns are encoded.
@@ -161,10 +224,10 @@ The middle layer of the autoencoder is the bottleneck, wich contains the ompress
 The Decoder takes the compressed vector and attemps to reconstruct the original high dimensional input. 
 The autoencoder is trained to minimize the difference between the original input and the reconstructed output. By forcing the information through the bottleneck, the 
 enoder learns only the most essential features required for accurate reconstruction.
-}
+
 \textcolor{green}{Encoder Network}
 To maximize the mutual information gain, the Intercont methods uses an encoder network based on noise contrastive estimation. \citep{oord2018representation}
-
+\todo{do I need this?}
 
 
 
@@ -190,14 +253,7 @@ in the data, facilitating better separation between similar and dissimilar insta
 }
 
 
-\textcolor{red}{Contrastive Learning
-Once the augmented instances are encoded and projected into the embedding space, the contrastive learning objective is applied. 
-The objective is to maximize the agreement between positive pairs (instances from the same sample) and minimize the agreement between negative pairs (instances from different samples).
-This encourages the model to pull similar instances closer together while pushing dissimilar instances apart. 
-The similarity between instances is typically measured using a distance metric, such as Euclidean distance or cosine similarity. 
-The model is trained to minimize the distance between positive pairs and maximize the distance between negative pairs 
-in the embedding space. (https://encord.com/blog/guide-to-contrastive-learning/)
-}
+
 
 
 
