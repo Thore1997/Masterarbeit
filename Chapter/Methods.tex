@@ -254,8 +254,6 @@ Alternatives are: Elbow Method, Regularisation (?)
 }
 
 
-
-
 \subsubsection*{k-Nearest-Neighbor}
 The k-nearest neighbor (kNN) algorithm is a nonparametic classification algorithm. It is been known for its simplicity and accuracy.
 It is a supervised learning algorithm, that means, that a labled traning dataset is been used to train the model and afterwards a class of unlabled data can be classified.
@@ -264,8 +262,10 @@ When a new unlabled data is presented into the dataset, the k-NN algorithm deter
 Outlier detection is a binary classification problem. That means, that the considered neighbors for a new tuple, only can be inliers or outliers. 
 If the 
 
+
 There are two operations calculated, when new data is presented to the model:
 \citep[p.1256 pp.]{9065747}
+
 
 $K$ is the number of neighbors that would be considered for classifying a new unlabled tuple. 
 Even though this classifier is simple, the value of ‘K’ plays an important role in classifying the unlabeled data.
@@ -278,17 +278,20 @@ The lager $K$ ist, the more likley it is, that the model suffers from underfitti
 The resulting decision boundaries maybe missing local patterns.
 It is advised to choose a odd-number $K$, otherwiseat at an even classification the model could fail.  
 
+
 To determine the nearest neighbor, you need to calculate the distance between the new tuple and the neighbors. 
 In classical k-NN, you use the Euclidean distance. 
 By using the Euclidean-distance , k-NN is not affine equivariant.
 Non-uniforly changes in the scale changes the distance landscap and thus leading to different set of nearest neighbors.
 Resulting in different classifications. 
 
+
 k-NN has many advantages. Its results are easy to understand and interpret.
 The algorithm stays efficient with large traning sets eventhough it is invfluence by the curse of dimensional
 There is no need for complex mathematical calculations, making it user-friendly.
 Its is a non-paramatic model, that does not require any assumptions about the underlying distribution od the dataset.
 That makes it flexible for complex datasets.
+
 
 Some disadvantage of k-NN might be: the computational complexity. 
 For a classification the model requires to store the entire dataset. Especially for large datasets, that could lead to slow prediction time. 
@@ -311,13 +314,16 @@ Chosing $K$ is vital for the models results. Through hyperparamatric tuning, one
 \input{Chapter/Intercont.tex}
 The Ordinary Least Squared was being critized because of its lack of robusteness. Just one outlier could have a large negative effect.
 
+
 Mahalanobis disctance cant detect multiple outliers because of the masking effect, by wich multiple outliers dont have necesssarly a large mahananobis disctance (R99 S.212)
 Main idea of MCD find h observations out of n whose classical covariance matrix has the lowest determinant. The MCD estimate is then rhe average of these h points 
 and the MCD estimate of scatter is their covariance matrix. 
 
+
 Procedure: 1. Creating initial subset. 
 2 Possibillities: draw a random h subset H1, or draw a random (p+1)-subset auf J, and then compute 
 technical terms:
+
 
 Determinant - Sie ist das Produkt der Hauptdiagonalen minus dem Produkt der Nebendiagonalen. Das ist stimmt bis zu einer 3x3 Matrix, darüberhinaus werden andere Methoden verwendet (Laplace'scher Entwicklungssatz)
 Es ist eine Eigenschaft die Auskunft über die Volumenverzerrung und Inventierbarkeit einer Matrix gibt. 
@@ -325,6 +331,7 @@ Inventierbar ist eine Matrix, wenn det (A) =/ 0.
 Geometrische Bedeutung:  Der Betrag der Determinante ist gleich dem Faktor, um den sich das Volumen (oder Fläche)  eines Einheitswürfels nach der Transformation vergrößert oder verkleinert.
 Das Vorzeichen der det(A) gibt Auskunft über die Orientierung. det (A) > 0 bleibt Orientierung erhalten (zb Drehung oder Streckung)
 Wenn det(A) < 0 wird die Orientierung umgekehrt (z.B. eine Spiegelung)
+
 
 asymptotisch normalverteilt 
 

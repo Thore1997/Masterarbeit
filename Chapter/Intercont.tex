@@ -37,6 +37,8 @@ explain what contrastive learing is.
     b Details   
         Use the specific details used in paper
         how is the 
+
+
 \textcolor{red}{Neural Networks}
 This section is about the newly proposed Intercont method of \citep{shenkar2022anomaly}. 
 Included in the method, the authers used neural networks(NN).
@@ -159,6 +161,31 @@ Models that use more than two hidden layers are often referred to as "deep netwo
 \todo{insert: deep learning, differences, advantages and disadvantages}
 
 
+The encoder network takes the augmented instances as input and maps them to a latent representation space,
+where meaningful features and similarities are captured. 
+A latent space is a abstract, compressed and low-dimensional vector space of the input data, where essential features and underlying patterns are encoded.
+The goal is to filter out noise and redundant information. 
+It perserves semantic relationsships. Data points that are similar in the original, will be mapped to points that are close together. 
+Points that are dissimilar will be far apart.
+The latent space is produced by representation learning. 
+Autoencoders are the most common way to learn a latent space. They consists of two main parts:
+The encoder takes the high dimensional input and maps it to a much smaller vector in the latent space. This enforces the necessary compression.
+The middle layer of the autoencoder is the bottleneck, wich contains the ompressed, low dimensional representation. 
+The Decoder takes the compressed vector and attemps to reconstruct the original high dimensional input. 
+The autoencoder is trained to minimize the difference between the original input and the reconstructed output. By forcing the information through the bottleneck, the 
+enoder learns only the most essential features required for accurate reconstruction.
+\textcolor{green}{Encoder Network}
+To maximize the mutual information gain, the Intercont methods uses an encoder network based on noise contrastive estimation. \citep{oord2018representation}
+\textcolor{red}{Projection Network 
+A projection network is employed to refine the learned representations further. 
+The projection network takes the output of the encoder network and projects it onto a lower-dimensional space, 
+often referred to as the projection or embedding space. 
+This additional projection step helps enhance the discriminative power of the learned representations. 
+By mapping the representations to a lower-dimensional space, the projection network reduces the complexity and redundancy 
+in the data, facilitating better separation between similar and dissimilar instances.(https://encord.com/blog/guide-to-contrastive-learning/)
+}
+\todo{do I need this?}
+
 Models that use this iteration process are called feedforward neural neutworks. 
 The calculation are pushed in just one direction.
 A different type of neural networks are the so called feedback neural networks. 
@@ -194,6 +221,7 @@ In this framwork b is used as a query and the complementary a vector is used as 
 Contrestive learning minimizes the distance bewteen query and positive sample and maximizes the distance bewteen query and negative sample.
 Thats calles a masking effect, because 
 
+
 The model consists two fully connected neural networks F and G. F has two hidden layers. The first hidden layer has 200 nodes and the secound has 400.
 The second Layer is equally build with two layers, but the input data is smaller, so the number of nodes differ.
 In the first hidden layer are 50 nodes and in the second are 100 nodes. As a gernalisation the authers specified the number of nodes as dependent on the embedding size u.
@@ -211,24 +239,6 @@ The result are applied to a Batch Normalization so it re-centers and rescales th
 
 \todo{insert double normalization}
 
-The encoder network takes the augmented instances as input and maps them to a latent representation space,
-where meaningful features and similarities are captured. 
-A latent space is a abstract, compressed and low-dimensional vector space of the input data, where essential features and underlying patterns are encoded.
-The goal is to filter out noise and redundant information. 
-It perserves semantic relationsships. Data points that are similar in the original, will be mapped to points that are close together. 
-Points that are dissimilar will be far apart.
-The latent space is produced by representation learning. 
-Autoencoders are the most common way to learn a latent space. They consists of two main parts:
-The encoder takes the high dimensional input and maps it to a much smaller vector in the latent space. This enforces the necessary compression.
-The middle layer of the autoencoder is the bottleneck, wich contains the ompressed, low dimensional representation. 
-The Decoder takes the compressed vector and attemps to reconstruct the original high dimensional input. 
-The autoencoder is trained to minimize the difference between the original input and the reconstructed output. By forcing the information through the bottleneck, the 
-enoder learns only the most essential features required for accurate reconstruction.
-
-\textcolor{green}{Encoder Network}
-To maximize the mutual information gain, the Intercont methods uses an encoder network based on noise contrastive estimation. \citep{oord2018representation}
-\todo{do I need this?}
-
 
 
 \textcolor{green}{In Paper}
@@ -240,39 +250,20 @@ classes. In our case, we perform a two sided matching that identifies the masked
 (3) NeuTraL AD learns a single feature extractor (“encoder”) for both the original and transformed
 data. In our case, the two sides of the contrastive loss are of very different dimensions $d - k$ and $k$
 and we employ two different encoders. \cite[p.3]{shenkar2022anomaly}
-
-
-
-\textcolor{red}{Projection Network 
-A projection network is employed to refine the learned representations further. 
-The projection network takes the output of the encoder network and projects it onto a lower-dimensional space, 
-often referred to as the projection or embedding space. 
-This additional projection step helps enhance the discriminative power of the learned representations. 
-By mapping the representations to a lower-dimensional space, the projection network reduces the complexity and redundancy 
-in the data, facilitating better separation between similar and dissimilar instances.(https://encord.com/blog/guide-to-contrastive-learning/)
-}
+\todo{do I need this?}
 
 
 
 
 
 
-\textcolor{green}{
-Example   
-}
 
 
-
-
-Contrastive Learning
-latent space
-embedding size / embedding space 
 temperatur constant of the loss 
 mutual information
 L2 Norm 
 cross entropy loss Adam optimzier 
 LeakyRELU activation 
 bagging efferct
-slope coefficient 
 tanh activation 
 Batch normalization 
