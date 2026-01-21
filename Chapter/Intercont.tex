@@ -208,50 +208,42 @@ A different type of neural networks are the so called feedback neural networks.
 
 
 \subsection{Contrastive Learning}
-
-2 Contrastive learning: A specially used Neural Network - specific
-    a General informations  
-        what is it
-        where do we use it 
-        why do we use it
-        advantages and disadvantages
-        loss functions 
-    b Details   
-        Use the specific details used in paper
-        how is the 
-
-
 \subsubsection{General Information}
 Contrastive learning is a fairly new machine learning paradigm wich tracked in recent years a lot of tension.
 It's goal is to learn numerical representation from unlabled data without human intervention.
 It is aplicable to a lot of different data domains like text, images, speech etc.
 The model learns by comparing examples of positives pairs and negative pairs and mapping such in a embedding space.
+%%\input{Images/InterCont/Survey_Contrastive_Learning.pdf}
 
 \subsubsection{data processing}
-First the model needs an anchor. Thats the data instance wich is researched.   
-A positive pair is created by random data augmentation of the anchor. 
-The two points are about the same thing, so the should be placed closely in the embedding space.
-The dissimiliar example is something completly different of anchor and will be placed further apart from the positive instance.
-The more different the samples are, the better the prediction will be.
-By adding more negative pairs, the model is been enabled to learn more distinctive features of the such dissimiliar instances.
-Resulting in better predictions and avoiding over fitting.
-Increasing the ability of generalization and robustness.
+In contrastive learning, the model starts with an anchor, which is simply the specific piece of data (like an image) being analyzed. 
+To help the model learn, a positive pair is created by applying random changes to that anchor such as cropping, flipping, or adjusting the colors. 
+Because these two versions come from the same original source, the model is taught to place them close together in its internal memory, known as the embedding space.
+In contrast, a negative pair is formed using a completely different piece of data. 
+The goal is to push these dissimilar examples as far away from the anchor as possible. 
+By training with many of these negative pairs, the model becomes much better at identifying the unique details that set different objects apart.
+This process prevents the model from simply "memorizing" the training data (overfitting) and instead helps it understand broader concepts. 
+This makes the model more robust and better at identifying new, unseen data. Common techniques used to create these variations include: cropping, color modification, rotaion etc.
+By focusing on making the features of the anchor and its positive version similar while maximizing the distance from negative examples, the model develops a more accurate and flexible understanding of the data.
+
+
+In contrastive learning, the selection of positive and negative samples is a critical factor in determining model performance. 
+While choosing positive pairs is relatively straightforward, identifying appropriate negative samples presents a more significant challenge. 
+To be effective, negative pairs must be both informative and sufficiently difficult for the model to distinguish from the anchor.
+Hard negatives are samples that reside close to the anchor in the feature space because they are semantically similar, yet they belong to different categories or instances. \citep{jang2023difficulty}
+These samples provide rich, high-quality information that forces the model to learn more granular and distinguishing characteristics of the data. 
+By incorporating hard negatives, the model gains the diversity necessary to recognize subtle differences, which effectively prevents overfitting and reduces bias. 
+This curation process results in improved generalization across new datasets. 
+Ultimately, the selection of negatives must be carefully tailored to the specific task and the nature of the data to fully maximize the benefits of the contrastive framework. \citep[p.4+5]{hu2024comprehensive}
+
+
 \todo{add: Methods of sampling negatives}
 \todo{add: InterCont uses the sliding window approach - why do they do this and why is it advantageous} 
 \todo{add: Sliding window other papers that use that}
 \todo{add: Sliding Window: critizms: geometric Concentration, syntax vs semantics trade off, selection bias and false negatives}
 
 
-Once the augmented instances are encoded and projected into the embedding space, the contrastive learning objective is applied. 
-The objective is to maximize the agreement between positive pairs (instances from the same sample) and minimize the agreement between negative pairs (instances from different samples).
-This encourages the model to pull similar instances closer together while pushing dissimilar instances apart. 
-The similarity between instances is typically measured using a distance metric, such as Euclidean distance or cosine similarity. 
-The model is trained to minimize the distance between positive pairs and maximize the distance between negative pairs 
-in the embedding space. (https://encord.com/blog/guide-to-contrastive-learning/)
-
-
 \subsubsection{feature extraction}
-
 The encoder network takes the augmented instances as input and maps them to a latent representation space,
 where meaningful features and similarities are captured. 
 A latent space is a abstract, compressed and low-dimensional vector space of the input data, where essential features and underlying patterns are encoded.
@@ -268,6 +260,7 @@ enoder learns only the most essential features required for accurate reconstruct
 To maximize the mutual information gain, the Intercont methods uses an encoder network based on noise contrastive estimation. \citep{oord2018representation}
 \todo{add: explain in great detail how a encoder network is foring the data through a bottleneck, the embedding size has enough capacity}
 
+
 A projection network is employed to refine the learned representations further. 
 The projection network takes the output of the encoder network and projects it onto a lower-dimensional space, 
 often referred to as the projection or embedding space. 
@@ -275,10 +268,42 @@ This additional projection step helps enhance the discriminative power of the le
 By mapping the representations to a lower-dimensional space, the projection network reduces the complexity and redundancy 
 in the data, facilitating better separation between similar and dissimilar instances.(https://encord.com/blog/guide-to-contrastive-learning/)
 
+
+\subsubsection{architecture}
+
+
 \subsubsection{Contrastive loss function}
+The loss function, often called objective function, is used to describe the difference between the predictions and the actual outcomes in the trainig. 
+Hence in contrastive learning, the loss function places similiar embeddings closer together and places dissimiliar embeddings further appart.
+The specific choice of the loss function depends on the network arcitecture and the characteristics of the dataset. 
+The most commonly used loss functions in contrastive learning are Noise-contrastive estimation (NCE) and it's adjusted version InfoNoise-contrastive estimation (Info-NCE loss function).
+Nevertheless in practice they are often adjusted by symmetric addition and averaging.
+Classical loss functions, that are used in other fields of machine learning like Means-Squared-Error (MSE) and Cross Entropy loss are sometimes applied.
+
+\subsubsection{Cross entropy loss}
+Cross entropy loss measures the difference between a variables predicted distribution and it actual distribution.
+It's often used for classification problems.
+In contrastive learning, the training set is ofter divided into batches.
+and it's defined as follows: 
+\todo{add:why do we used batches here?}
+\todo{research: cross-entropy and the loss function in Wu 2018, He 2020}
+
+\subsubsection{Noise-contrastive estimation (NCE)}
+NCE is a advancement of the softmax activation function. 
+This softmax is technically a activation function, but instead of used in hidden layers, like tanh or ReLU, it is exclusively used in the output layer.
+Softmax calculates the the attribution acore for each category and normalizes them into probabilities. 
+With increasing number of categories, the predictions coulf become consevative and therefor assigning for each cathegory a relative similiar probability.
+To avoid this phenomena the NCE addresses this by trasnforming the problem into a binary task, distiguishing true and noise samples. 
+\todo{add: details}
+\todo{add: definition equation}
+
+\subsubsection{Info Noise-contrastive estimation (InfoNCE)}
+The Info-NCE is an optimization of the NCE for maximizing the mutual information between positive pairs and minimizes it between negative ones.
+\todo{define: mutual information}
+\todo{add: definition equation}
+
 
 \subsubsection{InterCont}
-
 In the paper of \citeauthor{shenkar2022anomaly} they propose a novel outlier detection method, based on a self-supervised contrastive learning alorithm.
 First I will describe how the arcitecture is designed.
 The model consists two fully connected neural networks F and G. F has two hidden layers. The first hidden layer has 200 nodes and the secound has 400.
@@ -289,7 +314,6 @@ The LeakyRELU is different from the describtion above. It introduces a small non
 The authers use a slope coefficient of 0.2.
 That prevents neurons from dying, so they still contribute. Moreover it ensures that gradients can propagate backwards through the network eben for negativ activations, 
 reducing the risk of vanishing gradients.
-
 
 
 The goal is to produce an score, that is low for similar data pairs and high for dissimilar pairs.
@@ -308,8 +332,6 @@ Thats calles a masking effect, because
 \todo{add: describe the contrastive noise framwork - how is MI maximized?}
 The result are applied to a Batch Normalization so it re-centers and rescales the data for faster, more stable and less sensitive to hoe you initialize weights
 \todo{insert details how its done and why}
-
-
 \todo{insert double normalization}
 
 
