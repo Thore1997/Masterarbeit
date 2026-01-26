@@ -203,8 +203,7 @@ Moreover, DetMCD typically runs even faster than FastMCD and is less sensitive t
 \textcolor{green}{Definition Machine Learning}
 
 
-
-\textcolor{red}{Over and Underfitting
+\subsubsection{Over and Underfitting}
 Two common issues that affect a model's performance and generalization ability are overfitting and underfitting. 
 These problems are major contributors to poor performance in machine learning models.
 Bias and Variance: 
@@ -235,23 +234,6 @@ Reduce model complexity.
 Early stopping during the training phase (have an eye over the loss over the training period as soon as loss begins to increase stop training)
 Use dropout for neural networks to tackle overfitting
 Ridge Regularization and Lasso Regularization.
-}
-
-\subsubsection*{Cross-validation}
-
-\textcolor{green}{text}
-\textcolor{red}{Cross-validation
-The problem is, that the test error depends on the test data  set.
-The question is, how to estimate the test error using the training data only?
-Cross-validation (CV) is often been used to hyperparamatic tuning.
-CV randomly and repeatedly slits the data into training and test data.
-Split the data set in $k$ equally large parts.
-Part $i$ is the validation data set 
-The model is trained using the remaining observations ans we compute the loss.
-We repeat it for each validation data set $i = 1. ...  k$.
-The final measure is 
-Alternatives are: Elbow Method, Regularisation (?) 
-}
 
 
 \subsubsection*{k-Nearest-Neighbor}

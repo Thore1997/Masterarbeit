@@ -1,5 +1,66 @@
+Structure:
+    Introduction
+       motivate why you are using benchmarking as a indicator and then why you are applying the mothods to a real world data.
+       describe your hypothesis
+    Experimental Setup  
+        MCD: specify size of subset 
+        k-NN: specify K
+        Intercont: describe the F, G networks, wich activation function, wich loss function, arcitecure
+        Wich Hardware, Windows version, python version, python packages
+    Data and preprocessing
+        Benchmarking Dataset:
+            Wich will you use - Mean, distribution 
+        Real-World Dataset  
+            desribe statistically multicolinearity, sparsity
+        transformation for k-NN (Z-Transformation)
+    Metrics 
+        Metrics used in paper (F1 Score, Auc)
+        Critique and implementing new better metrics (Runtime, PR AUC, h-measure)
+    Sensitivity
+        Change the hyperparameters to see how robsut the results are. 
+
+\subsection{Introduction}
+In this thesis I want to examine the three different approaches described above to detect outliers.
+
+Therefor a set of metrics are being used to measure different 
+What kind of method do i use?
+Are there any other paper, that do it the same?
+
+
+\subsection{Experimental design}
+Describing Framework
+Hyperparameter Setup
+Software-Stack, describing Code
+Hardware environment
+
+
+\subsection{Data}
+wich Benchmarking dataset will I use?
+Dataset caracteristics, how where the outliers defined, ground truth
+Real world dataset
+Dataset caracteristics, multikolinearity, high dimensionality, noise
+Preprocessing, scaling, affin-invariant, multikolinearity
+Train-Test-Split
+
+
+\subsubsection{Cross-Validation}
+The problem is, that the test error depends on the test data  set.
+The question is, how to estimate the test error using the training data only?
+Cross-validation (CV) is often been used to hyperparamatic tuning.
+CV randomly and repeatedly slits the data into training and test data.
+Split the data set in $k$ equally large parts.
+Part $i$ is the validation data set 
+The model is trained using the remaining observations ans we compute the loss.
+We repeat it for each validation data set $i = 1. ...  k$.
+The final measure is 
+Alternatives are: Elbow Method, Regularisation (?) 
+
+
+Outlier Ratio
+
 \section{Metrics}
 \textcolor{red}{Caution: This is from a Preprint}
+To evaluate the results of the different approaches, I will use metrics to 
 The selection of appropriate evaluation metrics at the heart of these challenges 
 is critical for an accurate and meaningful understanding of
 a model’s performance. Complicating this; different papers suggest using different metrics. While the Receiver
@@ -126,4 +187,29 @@ Following \citep[p.1017]{sokolova2006beyond}
 adding: \citep[p.5]{hilal2022financial}
 \todo{adding: Runtime, Robustness for synthetic data},
 \todo{adding: h-measure}
+
 \section{Outlier Detection in Dataset}
+
+\subsection{Analysis von Sensitivity}
+\subsection{k-NN: Choice of hyperparameter k, hyperparameter tuning}
+I tried to reproduce the F1-Score for all datasets except Abalone, KDDCUP99-Rev and KDDCUP99, because where not in the official ODDS Dataset. 
+In the original Dataset there were sort of the same datasets, but I think the auther updated it. So I rejected them from further analysis. 
+First I tried reproducing by using the classic Python machine leaning library sckit-learn. 
+I noticed that the result differ from the ones in the paper.
+As the auther of the paper noticed, they used the python library PyOD, wich is well known in the scientif community.
+After implementing the code, I recognized that again the result differ substantially. 
+Unfortunately in the reproduction package supplied by the authers, there are no description of reproducting k-NN.
+They concentrated on their own .
+For the F1 score of k-NN I suppose that they optimized for the best contmination.
+Contamination is PyOD specific hyperparameter, that manages the sensitivity.
+For every contamination rate = x, take x\% of the highest anomaliescore and mark it as one.
+The difference to 100 are inliers.
+Therefor I decided to use  ROCAUC wich is not influenced by contamination. 
+
+\subsection{Breakdown-Point h of FAST-MCD}
+\subsection{InterCont: hyperparameter k, m, u, hyperparameter tuning,}
+In paper it is described how they did it. They call it ablation analysis.
+First they switched the tanh activation function to LeakyReLU.
+Then they just normalized the query and the vectors once, then they deployed a variant that just did the second normalization (the conventional way).
+a variant in wich the order of the two normalizations is reversed. 
+A variatnt with no normalizations. 
