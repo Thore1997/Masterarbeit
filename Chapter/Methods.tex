@@ -292,6 +292,32 @@ Chosing $K$ is vital for the models results. Through hyperparamatric tuning, one
 
 
 \newpage
+The k-nearest-neighbor global unsupervised anomaly detection algorithm is a straightforward
+way for detecting anomalies and not to be confused with k-nearest neighbor classification. As
+the name already implies, it focuses on global anomalies and is not able to detect local anoma-
+lies. First, for every record in the dataset, the k-nearest-neighbors have to be found. Then, an
+anomaly score is computed using these neighbors, whereas two possibilities have been pro-
+posed: Either the distance to the k th-nearest-neighbor is used (a single one) [41] or the average
+distance to all of the k-nearest-neighbors [42] is computed. In the following, we refer to the
+first method as kth-NN and the latter as k-NN. In practical applications, the k-NN method is
+often preferred [13, 19]. However, the absolute value of the score depends very much on the
+dataset itself, the number of dimensions, and on normalization. As a result, it is in practice not
+easy to select an appropriate threshold, if required.
+The choice of the parameter k is of course important for the results. If it is chosen too low,
+the density estimation for the records might be not reliable. On the other hand, if it is too large,
+density estimation may be too coarse. As a rule of thumb, k should be in the range 10 < k < 50.
+In classification, it is possible to determine a suitable k, for example by using cross-validation.
+Unfortunately, there is no such technique in unsupervised anomaly detection due to missing
+labels. For that reason, we use later in the evaluation many different values for k and average in
+order to get a fair evaluation when comparing algorithms.
+In Fig 4 we exemplary illustrate how the result of an unsupervised anomaly detection algo-
+rithm (here: k-NN with k = 10) can be visualized. The plot was generated using a simple, artifi-
+cially generated two-dimensional dataset with four Gaussian clusters and uniformly sampled
+anomalies. After applying the global k-NN, the outlier scores are visualized by the bubble-size
+of the corresponding instance. The color indicates the label, whereas anomalies are red. It can
+be seen, that k-NN cannot detect the anomalies close to the clusters well and assign small
+scores \citep[p.8+9]{goldstein2016comparative}
+
 
 \input{Chapter/Intercont.tex}
 The Ordinary Least Squared was being critized because of its lack of robusteness. Just one outlier could have a large negative effect.
