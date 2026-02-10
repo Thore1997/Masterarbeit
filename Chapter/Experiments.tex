@@ -208,8 +208,33 @@ Alternatives are: Elbow Method, Regularisation (?)
 Outlier Ratio
 
 \section{Metrics}
-In outlier detection a wide range of metrics has been used.
+\subsubsection{Introduction}
+As mentioned befor, there are a plethora of different methods to detect outliers.
+To make the results comparable, we need to use performance metrics.
+The slection of appropiate metrics is a difficult but crucial task, to make sure that the results are meaningful and comparable.
+On the one hand, to make methods comparable in research, it is necessary to introduce metrics that are widely used and accepted by the research community.
+On the other hand, the metrics should be suitable for the specific dataset and the specific problem of outlier detection, to make sure that the results are meaningful and not misleading.
+Therefor I will begin with metrics, that are accepted by the research community, and end with a metric that is suitable for the specific datasets I use in this thesis. 
+The metrics accepted by the research community are: the true positive rate and the false positive rate.
+After that I will clarify more sophisticated metrics, such as the F1-Score, Accuracy and Precision.
+In the end I will explain the h-measure and decribe why it is suitable for the specific datatests I will use for this thesis.
+\todo{adding: concentrating on binary classification, not multiclass or hierarchical classification, because the datasets I use are binary.}
+\todo{adding: explaining why wont use runtime}
+\todo{critique other paper wich use not suitabl metrics, }
+\todo{explain that a whole framework of metrics has to be implemented, because every metric has its own advantages and disadvantages.}
+\textcolor{red}{Supervised Machine Learning (ML) has several ways of evaluating the performance of
+learning algorithms and the classifiers they produce. Measures of the quality of clas-
+sification are built from a confusion matrix which records correctly and incorrectly
+recognized examples for each class. This paper argues that the measures commonly used now (accuracy, precision, recall,
+F-Score and ROC Analysis) do not fully meet the needs of learning problems in which the classes are 
+equally important and where several algorithms are compared. Our find-
+ings agree with those of [1] who surveys the comparison of algorithms on multiple data
+sets. His survey, based on the papers published at the International Conferences on ML
+2003–2004, notes that algorithms are mainly compared on accuracy.
+The vast majority of ML research focus on the settings where the examples are assumed
+to be identically and independently distributed (IID)}
 
+\subsubsection{implement to describe wich metric is commonly used}
 \textcolor{green}
 {We found 276 papers that clearly
 presented the performance metrics of their proposed models.
@@ -219,73 +244,160 @@ date, sensitivity, and recall. It measures the anomalies that are
 correctly classified. Moreover, 116 papers used False Positive
 Rate (FPR) as a performance metric. This metric measures
 anomalies that are falsely classified, and it can be known
-as false alarm rate as well. Furthermore, Accuracy (Acc),
-precision, and were F-score applied often by researchers as
-a performance metric. Acc is the percentage of anomalies
-that were correctly classified. Adding more, AUC measures
-the whole two dimensional area under the entire ROC curve.
-ROC curve is one of the strongest metrics used to efficiently
-assess intrusion detection systems performance, and it is a
-graphical tool that illustrates accuracy across FPS. On the
-other hand, Precision is usually associated with F-score and
-recall, and it measures the ratio of anomalies that are correctly
-classified as an attack. In addition, we find that 64 of the
+as false alarm rate as well.  In addition, we find that 64 of the
 290 papers used only one performance metric, and most of
 those papers used only accuracy or AUC, which is not suffi-
 cient to determine the quality performance of the ML model.
 Furthermore, a lot of papers present computational
 performance metrics in addition to performance metrics, such
 as CPU utilization, execution time, training time, testing time,
+Those two metrics are widely used in research. 
+In the paper \citep[postfix]{nassif2021}, the authers found that the true positive rate is widley used, while the false positive rate is used in only 116 of the 290 papers.
 and computational time \citep[postfix]{nassif2021}}
 
-\textcolor{red}{Caution: This is from a Preprint}
-To evaluate the results of the different approaches, I will use metrics to 
-The selection of appropriate evaluation metrics at the heart of these challenges 
-is critical for an accurate and meaningful understanding of
-a model’s performance. Complicating this; different papers suggest using different metrics. While the Receiver
-Operating Characteristic Area Under Curve (ROC AUC) is the most commonly used metric, other studies argue that
-the Precision-Recall Curve Area Under Curve (AUCPR) should be used and mostly in applied papers the F1 score
-is commonly found. These metrics have been widely adopted because of their perceived distinctiveness in evaluating the model performance.
-However, their effectiveness and reliability, particularly under varying outlier fractions and contamination levels, have not
-been examined thoroughly. Our research is driven by the challenge of selecting the most appropriate metric from a
-set of available options, where each metric has its own unique strengths and weaknesses.
-The values used to calculate precision, recall, true positive
-rate (TPR) and false positive rate (FPR) come from confusion
-matrix. Table I shows how the confusion matrix is structured. 
 
-Insert Confusion Matrix
+\subsubsection{Traditional Metrics - Confusion Matrix}
+A simple way to evaluate the performance of a method, is to count the rightly and wrongly assigned instances to the classes.
+In supervised outlier detection, the goal is to classify the presented data into outliers and inliers, using the ground truth of labled datasets.
+Comparing it with the ground truth, you can plot them into a matrix, resulting in the confusion matrix.
+The horizontal presents the true class and the vertical presents the hypothesized class of the method.
 
-Precision measures the accuracy of the positive predic-
-tions [24]. It is defined as the ratio of true positives to the
-total number of instances predicted as positive:
- 
+\input{Confusion Matrix.pdf}
 
-Recall, also known as true positive rate, measures the
-model’s ability to identify all true positives within a
-dataset [24]. It is defined as the ratio of true positives to the
-actual total number of positives [25]:
+The diagonal presenting the results the methods made, that are correct.
+Outliers that are correctly classified by the method are called true positives, while inliers that are correctly classified are called true negatives.
+The other diagonal presents the falsly classified data instances.
+Outliers that are wrongly classified as inliers are called false negatives, while inliers that are wrongly classified as outliers are called false positives.
+All basic metrics are derived fromt the confusion matrix \citep[p.4]{saito2015precision}. 
+The most often used metrics derived from the confusion matrix are:
+
+\subsubsection{Defition of Accuracy, Precision, True Positive Rate and Specificity}
+\enumerate
+
+    \item Accuracy: Measures the overall efectiveness of the method, by calculating the proportion of correctly classified instances to the total number of instances.
+    It is defined as:
+    
+    \begin{equation}
+        \text{Accuracy} = \frac{TP + TN}{TP + FN + FP + TN}
+    \end{equation}
+
+    \item Precision: Measures the proportion of true positives to the amount of all instances that are predicted as positives.
+    The focus is the class agreement of the data labels with the positives labels given by the classifier.
+    It is defined as: 
+
+    \begin{equation}
+        \text{Precision} = \frac{TP}{TP + FP}
+    \end{equation}
+
+    \item True Positive Rate (TPR) or Recall/Sensitivity: Measures the proportion of true positives to the number of actual positives.
+    It is defined as: 
+
+    \begin{equation}
+        \text{TPR} = \frac{TP}{P} = \frac{TP}{TP + FN}
+    \end{equation}
+
+    \item Specificity: Measures the proportion of true negatives to the number of actual negatives.
+    It's goal is to measure the efectiveness of the method to identify negatives.
+    It is defined as:
+
+    \begin{equation}
+        \text{Specificity} = \frac{TN}{FP + TN}
+    \end{equation}
+\citep[p.430]{sokolova2009systematic}
+\endenumerate
+\todo{consider: maybe its better to plot this as a table}
 
 
-False positive rate measures the proportion of negative
-instances that are incorrectly classified as positive [25]. It is
-defined as the ratio of false positives to the total number of
-actual negative instances:
+\subsubsection{Critique of Accuracy}
+Accuracy is a commonly used metric in outlier detection. \todo{adding: Papers that use accuracy as a metric}
+In a comprehensive survey of 290 papers on machine learning-based anomaly detection, it was found that 112 of those papers used Accuracy \citep[p.78664]{nassif2021}. 
+Nevertheless Accurarcy is not suitable for outlier detection tasks, because the datasets are imbalanced in nature. 
+That means that the minority class (outlier) is much smaller than the majority class (inliers).
+The impact of the outliers will be reduced when compared to the inliers.
+For a small given percentage of outliers, accuracy can be estimated high by only classifying all instances as inliers.
+Resulting in the given percentage of misclassified instances.
+Therefore, a metric used for imbalanced datasets should consider the distributions of the classes. \citep[p.8]{branco2016survey}  
 
 
+\subsubsection{Critique of Precision}
+Precision negates this problem by not considering the distributions but by ignoring the true negatives. 
+Nevertheless, this approach has its own disadvantages. 
+By ignoring the negatives the method can optimize for that metric by classifying conservatively, predicting only the most obvious outliers.
+Hence, in scenarios where the cost of a false negative is high, like in the datasets I analyse, precision is not suitable as well. 
+Another disadvantage of Precision is the base rate fallacy \todo {adding: base rate fallacy and paper sokolova2009systematic}
+\textcolor{red}{Precision rarely operates in a vacuum. There is a fundamental trade-off governed by the classification threshold.
+    -   The Problem: Increasing the threshold to improve Precision almost inevitably decreases Recall %(TP/(TP+FN))%.
+    Thesis Application: In your comparison of three outlier detection methods, reporting only Precision would mask whether a method is "cherry-picking" easy outliers while failing on the complex ones. 
+    This is why the F1-Score (the harmonic mean) or PR-AUC is preferred in top-tier journals.
+    -   Precision does not tell you if the model is actually "learning" the structure of the data or just getting "lucky" with a specific threshold.
+    The Problem: Unlike the Matthews Correlation Coefficient (MCC), which requires the model to perform well on both the minority and majority classes, Precision can be "gamed" by a model that over-predicts the majority class to minimize False Positives.
+    }
+
+
+\subsubsection{Critique of Recall}
+    - Whats the Problem?
+    - Why wont I use it for my Datasets
+\textcolor{red}{
+    -   The "Cheap" Maximization Problem
+    Recall is mathematically "cheap" to maximize. An algorithm can achieve a perfect Recall of 1.0 (100\%) simply by labeling every single data point as an outlier.
+    The Problem: A model that flags everything is technically perfect according to the Recall metric, but it is practically useless because it provides zero discrimination between classes.
+    Recall is calculated as TP/(TP+FN). Notice that the FP (False Positive) count is entirely absent from this equation.
+    -   Complete Ignorance of False Positives (Type I Errors)
+    The Problem: In an econometric or business context (like fraud detection), a high-recall model might flag thousands of legitimate transactions as "fraudulent." 
+    The cost of investigating these false alarms is often high, but Recall does not reflect this "noise."
+    Thesis Application: If you compare your three outlier detection methods and Method A has a higher Recall than Method B, you cannot conclude Method A is better without checking if it also produces ten times as many false alarms
+    -   Threshold Vulnerability
+    Recall is highly dependent on the chosen classification threshold.
+    The Problem: Many unsupervised outlier detection algorithms produce a continuous Anomaly Score. By lowering the threshold, you can artificially inflate Recall.
+    The Result: This makes it difficult to compare algorithms fairly unless you use a threshold-independent metric like ROC-AUC or PR-AUC, which evaluate Recall across all possible thresholds.
+    -   Asymmetric Information Loss
+    Recall only looks at the "Positive" (Outlier) class. It tells you nothing about how well the model identifies the "Negative" (Inlier) class.
+    The Problem: A model could have high Recall but be failing catastrophically at understanding the "Normal" geometric structure of your data.
+    Scientific Source: Chicco & Jurman (2020) argue that because Recall ignores two quadrants of the confusion matrix (TN and FP), it provides an incomplete and potentially biased summary of model quality.
+    -   Precision-Recall trade off
+    }
+
+\subsubsection{Definition of F1-Score}
 F1 score: The F1 score is the harmonic mean of
 precision and recall, offering a balanced measure of model
 accuracy, particularly where both false positives and false
 negatives are consequential. It is defined as:
-
-
 The F1 score depends on a specific threshold setting to
 determine the binary classification of cases as normal or
 anomaly. The choice of this threshold influences both the
 precision and recall, thereby affecting the F1 score. This metric
 indicates the overall robustness of anomaly detection models
 in balanced class distributions [26].
-\todo{insert: image of confusion matrix}
+    - how is it calculated
+    - Where has it been used
+    - Advantages and Disadvantages of F1
+The F-score is evenly balanced when beta = 1. It favours precision when beta > 1,
+and recall otherwise.
 
+
+\subsubsection{Critique of Specificity}
+    - Whats the Problem?
+    - Why wont I use it for my Datasets
+Conversely, two measures that separately estimate a classifier’s performance on differ-
+ent classes are sensitivity and specificity (often employed in biomedical and medical
+applications, and in studies which involve image and visual data)
+\textcolor{red}{
+    -   The "Large Negative" Dilution Effect
+    The formula for Specificity is TN/(TN+FP). In outlier detection, the number of True Negatives (TN) is usually massive (e.g., millions of normal transactions).
+    The Problem: Because the denominator is dominated by the TN count, even a significant absolute number of False Positives (FP) will not noticeably move the metric.
+    The Consequence: A model could produce 5,000 "false alarms" (False Positives), but if there are 1,000,000 inliers, the Specificity remains a seemingly perfect 99.5\%. 
+    This hides the fact that the model is overwhelming the user with errors. \citep{saito2015precision}
+    -   Complete Ignorance of the Outlier Class
+    Specificity focuses entirely on the "Negative" class. It uses only the bottom row of the confusion matrix (TN and FP).
+    The Problem: It tells you absolutely nothing about the model's ability to find actual outliers. 
+    A model that labels everything as an inlier will achieve a perfect Specificity of 100\%, despite being a total failure at detecting anomalies.
+}
+
+
+\subsubsection{Definition of ROC and AUC}
+    - how is it calculated
+    - Where has it been used
+    - Advantages and Disadvantages of AUC
 ROC AUC (Receiver Operating Characteristic Area Un-
 der Curve): ROC AUC assesses the likelihood of a random
 abnormal sample being more anomalous than a normal one. It
@@ -294,8 +406,28 @@ against the false positive rate (FPR), and can be mathemati-
 cally expressed as an integral across all thresholds. The ROC
 AUC value ranges from 0 to 1, where a higher value indicates
 better model discrimination [25].
+the whole two dimensional area under the entire ROC curve.
+ROC curve is one of the strongest metrics used to efficiently
+assess intrusion detection systems performance, and it is a
+graphical tool that illustrates accuracy across FPS \citep[postfix]{nassif2021}
 \todo{image of ROC}
+A comprehensive evaluation of classifier performance can be obtained by the ROC 
+insert ROC equation 
+denotes the conditional probability that a data entry has the class label C. An
+ROC curve plots the classification results from the most positive to the most negative
+classification. Due to the wide use in cost/benefit decision analysis, ROC and the Area
+under the Curve (AUC) apply to learning with asymmetric cost functions and imbal-
+anced data sets
+\textcolor{red}{critique on traditional metrics}
+e argue that performance measures other than accuracy, F-score, precision, recall or
+ROC do apply and can be beneficial. 
+Following \citep[p.1017]{sokolova2006beyond}
 
+
+\subsubsection{Definition of AUCPR}
+    - how is it calculated
+    - Where has it been used
+    - Advantages and Disadvantages of AUCPR
 AUCPR (Area Under the Precision-Recall Curve):
 Absolutly implement into the data analysis!
 AUCPR, designed for imbalanced datasets, emphasizes the mi-
@@ -310,69 +442,22 @@ integral representation provides a comprehensive assessment
 of the model’s performance over various threshold levels,
 reflecting its effectiveness in distinguishing between classes
 in imbalanced situations. \citep{ok2024exploring}
-\todo{adding: Runtime, Robustness for synthetic data},
 
 
-\todo{adding: h-measure}
+\subsubsection{adding: Runtime}
+
+
+\subsubsection{h-measure}
+    - Definition
+    - How does it work
+    - Advantages and Disadvantages
 You should reach for the H-measure when you are comparing two different classifiers (e.g., a Random Forest vs. a Logistic Regression) and their ROC curves cross each other. 
 In these cases, AUC can be deceptive and might rank the "worse" model higher simply because of its mathematical inconsistency
 \textcolor{green}{different types of metrics and defintitions}
 
-Supervised Machine Learning (ML) has several ways of evaluating the performance of
-learning algorithms and the classifiers they produce. Measures of the quality of clas-
-sification are built from a confusion matrix which records correctly and incorrectly
-recognized examples for each class. This paper argues that the measures commonly used now (accuracy, precision, recall,
-F-Score and ROC Analysis) do not fully meet the needs of learning problems in which the classes are 
-equally important and where several algorithms are compared. Our find-
-ings agree with those of [1] who surveys the comparison of algorithms on multiple data
-sets. His survey, based on the papers published at the International Conferences on ML
-2003–2004, notes that algorithms are mainly compared on accuracy.
-The vast majority of ML research focus on the settings where the examples are assumed
-to be identically and independently distributed (IID)
-
-
-the most used empirical measure, accuracy, does not distinguish be-
-tween the number of correct labels of different classes:
-
-
-Conversely, two measures that separately estimate a classifier’s performance on differ-
-ent classes are sensitivity and specificity (often employed in biomedical and medical
-applications, and in studies which involve image and visual data)
-
-
-Focus on one class prevails in text classification, information extraction, natural lan-
-guage processing and bioinformatics, where the number of examples belonging to one
-class is often substantially lower than the overall number of examples. The experimen-
-tal setting is as follows: within a set of classes there is a class of special interest (usually
-positive). Other classes are either left as is – multi-class classification – or combined into
-one – binary classification.
-
-The measures of choice calculated on the positive class1 are: precision, recall, F-measurement.
-All three measures distinguish the correct classification of labels within different classes.
-They concentrate on one class (positive examples). Recall is a function of its correctly
-classified examples (true positives) and its misclassified examples (false negatives). Pre-
-cision is a function of true positives and examples misclassified as positives (false pos-
-itives). The F-score is evenly balanced when beta = 1. It favours precision when beta > 1,
-and recall otherwise.
-
-A comprehensive evaluation of classifier performance can be obtained by the ROC 
-insert ROC equation 
-denotes the conditional probability that a data entry has the class label C. An
-ROC curve plots the classification results from the most positive to the most negative
-classification. Due to the wide use in cost/benefit decision analysis, ROC and the Area
-under the Curve (AUC) apply to learning with asymmetric cost functions and imbal-
-anced data sets
-
-\textcolor{red}{critique on traditional metrics}
-e argue that performance measures other than accuracy, F-score, precision, recall or
-ROC do apply and can be beneficial. 
-Following \citep[p.1017]{sokolova2006beyond}
-
-adding: \citep[p.5]{hilal2022financial}
-\section{Outlier Detection in Dataset}
 
 \subsection{Analysis von Sensitivity}
-\subsection{k-NN: Choice of hyperparameter k, hyperparameter tuning}
+\subsubsection{k-NN: Choice of hyperparameter k, hyperparameter tuning}
 I tried to reproduce the F1-Score for all datasets except Abalone, KDDCUP99-Rev and KDDCUP99, because where not in the official ODDS Dataset. 
 In the original Dataset there were sort of the same datasets, but I think the auther updated it. So I rejected them from further analysis. 
 First I tried reproducing by using the classic Python machine leaning library sckit-learn. 
@@ -396,3 +481,5 @@ a variant in wich the order of the two normalizations is reversed.
 A variatnt with no normalizations. 
 
 
+\subsection{Literatur}
+\citep[p.5]{hilal2022financial}
