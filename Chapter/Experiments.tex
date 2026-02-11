@@ -1,4 +1,4 @@
-Structure:
+Structure: 10 - 12 pages
     Introduction
        motivate why you are using benchmarking as a indicator and then why you are applying the mothods to a real world data.
        describe your hypothesis
@@ -43,6 +43,58 @@ I dont need so many datasets, so I will chose 5 wich critically desribe.
 The datasets I will use are: b-cancer, annthyroid, Satelite, speech, letter, kdd99. 
 They are published at: UCI Irvin but the homepage is not reachable. 
 But ad definitionem they should not be changed because, because then they are useless for benchmarking.
+
+\subsubsection{Analysis of chosen datasets - Maybe put it in Result section}
+In this subsubsection I will anaylse the chosen datasets. Up to 6 pages long
+Therefor I will describe the procedure.
+    Introduction    
+        Describe what type of data has been collected in the data
+        How was it collected
+        What is the ground truth - how are the lables be defined?
+        How are outliers defined in specific context
+    Statistical Summarization
+        - Central tendencies and dispersion:
+            - Mean, variance, standard deviation
+        - Shape and distribution:
+            - Kurtosis and Skewness
+            - Multivariate Normality: Henze-Zirkler test - if data is non normal, statistical methods will fail
+            - Modality: Clustering Tendency (Hopkins Statistics) - If data has multiple naturl clusters ,multimodel, global outlier methods will fail 
+        - Cardinality and Sparsity:
+            - Identify the number of unique values in categorical - High-cardinality categorical variables (like "Zip Code") can create "sparse" 
+                regions that look like outliers but are actually just rare valid entries.
+            - Sparsity: determine the percentage of missing values across the feature space
+            - Visualisation: 
+        - Bivariate Analysis
+            - Bridge the gap between individual data points and multicolinearity
+            - Correlation Matrix: Pearson for linear and Spearman or Kendall for non-linear/rank based relationships
+            - Categorical Association: Chi-Square tst or Cramer's V to see specific categories are associated with one other
+            - Multicollinearity: VIF
+            - Mutual information: identify non-linear dependencies thats standard correlation might miss
+       - Visualisation: A table of features, type (numerical/categorical) and cardinality.
+
+
+    Geomatric structure
+        high dimensional data rearly is uniformly
+        - Intrinstic dimensionality (ID): 
+            - Definition: ID is the minimum number of variables (or dimensions) required to represent the essential information within datatset and without significant loss.
+                is the variance just drivenby a small number of data
+            - Problem: Curse of Dimensionality. The volume of the space increases so fast that the data becomes sparse
+                If your dataset has 50 variables but 95\% of the variance is captured by 3 variables, the "curse of dimensionality" is low, and simple methods (like Mahalanobis Distance) might beat complex ones (like Isolation Forest).
+            - Visualization: Heatmap, Use a method like the Scree Plot from PCA
+        - Manifold structure: Is the data on a curved surface or is it clustered
+            - Definition: manifold structure refers to the hypothesis that high dimensional data actually lives on a mich simpler, lower-dimensional surface embedded within that high-dimensional space
+            - Problem: Traditional distances fail on manifold. If two points are on the opposide side of a fold, they might look close in 3D space, but they are actually very far apart along the surface of the paper.
+            - Impact: A data point miht look like an outlier in 3D becaus its away from the center, but is perfectly normal when you follow the flow of the manifold. 
+                or the opposite. A point could be inside thedata cloud but odd the manifold surface - making a hidden outlier
+            - Analyze: Estimate Intrinsic Dimensionality using Maximum Likelihood Estimation of intrinsic dimension
+            - Visualization: t-SNE plot or UMAP, those are specifically designed to unfold the manifold so you can see 2D structure 
+            - Result: if the manifold are varying in density, a global method (T-Score) will fail, Manifold aware methods are more suitable (LOF) 
+            
+            
+    Preprocessing and transformation
+        - Multicollinearity: PCA
+        - Missing values: how to handle
+        - High cardinality: Noralization
 
 \subsubsection{The Problem of synthetic data}
 \textcolor{red}{ Take on here }
@@ -320,6 +372,25 @@ adding: \citep[p.5]{hilal2022financial}
 \section{Outlier Detection in Dataset}
 
 \subsection{Analysis von Sensitivity}
+In this section I will analyse how robust and stable the results are, by changing the hyperparameters in the methods.
+It's important, that here is just written the methodology. 
+So I will concentrate on the how not the why. 
+Therefor it is a part of the experimental design not the result section.
+
+- Introduction 
+    - Motivation: Why is it imporant to test the sensitivity?
+    - Robustness: 
+    - Stability: 
+- MCD
+    - Whats are the hyperparameter - support fraction (h)
+    - contamination parameter ?
+- k-NN  
+    Hyperparameter: k 
+    Hyperparametertuning: Maybe use Octuna as a pyhton framework
+- InterCont
+    Hyperparameter: u 
+
+
 \subsection{k-NN: Choice of hyperparameter k, hyperparameter tuning}
 I tried to reproduce the F1-Score for all datasets except Abalone, KDDCUP99-Rev and KDDCUP99, because where not in the official ODDS Dataset. 
 In the original Dataset there were sort of the same datasets, but I think the auther updated it. So I rejected them from further analysis. 
