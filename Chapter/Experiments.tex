@@ -38,20 +38,36 @@ Hardware environment
 
 
 \subsection{Data and Preprocessing}
-The paper cited a lot of benchmarking datasets from the ODDS repository. 
-I dont need so many datasets, so I will chose 5 wich critically desribe.
-The datasets I will use are: b-cancer, annthyroid, Satelite, speech, letter, kdd99. 
-They are published at: UCI Irvin but the homepage is not reachable. 
-But ad definitionem they should not be changed because, because then they are useless for benchmarking.
+The ODDS-Dataset published by \citet{Rayana:2016} is a widley used repository as benchmark datasets.
+E.g. \citet{shenkar2022anomaly} use those datasets to identify stregths and weaknesses of a bunch of outlier detection methods, including the above describes InterCont.
+The datasets contain 32 datasets wich different amounts of dimensions and instances. 
+To take the whole picture of a method, it is beneficial to use a wide range of different datasets, to determine the advantages and disadvantages of a method.
+Nevertheless, using upto 32 different datasets is not feasable for my thesis, because it wont be in the scope of this thesis.
+Therefore I will analyse one dataset in great detail, to use those finding in the result section.
+In this section I will first summarize the dataset statistically, including central tendencies, shape, distribution, cardinality and spracity.
+Subsequently I will analyse bivariate relationships inside the dataset as well.
+Finally I will analyse the geomatric structure of the dataset, including intrinsic dimensionality and manifold structure.
 
-\subsubsection{Analysis of chosen datasets}
-In this subsubsection I will anaylse the chosen datasets. Up to 6 pages long
-Therefor I will describe the procedure.
-    Introduction    
-        Describe what type of data has been collected in the data
-        How was it collected
-        What is the ground truth - how are the lables be defined?
-        How are outliers defined in specific context
+\subsubsection{Introduction}  
+\textcolor{red}{Describe what type of data has been collected in the data, How was it collected,What is the ground truth - how are the lables be defined? How are outliers defined in specific context}
+The origins of the Thyriod dataset was difficult to determine, because it's origin root back to the 1987 published paper of 
+
+Here she displays the dataset at its current form, but writes that she uses it as the following author  \citep{rayana2016less}, she is the boss of the ODDS repository
+She writes that it is from the UCI Machine Learning Repository but I think there it is not edited into the final form
+Cites the source ater that \citep{aggarwal2015theoretical}
+Mentions Ann-Throid Dataset of UCI repository \citep{keller2012hics}
+I think the answer to it is the Schiffmann et al. paper
+originally it was collected in 1987 from the garavan institute eg. Quinlan
+\todo{add: the way it took to make this dataset - gemini}
+
+
+\subsubsection{Statistical Summarization}
+\textcolor{red}{Central tendencies}
+In this section I will describe the most important statisticall tendencies of the dataset.
+The dataset has 3722 instances over 6 dimensions. 
+All 6 dimensions are numerical features and include 5 different types of hormone whose absence or presence could indicate a disease in wich the thyroid plays a crucial role.
+The remaining instance is the patients age. 
+
     Statistical Summarization
         - Central tendencies and dispersion:
             - Mean, variance, standard deviation
@@ -307,7 +323,7 @@ The most often used metrics derived from the confusion matrix are:
 \endenumerate
 \todo{consider: maybe its better to plot this as a table}
 
-
+\textcolor{red}{First describe the dataset, then critizise the metrics and choose them!}
 \subsubsection{Critique of Accuracy}
 Accuracy is a commonly used metric in outlier detection. \todo{adding: Papers that use accuracy as a metric}
 In a comprehensive survey of 290 papers on machine learning-based anomaly detection, it was found that 112 of those papers used Accuracy \citep[p.78664]{nassif2021}. 
@@ -319,18 +335,33 @@ Resulting in the given percentage of misclassified instances.
 Therefore, a metric used for imbalanced datasets should consider the distributions of the classes. \citep[p.8]{branco2016survey}  
 
 
-\subsubsection{Critique of Precision}
+\subsubsection{Invariance characteristics}
+To analyse the robustness of the traditional metrics, I will apply the  framework of \citet{sokolova2009systematic}.
+The authers analysed different approaches to survey the invariance properties of up to 24 metrics.
+Invariance is the robustness of the metrics if the confusion matrix changes.
+The authers identified 7 different approaches to analyse the Invariace carakteristics of the above called metrics.
+I will use three datasets wich are highly imbalanced and vary in the number of dimensions and instances.
+Therefore, the following 
+ 
+Precision, Recall and Specificity are calculated from the values of the confusion matrix and simply. 
+If the threshold is changed, so must change the confusion matrix' values as well. 
+
+
 Precision negates this problem by not considering the distributions but by ignoring the true negatives. 
 Nevertheless, this approach has its own disadvantages. 
 By ignoring the negatives the method can optimize for that metric by classifying conservatively, predicting only the most obvious outliers.
+
+
 Hence, in scenarios where the cost of a false negative is high, like in the datasets I analyse, precision is not suitable as well. 
-Another disadvantage of Precision is the base rate fallacy \todo {adding: base rate fallacy and paper sokolova2009systematic}
+
+
 \textcolor{red}{Precision rarely operates in a vacuum. There is a fundamental trade-off governed by the classification threshold.
     -   The Problem: Increasing the threshold to improve Precision almost inevitably decreases Recall %(TP/(TP+FN))%.
     Thesis Application: In your comparison of three outlier detection methods, reporting only Precision would mask whether a method is "cherry-picking" easy outliers while failing on the complex ones. 
     This is why the F1-Score (the harmonic mean) or PR-AUC is preferred in top-tier journals.
     -   Precision does not tell you if the model is actually "learning" the structure of the data or just getting "lucky" with a specific threshold.
     The Problem: Unlike the Matthews Correlation Coefficient (MCC), which requires the model to perform well on both the minority and majority classes, Precision can be "gamed" by a model that over-predicts the majority class to minimize False Positives.
+    Another disadvantage of Precision is the base rate fallacy \todo {adding: base rate fallacy and paper sokolova2009systematic}
     }
 
 
@@ -338,19 +369,19 @@ Another disadvantage of Precision is the base rate fallacy \todo {adding: base r
     - Whats the Problem?
     - Why wont I use it for my Datasets
 \textcolor{red}
-    The "Cheap" Maximization Problem
+    -   The "Cheap" Maximization Problem
     Recall is mathematically "cheap" to maximize. An algorithm can achieve a perfect Recall of 1.0 (100\%) simply by labeling every single data point as an outlier.
     The Problem: A model that flags everything is technically perfect according to the Recall metric, but it is practically useless because it provides zero discrimination between classes.
     Recall is calculated as TP/(TP+FN). Notice that the FP (False Positive) count is entirely absent from this equation.
-    Complete Ignorance of False Positives (Type I Errors)
+    -   Complete Ignorance of False Positives (Type I Errors)
     The Problem: In an econometric or business context (like fraud detection), a high-recall model might flag thousands of legitimate transactions as "fraudulent." 
     The cost of investigating these false alarms is often high, but Recall does not reflect this "noise."
     Thesis Application: If you compare your three outlier detection methods and Method A has a higher Recall than Method B, you cannot conclude Method A is better without checking if it also produces ten times as many false alarms
-    Threshold Vulnerability
+    -   Threshold Vulnerability
     Recall is highly dependent on the chosen classification threshold.
     The Problem: Many unsupervised outlier detection algorithms produce a continuous Anomaly Score. By lowering the threshold, you can artificially inflate Recall.
     The Result: This makes it difficult to compare algorithms fairly unless you use a threshold-independent metric like ROC-AUC or PR-AUC, which evaluate Recall across all possible thresholds.
-    Asymmetric Information Loss
+    -   Asymmetric Information Loss
     Recall only looks at the "Positive" (Outlier) class. It tells you nothing about how well the model identifies the "Negative" (Inlier) class.
     The Problem: A model could have high Recall but be failing catastrophically at understanding the "Normal" geometric structure of your data.
     Scientific Source: Chicco  Jurman (2020) argue that because Recall ignores two quadrants of the confusion matrix (TN and FP), it provides an incomplete and potentially biased summary of model quality.
