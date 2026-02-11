@@ -262,7 +262,7 @@ In supervised outlier detection, the goal is to classify the presented data into
 Comparing it with the ground truth, you can plot them into a matrix, resulting in the confusion matrix.
 The horizontal presents the true class and the vertical presents the hypothesized class of the method.
 
-\input{Confusion Matrix.pdf}
+%\input{Images/Confusion Matrix.pdf}
 
 The diagonal presenting the results the methods made, that are correct.
 Outliers that are correctly classified by the method are called true positives, while inliers that are correctly classified are called true negatives.
@@ -337,25 +337,24 @@ Another disadvantage of Precision is the base rate fallacy \todo {adding: base r
 \subsubsection{Critique of Recall}
     - Whats the Problem?
     - Why wont I use it for my Datasets
-\textcolor{red}{
-    -   The "Cheap" Maximization Problem
+\textcolor{red}
+    The "Cheap" Maximization Problem
     Recall is mathematically "cheap" to maximize. An algorithm can achieve a perfect Recall of 1.0 (100\%) simply by labeling every single data point as an outlier.
     The Problem: A model that flags everything is technically perfect according to the Recall metric, but it is practically useless because it provides zero discrimination between classes.
     Recall is calculated as TP/(TP+FN). Notice that the FP (False Positive) count is entirely absent from this equation.
-    -   Complete Ignorance of False Positives (Type I Errors)
+    Complete Ignorance of False Positives (Type I Errors)
     The Problem: In an econometric or business context (like fraud detection), a high-recall model might flag thousands of legitimate transactions as "fraudulent." 
     The cost of investigating these false alarms is often high, but Recall does not reflect this "noise."
     Thesis Application: If you compare your three outlier detection methods and Method A has a higher Recall than Method B, you cannot conclude Method A is better without checking if it also produces ten times as many false alarms
-    -   Threshold Vulnerability
+    Threshold Vulnerability
     Recall is highly dependent on the chosen classification threshold.
     The Problem: Many unsupervised outlier detection algorithms produce a continuous Anomaly Score. By lowering the threshold, you can artificially inflate Recall.
     The Result: This makes it difficult to compare algorithms fairly unless you use a threshold-independent metric like ROC-AUC or PR-AUC, which evaluate Recall across all possible thresholds.
-    -   Asymmetric Information Loss
+    Asymmetric Information Loss
     Recall only looks at the "Positive" (Outlier) class. It tells you nothing about how well the model identifies the "Negative" (Inlier) class.
     The Problem: A model could have high Recall but be failing catastrophically at understanding the "Normal" geometric structure of your data.
-    Scientific Source: Chicco & Jurman (2020) argue that because Recall ignores two quadrants of the confusion matrix (TN and FP), it provides an incomplete and potentially biased summary of model quality.
-    -   Precision-Recall trade off
-    }
+    Scientific Source: Chicco  Jurman (2020) argue that because Recall ignores two quadrants of the confusion matrix (TN and FP), it provides an incomplete and potentially biased summary of model quality.
+    Precision-Recall trade off
 
 \subsubsection{Definition of F1-Score}
 F1 score: The F1 score is the harmonic mean of
@@ -373,13 +372,20 @@ in balanced class distributions [26].
     - Advantages and Disadvantages of F1
 The F-score is evenly balanced when beta = 1. It favours precision when beta > 1,
 and recall otherwise.
-
-
+\textcolor{red}{
+    -   The Exclusion of True Negatives (TN)
+    The most significant mathematical critique of the F1 score is that it completely ignores the True Negative quadrant of the confusion matrix.
+    The Problem: The formula (F1=2TP+FP+FN2TP) does not include TN. In outlier detection, the "Normal" class is the vast majority of your data.
+    A metric that ignores how well you identify the normal class is technically providing an incomplete picture of the models "total" knowledge.
+    -   Equal Weighting of Precision and Recall
+    The F1 score is a specific case of the F$\beta$ measure where $\beta$=1, meaning it gives equal importance to Precision and Recall.
+    The Problem: In many real-world scenarios (like fraud detection or medical diagnosis), the cost of a False Negative (missing a fraud) is much higher than a False Positive (a false alarm). 
+    The F1 score "forces" a 1:1 trade-off that may not align with your econometric cost-benefit analysis.
+    The Solution: In such cases, researchers often use F2 (weighing Recall higher) or F0.5 (weighing Precision higher).}
 \subsubsection{Critique of Specificity}
     - Whats the Problem?
     - Why wont I use it for my Datasets
-Conversely, two measures that separately estimate a classifier’s performance on differ-
-ent classes are sensitivity and specificity (often employed in biomedical and medical
+Conversely, two measures that separately estimate a classifier’s performance on different classes are sensitivity and specificity (often employed in biomedical and medical
 applications, and in studies which involve image and visual data)
 \textcolor{red}{
     -   The "Large Negative" Dilution Effect
