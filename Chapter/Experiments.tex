@@ -51,22 +51,52 @@ Finally I will analyse the geomatric structure of the dataset, including intrins
 \subsubsection{Introduction}  
 \textcolor{red}{Describe what type of data has been collected in the data, How was it collected,What is the ground truth - how are the lables be defined? How are outliers defined in specific context}
 The origins of the Thyriod dataset was difficult to determine, because it's origin root back to the 1987 published paper of 
+The original dataset was submitted by Ross Quinlan to the UCI Machine learning repository in 1986 \citep{thyroid_disease_102}.
+He himself collected it from the archives of the Garvan Institute of Medical Research in Syndney. 
+The data was collected between January and November 1985 \citep[p.230]{quinlan1987simplifying}.
 
-Here she displays the dataset at its current form, but writes that she uses it as the following author  \citep{rayana2016less}, she is the boss of the ODDS repository
-She writes that it is from the UCI Machine Learning Repository but I think there it is not edited into the final form
-Cites the source ater that \citep{aggarwal2015theoretical}
-Mentions Ann-Throid Dataset of UCI repository \citep{keller2012hics}
-I think the answer to it is the Schiffmann et al. paper
-originally it was collected in 1987 from the garavan institute eg. Quinlan
-\todo{add: the way it took to make this dataset - gemini}
-
+\textcolor{red}{\citet{Schiffmann1992SynthesisAP} transformed the original dataset into the shape known today.
+Therefore they extracted 3772 instances that where most complete and isolated 6 numerical dimensions.
+Back then the artificial neural networks could not treat categorical instances, so they omitted it.
+Lastly they converted the 3 original classes (normal, hyperthyroid and hypothyroid) into a format where normal was the majority class.
+\todo{waiting for paper}}
+To standadize research about outlier detection citet{Rayana:2016} curated the ODDS Dataset.
+This transformation process is comfortable for researchers, because the need data preprocessing decreases and therefore researchers can concentrate on outliert detection.
+But there is critism of this proceedings.\todo{for discussion: maybe the reasearch community should generate for every different type of outlier different benchmark datasets - more granular}
 
 \subsubsection{Statistical Summarization}
 \textcolor{red}{Central tendencies}
 In this section I will describe the most important statisticall tendencies of the dataset.
-The dataset has 3722 instances over 6 dimensions. 
-All 6 dimensions are numerical features and include 5 different types of hormone whose absence or presence could indicate a disease in wich the thyroid plays a crucial role.
-The remaining instance is the patients age. 
+The dataset has 3722 instances over 6 dimensions.
+The labeled dataset contains 93 outliers, hence the outlier ratio is 2,5\%, wich is highly unbalanced. 
+All 6 dimensions are numerical features and include 5 different types of hormone whose individual or combinational absence or presence in the blood could indicate a disease in wich the thyroid plays a crucial role.
+The remaining instance is the patients age.
+All instances are normalized, hence the mean and median change in absolute value but not in the position of their distribution.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Images/Experiments/thyroid_boxplots.pdf}
+    \caption{Boxplot of each instance. Outliers excluded}
+\end{figure}
+
+The image depicts the usual boxplots with 1,5*interquartile range, wiskers, mean and median.
+In traditional boxplots there are instances shown as outliers, that are more extreme then the 1,5*interquartile range.
+I  forgo without them, because this thesis is not about outlier detection in univariante distributions.
+The difference in mean and median in all features except feature 1 is neglectable small. 
+The boxplot of feature 1 has be more analysed, because the mean and the median differ a lot.
+Thats a sign, that feature 1 is skewed to right and distibutions does not follow a normal distribution.
+
+To be statistically sure, I apply the Shapiro-Wilk test for Normality.
+The Null is H0: 
+Nevertheless for every instance the Shapiro-Wilk test for Normality the H0 is rejected. 
+None of the 6 instances follows a normal distribution.
+For further information the results are placed in the appendix. \todo{display table into appendix}
+
+
+
+
+
+
 
     Statistical Summarization
         - Central tendencies and dispersion:
