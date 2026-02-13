@@ -1,0 +1,373 @@
+\section{Methods for detecting outliers}
+There are plentyfull of methods to detect outliers. Each with advantages and disadvantages.
+The most popular methods could be categorized as followes: statistical-based, distance-based, density-based,  clustering-based,
+graph-based, ensemble-based and learning-based.\citep{wang2019progress} 
+In this thesis, I will examine 3 different methods. A statistical, a clustering-based and a learning-based Method.
+Statistical methods or distribution-based methods, consider a data point as an outlier, if it extremly deviates from its distribution.
+Statisticians used tools like Box-plots, mean-variance or regression models to detect extreme data points \citep[p.3]{smiti2020critical}.
+
+In this section I will begin describing the robust Mahalanobis Distance and explain why it is adventageous to use the mininum covariance determinant.
+Afterwards I will transition to the FAST-MCD Methods, because that will be used in my thesis.
+In section 2.2 I will describe the k-nearest neighbor algorithm.
+After that I will explain a expansion of k-NN.
+In Section 2.3 I will define the newly published Intercont method, wich is based on contranstive learning.
+
+
+\textcolor{green}
+{ 
+The curse of dimenionality (CoD) plays a big role in highdimensional datasets.
+However, in the big data era, the sheer number of variables that can be collected from a single sample can be
+problematic. we discuss four important problems of dimensionality as it applies to data sparsity, multicollinearity, testing and overfitting
+First, as the dimensionality p increases, the volume that the samples may occupy grows rapidly. If we treat the distance between points
+(e.g., Euclidian distance) as a measure of similarity, then we interpret greater distance as greater dissimilarity. As p increases, this
+dissimilarity increases because the mean distance between points increases as wurzelp (Fig. 2a). This effect is stark at high values of
+p. For example, at p = 100, the closest pair of points are farther from one another than the most distant two points are for about p < 15
+400this month The assessment of whether a particular data value is an outlier accordingly also becomes difficult. For example, 68\% of normally
+distributed points in one dimension fall within sigma of the mean, but this fraction drops off precipitously for large values of p (Fig. 2b).
+For example, at p = 10, the fraction of points within sigma of the mean is only 0.017\%, which is equivalent to the points within 0.00022sigma in
+one dimension (Fig. 2b, dashed lines). Putting it another way, points within sigmaat p = 10 are as rare as points outside of 3.8sigma at p = 1. 
+These are not intuitive observations—proportions of how points are distributed at higher dimensions are not the same as in one dimension.
+hat if we use a different distance measure to express similarity between subjects, such as correlation? Unfortunately, we cannot escape the CoD—the range of
+correlations between points drops rapidly (Fig. 2c) with p. For example, at p = 100, among 10,000 random pairs of points we see no correlations greater than 0.5, and most
+are extremely tightly grouped around 0. As the number of variables increases, the number of subjects in each set of categories decreases and the
+correlation between any two subjects across variables also decreases.
+When the number of dimensions is larger than the number of samples (p > n), another effect that confounds analysis is perfect multicollinearity.
+In this case, we can always express at least one of the variables as a linear combination of the others. For example, if we
+have p = 3 variables but only n = 2 subjects and we think of the subjects as two 3D vectors, then from linear algebra we know that
+these vectors define either a point (i.e., they have the same three values) or a line. In both cases, the three variables are related linearly.
+This is the case any time there are fewer samples than dimensions—the variables span a lower-dimensional subspace in which some
+of the dimensions become redundant and expressible in terms of other dimensions, thus yielding perfect multiple correlation.
+Finally, overfitting is another CoD that occurs because the flexibility of prediction equations5 is in part determined
+by the number of variables involved. With increased flexibility, prediction and classification rules adapt to both the
+patterns in the population and the random idiosyncrasies of the training sample. \citep[p.1pp]{altman2018curse}
+\todo{research: embeddings to solve the curse of dimensionality}
+}
+    
+\subsection{Oulier detection methods based on statistics}
+The Mahalanobis Distance is a measurment in multidimensional space for the distance between a vector and its distribution mean.
+It considers the correlation between dimensions not like for example Euclidean distance that just considers two different points, but ignores correlation between variables. 
+But uncorrelated variables are further away from its distribution mean than highly correlated variables. 
+By considering the correlation between variables, it is effective for outlier detection in multidimensional datasets, because 
+observations that dont have extreme values in single variables, can be flagged as an outlier when considering all variable in combination. 
+
+The Mahalanobis distance $D_M$ is defined as: 
+
+\begin{equation}
+    D_M(\mathbf{x}, \mathbf{\mu}) = \sqrt{ (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x} - \mathbf{\mu}) }
+    \label{eq:mahalanobis}
+\end{equation}
+
+where as $x$ is the vector of the obervation, $\mu$ is the mean vector and $\Sigma$ is the covariance matrix. 
+By multiplying the distance between the vektor and its mean and the inverse of the covariance matrix, we standardize the distances to their correlations.
+Resulting in a high Mahalanobis distance for uncorrelated vaiables and and a low $M_D$ for highly correlated variables.
+
+The Mahalanobis distance is scale-invariant. In the appendix is a formal proof.
+It is not affected by the different scales of features because it measures the distance in units of standard deviations.
+So changes in feature units can be made without influencing the resulting distance and there is no need to manually tranform features with different
+units to ensure they contribute equally to the distance calculation.
+
+By assuming, that the dataset follows a multivariante normal distribution, you also can assume, that the squared Mahalanobis distance is following a $X^2$ distribution.
+You can construct a parametic $X^2$ test to spot outliers with a given significance level ($alpha$). 
+Therefor you determine the degrees of freedom, choose a significance level and find the critical $X^2$ value.
+If the Mahalanobis distance is bigger than the critical vlue, you can call this observation with a given percentage of uncertainty an outlier. 
+
+Unfortuantely the Mahalanobis distance suffers from a masking effect.
+And by simply testing the biggest Mahalanobis distance for outiers, you could get false negative results.
+Because it is not robust against outliers itselve.
+
+Both input variables, sample mean and covariance matrix, are highly influenced by outliers.
+If a outlier occurs, the sample mean will be draged into the direction of the outlier.
+Resulting in an artificial scaled down outlier. 
+The covariance matrix describes the shape and orientation of the distribution.
+The inflating effect of an outlier, streches the ellipsiod in the direction of the ourlier. 
+Resulting in an smaller values in the matrix, because you use the inverse.
+
+To solve the masking effect, plenty of robust Mahalanobis distance calculation were proposed in the literatur.
+An estimator is called robust, if an outlier just has a small or no effect on the resulting estimators . 
+To asses the robustness of an estimator, \citet{hampel1971general} proposed the breakdown point.
+Given a dataset $X$ of size $n$, and an examined location estimator $T_n$, the breakdown value is define as:
+
+\begin{equation}
+    \epsilon_{n}^{*}(T_{n}, X_{n}) = \frac{1}{n} \min \left\{ m : \sup_{X_{n},{m}} \left\| T_{n}(X_{n,m}) - T_{n}(X_{n}) \right\| = +\infty \right\}
+\end{equation}
+
+where as $m$ is the minimum number of observations that need to be replaced with outliers, $X_m$ is the contaminated dataset where $m$ points from $X$ have been replaced by arbitrary values.
+It measures the robustness by determing the smallest fraction of outlier needed, for the estimator to take on arbitrary values.
+$epsilon_n^*$ is the smallest fraction that causes this unbounded change. 
+The maximum value of $epsilon_n^*$ is 0.4 because if the estimator reaches beyond this boundary, it would imply that the estimator would prefer the uncontaminated smaller portion 
+of the dataset. If the contaminted data reaches the majority of the dataset, no estimator can distinguish the true underlying distribution from the contaminated one. 
+The result could be wrong, because the estimator could have chosen the contaminated dataset as the core dataset.
+
+
+\subsubsection*{Minimum Covariance Determinant}
+
+Used for mahalanobis distance the breakdown point would be 0, because it takes just one outlier for the variance matrix and/or mean vector to take on arbitraty values. 
+To solve this problem, I will use the minimum covariance determinant (MCD). 
+The goal of MCD is to find the subset $H$ of $h$ observations in a given dataset with $n$ observations and $p$ variables that minimizes the determinant of the subset's sample covariance matrix.
+The determinant $det(A)$ is a scalar of a sqaure matrix $A$.
+It determines among other things  the change in orientation and volume.
+The absolut value of the determinant the factor of wich the volume changes by multiply the determinant with its matrix $A$.
+If the determinant is negative, additionally to changes in volume, the orientation changes as well.
+
+
+MCD is affine equivariant. That means that MCD estimations of the mean and covariance will follow accordingly to 
+affine transformations. For example in a change of measurement, the data will be roted, translated or rescaled but the resulting 
+mean and covariance will transform correctly and not stay the same.
+Thats important for outlier detection, because estimated outliers will stay outlier even affine transformation took place. \citet{hubert2018minimum}
+
+
+MCD estimators can only be calculated when the number of subset observations ($h$) exceeds the number of variables ($p$), becaus if not the determinant 
+of the resulting covariance matrix will be 0. \citet{hubert2018minimum} recommends at least five observations per dimension to avaid excessiv noise. 
+The subsets $h$ size is lays between $\frac{n}{2} \le h \le n$. Clearly it is not possible for subsets observations $h$ to expand the number of total observations $n$. 
+The difference between $n$ and $h$ are the added outliers.
+The lower bound of $h$ is set to be at 50\% because of the so called majority rule.
+If the majority of a dataset contains added outliers, the estimator can't distinguish between inliers data structure and outlier data structure. \todo{cite source}
+
+The MCD estimator is the most robust when 
+
+\begin{equation}
+    h = \lfloor \frac{n+p+1}{2} \rfloor \approx \frac{n}{2}
+\end{equation}
+
+wich corresponds to 0.5 at the population level. But the robusteness is been paid by efficency. 
+If the dataset does not contain more than 25\% of outliers, than it is suitable to choose $h  0.75n$. \citep[p.217]{rousseeuw1999fast}
+The newly calculated estimator is less robust, but more efficient then before. 
+
+The resulting $\hat{\mu}_{\text{MCD}}$ is the mean vector of the remaining subset $h$. 
+And t
+
+
+The mean an covariance will be transformed accordingly.
+This means that for any nonsingular p × p matrix A and
+any p-dimensional column vector b it holds that
+
+Therefore, transforming an h-subset with lowest determinant yields an h-subset XHA0 with lowest determinant among all
+h-subsets of the transformed data set XA0, and its covariance matrix is transformed appropriately
+Finally, we note that the robust mahalanobis distances are affine invariant, meaning they stay the same after transforming the data, which implies that the weighted
+estimator is affine equivariant too.
+
+To compute the MCD estimator one has to evaluate $\binom{n}{h}$ of all subsets size $h$.
+Therefor \citet{rousseeuw1999fast} proposed an algorithn to increase calculation efficency. 
+The algorithm of the concentration steps has the following steps \citep[p.214]{rousseeuw1999fast} 
+
+\begin{enumerate}
+    \item Initialize by drawing a random number $p+1$ subsamples $J$ and calculate the sample meand and the sample covariance matrix. If the resulting $det(S0)=0$ then add another random observation until $det(S0)>0$.
+    \item If $det(S1)=/0$ compute the mahalanobis distances for all $n$
+    \item To compute $H2$ sort the distances of (2) from smallest to biggest
+    \item Select the $h$ smallest distances and compute the mean and coverance matrix
+    \item Repeat until convergence
+\end{enumerate}
+
+
+\todo{add Algorithm FAST-MCD}
+The general idea of FAST-MCD is not to compute all N over H combinations. That would be time consuming and not ressource efficient.
+Instead it takes many initial choices of Subsets and are applying the concentrantion steps to each until convergence and keept the solution 
+with the lowest determinant.
+The algorithm steps are as follows:
+
+\begin{enumerate}
+    \item Determine the number observations $h$ by applying $h = \frac{n+p+1}{2}$
+    \item carry out two concentration steps
+    \item for the 10 results with lowest $det(S3)$: carry out C-steps until convergence
+    \item report the mean and covariance matrix with the lowest $det(S)$
+\end{enumerate}
+
+As above mentioned, I will calculate just two concentration steps with all initial subsets.
+After that I will select the ten results with the smallest determinants.
+I will do this selective iteration, because the distinction between robust and nonrobust solutions aleady becomes visible after two or three steps.  
+\todo{add:rousseeuw, Driessen (1999)p.216 pp, nested extensions and explain why the algorithm is like this}
+If one can be sure, that the dataset contains less then 25\% of outliers, you can choose $h=0.75n$ wich is a good compromise between breakdown value and statistical efficiency.
+If the dataset contains many observations (e.g. n > 600), then you can create
+
+\textcolor{green}{
+Briefly, statistical detection methods show efficient experi-
+mental results when probabilistic distribution models are given
+but suffer from high computational costs when applied in large
+data sets and the curse of dimensionality. Therefore these methods
+cannot be applied in both large and high dimensional data sets.
+Another disadvantage of these techniques is that they are not
+applicable to data sets where the distribution is unknown. \citep[p.5]{smiti2020critical}
+}
+\todo{Add: related work: }
+Even recently reaseach has een done for new extension for MCD.
+Because FAST-MCD begins by drawing random subsets, multiple runs of FastMCD on the same dataset may yield different results (a problem often mitigated by fixing the random seed in implementations). 
+Furthermore, it requires drawing many initial subsets to ensure at least one is free of outliers, which can be computationally intensive. 
+To circumvent both of these problems, the Deterministic MCD (DetMCD) algorithm was developed. \citep[p.621 pp.]{hubert2012deterministic}
+DetMCD provides a deterministic approach to robust location and scatter. 
+It uses the same iterative steps as FastMCD but avoids starting with random subsets, ensuring consistency. 
+Unlike its predecessor, DetMCD is permutation invariant, meaning its result is independent of the order of observations in the dataset. 
+Moreover, DetMCD typically runs even faster than FastMCD and is less sensitive to data contamination (outliers).
+
+
+\subsection{Oulier detection methods based on machine learning}
+\textcolor{green}{Definition Machine Learning}
+
+
+\subsubsection{Over and Underfitting}
+Two common issues that affect a model's performance and generalization ability are overfitting and underfitting. 
+These problems are major contributors to poor performance in machine learning models.
+Bias and Variance: 
+Bias is the error that happens when a machine learning model is too simple and doesn't learn enough details from the data. 
+It's like assuming all birds can only be small and fly, so the model fails to recognize big birds like ostriches or penguins that can't fly and get biased with predictions.
+High bias typically leads to underfitting, where the model performs poorly on both training and testing data because it fails to learn enough from the data.
+These assumptions make the model easier to train but may prevent it from capturing the underlying complexities of the data.
+In this case, the model doesn’t work well on either the training or testing data.
+Variance: 
+Error that happens when a machine learning model learns too much from the data, including random noise and outliers.
+High variance typically leads to overfitting, where the model performs well on training data but poorly on testing data.
+A high-variance model learns not only the patterns but also the noise in the training data, which leads to poor generalization on unseen data.
+As a result, the model works great on training data but fails when tested on new data, because in other data can be other outliers and noise.
+Overfitting models are like students who memorize answers instead of understanding the topic. 
+They do well in practice tests (training) but struggle in real exams (testing)
+The relationship between bias and variance is often referred to as the bias-variance tradeoff, which highlights the need for balance.
+The goal is to find an optimal balance where both bias and variance are minimized, resulting in good generalization performance. 
+(https://www.geeksforgeeks.org/machine-learning/underfitting-and-overfitting-in-machine-learning/)
+Techniques to Reduce Underfitting: 
+Increase model complexity
+Increase the number of features, performing feature engineering.
+Remove noise from the data
+Increase the number of epochs or increase the duration of training to get better results.
+Techniques to Reduce Overfitting
+Improving the quality of training data reduces overfitting by focusing on meaningful patterns, mitigate the risk of fitting the noise or irrelevant features.
+Increase the training data can improve the model's ability to generalize to unseen data and reduce the likelihood of overfitting.
+Reduce model complexity.
+Early stopping during the training phase (have an eye over the loss over the training period as soon as loss begins to increase stop training)
+Use dropout for neural networks to tackle overfitting
+Ridge Regularization and Lasso Regularization.
+
+
+\subsubsection*{k-Nearest-Neighbor}
+The k-nearest neighbor (kNN) algorithm is a nonparametic classification algorithm. It is been known for its simplicity and accuracy.
+It is a supervised learning algorithm, that means, that a labled traning dataset is been used to train the model and afterwards a class of unlabled data can be classified.
+It is a "lazy learning" algorithm that means it does not achieve generalizations. The entire traningset is being used for traning.
+When a new unlabled data is presented into the dataset, the k-NN algorithm determines in wich class the unlabled data should go by determining the wich classes the neighboring belong to.
+Outlier detection is a binary classification problem. That means, that the considered neighbors for a new tuple, only can be inliers or outliers. 
+If the 
+
+
+There are two operations calculated, when new data is presented to the model:
+\citep[p.1256 pp.]{9065747}
+
+
+$K$ is the number of neighbors that would be considered for classifying a new unlabled tuple. 
+Even though this classifier is simple, the value of ‘K’ plays an important role in classifying the unlabeled data.
+$K$ is an hyperparameter, that means it is an external configuration variable that need be determined befor the process begins.
+It is task of hyperparamatic tuning to find a optimal number of $k$. 
+You have to consider the bias-variance-trade of when you choose the optimal $K$. 
+The smaller $K$ is, the more likley it is that the model suffers from overfitting, leading to higher variance and lower bias.
+The resulting decision boundaries will be complex and fragmented.
+The lager $K$ ist, the more likley it is, that the model suffers from underfitting, leading to smaller variance and lagrer bias.
+The resulting decision boundaries maybe missing local patterns.
+It is advised to choose a odd-number $K$, otherwiseat at an even classification the model could fail.  
+
+
+To determine the nearest neighbor, you need to calculate the distance between the new tuple and the neighbors. 
+In classical k-NN, you use the Euclidean distance. 
+By using the Euclidean-distance , k-NN is not affine equivariant.
+Non-uniforly changes in the scale changes the distance landscap and thus leading to different set of nearest neighbors.
+Resulting in different classifications. 
+
+
+k-NN has many advantages. Its results are easy to understand and interpret.
+The algorithm stays efficient with large traning sets eventhough it is invfluence by the curse of dimensional
+There is no need for complex mathematical calculations, making it user-friendly.
+Its is a non-paramatic model, that does not require any assumptions about the underlying distribution od the dataset.
+That makes it flexible for complex datasets.
+
+
+Some disadvantage of k-NN might be: the computational complexity. 
+For a classification the model requires to store the entire dataset. Especially for large datasets, that could lead to slow prediction time. 
+Moreover, storing the entire dataset is memory-intensive.
+Because of the dependence of distance measurments, noisy data can influence the accurarcy negatively.
+Chosing $K$ is vital for the models results. Through hyperparamatric tuning, one has to optimize the model. 
+
+\begin{figure}[h] 
+    \centering
+    \includegraphics[width=1\linewidth]{Images/kNN/k-NN.png}
+    \caption{grapfical depiction of k-NN algorithm}
+    \label{fig:my_example}
+\end{figure}
+
+\textcolor{red}{\citep{yang2023outlier} for further information}
+
+
+\newpage
+\textcolor{green}
+{The k-nearest-neighbor global unsupervised anomaly detection algorithm is a straightforward
+way for detecting anomalies and not to be confused with k-nearest neighbor classification. As
+the name already implies, it focuses on global anomalies and is not able to detect local anoma-
+lies. First, for every record in the dataset, the k-nearest-neighbors have to be found. Then, an
+anomaly score is computed using these neighbors, whereas two possibilities have been pro-
+posed: Either the distance to the k th-nearest-neighbor is used (a single one) [41] or the average
+distance to all of the k-nearest-neighbors [42] is computed. In the following, we refer to the
+first method as kth-NN and the latter as k-NN. In practical applications, the k-NN method is
+often preferred [13, 19]. However, the absolute value of the score depends very much on the
+dataset itself, the number of dimensions, and on normalization. As a result, it is in practice not
+easy to select an appropriate threshold, if required.
+The choice of the parameter k is of course important for the results. If it is chosen too low,
+the density estimation for the records might be not reliable. On the other hand, if it is too large,
+density estimation may be too coarse. As a rule of thumb, k should be in the range 10 < k < 50.
+In classification, it is possible to determine a suitable k, for example by using cross-validation.
+Unfortunately, there is no such technique in unsupervised anomaly detection due to missing
+labels. For that reason, we use later in the evaluation many different values for k and average in
+order to get a fair evaluation when comparing algorithms.
+In Fig 4 we exemplary illustrate how the result of an unsupervised anomaly detection algo-
+rithm (here: k-NN with k = 10) can be visualized. The plot was generated using a simple, artifi-
+cially generated two-dimensional dataset with four Gaussian clusters and uniformly sampled
+anomalies. After applying the global k-NN, the outlier scores are visualized by the bubble-size
+of the corresponding instance. The color indicates the label, whereas anomalies are red. It can
+be seen, that k-NN cannot detect the anomalies close to the clusters well and assign small
+scores \citep[p.8+9]{goldstein2016comparative}}
+
+
+\input{Chapter/Intercont.tex}
+The Ordinary Least Squared was being critized because of its lack of robusteness. Just one outlier could have a large negative effect.
+
+
+Mahalanobis disctance cant detect multiple outliers because of the masking effect, by wich multiple outliers dont have necesssarly a large mahananobis disctance (R99 S.212)
+Main idea of MCD find h observations out of n whose classical covariance matrix has the lowest determinant. The MCD estimate is then rhe average of these h points 
+and the MCD estimate of scatter is their covariance matrix. 
+
+
+Procedure: 1. Creating initial subset. 
+2 Possibillities: draw a random h subset H1, or draw a random (p+1)-subset auf J, and then compute 
+technical terms:
+
+
+Determinant - Sie ist das Produkt der Hauptdiagonalen minus dem Produkt der Nebendiagonalen. Das ist stimmt bis zu einer 3x3 Matrix, darüberhinaus werden andere Methoden verwendet (Laplace'scher Entwicklungssatz)
+Es ist eine Eigenschaft die Auskunft über die Volumenverzerrung und Inventierbarkeit einer Matrix gibt. 
+Inventierbar ist eine Matrix, wenn det (A) =/ 0. 
+Geometrische Bedeutung:  Der Betrag der Determinante ist gleich dem Faktor, um den sich das Volumen (oder Fläche)  eines Einheitswürfels nach der Transformation vergrößert oder verkleinert.
+Das Vorzeichen der det(A) gibt Auskunft über die Orientierung. det (A) > 0 bleibt Orientierung erhalten (zb Drehung oder Streckung)
+Wenn det(A) < 0 wird die Orientierung umgekehrt (z.B. eine Spiegelung)
+
+
+asymptotisch normalverteilt 
+
+\newpage 
+\newpage
+
+Minimum Coavariance Determinant is asymptotically normal and robust. But it is hard to compute.
+
+
+Therefor the authors constructed an algorithm, thats much faster than the first algorithm.
+MCD Alternative: for dataset with very few observations/ excessive noise use Minimum Regularized Covariance Determinant
+Insert: the curse of dimensionality
+
+For the end: how can I be sure, that my results are legit?
+
+for dataset analysis: multicolinearityt?
+
+
+
+What is the solution?
+The Minimum Covariance Determinant, first published in 1985 by , is a robust estimator of the covariance matrix in multidimensional dataset.
+Given a dataset of n observations and a predetermined subset sie h, the MCD searches for the h observations whose empirical covariance matrix has the smalltest possible determinant.
+A determinant is a mathematical property of a matrix.
+
+How does it work?
+
+
+What are the advantages?
+
+What are the disadvantages?
