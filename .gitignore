@@ -3,8 +3,6 @@
 # ====================================
 
 # --- Documents & Output ---
-# We exclude the PDF to keep the repo lean.
-# Only the source code (.tex) should be versioned.
 *.pdf
 out/
 build/
@@ -40,19 +38,24 @@ build/
 *.xdy
 
 # --- IDEs (JetBrains/PyCharm/VS Code) ---
-# This stops those ".idea/vcs.xml" files from cluttering your commits
 .idea/
 .vscode/
 *.code-workspace
 *.iml
 
 # --- Python & Data Caches ---
-# Since you have .py scripts in your subfolders
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
 *.pyo
 *.pyd
+
+# --- Virtual Environments  ---
+venv/
+venv-paper/
+venv_paper/
+env/
+.env/
 
 # --- Temporary / Backup files ---
 *.bak

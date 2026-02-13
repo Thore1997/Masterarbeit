@@ -51,7 +51,7 @@ def take_per_row(A, indx, num_elem=2):
 
 def f1_calculator(classes, losses):
     classes=classes.numpy()
-    losses=losses.numpy()
+    losses=losses.cpu().numpy()
     df_version_classes = pd.DataFrame(data=classes)
     df_version_losses = pd.DataFrame(losses).astype(np.float64)
     Na = df_version_classes[df_version_classes.iloc[:, 0] == 1].shape[0]
