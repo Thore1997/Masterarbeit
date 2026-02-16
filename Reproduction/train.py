@@ -4,6 +4,7 @@ import numpy as np
 from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import roc_auc_score
 import helper_functions
+from sklearn.metrics import roc_auc_score, average_precision_score
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 
@@ -70,17 +71,16 @@ class trainer():
         self.lr=0.001
         self.faster_version=args.faster_version
 
-
-    def train_and_evaluate(self,train,test,categories):
+    def train_and_evaluate(self, train, test, categories):
         train = torch.as_tensor(train, dtype=torch.float)
         test = torch.as_tensor(test, dtype=torch.float)
-        test_losses_contrastloss = torch.zeros(test.shape[0],dtype=torch.float).to(device)
+        test_losses_contrastloss = torch.zeros(test.shape[0], dtype=torch.float).to(device)
         d = train.shape[1]
         n = train.shape[0]
-        if self.faster_version=='yes':
-            num_permutations = min(int(np.floor(100 / (np.log(n) + d)) + 1),2)
+        if self.faster_version == 'yes':
+            num_permutations = min(int(np.floor(100 / (np.log(n) + d)) + 1), 2)
         else:
-            num_permutations=int(np.floor(100/(np.log(n)+d))+1)
+            num_permutations = int(np.floor(100 / (np.log(n) + d)) + 1)
         print("going to run for: ", num_permutations, ' permutations')
         hiddensize = 200
         if d <= 40:
@@ -116,7 +116,9 @@ class trainer():
                     pre_query = sample['data'].to(device)
                     pre_query = torch.unsqueeze(pre_query, 1)
                     pre_query, positives_matrice = model_a(pre_query)
-                    scores_internal = helper_functions.scores_calc_internal(pre_query, positives_matrice,self.no_negatives,self.temperature).to(device)
+                    scores_internal = helper_functions.scores_calc_internal(pre_query, positives_matrice,
+                                                                            self.no_negatives, self.temperature).to(
+                        device)
                     scores_internal = scores_internal.permute(0, 2, 1)
                     correct_class = torch.zeros((np.shape(scores_internal)[0], np.shape(scores_internal)[2]),
                                                 dtype=torch.long).to(device)
@@ -126,7 +128,7 @@ class trainer():
                     running_loss += loss.item()
                 if (running_loss / (i + 1) < stop_crteria):
                     break
-                if n<2000:
+                if n < 2000:
                     if (epoch + 1) % 100 == 0:
                         print('[%d, %5d]  loss: %.3f' % (epoch + 1, i + 1, running_loss / (i + 1)))
                 else:
@@ -141,15 +143,24 @@ class trainer():
                     indexes = sample['index'].to(device)
                     pre_query_test = torch.unsqueeze(pre_query, 1)  # batch X feature X 1
                     pre_query_test, positives_matrice_test = model_a(pre_query_test)
-                    scores_internal_test = helper_functions.scores_calc_internal(pre_query_test, positives_matrice_test,self.no_negatives,self.temperature).to(device)
+                    scores_internal_test = helper_functions.scores_calc_internal(pre_query_test, positives_matrice_test,
+                                                                                 self.no_negatives,
+                                                                                 self.temperature).to(device)
                     scores_internal_test = scores_internal_test.permute(0, 2, 1)
                     correct_class = torch.zeros((np.shape(scores_internal_test)[0], np.shape(scores_internal_test)[2]),
                                                 dtype=torch.long).to(device)
                     loss_test = criterion_test(scores_internal_test, correct_class).to(device)
                     test_losses_contrastloss[indexes] += loss_test.mean(dim=1).to(device)
-        f1 = helper_functions.f1_calculator(categories, test_losses_contrastloss)
+
+        # --- EVERYTHING ABOVE IS UNCHANGED ---
+
+        f1_score = helper_functions.f1_calculator(categories, test_losses_contrastloss)
         y_labels_boolean_modified = np.array(categories) == 0
         test_losses_contrastloss = test_losses_contrastloss.cpu()
-        auc = roc_auc_score(y_labels_boolean_modified, -test_losses_contrastloss)
-        return (f1,auc)
 
+        # Metric calculation
+        auc_score = roc_auc_score(y_labels_boolean_modified, -test_losses_contrastloss)
+        # Added AUPRC implementation here:
+        auprc_score = average_precision_score(y_labels_boolean_modified, -test_losses_contrastloss)
+
+        return (f1_score, auc_score, auprc_score)
