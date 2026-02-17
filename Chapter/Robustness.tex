@@ -1,0 +1,47 @@
+\subsection{Analysis von Sensitivity}
+In this section I will analyse how robust and stable the results are, by changing the hyperparameters in the methods.
+It's important, that here is just written the methodology. 
+So I will concentrate on the how not the why. 
+Therefor it is a part of the experimental design not the result section.
+
+- Introduction 
+    - Motivation: Why is it imporant to test the sensitivity?
+    - Robustness: 
+    - Stability: 
+- MCD
+    - Whats are the hyperparameter - support fraction (h)
+    - contamination parameter ?
+- k-NN  
+    Hyperparameter: k 
+    Hyperparametertuning: Maybe use Octuna as a pyhton framework
+- InterCont
+    Hyperparameter: u 
+
+
+\subsection{k-NN: Choice of hyperparameter k, hyperparameter tuning}
+\subsubsection{k-NN: Choice of hyperparameter k, hyperparameter tuning}
+I tried to reproduce the F1-Score for all datasets except Abalone, KDDCUP99-Rev and KDDCUP99, because where not in the official ODDS Dataset. 
+In the original Dataset there were sort of the same datasets, but I think the auther updated it. So I rejected them from further analysis. 
+First I tried reproducing by using the classic Python machine leaning library sckit-learn. 
+I noticed that the result differ from the ones in the paper.
+As the auther of the paper noticed, they used the python library PyOD, wich is well known in the scientif community.
+After implementing the code, I recognized that again the result differ substantially. 
+Unfortunately in the reproduction package supplied by the authers, there are no description of reproducting k-NN.
+They concentrated on their own .
+For the F1 score of k-NN I suppose that they optimized for the best contmination.
+Contamination is PyOD specific hyperparameter, that manages the sensitivity.
+For every contamination rate = x, take x\% of the highest anomaliescore and mark it as one.
+The difference to 100 are inliers.
+Therefor I decided to use  ROCAUC wich is not influenced by contamination. 
+
+\subsection{Breakdown-Point h of FAST-MCD}
+\subsection{InterCont: hyperparameter k, m, u, hyperparameter tuning,}
+In paper it is described how they did it. They call it ablation analysis.
+First they switched the tanh activation function to LeakyReLU.
+Then they just normalized the query and the vectors once, then they deployed a variant that just did the second normalization (the conventional way).
+a variant in wich the order of the two normalizations is reversed. 
+A variatnt with no normalizations. 
+
+
+\subsection{Literatur}
+\citep[p.5]{hilal2022financial}
