@@ -1,11 +1,13 @@
-# ========================
-# LaTeX .gitignore
-# ========================
+# ====================================
+# Masterarbeit .gitignore (Latex and IDE)
+# ====================================
 
-# Compiled PDF
+# --- Documents & Output ---
 *.pdf
+out/
+build/
 
-# Auxiliary and intermediate files
+# --- LaTeX Auxiliary and intermediate files ---
 *.aux
 *.bbl
 *.bcf
@@ -23,28 +25,9 @@
 *.synctex.gz
 *.toc
 *.run.xml
-
-# Temporary files created by editors
-*.bak
-*.tmp
-*.swp
-*.synctex(busy)
-*~
-*.gz(busy)
-
-# Output folders (if you use one)
-out/
-build/
-
-# OS-specific
-.DS_Store
-Thumbs.db
-
-# VS Code
-.vscode/
-*.code-workspace
-
-# Overleaf local copy
+*.nav
+*.snm
+*.vrb
 *.acn
 *.acr
 *.alg
@@ -54,17 +37,36 @@ Thumbs.db
 *.ist
 *.xdy
 
-# TeXstudio / TeXShop backups
+# --- IDEs (JetBrains/PyCharm/VS Code) ---
+.idea/
+.vscode/
+*.code-workspace
+*.iml
+
+# --- Python & Data Caches ---
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.pyo
+*.pyd
+
+# --- Virtual Environments  ---
+venv/
+venv-paper/
+venv_paper/
+env/
+.env/
+
+# --- Temporary / Backup files ---
 *.bak
-*.backup
+*.tmp
+*.swp
 *.sav
+*.backup
+*~
+*.synctex(busy)
+*.gz(busy)
 
-# Auxiliary bibliography files
-*.run.xml
-*.bbl
-*.blg
-
-# Miscellaneous
-*.nav
-*.snm
-*.vrb
+# --- OS-specific ---
+.DS_Store
+Thumbs.db
