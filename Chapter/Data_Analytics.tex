@@ -4,7 +4,7 @@ E.g. \citet{shenkar2022anomaly} use those datasets to identify stregths and weak
 The datasets contain 32 datasets wich different amounts of dimensions and instances. 
 To take the whole picture of a method, it is beneficial to use a wide range of different datasets, to determine the advantages and disadvantages of a method.
 Nevertheless, using upto 32 different datasets is not feasable for my thesis, because it wont be in the scope of this thesis.
-Therefore I will analyse one dataset in great detail, to use those finding in the result section.
+Therefore I will analyse the thyroid dataset in great detail, to use those finding in the result section.
 In this section I will first summarize the dataset statistically, including central tendencies, shape, distribution, cardinality and spracity.
 Subsequently I will analyse bivariate relationships inside the dataset as well.
 Finally I will analyse the geomatric structure of the dataset, including intrinsic dimensionality and manifold structure.
@@ -15,15 +15,64 @@ The origins of the Thyriod dataset was difficult to determine, because it's orig
 The original dataset was submitted by Ross Quinlan to the UCI Machine learning repository in 1986 \citep{thyroid_disease_102}.
 He himself collected it from the archives of the Garvan Institute of Medical Research in Syndney. 
 The data was collected between January and November 1985 \citep[p.230]{quinlan1987simplifying}.
-
-\textcolor{red}{\citet{Schiffmann1992SynthesisAP} transformed the original dataset into the shape known today.
-Therefore they extracted 3772 instances that where most complete and isolated 6 numerical dimensions.
-Back then the artificial neural networks could not treat categorical instances, so they omitted it.
-Lastly they converted the 3 original classes (normal, hyperthyroid and hypothyroid) into a format where normal was the majority class.
-\todo{waiting for paper}}
 To standadize research about outlier detection citet{Rayana:2016} curated the ODDS Dataset.
 This transformation process is comfortable for researchers, because the need data preprocessing decreases and therefore researchers can concentrate on outliert detection.
-But there is critism of this proceedings.\todo{for discussion: maybe the reasearch community should generate for every different type of outlier different benchmark datasets - more granular}
+I could not fully determine, how, when and who transformed the dataset, so I decided to build my own thyroid dataset based on the original thyroid dataset.
+
+\subsection{Transforming my own dataset}
+The original thyroid datatset contain 9172 instances in 29 dimensions.
+I obtained the dataset via the UCI machine learning repository. 
+7 of the 29 dimensions are continous data and are about different types of hormones the thyroid releases and the age of the patient.
+The rest are binary variables about sex, pregnancy, thyroid surgery and so on.
+Additionally the continous thyroid hormones are combined with a binary variable, that describe if the specific hormone was analysed.
+Binary variables are hard to implement into the methods and in the dataset supplied in the ODDS Benchmarkt repository they exluded all binary variables, so I removed them too.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Images/Thyroid_unprocessed.pdf}
+    \caption{Basic values of the unprocessed Thyroid Dataset}
+\end{figure}
+
+The table displays the basic values for the remaining variables.
+Age is the only dimension thats has no missing data. 
+Therefor the mean of age is surprisingly high with 73,56 years.
+Comparing it with the median age of 55 years, I conclude, that an outlier biases the mean age.
+My conclusion is been confirmed by looking at the maxmimum of age, wich is 65526 years explaining the big standard deviation.
+That surley is an outlier.
+For the rest of the dimensions I'm lacking the medical expertise to determine unusual values.
+
+
+In the dataset supplied by ODDS, the missing values where dropped.
+That means, that if a missing data occured, the whole instance had to be removed.
+There are different ways to hanlde missing data. 
+Removing them is disadventageous because it removes existing data in that instance.
+
+
+Handleling missing data is a crucial task in data analytics.
+The results can be biased, if it is not done with care. 
+Other methods, besides removing whole instances, are hot imputation, mean imputation and regression imputation.
+Those methods always fill some value into the missing data.
+In hot imputation the missing value is replaced by a randomly chosen representative value.
+While mean imputation is filling the missing data with the mean of the observed values, median imputation is filling the missing data with the median of the other instances.
+Regression imputation is filling the missing value by predicting them via a regression model.
+
+
+Wich methods can be used is determined by the type of missing data.
+In cases where the data is missing completely at random (MCAR) the data is missing independently of observed or missing values.
+Data is missing at random (MAR) when the data are missing independently of the values of the missing data.
+Data is missing not at random (MNAR) if it missing because of its values.
+All types of missing data can be met with all the methods described except of MNAR.
+By using the imputation methods I could be introducing a bias.
+But the goal of the imputation is to maintain as much as possible data, not to analyse relationsships. 
+Values missing not at random is not the problem.
+Regression imputation and hot imputation could be a viable option but this thesis is about outlier detection not imputation methods.
+Therefor I chose the median imputation, because the median is a outlier robust parameter.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Images/Missing_data.pdf}
+    \caption{Percentage of Missing Data per dimension}
+\end{figure}
 
 \subsubsection{Statistical Summarization}
 \textcolor{red}{Central tendencies}
@@ -34,13 +83,8 @@ All 6 dimensions are numerical features and include 5 different types of hormone
 The remaining instance is the patients age.
 All instances are normalized, hence the mean and median change in absolute value but not in the position of their distribution.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{Images/Experiments/thyroid_boxplots.pdf}
-    \caption{Boxplot of each instance. Outliers excluded}
-\end{figure}
 
-The image depicts the usual boxplots with 1,5*interquartile range, wiskers, mean and median.
+The table depicts the usual boxplots with 1,5*interquartile range, wiskers, mean and median.
 In traditional boxplots there are instances shown as outliers, that are more extreme then the 1,5*interquartile range.
 I  forgo without them, because this thesis is not about outlier detection in univariante distributions.
 The difference in mean and median in all features except feature 1 is neglectable small. 
