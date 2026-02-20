@@ -33,7 +33,10 @@ T3 is missing 28,39\% of its values.
 By filling in so many missing values, it is hard to determin any statistical parameter that is not drivin by the filling method or the method would be overly complicated.
 To remain the rest of the values I decided to remove the instances with the missing T3 values, keeping the variance of the variable.
 I chose a imputation procedure for the rest of the missing values .
-The remaining dataset contains 6 variables with 6568 instances, leaving a bigger variance than the dataset given by the ODDS repository. 
+The remaining dataset contains 6 variables with 6568 instances, leaving a bigger variance than the dataset given by the ODDS repository.
+The original dataset provided labels for patients wich had overactive (hyperthyroidism) or underactive (hypothyroidism) thyroid activity. 
+Those confitions are abnormal and are interpreted as outliers. 
+From 6568 patient, 516 were classified as hyperthyroidism and 431 were classified as hypothyroidism, wich is an outier ratio of 14,17\%. 
 
 
 \begin{figure}[h]
@@ -89,18 +92,13 @@ Therefor I chose the median imputation, because the median is a outlier robust p
 
 \subsubsection{Statistical Summarization}
 \textcolor{red}{Central tendencies}
-In this section I will describe the most important statisticall tendencies of the dataset.
-The dataset has 3722 instances over 6 dimensions.
-The labeled dataset contains 93 outliers, hence the outlier ratio is 2,5\%, wich is highly unbalanced. 
-All 6 dimensions are numerical features and include 5 different types of hormone whose individual or combinational absence or presence in the blood could indicate a disease in wich the thyroid plays a crucial role.
-The remaining instance is the patients age.
-All instances are normalized, hence the mean and median change in absolute value but not in the position of their distribution.
+
 
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{Images/Thyroid_Processed_Boxplot.pdf}
-    \caption{Basic values of the unprocessed Thyroid Dataset}
+    \caption{Boxplots of the transformed Thyroid Dataset - Outliers excluded}
 \end{figure}
 
 
