@@ -1,4 +1,16 @@
-\subsection{Analysis von Sensitivity}
+Global Anomalies 
+    Find the maxmimum and minimum of the dataset and create points that are k standard deviasions away
+Local Anomalies
+    Take a real datapoint and movi it just far enough so its no longer in a dense cluster, but still in within the general data cloud
+Cluster Anomalies
+    Generate a small set of points that are very close to each other but far from the main data mass
+Dependency Anomalies
+    It testsif the model understands the relationship between features. Swap features values bewteen two different normal rows
+    If Row A is a "High Income / High Spending" person and Row B is a "Low Income / Low Spending" person, swap their spending. 
+    You now have a "High Income / Low Spending" person (which might be normal) and a "Low Income / High Spending" person (a dependency anomaly)
+
+\subsection{Hyperparameter tuning and Sensitivity analysis}
+I should do it once, because If I change the hyperparameters for every anomalie, I will test the adaptability of the method, not the robustness.
 In this section I will analyse how robust and stable the results are, by changing the hyperparameters in the methods.
 It's important, that here is just written the methodology. 
 So I will concentrate on the how not the why. 
