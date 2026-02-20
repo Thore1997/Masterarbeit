@@ -9,6 +9,7 @@ In this section I will first summarize the dataset statistically, including cent
 Subsequently I will analyse bivariate relationships inside the dataset as well.
 Finally I will analyse the geomatric structure of the dataset, including intrinsic dimensionality and manifold structure.
 
+
 \subsubsection{Introduction}  
 \textcolor{red}{Describe what type of data has been collected in the data, How was it collected,What is the ground truth - how are the lables be defined? How are outliers defined in specific context}
 The origins of the Thyriod dataset was difficult to determine, because it's origin root back to the 1987 published paper of 
@@ -19,19 +20,28 @@ To standadize research about outlier detection citet{Rayana:2016} curated the OD
 This transformation process is comfortable for researchers, because the need data preprocessing decreases and therefore researchers can concentrate on outliert detection.
 I could not fully determine, how, when and who transformed the dataset, so I decided to build my own thyroid dataset based on the original thyroid dataset.
 
+
 \subsection{Transforming my own dataset}
 The original thyroid datatset contain 9172 instances in 29 dimensions.
 I obtained the dataset via the UCI machine learning repository. 
 7 of the 29 dimensions are continous data and are about different types of hormones the thyroid releases and the age of the patient.
 The rest are binary variables about sex, pregnancy, thyroid surgery and so on.
 Additionally the continous thyroid hormones are combined with a binary variable, that describe if the specific hormone was analysed.
-Binary variables are hard to implement into the methods and in the dataset supplied in the ODDS Benchmarkt repository they exluded all binary variables, so I removed them too.
+I removed the binary variables, because I need them for my robustness checks later.
+TBG is a variable that is missing in 96,19\% of the time, so I removed it, too.
+T3 is missing 28,39\% of its values. 
+By filling in so many missing values, it is hard to determin any statistical parameter that is not drivin by the filling method or the method would be overly complicated.
+To remain the rest of the values I decided to remove the instances with the missing T3 values, keeping the variance of the variable.
+I chose a imputation procedure for the rest of the missing values .
+The remaining dataset contains 6 variables with 6568 instances, leaving a bigger variance than the dataset given by the ODDS repository. 
+
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{Images/Thyroid_unprocessed.pdf}
     \caption{Basic values of the unprocessed Thyroid Dataset}
 \end{figure}
+
 
 The table displays the basic values for the remaining variables.
 Age is the only dimension thats has no missing data. 
@@ -50,6 +60,7 @@ Removing them is disadventageous because it removes existing data in that instan
 
 Handleling missing data is a crucial task in data analytics.
 The results can be biased, if it is not done with care. 
+For outlier detection it is important, that the imputation method is not triggering the masking effect, resulting in fewer detectable outliers. 
 Other methods, besides removing whole instances, are hot imputation, mean imputation and regression imputation.
 Those methods always fill some value into the missing data.
 In hot imputation the missing value is replaced by a randomly chosen representative value.
@@ -57,22 +68,24 @@ While mean imputation is filling the missing data with the mean of the observed 
 Regression imputation is filling the missing value by predicting them via a regression model.
 
 
-Wich methods can be used is determined by the type of missing data.
+Wich methods can be used is determined by the type of missing data and the task wich the dataset is been used.
 In cases where the data is missing completely at random (MCAR) the data is missing independently of observed or missing values.
 Data is missing at random (MAR) when the data are missing independently of the values of the missing data.
-Data is missing not at random (MNAR) if it missing because of its values.
+Data is missing not at random (MNAR) if it missing because of its characteristics.
 All types of missing data can be met with all the methods described except of MNAR.
-By using the imputation methods I could be introducing a bias.
-But the goal of the imputation is to maintain as much as possible data, not to analyse relationsships. 
+By using the imputation methods I could be introducing a masking effect.
+But the goal of the imputation is to maintain as much as possible data, not to regress relationsships. 
 Values missing not at random is not the problem.
 Regression imputation and hot imputation could be a viable option but this thesis is about outlier detection not imputation methods.
-Therefor I chose the median imputation, because the median is a outlier robust parameter.
+Therefor I chose the median imputation, because the median is a outlier robust parameter therefor not influencing the .
+
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{Images/Missing_data.pdf}
     \caption{Percentage of Missing Data per dimension}
 \end{figure}
+
 
 \subsubsection{Statistical Summarization}
 \textcolor{red}{Central tendencies}
@@ -84,6 +97,13 @@ The remaining instance is the patients age.
 All instances are normalized, hence the mean and median change in absolute value but not in the position of their distribution.
 
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Images/Thyroid_Processed_Boxplot.pdf}
+    \caption{Basic values of the unprocessed Thyroid Dataset}
+\end{figure}
+
+
 The table depicts the usual boxplots with 1,5*interquartile range, wiskers, mean and median.
 In traditional boxplots there are instances shown as outliers, that are more extreme then the 1,5*interquartile range.
 I  forgo without them, because this thesis is not about outlier detection in univariante distributions.
@@ -91,10 +111,12 @@ The difference in mean and median in all features except feature 1 is neglectabl
 The boxplot of feature 1 has be more analysed, because the mean and the median differ a lot.
 Thats a sign, that feature 1 is skewed to right and distibutions does not follow a normal distribution.
 
+
 To be statistically sure, I apply the Shapiro-Wilk test for Normality.
 The requirements are met.
 With 3772 instances the data does not exceed the maximum of 5000 instances and therefore has a reasonable sensitivity.
 The underlying distributions have to be in a metric scale level, the data is iid and . 
+
 
 The Null is H0: 
 Nevertheless for every instance the Shapiro-Wilk test for Normality the H0 is rejected. 
