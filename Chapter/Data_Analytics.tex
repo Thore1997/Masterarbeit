@@ -36,7 +36,11 @@ I chose a imputation procedure for the rest of the missing values .
 The remaining dataset contains 6 variables with 6568 instances, leaving a bigger variance than the dataset given by the ODDS repository.
 The original dataset provided labels for patients wich had overactive (hyperthyroidism) or underactive (hypothyroidism) thyroid activity. 
 Those confitions are abnormal and are interpreted as outliers. 
-From 6568 patient, 516 were classified as hyperthyroidism and 431 were classified as hypothyroidism, wich is an outier ratio of 14,17\%. 
+From 6568 patient, 516 were classified as hyperthyroidism and 431 were classified as hypothyroidism.
+Some patient reported both. Wether this is a medically possible diagnosis is for professional physicians to decide.
+Nevertheless, If a person filled in on diagnosis, I will put it in the outlier class.
+Therefore 907 patient reported some sort of thyroid abnormality, hence the outlier ratio is 13,8\%.
+This outlier ratio lays in the expectation of other datasets of the ODDS Benchmark Repository. 
 
 
 \begin{figure}[h]
