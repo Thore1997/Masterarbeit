@@ -4,11 +4,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # 1. Load the data
-mat = scipy.io.loadmat('Data/thyroid_processed_dataset.mat')
+mat = scipy.io.loadmat('Data/wineori.mat')
 data = mat['X']
-
-# 2. Define your labels
-labels = ['Age', 'TSH', 'T3', 'TT4', 'T4U', 'FTI']
 
 # 3. Calculate Correlation Matrix
 # rowvar=False because your columns are the variables
@@ -24,8 +21,6 @@ sns.heatmap(corr_matrix,
             fmt=".6f",
             cmap='coolwarm',
             center=0,
-            xticklabels=labels,
-            yticklabels=labels,
             annot_kws={"size": 9})
 
 plt.title("Correlation Heatmap")
