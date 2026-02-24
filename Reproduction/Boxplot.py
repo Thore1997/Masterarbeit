@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load data
-thyroid = sio.loadmat('Data/thyroid.mat')
+thyroid = sio.loadmat('Data/wineori.mat')
 X = thyroid['X']
 df = pd.DataFrame(X)
 

@@ -7,14 +7,14 @@ from sklearn.preprocessing import MinMaxScaler
 from pyod.models.knn import KNN
 
 # 1. Load the data
-file_path = os.path.join('..', 'Reproduction', 'Data', 'thyroid_processed_dataset.mat')
+file_path = os.path.join('..', 'Reproduction', 'Data', 'wineori.mat')
 
 if not os.path.exists(file_path):
     print(f"Error: Could not find {file_path}")
 else:
     mat_data = scipy.io.loadmat(file_path)
     X = mat_data['X']
-    y = mat_data['Y'].ravel()
+    y = mat_data['y'].ravel()
 
     # 2. Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -26,7 +26,7 @@ else:
 
     # 4. Initialize PyOD k-NN
     contam = (y_train == 1).sum() / len(y_train)
-    clf = KNN(n_neighbors=5, contamination=contam, method='largest')
+    clf = KNN(n_neighbors=3, contamination=contam, method='largest')
 
     # 5. Train
     clf.fit(X_train)
