@@ -5,14 +5,14 @@ from sklearn.metrics import f1_score, roc_auc_score, average_precision_score # A
 from pyod.models.mcd import MCD
 
 # 1. Load Data
-file_path = os.path.join('..', 'Reproduction', 'Data', 'thyroid.mat')
+file_path = os.path.join('..', 'Reproduction', 'Data', 'thyroid_processed_dataset.mat')
 
 if not os.path.exists(file_path):
     print(f"Error: {file_path} not found.")
 else:
     data = scipy.io.loadmat(file_path)
     X = data['X']
-    y = data['y'].ravel()
+    y = data['Y'].ravel()
 
     # 2. Split (50/50 as per your preference)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
