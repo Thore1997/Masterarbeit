@@ -17,7 +17,7 @@ data_scaled = scaler.fit_transform(data)
 
 # 4. Core t-SNE Calculation
 # n_components=2 for a 2D plot
-tsne = TSNE(n_components=2, perplexity=30, max_iter=1000, random_state=42)
+tsne = TSNE(n_components=2, perplexity=30, n_iter=1000, random_state=42)
 data_embedded = tsne.fit_transform(data_scaled)
 
 # 5. Visualization
