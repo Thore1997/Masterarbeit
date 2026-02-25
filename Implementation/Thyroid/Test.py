@@ -4,7 +4,7 @@ import scipy.io
 from sklearn.preprocessing import StandardScaler
 
 # --- 1. Data Loading ---
-file_path = 'data/thyroid0387.data'
+file_path = '../../Reproduction/Data/Thyroid/thyroid0387.data'
 df = pd.read_csv(file_path, sep=',', header=None, na_values='?')
 
 # Clean data
@@ -59,7 +59,7 @@ data_to_save = {
     "Y": Y.astype(float) # ODDS files usually use float/double for Y
 }
 
-scipy.io.savemat("Test.mat", data_to_save)
+scipy.io.savemat("../../Reproduction/Data/Thyroid/Test.mat", data_to_save)
 
 # --- 7. Kontrolle ---
 print(f"Datei erfolgreich erstellt!")

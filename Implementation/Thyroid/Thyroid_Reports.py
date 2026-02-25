@@ -2,7 +2,7 @@ import pandas as pd
 from fpdf import FPDF
 
 # --- 1. Data Processing ---
-file_path = 'data/thyroid0387.data'
+file_path = '../../Reproduction/Data/Thyroid/thyroid0387.data'
 df = pd.read_csv(file_path, sep=',', header=None, na_values='?')
 
 column_mapping = {

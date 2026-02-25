@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # --- 1. Data Processing ---
-file_path = 'data/thyroid0387.data'
+file_path = '../../Reproduction/Data/Thyroid/thyroid0387.data'
 df = pd.read_csv(file_path, sep=',', header=None, na_values='?')
 
 column_mapping = {0: 'Age', 17: 'TSH', 19: 'T3', 21: 'TT4', 23: 'T4U', 25: 'FTI'}

@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load Data
-thyroid = sio.loadmat('Data/thyroid.mat')
+thyroid = sio.loadmat('Data/Thyroid/thyroid.mat')
 X = thyroid['X']
 df = pd.DataFrame(X)
 
