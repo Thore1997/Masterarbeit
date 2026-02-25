@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load data
-wine = sio.loadmat('../../Reproduction/Data/wineori.mat')
+wine = sio.loadmat('Reproduction/Data/wineori.mat')
 X = wine['X']
 df = pd.DataFrame(X)
 
@@ -43,7 +43,7 @@ def plot_boxplots(df):
     plt.tight_layout()
     plt.show()
 
-#plot_boxplots(df)
+plot_boxplots(df)
 
 
 def get_outlier_indices(df):
@@ -76,4 +76,4 @@ all_outliers = get_outlier_indices(df)
 # Print the results for each feature
 for feature, indices in all_outliers.items():
     print(f"{feature}: {len(indices)} outliers found.")
-    print(f"Indices: {indices}\n")
+    print(f"Instance: {indices}\n")

@@ -23,7 +23,7 @@ def main(args):  # <--- Added args as a parameter
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch_size', type=int, default=3000, help='batch size for training')
-    parser.add_argument('--dataset', type=str, nargs='+', default=['thyroid_processed_dataset'], help='names of datasets')
+    parser.add_argument('--dataset', type=str, nargs='+', default=['wine_normalized'], help='names of datasets')
     parser.add_argument('--faster_version', type=str, default='no',
                         help='faster version with a lower number of repeats')
 

@@ -2,22 +2,9 @@ import pandas as pd
 from fpdf import FPDF
 
 # --- 1. Data Processing ---
-file_path = '../../Reproduction/Data/Thyroid/thyroid0387.data'
+file_path = 'Reproduction/Data/wineori.mat'
 df = pd.read_csv(file_path, sep=',', header=None, na_values='?')
 
-column_mapping = {
-    0: 'Age',
-    17: 'TSH',
-    19: 'T3',
-    21: 'TT4',
-    23: 'T4U',
-    25: 'FTI',
-    27: 'TBG'
-}
-
-df_selected = df[list(column_mapping.keys())].rename(columns=column_mapping)
-
-# Prepare Statistics Data
 stats_full = df_selected.describe().reset_index()
 
 # Filter out the 25% and 75% rows
@@ -25,7 +12,7 @@ stats_full = df_selected.describe().reset_index()
 stats = stats_full[~stats_full['index'].isin(['25%', '75%'])]
 
 # Prepare Missing Values Data
-missing_count = df_selected.isnull().sum().reset_index()
+missing_count = df.isnull().sum().reset_index()
 missing_count.columns = ['Feature', 'Missing Count']
 missing_count['Percentage'] = (missing_count['Missing Count'] / len(df_selected)) * 100
 
