@@ -4,105 +4,46 @@ E.g. \citet{shenkar2022anomaly} use those datasets to identify stregths and weak
 The datasets contain 32 datasets wich different amounts of dimensions and instances. 
 To take the whole picture of a method, it is beneficial to use a wide range of different datasets, to determine the advantages and disadvantages of a method.
 Nevertheless, using upto 32 different datasets is not feasable for my thesis, because it wont be in the scope of this thesis.
-Therefore I will analyse the thyroid dataset in great detail, to use those finding in the result section.
-In this section I will first summarize the dataset statistically, including central tendencies, shape, distribution, cardinality and spracity.
+Therefore I will analyse the wine dataset in great detail, to use those finding in the result section.
+The goal of this section is to anaylse and describe the dataset
+Therefor I will first summarize the dataset statistically, including central tendencies, shape, distribution, cardinality and spracity.
 Subsequently I will analyse bivariate relationships inside the dataset as well.
 Finally I will analyse the geomatric structure of the dataset, including intrinsic dimensionality and manifold structure.
 
 
 \subsubsection{Introduction}  
 \textcolor{red}{Describe what type of data has been collected in the data, How was it collected,What is the ground truth - how are the lables be defined? How are outliers defined in specific context}
-The origins of the Thyriod dataset was difficult to determine, because it's origin root back to the 1987 published paper of 
-The original dataset was submitted by Ross Quinlan to the UCI Machine learning repository in 1986 \citep{thyroid_disease_102}.
-He himself collected it from the archives of the Garvan Institute of Medical Research in Syndney. 
-The data was collected between January and November 1985 \citep[p.230]{quinlan1987simplifying}.
-To standadize research about outlier detection citet{Rayana:2016} curated the ODDS Dataset.
-This transformation process is comfortable for researchers, because the need data preprocessing decreases and therefore researchers can concentrate on outliert detection.
-I could not fully determine, how, when and who transformed the dataset, so I decided to build my own thyroid dataset based on the original thyroid dataset.
+The wine dataset was donated from \citet{wine_109} at the 30.06.1991 to the UC Irvibe machine learning Repository.
+The authers collected data about chemical components of wine wich came from three different italian wine growers. 
+First it was used as a multi classification task dataset, because it had three classes, one for each wine grower.
+For outlier detection Shebuti et al tranformed this dataset into an unbalanced binary classification dataset and offered it in the ODDS Repository for general scientific uses. 
+129 instances (wines) and 13 variables were left in the remaining dataset.
+She combined the wines of wine grower two and three to be the normal class, resulting in 116 wines and wine grower one was defined as the anomaly class, resulting in 10 abnormal wines.
+Correspondingly, the outlier ratio is 7,7\% placing it in the \todo{filling the average outlier ratio of ODDS}
+Conviently, Shebuto et al excluded all missing data and left only continious instances.
+In the following the feature names are not included into the diagrams because of design choices.
+To give an clue to wich feature what resembles, here the names of the features: 
+\todo{insert: table of names}
 
 
-\subsection{Transforming my own dataset}
-The original thyroid datatset contain 9172 instances in 29 dimensions.
-I obtained the dataset via the UCI machine learning repository. 
-7 of the 29 dimensions are continous data and are about different types of hormones the thyroid releases and the age of the patient.
-The rest are binary variables about sex, pregnancy, thyroid surgery and so on.
-Additionally the continous thyroid hormones are combined with a binary variable, that describe if the specific hormone was analysed.
-I removed the binary variables, because I need them for my robustness checks later.
-TBG is a variable that is missing in 96,19\% of the time, so I removed it, too.
-T3 is missing 28,39\% of its values. 
-By filling in so many missing values, it is hard to determin any statistical parameter that is not drivin by the filling method or the method would be overly complicated.
-To remain the rest of the values I decided to remove the instances with the missing T3 values, keeping the variance of the variable.
-I chose a imputation procedure for the rest of the missing values .
-The remaining dataset contains 6 variables with 6568 instances, leaving a bigger variance than the dataset given by the ODDS repository.
-The original dataset provided labels for patients wich had overactive (hyperthyroidism) or underactive (hypothyroidism) thyroid activity. 
-Those confitions are abnormal and are interpreted as outliers. 
-From 6568 patient, 516 were classified as hyperthyroidism and 431 were classified as hypothyroidism.
-Some patient reported both. Wether this is a medically possible diagnosis is for professional physicians to decide.
-Nevertheless, If a person filled in on diagnosis, I will put it in the outlier class.
-Therefore 907 patient reported some sort of thyroid abnormality, hence the outlier ratio is 13,8\%.
-This outlier ratio lays in the expectation of other datasets of the ODDS Benchmark Repository. 
+\subsubsection{Statistical Summarization}
+In this section  I will describe the central tendencies of the dataset, beginning with univariate analysis.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Images/.pdf}
+    \caption{Basic values of the unprocessed Thyroid Dataset}
+\end{figure}
+\textcolor{red}{Central tendencies}
+This diagram is showing a boxplot per feature in the dataset.
+Depicted is the interquartile distance (IQD), mean, median and the whiskers (1,5*IQD).
+Data instances that lay above or under the whiskers are depicted as outliers in a univariate sence.
+Instances, that are coloured in red are instances, that are outliers in the multivariate sence
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{Images/Thyroid_unprocessed.pdf}
     \caption{Basic values of the unprocessed Thyroid Dataset}
-\end{figure}
-
-
-The table displays the basic values for the remaining variables.
-Age is the only dimension thats has no missing data. 
-Therefor the mean of age is surprisingly high with 73,56 years.
-Comparing it with the median age of 55 years, I conclude, that an outlier biases the mean age.
-My conclusion is been confirmed by looking at the maxmimum of age, wich is 65526 years explaining the big standard deviation.
-That surley is an outlier.
-For the rest of the dimensions I'm lacking the medical expertise to determine unusual values.
-
-
-In the dataset supplied by ODDS, the missing values where dropped.
-That means, that if a missing data occured, the whole instance had to be removed.
-There are different ways to hanlde missing data. 
-Removing them is disadventageous because it removes existing data in that instance.
-
-
-Handleling missing data is a crucial task in data analytics.
-The results can be biased, if it is not done with care. 
-For outlier detection it is important, that the imputation method is not triggering the masking effect, resulting in fewer detectable outliers. 
-Other methods, besides removing whole instances, are hot imputation, mean imputation and regression imputation.
-Those methods always fill some value into the missing data.
-In hot imputation the missing value is replaced by a randomly chosen representative value.
-While mean imputation is filling the missing data with the mean of the observed values, median imputation is filling the missing data with the median of the other instances.
-Regression imputation is filling the missing value by predicting them via a regression model.
-
-
-Wich methods can be used is determined by the type of missing data and the task wich the dataset is been used.
-In cases where the data is missing completely at random (MCAR) the data is missing independently of observed or missing values.
-Data is missing at random (MAR) when the data are missing independently of the values of the missing data.
-Data is missing not at random (MNAR) if it missing because of its characteristics.
-All types of missing data can be met with all the methods described except of MNAR.
-By using the imputation methods I could be introducing a masking effect.
-But the goal of the imputation is to maintain as much as possible data, not to regress relationsships. 
-Values missing not at random is not the problem.
-Regression imputation and hot imputation could be a viable option but this thesis is about outlier detection not imputation methods.
-Therefor I chose the median imputation, because the median is a outlier robust parameter therefor not influencing the .
-
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\textwidth]{Images/Missing_data.pdf}
-    \caption{Percentage of Missing Data per dimension}
-\end{figure}
-
-
-\subsubsection{Statistical Summarization}
-\textcolor{red}{Central tendencies}
-
-
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\textwidth]{Images/Thyroid_Processed_Boxplot.pdf}
-    \caption{Boxplots of the transformed Thyroid Dataset - Outliers excluded}
 \end{figure}
 
 
