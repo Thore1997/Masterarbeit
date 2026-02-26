@@ -1,11 +1,11 @@
 import scipy.io
 import os
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score, roc_auc_score, average_precision_score # Added AUPRC
+import numpy as np
+from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
 from pyod.models.mcd import MCD
 
-# 1. Load Data
-file_path = os.path.join('..', 'Reproduction', 'Data', 'wineori.mat')
+# 1. Load Data (Treating the whole dataset as one population)
+file_path = os.path.join('Reproduction', 'Data', 'wineori.mat')
 
 if not os.path.exists(file_path):
     print(f"Error: {file_path} not found.")
@@ -14,29 +14,30 @@ else:
     X = data['X']
     y = data['y'].ravel()
 
-    # 2. Split (50/50 as per your preference)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+    # 2. Calculate Global Contamination
+    # In a pure statistical sense, you'd guess this, but here we use the ground truth
+    contam = (y == 1).sum() / len(y)
 
-    # 3. Calculate Contamination
-    contam = (y_train == 1).sum() / len(y_train)
-
-    # 4. Initialize MCD
+    # 3. Initialize MCD
+    # This is now acting as a robust estimator of the dataset's parameters
     clf = MCD(contamination=contam, random_state=42)
 
-    # 5. Fit
-    clf.fit(X_train)
+    # 4. "Fit" becomes "Estimate"
+    # The algorithm finds the h-subset with the lowest determinant covariance
+    clf.fit(X)
 
-    # 6. Predict and Score
-    predictions = clf.predict(X_test)
-    test_scores = clf.decision_function(X_test) # Raw anomaly scores
+    # 5. Extract results for the SAME data points
+    # labels_ contains 0 for inliers and 1 for outliers based on the whole set
+    predictions = clf.labels_
+    anomaly_scores = clf.decision_scores_
 
-    # 7. Metrics
-    f1_macro = f1_score(y_test, predictions, average='macro')
-    auc_roc = roc_auc_score(y_test, test_scores)
-    # Average Precision represents the Area Under the Precision-Recall Curve (AUPRC)
-    auprc = average_precision_score(y_test, test_scores)
+    # 6. Metrics
+    f1_macro = f1_score(y, predictions, average='macro')
+    auc_roc = roc_auc_score(y, anomaly_scores)
+    auprc = average_precision_score(y, anomaly_scores)
 
-    print(f"--- MCD Results ---")
+    print(f"--- Statistical MCD Analysis (Whole Dataset) ---")
+    print(f"Total Samples:    {len(X)}")
     print(f"F1 Score (Macro): {f1_macro:.4f}")
     print(f"ROC-AUC Score:    {auc_roc:.4f}")
     print(f"AUPRC Score:      {auprc:.4f}")
