@@ -18,7 +18,7 @@ class Data_Loader:
         rel_path = os.path.join("Data/",dataset_name)
         abs_file_path = os.path.join(script_dir, rel_path)
         mat_files=['annthyroid','arrhythmia','breastw','cardio','forest_cover','glass','ionosphere','letter','lympho','mammography','mnist','musk',
-                   'optdigits','pendigits','pima','satellite','satimage','shuttle','speech','thyroid','vertebral','vowels','wbc','wine','thyroid_processed_dataset']
+                   'optdigits','pendigits','pima','satellite','satimage','shuttle','speech','thyroid','vertebral','vowels','wbc','wine','wineori','wine_normalized']
         if dataset_name in mat_files :
             print ('generic mat file')
             return self.build_train_test_generic_matfile(abs_file_path)
@@ -52,7 +52,7 @@ class Data_Loader:
     def build_train_test_generic_matfile(self,name_of_file):  # takes a matrice that contains the entire dataset, and creates a trainset with 50% of the data of all normals, and the rest are test
         dataset = scipy.io.loadmat(name_of_file)
         X = dataset['X']
-        classes = dataset['Y']
+        classes = dataset['y']
         jointXY = torch.cat((torch.tensor(X,dtype=torch.double), torch.tensor(classes,dtype=torch.double)), dim=1)
         normals=jointXY[jointXY[:,-1]==0]
         anomalies=jointXY[jointXY[:,-1]==1]
