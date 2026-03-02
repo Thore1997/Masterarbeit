@@ -52,7 +52,7 @@ Instances, that are diagnosed outliers and are outliers defined by the ground tr
 Instances that are not coloured are diagnosed outliers but are not in fact outliers.
 Those abnormal values can be explained by other dimensions.
 By not incorporating the correlations, this methods of outliers detection would be detecting a number of false positives. 
-
+The instance 13 is a special dimension, because it contains 
 
 
 \begin{figure}[h]
@@ -61,12 +61,7 @@ By not incorporating the correlations, this methods of outliers detection would 
     \caption{Boxplots}
 \end{figure}
 
-The table depicts the usual boxplots with 1,5*interquartile range, wiskers, mean and median.
-In traditional boxplots there are instances shown as outliers, that are more extreme then the 1,5*interquartile range.
-I  forgo without them, because this thesis is not about outlier detection in univariante distributions.
-The difference in mean and median in all features except feature 1 is neglectable small. 
-The boxplot of feature 1 has be more analysed, because the mean and the median differ a lot.
-Thats a sign, that feature 1 is skewed to right and distibutions does not follow a normal distribution.
+
 
 
 To be statistically sure, I apply the Shapiro-Wilk test for Normality.
