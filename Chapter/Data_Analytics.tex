@@ -30,29 +30,31 @@ To give an clue to wich feature what resembles, here the names of the features:
     \caption{Featurenames}
 \end{figure}
 
-\subsubsection{Statistical Summarization}
+\subsubsection{Univariate Analysis}
 In this section  I will describe the central tendencies of the dataset, beginning with univariate analysis.
 Figure three is depicting boxplots per feature in the dataset.
-Depicted is the interquartile distance (IQD), mean, median and the whiskers (1,5*IQD).
-The red dotted line is the average and the grey line is the median of the feature.
-The average is not robust against outliers, not as the median. 
+The mean, median, interquartile Range (IQR) and the whiskers (1,5*IQD) are displayed.
+The red dotted line is the mean and the grey line is the median of the feature.
+The mean is not robust against outliers, not like the median. 
 The difference between the two parameters can be interpreted as skewdness of the distribution. 
-If the mean is bigger than the median, the distribution is left skewed.
-If the mean is smaller than the median, the distribtion is right skewed.
-This is especially pronound for Malic Acid (Feature 2). 
+If the mean is bigger than the median, the distribution is right-skewed.
+If the mean is smaller than the median, the distribtion is left-skewed.
+This is especially pronounced for Malic Acid (Feature 2). 
 All of the features are left skewed, except of Feature 8 and 12.
-But those differences are not as profound as other differences of other features 
-Data instances that lay above or under the whiskers are depicted as outliers in a univariate sence.
-Some features contain more outliers than other features. 
-Only three instances in feature 3 and 4 are outliers because of their small value. 
-All the other outliers are defined as outliers because of their large value. 
-Per definitionem those outliers could be global outliers, because of their fringe values. 
-To further investigate those outliers, I compared the ground truth with the outliers diganosed with the IQR. 
-Instances, that are diagnosed outliers and are outliers defined by the ground truth are coloured in red.
-Instances that are not coloured are diagnosed outliers but are not in fact outliers.
-Those abnormal values can be explained by other dimensions.
-By not incorporating the correlations, this methods of outliers detection would be detecting a number of false positives. 
-The instance 13 is a special dimension, because it contains 
+But those differences are not as pronounced as other differences of other features.
+That means, that the values of those instances tend to be skewed to major values. 
+
+
+The IQR dislayes 50\% of the data, that sorrounds the median.
+The wider the IQR the bigger the variance of that instance is and vice versa. 
+The different features have wide range of boxes. 
+While feature 3,4,5 and 6 have a narrow IQR, does feature 12 a peculiar IQR.
+
+
+If there is no outlier in that instance the wiskers will display the range of the rest of the data.
+Like before with the mean-median-comparison, the wiskers display the skewness of the distribution.
+If the top wisker is longer than the bottom wisker, the distribution will be right-skewed and vice versa. 
+Especially feature 2, 6, 7, 10 and 12 are features that that are skewed to major values.
 
 
 \begin{figure}[h]
@@ -62,24 +64,62 @@ The instance 13 is a special dimension, because it contains
 \end{figure}
 
 
+Some features contain outlier dotts, that are displayed above or under the wiskers.
+A boyplot defines an outlier as an abnormal value of an instances.
+That means, that those values can be interpreted as an global outlier.
+They are far away from other values in its distibution. 
+Only three instances in feature 3 and 4 are outliers because of their minor values.
+All the other outliers are defined as outliers because of their major values. 
+
+
+Boxplots do not include the relationships between variables like its correlations.
+To further analyse those outliers, I compared the ground truth with the boxplot outliers.
+Some outliers could be defined as outliers, but in fact could be explained by a relationship of another variable. 
+Outliers that are boxplot outliers as well as ground truth outliers are coloured in red.
+As depicted in figure 3, not all boxplot outliers are in fact outliers.
+The boxplot outliers that are not ground truth outliers are wrongly detected, hence false positives.
+Depending on the method of treatement, using a boxplot to analyse outliers could have negative side effects on experimental results.
+
+
+Analysing relationsships between variables, the boxplot can give only hints for the relationships.
+For example the boxplot defined 8 instance correctly as outliers, hence the majority of the abnormal class of wine contains a unusually high amount of Proline.
+It seems to be a collective cluster in that dimension only, knowing that the dataset contains only 10 outliers in total. 
+For that specific data that means, that the wine of the first wine grower has an unusual amount of Proline.
+In other dimensions other instances were defined as boxplot outliers, but were not ground truth outliers. 
+That means, that the unsusual value of them could be explained by its relationship to other dimensions. 
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Images/Data/heatmap.pdf}
+    \caption{Correlation Heatmap between pairs of Dimensions}
+\end{figure}
+
+
+Figure 4 is displaying the Pearson correlation between pairs of dimensions.
+I chose to display the Pearson correlation because there was no difference between the Spearman and Pearson correlation.
+The Spearman correlation is better used in datasets, that have non-linear relationships.
+Furthermore it is robust against gloabl outliers, because it ranks the values befor calculating the correlation. 
+I calculated both and realized that there is not a difference, implying linear relationships between the dimensions.
+Moreover the outliers in the dataset are small enough and the dataset is imbalanced enough, that the coefficient does not change. 
+Pearson correlation displays the realtionship between two variabels by assigning a number to it.
+If the coefficient is positive, the movement of the value of feature A is rectified with the value of feature B.
+If the coefficient is negative, the movement of the value of feature A is contrary to the movement of feature B's value.
+If the coefficient is 0, the value stays the same when the value of feature B shifts.
+
+The correlations between the dimensions vary.
+The most correlated features are feature 7 and feature 6 with +0,806292. 
+If feature 7 increases 1 unit, feature 6 will follow by increasing about 0,806292 units as well.
+
+
 
 
 To be statistically sure, I apply the Shapiro-Wilk test for Normality.
 The requirements are met.
-With 3772 instances the data does not exceed the maximum of 5000 instances and therefore has a reasonable sensitivity.
-The underlying distributions have to be in a metric scale level, the data is iid and . 
-
-
 The Null is H0: 
-Nevertheless for every instance the Shapiro-Wilk test for Normality the H0 is rejected. 
-None of the 6 instances follows a normal distribution.
-For further information the results are placed in the appendix. \todo{display table into appendix}
 
-    Statistical Summarization
-        - Central tendencies and dispersion:
-            - Mean, variance, standard deviation
-        - Shape and distribution:
-            - Kurtosis and Skewness
+
+   
             - Multivariate Normality: Henze-Zirkler test - if data is non normal, statistical methods will fail
             - Modality: Clustering Tendency (Hopkins Statistics) - If data has multiple naturl clusters ,multimodel, global outlier methods will fail 
         - Cardinality and Sparsity:
@@ -116,7 +156,6 @@ For further information the results are placed in the appendix. \todo{display ta
             
     Preprocessing and transformation
         - Multicollinearity: PCA
-        - Missing values: how to handle
         - High cardinality: Noralization
 
 \subsubsection{The Problem of synthetic data}
