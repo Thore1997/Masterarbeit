@@ -33,6 +33,7 @@ To give an clue to wich feature what resembles, here the names of the features:
 \subsubsection{Statistical Summarization}
 In this section  I will describe the central tendencies of the dataset, beginning with univariate analysis.
 Figure three is depicting boxplots per feature in the dataset.
+Depicted is the interquartile distance (IQD), mean, median and the whiskers (1,5*IQD).
 The red dotted line is the average and the grey line is the median of the feature.
 The average is not robust against outliers, not as the median. 
 The difference between the two parameters can be interpreted as skewdness of the distribution. 
@@ -40,10 +41,19 @@ If the mean is bigger than the median, the distribution is left skewed.
 If the mean is smaller than the median, the distribtion is right skewed.
 This is especially pronound for Malic Acid (Feature 2). 
 All of the features are left skewed, except of Feature 8 and 12.
- 
-Depicted is the interquartile distance (IQD), mean, median and the whiskers (1,5*IQD).
+But those differences are not as profound as other differences of other features 
 Data instances that lay above or under the whiskers are depicted as outliers in a univariate sence.
-Instances, that are coloured in red are instances, that are outliers in the multivariate sence
+Some features contain more outliers than other features. 
+Only three instances in feature 3 and 4 are outliers because of their small value. 
+All the other outliers are defined as outliers because of their large value. 
+Per definitionem those outliers could be global outliers, because of their fringe values. 
+To further investigate those outliers, I compared the ground truth with the outliers diganosed with the IQR. 
+Instances, that are diagnosed outliers and are outliers defined by the ground truth are coloured in red.
+Instances that are not coloured are diagnosed outliers but are not in fact outliers.
+Those abnormal values can be explained by other dimensions.
+By not incorporating the correlations, this methods of outliers detection would be detecting a number of false positives. 
+
+
 
 \begin{figure}[h]
     \centering
