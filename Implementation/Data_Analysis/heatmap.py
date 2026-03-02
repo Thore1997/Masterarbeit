@@ -3,7 +3,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-mat = scipy.io.loadmat('../../Reproduction/Data/wineori.mat')
+mat = scipy.io.loadmat('Reproduction/Data/wineori.mat')
 data = mat['X']
 
 corr_matrix = np.corrcoef(data, rowvar=False)

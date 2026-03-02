@@ -22,7 +22,7 @@ def plot_boxplots(df):
     for i, col in enumerate(numeric_cols):
         data = df[col]
 
-        sns.boxplot(y=data, ax=axes[i], color='beige', showfliers=True)
+        sns.boxplot(y=data, ax=axes[i], color='lightgreen', showfliers=True)
 
         col_mean = data.mean()
         col_median = data.median()

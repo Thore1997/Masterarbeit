@@ -23,29 +23,33 @@ Correspondingly, the outlier ratio is 7,7\% placing it in the \todo{filling the 
 Conviently, Shebuto et al excluded all missing data and left only continious instances.
 In the following the feature names are not included into the diagrams because of design choices.
 To give an clue to wich feature what resembles, here the names of the features: 
-\todo{insert: table of names}
-
-
-\subsubsection{Statistical Summarization}
-In this section  I will describe the central tendencies of the dataset, beginning with univariate analysis.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\textwidth]{Images/.pdf}
-    \caption{Basic values of the unprocessed Thyroid Dataset}
+    \includegraphics[scale=0.75]{Images/Data/Table_of_Names.pdf}
+    \caption{Featurenames}
 \end{figure}
-\textcolor{red}{Central tendencies}
-This diagram is showing a boxplot per feature in the dataset.
+
+\subsubsection{Statistical Summarization}
+In this section  I will describe the central tendencies of the dataset, beginning with univariate analysis.
+Figure three is depicting boxplots per feature in the dataset.
+The red dotted line is the average and the grey line is the median of the feature.
+The average is not robust against outliers, not as the median. 
+The difference between the two parameters can be interpreted as skewdness of the distribution. 
+If the mean is bigger than the median, the distribution is left skewed.
+If the mean is smaller than the median, the distribtion is right skewed.
+This is especially pronound for Malic Acid (Feature 2). 
+All of the features are left skewed, except of Feature 8 and 12.
+ 
 Depicted is the interquartile distance (IQD), mean, median and the whiskers (1,5*IQD).
 Data instances that lay above or under the whiskers are depicted as outliers in a univariate sence.
 Instances, that are coloured in red are instances, that are outliers in the multivariate sence
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\textwidth]{Images/Thyroid_unprocessed.pdf}
-    \caption{Basic values of the unprocessed Thyroid Dataset}
+    \includegraphics[width=1.0\linewidth]{Images/Data/boxplots.pdf}
+    \caption{Boxplots}
 \end{figure}
-
 
 The table depicts the usual boxplots with 1,5*interquartile range, wiskers, mean and median.
 In traditional boxplots there are instances shown as outliers, that are more extreme then the 1,5*interquartile range.
