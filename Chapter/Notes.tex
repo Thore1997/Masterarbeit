@@ -1,0 +1,67 @@
+Methods: 
+Minimum Coavariance Determinant is asymptotically normal and robust. But it is hard to compute.
+
+
+Therefor the authors constructed an algorithm, thats much faster than the first algorithm.
+MCD Alternative: for dataset with very few observations/ excessive noise use Minimum Regularized Covariance Determinant
+Insert: the curse of dimensionality
+
+For the end: how can I be sure, that my results are legit?
+
+for dataset analysis: multicolinearityt?
+
+
+
+What is the solution?
+The Minimum Covariance Determinant, first published in 1985 by , is a robust estimator of the covariance matrix in multidimensional dataset.
+Given a dataset of n observations and a predetermined subset sie h, the MCD searches for the h observations whose empirical covariance matrix has the smalltest possible determinant.
+A determinant is a mathematical property of a matrix.
+
+How does it work?
+
+
+What are the advantages?
+
+What are the disadvantages?
+
+
+Data_Analytics:
+The requirements are met.
+The Null is H0: 
+
+
+   
+            - Multivariate Normality: Henze-Zirkler test - if data is non normal, statistical methods will fail
+            - Modality: Clustering Tendency (Hopkins Statistics) - If data has multiple naturl clusters ,multimodel, global outlier methods will fail 
+        - Cardinality and Sparsity:
+            - Identify the number of unique values in categorical - High-cardinality categorical variables (like "Zip Code") can create "sparse" 
+                regions that look like outliers but are actually just rare valid entries.
+            - Visualisation: 
+        - Bivariate Analysis
+            - Bridge the gap between individual data points and multicolinearity
+            - Multicollinearity: VIF
+            - Mutual information: identify non-linear dependencies thats standard correlation might miss
+       - Visualisation: A table of features, type (numerical/categorical) and cardinality.
+
+
+    Geomatric structure
+        high dimensional data rearly is uniformly
+        - Intrinstic dimensionality (ID): 
+            - Definition: ID is the minimum number of variables (or dimensions) required to represent the essential information within datatset and without significant loss.
+                is the variance just drivenby a small number of data
+            - Problem: Curse of Dimensionality. The volume of the space increases so fast that the data becomes sparse
+                If your dataset has 50 variables but 95\% of the variance is captured by 3 variables, the "curse of dimensionality" is low, and simple methods (like Mahalanobis Distance) might beat complex ones (like Isolation Forest).
+            - Visualization: Heatmap, Use a method like the Scree Plot from PCA
+        - Manifold structure: Is the data on a curved surface or is it clustered
+            - Definition: manifold structure refers to the hypothesis that high dimensional data actually lives on a mich simpler, lower-dimensional surface embedded within that high-dimensional space
+            - Problem: Traditional distances fail on manifold. If two points are on the opposide side of a fold, they might look close in 3D space, but they are actually very far apart along the surface of the paper.
+            - Impact: A data point miht look like an outlier in 3D becaus its away from the center, but is perfectly normal when you follow the flow of the manifold. 
+                or the opposite. A point could be inside thedata cloud but odd the manifold surface - making a hidden outlier
+            - Analyze: Estimate Intrinsic Dimensionality using Maximum Likelihood Estimation of intrinsic dimension
+            - Visualization: t-SNE plot or UMAP, those are specifically designed to unfold the manifold so you can see 2D structure 
+            - Result: if the manifold are varying in density, a global method (T-Score) will fail, Manifold aware methods are more suitable (LOF) 
+            
+            
+    Preprocessing and transformation
+        - Multicollinearity: PCA
+        - High cardinality: Noralization

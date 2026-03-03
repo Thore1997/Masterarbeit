@@ -5,28 +5,27 @@ The datasets contain 32 datasets wich different amounts of dimensions and instan
 To take the whole picture of a method, it is beneficial to use a wide range of different datasets, to determine the advantages and disadvantages of a method.
 Nevertheless, using upto 32 different datasets is not feasable for my thesis, because it wont be in the scope of this thesis.
 Therefore I will analyse the wine dataset in great detail, to use those finding in the result section.
-The goal of this section is to anaylse and describe the dataset
+The goal of this section is to anaylse and describe the dataset.
 Therefor I will first summarize the dataset statistically, including central tendencies, shape, distribution, cardinality and spracity.
 Subsequently I will analyse bivariate relationships inside the dataset as well.
 Finally I will analyse the geomatric structure of the dataset, including intrinsic dimensionality and manifold structure.
 
 
 \subsubsection{Introduction}  
-\textcolor{red}{Describe what type of data has been collected in the data, How was it collected,What is the ground truth - how are the lables be defined? How are outliers defined in specific context}
 The wine dataset was donated from \citet{wine_109} at the 30.06.1991 to the UC Irvibe machine learning Repository.
 The authers collected data about chemical components of wine wich came from three different italian wine growers. 
 First it was used as a multi classification task dataset, because it had three classes, one for each wine grower.
 For outlier detection Shebuti et al tranformed this dataset into an unbalanced binary classification dataset and offered it in the ODDS Repository for general scientific uses. 
 129 instances (wines) and 13 variables were left in the remaining dataset.
-She combined the wines of wine grower two and three to be the normal class, resulting in 116 wines and wine grower one was defined as the anomaly class, resulting in 10 abnormal wines.
+She combined the wines of wine grower two and three to be the normal class, resulting in 119 wines and wine grower one was defined as the anomaly class, resulting in 10 abnormal wines.
 Correspondingly, the outlier ratio is 7,7\% placing it in the \todo{filling the average outlier ratio of ODDS}
 Conviently, Shebuto et al excluded all missing data and left only continious instances.
 In the following the feature names are not included into the diagrams because of design choices.
-To give an clue to wich feature what resembles, here the names of the features: 
+Therefor the firgur 1 displays the names of the features: 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.5]{Images/Data/Table_of_Names.png}
+    \includegraphics[scale=0.5]{Images/Data/Table_of_Names.pdf}
     \caption{Featurenames}
 \end{figure}
 
@@ -59,7 +58,7 @@ Especially feature 2, 6, 7, 10 and 12 are features that that are skewed to major
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.0\linewidth]{Images/Data/boxplots.png}
+    \includegraphics[width=1.0\linewidth]{Images/Data/boxplots.pdf}
     \caption{Boxplots}
 \end{figure}
 
@@ -91,7 +90,7 @@ That means, that the unsusual value of them could be explained by its relationsh
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.0\linewidth]{Images/Data/heatmap.png}
+    \includegraphics[width=1.0\linewidth]{Images/Data/heatmap.pdf}
     \caption{Correlation Heatmap between pairs of Dimensions}
 \end{figure}
 
@@ -126,55 +125,44 @@ Thats the case for feature 5.
 Instances in the first and last quantiles of the feature distribution deviate from the expected normal distribution, indicating that there are more extreme values than expected in a normal distribution.
 If the points in the Q-Q plot are formed as a S-shaped curve, the data is skewed to the right or left depending on where the points exceed the normal distirbution line, as seen in feature 7 wich is left skewed.
 
-To be statistically sure, I apply the Shapiro-Wilk test for Normality.
-
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.75]{Images/Data/Q-Q Plot.png}
-    \caption{Featurenames}
+    \includegraphics[width=\textwidth]{Images/Data/Q-Q Plot.pdf}
+    \caption{Q-Q Plot for each feature}
 \end{figure}
 
 
-The requirements are met.
-The Null is H0: 
+To be statistically sure, I apply the Shapiro-Wilk test for Normality.
 
+To further analyse the dataset, I will use the Uniform Manifold Approximation and Projection (UMAP) to reduce the dimensionality of the dataset, because it is the standard dimension reduction technique in scientific research.
+The goal is to visualise the datasets manifold structure, meaning that the data is clustered or on a curved surface.
+UMAP is a non-linear dimension reduction technique that is designed to preserve the local structure of the data, making it ideal for visualizing complex datasets.
+It does this by calculate the k nearest neighbors of each instance.
+It need this information to determine, if the data is in a more dense cluster or in a more sparse region of the data space.
+It drwas a local radius around the k nearest neighbors.
+If the neighbor of a given instance is closer compared to other instances, the connection will be defined as strong.
+The further away the neighbor is, the weaker the connection is defined. 
+The algorithms defines data instances as being seperated if its not in the local radius of each other.
+The resulting neighborhood map is integrated into one grapf by simplicial complex.
+A scatter plot is generated with same number of instances randomly placed onto it.
+Accordingly to the grapf, instances wich are close are pulled together and instances whose connection is weak are pushed appart.
+That interation is complete, if a low energy state is reached.
 
-   
-            - Multivariate Normality: Henze-Zirkler test - if data is non normal, statistical methods will fail
-            - Modality: Clustering Tendency (Hopkins Statistics) - If data has multiple naturl clusters ,multimodel, global outlier methods will fail 
-        - Cardinality and Sparsity:
-            - Identify the number of unique values in categorical - High-cardinality categorical variables (like "Zip Code") can create "sparse" 
-                regions that look like outliers but are actually just rare valid entries.
-            - Visualisation: 
-        - Bivariate Analysis
-            - Bridge the gap between individual data points and multicolinearity
-            - Multicollinearity: VIF
-            - Mutual information: identify non-linear dependencies thats standard correlation might miss
-       - Visualisation: A table of features, type (numerical/categorical) and cardinality.
+Two main hyperparameters of UMAP has to be defined. 
+Those hyperparameters are defining how the visualization is generated, hence there is no definitive correct way to set them.
 
+\begin{enumerate}
+  \item Number of Neighbors: This hyperparameter defines the number of nearest neighbors that UMAP will consider for defining a neighborhood
+    It sets the focus of the analysis. The trade-off relationsship determines what will be displayed in the visualization 
+    If the number is small, UMAP will focus on local structure, but if the number is high, UMAP will focus more on global structure.
+   \item Minimum Distance: This hyperparameter controls how tightly UMAP packs points together in the low-dimensional space. 
+    A smaller minimum distance will result in a more clustered visualization, while a larger minimum distance will produce a more spread-out visualization.
+    If the goal is to determin clusters, it is advisable to set the number of neighbors to a small number, becaus it will focus on local structure. 
+    If the goal is to determine the overall shape of the data, it is advisable to set the number of neighbors to a high number, because it will focus on global structure.
+    In that case, I want to visualise the overall shape of the data, hence I set hyperparameter to a high number.
+\end{enumerate}
 
-    Geomatric structure
-        high dimensional data rearly is uniformly
-        - Intrinstic dimensionality (ID): 
-            - Definition: ID is the minimum number of variables (or dimensions) required to represent the essential information within datatset and without significant loss.
-                is the variance just drivenby a small number of data
-            - Problem: Curse of Dimensionality. The volume of the space increases so fast that the data becomes sparse
-                If your dataset has 50 variables but 95\% of the variance is captured by 3 variables, the "curse of dimensionality" is low, and simple methods (like Mahalanobis Distance) might beat complex ones (like Isolation Forest).
-            - Visualization: Heatmap, Use a method like the Scree Plot from PCA
-        - Manifold structure: Is the data on a curved surface or is it clustered
-            - Definition: manifold structure refers to the hypothesis that high dimensional data actually lives on a mich simpler, lower-dimensional surface embedded within that high-dimensional space
-            - Problem: Traditional distances fail on manifold. If two points are on the opposide side of a fold, they might look close in 3D space, but they are actually very far apart along the surface of the paper.
-            - Impact: A data point miht look like an outlier in 3D becaus its away from the center, but is perfectly normal when you follow the flow of the manifold. 
-                or the opposite. A point could be inside thedata cloud but odd the manifold surface - making a hidden outlier
-            - Analyze: Estimate Intrinsic Dimensionality using Maximum Likelihood Estimation of intrinsic dimension
-            - Visualization: t-SNE plot or UMAP, those are specifically designed to unfold the manifold so you can see 2D structure 
-            - Result: if the manifold are varying in density, a global method (T-Score) will fail, Manifold aware methods are more suitable (LOF) 
-            
-            
-    Preprocessing and transformation
-        - Multicollinearity: PCA
-        - High cardinality: Noralization
 
 \subsubsection{The Problem of synthetic data}
 \textcolor{red}{ Take on here }
