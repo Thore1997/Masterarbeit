@@ -26,7 +26,7 @@ To give an clue to wich feature what resembles, here the names of the features:
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.75]{Images/Data/Table_of_Names.pdf}
+    \includegraphics[scale=0.5]{Images/Data/Table_of_Names.png}
     \caption{Featurenames}
 \end{figure}
 
@@ -59,7 +59,7 @@ Especially feature 2, 6, 7, 10 and 12 are features that that are skewed to major
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.0\linewidth]{Images/Data/boxplots.pdf}
+    \includegraphics[width=1.0\linewidth]{Images/Data/boxplots.png}
     \caption{Boxplots}
 \end{figure}
 
@@ -91,9 +91,19 @@ That means, that the unsusual value of them could be explained by its relationsh
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.0\linewidth]{Images/Data/heatmap.pdf}
+    \includegraphics[width=1.0\linewidth]{Images/Data/heatmap.png}
     \caption{Correlation Heatmap between pairs of Dimensions}
 \end{figure}
+
+
+The correlations between the dimensions vary.
+If the coefficient is positive, the movement of the value of feature A is rectified with the value of feature B.
+If the coefficient is negative, the movement of the value of feature A is contrary to the movement of feature B's value.
+If the coefficient is 0, the value stays the same when the value of feature B shifts.
+The dimensions that are the most correlated are total phenols and flavonoids (feature 6 and 7) with a correlation of 0.806292.
+OD280/OD350 of diluted wines and flavonoids (feature 12 and 7) are highly correlated as well witch a correlation of 0.772444.
+Hue and color intensity are highly negatively correlated with a correlation of -0.639528.
+The second most negatively correlated dimensions are OD280/OD350 of diluted wines and color intensity (feature 12 and 10) with a correlation of -0.594243.
 
 
 Figure 4 is displaying the Pearson correlation between pairs of dimensions.
@@ -103,18 +113,29 @@ Furthermore it is robust against gloabl outliers, because it ranks the values be
 I calculated both and realized that there is not a difference, implying linear relationships between the dimensions.
 Moreover the outliers in the dataset are small enough and the dataset is imbalanced enough, that the coefficient does not change. 
 Pearson correlation displays the realtionship between two variabels by assigning a number to it.
-If the coefficient is positive, the movement of the value of feature A is rectified with the value of feature B.
-If the coefficient is negative, the movement of the value of feature A is contrary to the movement of feature B's value.
-If the coefficient is 0, the value stays the same when the value of feature B shifts.
-
-The correlations between the dimensions vary.
-The most correlated features are feature 7 and feature 6 with +0,806292. 
-If feature 7 increases 1 unit, feature 6 will follow by increasing about 0,806292 units as well.
 
 
-
+As described before, there are hints, that the distribution of the data is slighly skewed. 
+To analyse it further, I plotted a Normal Q-Q plot in figure 5 for each feature, to compare the distribution of the data with a normal distribution.
+The Normal Q-Q plot is a scatterplot that compares the quantiles of the data with the quantiles of a normal distribution.
+If the data is normally distributed, the points in the Q-Q plot will approximately lie on a straight line.
+Analysing the figure, non feature is perfectly normally distributed, but some features are more normally distributed than others.
+Feature 3 and 4 are the most normally distributed features, because their points are closer to the straight line, except for the last instance, that deviates from the line.
+If the ordered valus formed as a bell curve, the data has heavy tails, meaning that there are more extreme values than expected in a normal distribution.
+Thats the case for feature 5.
+Instances in the first and last quantiles of the feature distribution deviate from the expected normal distribution, indicating that there are more extreme values than expected in a normal distribution.
+If the points in the Q-Q plot are formed as a S-shaped curve, the data is skewed to the right or left depending on where the points exceed the normal distirbution line, as seen in feature 7 wich is left skewed.
 
 To be statistically sure, I apply the Shapiro-Wilk test for Normality.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.75]{Images/Data/Q-Q Plot.png}
+    \caption{Featurenames}
+\end{figure}
+
+
 The requirements are met.
 The Null is H0: 
 
@@ -125,12 +146,9 @@ The Null is H0:
         - Cardinality and Sparsity:
             - Identify the number of unique values in categorical - High-cardinality categorical variables (like "Zip Code") can create "sparse" 
                 regions that look like outliers but are actually just rare valid entries.
-            - Sparsity: determine the percentage of missing values across the feature space
             - Visualisation: 
         - Bivariate Analysis
             - Bridge the gap between individual data points and multicolinearity
-            - Correlation Matrix: Pearson for linear and Spearman or Kendall for non-linear/rank based relationships
-            - Categorical Association: Chi-Square tst or Cramer's V to see specific categories are associated with one other
             - Multicollinearity: VIF
             - Mutual information: identify non-linear dependencies thats standard correlation might miss
        - Visualisation: A table of features, type (numerical/categorical) and cardinality.
