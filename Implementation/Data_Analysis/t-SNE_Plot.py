@@ -4,7 +4,7 @@ from sklearn.manifold import TSNE
 from sklearn.preprocessing import StandardScaler
 
 
-mat = scipy.io.loadmat('Data/wineori.mat')
+mat = scipy.io.loadmat('../../Reproduction/Data/wineori.mat')
 data = mat['X']
 y = mat['y'].ravel()
 

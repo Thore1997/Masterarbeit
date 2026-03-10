@@ -25,6 +25,7 @@ class DatasetBuilder(Dataset):
 class encoder_a(nn.Module):
     def __init__(self, kernel_size,hdn_size,d):
         super(encoder_a, self).__init__()
+
         self.fc1 = nn.Linear(d-kernel_size, hdn_size) #F network
         self.activation1 = nn.Tanh()
         self.fc2 = nn.Linear(hdn_size, hdn_size*2)
@@ -33,6 +34,7 @@ class encoder_a(nn.Module):
         self.activation3 = nn.LeakyReLU(0.2)
         self.batchnorm_1 = nn.BatchNorm1d(d-kernel_size+1)
         self.batchnorm_2 = nn.BatchNorm1d(d-kernel_size+1)
+
         self.fc1_y = nn.Linear(kernel_size, int(hdn_size/4)) #G network
         self.activation1_y = nn.LeakyReLU(0.2)
         self.fc2_y = nn.Linear(int(hdn_size/4), int(hdn_size/2))

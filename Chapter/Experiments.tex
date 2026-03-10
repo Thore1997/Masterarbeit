@@ -1,83 +1,83 @@
 
-\subsection{Introduction}
-In this thesis I want to examine the three different approaches described above to detect outliers.
-I will use n number of real world datasets. 
-Each varying in number of observations, number of dimensions and number of outliers.
-n Datasets come from the often used ODDS Benchmark Dataset \citep{Rayana:2016}
-And one is selected fro Kaggle \textcolor{red}{is the ODDS Benchmark Dataset enough or should I use the Kaggle one too?}
+\subsection{Experiments}
+This chapter is about the technical destails of the experiments.
+Therefor I will describe the experimental setup and analyse the the arcitecture of the methods, hence the code.
+The goal is to supply an indepth understanding of the implementation and the technical details to fulfill a reproduction of my results. 
 
-\subsection{Experimental design}
-The experiments are run on a Windows 11 Desktop PC, equiped with a Nvidia 
 
-\textcolor{green}
-{Comparing the anomaly detection performance of unsupervised anomaly detection algorithms
-is not as straight forward as in the classical supervised classification case. In contrast to simply
-compare an accuracy value or precision/recall, the order of the anomalies should be taken into
-account. In classification, a wrongly classified instance is for sure a mistake. This is different in
-unsupervised anomaly detection. For example, if a large dataset contains ten anomalies and
-they are ranked among the top-15 outliers, this is still a good result, even if it is not perfect. To
-this end, a common evaluation strategy for unsupervised anomaly detection algorithms is to
-rank the results according to the anomaly score and then iteratively apply a threshold from the
-first to the last rank. This results in N tuple values (true positive rate and false positive rate),
-which form a single receiver operator characteristic (ROC). Then, the area under the curve
-(AUC), the integral of the ROC, can be used as a detection performance measure. A nice inter-
-pretation of the AUC is also given when following the proof from [70] and transform it into
-the anomaly detection domain: The AUC is then the probability that an anomaly detection
-algorithm will assign a randomly chosen normal instance a lower score than a randomly cho-
-sen anomalous instance. Hence, we think the AUC is a perfect evaluation method and ideal for
-comparison. However, the AUC only takes the ranking into account and completely neglects
-the relative difference of the scores among each other. Other measures can be used to cope
-with this shortcoming by using more sophisticated rank comparisons. Schubert et al. [38] com-
-pares different rank correlation methodologies, for example Spearman’s pi and Kendall’s tau as an
-alternative to AUC with a focus on targeting outlier ensembles. A second possible drawback of
-using AUC might be that it is not ideal for unbalanced class problems and methods like area
-under precision-recall curve or Matthews correlation coefficient could possibly better empha-
-size small detection performance changes. Nevertheless, AUC based evaluation has been
-evolved to be the de facto standard in unsupervised anomaly detection, most likely due to its
-practical interpretability, and thus also serves as the measure of choice in our evaluation.
-Please note that the AUC, when it is used in a traditional classification task, typically
-involves a parameter, for example k, to be altered. In unsupervised anomaly detection, the
-AUC is computed by varying an outlier threshold in the ordered result list. As a consequence,
-if a parameter has to be evaluated (for example different k), this yields to multiple AUC values.
-Another important question in this context is how to evaluate k, the critical parameter for most
-of the nearest-neighbor and clustering-based algorithms. In most publications, researchers
-often fix k to a predefined setting or choose “a good k” depending on a favorite outcome. We
-believe that the latter is not a fair evaluation, because it somehow involves using the test data
-(the labels) for training. In our evaluation, we decided to evaluate many different k’s between
-10 and 50 and finally report the averaged AUC as well as the standard deviation. In particular,
-for every k, the AUC is computed first by varying a threshold among the anomaly scores as
-described above. Then, the mean and standard deviation for all these AUCs is reported. This
-procedure basically corresponds to a random-k-picking strategy within the given interval,
-which is often used in practice when k is chosen arbitrarily. The lower bound of 10 was chosen
-because of statistical fluctuations occurring below. For the upper bound, we set a value of 50
-such that it is still suitable for our smaller datasets. We are aware, that one could argue to
-increase the upper bound for the larger datasets or even make it smaller for the small datasets
-like breast-cancer. Fig 8 shows a broader evaluation of the parameter k illustrating that our
-lower and upper bound is in fact useful.}
+\subsubsection{Experimental design}
+The experiments are run on a Desktop PC, equiped with a NVIDIA GeForce RTX 3090 and a 12th gen Intel(R) Core(TM) i9 - 12900k 3.2 GHz CPU.
+The PC has 65536 RAM and 24326 MB of VRAM. 
+It runs Windows 11 Enterprise Version 25H2.
+For the code to implement I used the latest version of the integrated development environment (IDE) PyCharm 2025.3.3.
+I used python 3.12, because there werent all the packages available for the latest version of python.
+I used a virtual environment to manage the dependencies of the project and created a requiremtents.txt file to list all the packages and their versions.
 
-\textcolor{green}
-{Although unsupervised anomaly detection does not utilize any label information in practice,
-they are needed for evaluation and comparison. When new algorithms are proposed, it is com-
-mon practice that an available public classification dataset is modified and the method is com-
-pared with the most known algorithms such as k-NN and LOF. There is a set of typically used
-datasets for classification, which are retrieved from UCI machine learning repository [61]. The
-typical preprocessing comprises of selecting one class as the anomalous class and sub-sampling
-some small amount of instances from that randomly. Unfortunately, the resulting datasets are
-hardly published and cannot be regenerated by other scientists. Since the number of anomalies
-is typically very low, a different subset might result in very different detection scores
-We also put a
-strong emphasis on a semantic background such the evaluation makes sense. This includes the
-two assumptions that (1) anomalies are rare and (2) are different from the norm. Additionally,
-we consider only point anomaly detection tasks as meaningful datasets for benchmarking since
-a different preprocessing might again lead to non-comparable results.
-With our dataset selection, we cover a
-broad spectrum of application domains including medical applications, intrusion detection,
-image and speech recognition as well as the analysis of complex systems. Additionally, the
-datasets cover a broad range of properties with regard to dataset size, outlier percentage and
-dimensionality. To our knowledge, this is the most comprehensive collection of unsupervised
-anomaly detection datasets for algorithm benchmarking. As already stated, we published the
-datasets to encourage researchers to compare their proposed algorithms with this work and
-hope to establish an evaluation standard in the community \citep[p.20]{goldstein2016comparative}}
+
+The authers of the InterCont method, supplied a reproduction package with their paper. 
+The reproduction of the InterCont method went flawlessly and I could reproduce the results of the paper.
+Nevertheless, the authers did not include code for other methods, supposably because they are widely used and implemented in standard libraries.
+Therefore I implemented the k-NN and MCD methods by myself.
+
+
+The reproduction package contained 4 different python-files: main, train, data\_loader and helper\_functions.
+Beginning with main.py, this file orchestrates the experiment. 
+It handles the configuration, load the data and triggers the training process.
+Those configurations can be changed by the command line.
+I run the code without any command line arguments, so I used the default configurations.
+The different configurations are batch size, dataset and faster version.
+The default batch size is 3000, which will perform for my relatively small dataset a full batch gradient descent.
+The default configuration of 3000 was supposedly chosen by the authers, because in the dataset repository are datasets with more dimensions and instances.
+Later I will perform a sensitivity analysis on the batch size, because it is an important hyperparameter for the training process and it can have a significant impact on the results. 
+\todo{insert batch size into theory}
+
+
+The dataset can be changed in the command line argument.
+The reproduction package contains all datasets odf the ODDS repository. 
+Because I am analysing just one dataset and this dataset happens to be the default setting, I neither use it or change the setting.
+The last configuration is the faster version, which I neither use, nor change, because my dataset is relatively small and the default setting is "no" for not implementing the fast version.
+ 
+
+At the end of the file, the authors implemented a command to ensure that the GPU is primarly used and if it is not avaiable, the processed is been run on the CPU.
+Which is also implemented in the train.py file. 
+That file determines the training process of the InterCont method.
+In the beginning of the file, a datapipeline is been implemented by a datawrapper. 
+There the data is determined how many rows a dataset has and how to grab a row. 
+For analysing the calculated anomaly score, the wrapper keeps the index names.
+The machine learning algorithm then can assign the anomaly score to the right row.
+
+
+The next encoder class describes the architecture of the method and determines the neural network.
+The F network is defined in the following lines beginning with line 28 until line 35.
+For the input layer it takes the d-kernel\_size features and puts then through the Tanh activation functionm, resulting in a width of -1 and 1.
+The kernel\_size is a hyperparameter, that defined in line 86 until 94. 
+Depending on the number of dimensions of the dataset, the kernel\_size is set to 2, 10 or d-150. 
+My dataset has 13 dimensions, so the kernel\_size is set to 2.
+The hdn\_size refers to the hiddensize argument.
+Hiddensize determines how many neurons are in the hidden layers.
+Here the hiddenlayers are hardcorded to 200 in line 87. 
+
+
+The first hidden layer is defined in line 31.
+It is defined as an fully connected layer and takes all 200 output values from the previous layer as inputs.
+The inputs are projected to double the number of outputs, hence 400 neurons.
+Temporarily expanding the dimensionality of the dataset to find non-linear relationships.
+The LeakyReLu activation function with its hyperparameter set to 0,2 is implemented in line 32.
+
+
+The output layer the results from the previous layer is compressed to the predefined hiddensize, hence 200 neurons. 
+Because of the compression, the neural network is forced to learn the most important relationsships.
+The LeakyReLu is once again implemented.
+
+
+The smaller G-Network is desigened the same.
+From line 38 to line 45 the architecture of the G-Network is defined.
+The difference between F and G are in the size of the
+
+Moreover the authers implemented the F1 and AUC metrics, which I also want to analyse, but I want to analyse the AUPRC as well.
+So I make small adjustements to their code.
+
+
 
 
 \subsubsection{Cross-Validation}

@@ -1,3 +1,30 @@
+\subsection{Inercont}
+\todo{insert whats about and how will you write this passage}
+\textcolor{green}{procedure}
+explain what contrastive learing is.
+1 whats a Neural network: whats are the differences between deep learning and statistical models?
+    a General informations
+        where do we use it 
+        what are these tasks
+        why do we use them
+        Learning Paradigms
+        Types of NN
+        Feet forward vs feet backward networks
+        advantages disadvantages 
+        Differences between statistics and deep learning (k-NN defined as Machine Learning)
+
+    b Details: 
+        Arcitecture: Layers, Nodes, activation function, bias,
+        Nodes, defining, which number to choose,
+        Weights, definig what happens to them
+        Bias, defining, why do you need bias
+        Activtion function, defining, hat type of af are there, differences
+        Loss function, defining, differences, 
+        Batch
+        learning rate
+
+
+
 Methods: 
 Minimum Coavariance Determinant is asymptotically normal and robust. But it is hard to compute.
 
@@ -77,3 +104,136 @@ Structure: 10 - 12 pages
         k-NN: specify K
         Intercont: describe the F, G networks, wich activation function, wich loss function, arcitecure
         Wich Hardware, Windows version, python version, python packages
+
+
+Robustness 
+    Global Anomalies 
+    Find the maxmimum and minimum of the dataset and create points that are k standard deviasions away
+Local Anomalies
+    Take a real datapoint and movi it just far enough so its no longer in a dense cluster, but still in within the general data cloud
+Cluster Anomalies
+    Generate a small set of points that are very close to each other but far from the main data mass
+Dependency Anomalies
+    It testsif the model understands the relationship between features. Swap features values bewteen two different normal rows
+    If Row A is a "High Income / High Spending" person and Row B is a "Low Income / Low Spending" person, swap their spending. 
+    You now have a "High Income / Low Spending" person (which might be normal) and a "Low Income / High Spending" person (a dependency anomaly)
+
+\subsection{Hyperparameter tuning and Sensitivity analysis}
+I should do it once, because If I change the hyperparameters for every anomalie, I will test the adaptability of the method, not the robustness.
+In this section I will analyse how robust and stable the results are, by changing the hyperparameters in the methods.
+It's important, that here is just written the methodology. 
+So I will concentrate on the how not the why. 
+Therefor it is a part of the experimental design not the result section.
+
+- Introduction 
+    - Motivation: Why is it imporant to test the sensitivity?
+    - Robustness: 
+    - Stability: 
+- MCD
+    - Whats are the hyperparameter - support fraction (h)
+    - contamination parameter ?
+- k-NN  
+    Hyperparameter: k 
+    Hyperparametertuning: Maybe use Octuna as a pyhton framework
+- InterCont
+    Hyperparameter: u 
+
+\subsection{k-NN: Choice of hyperparameter k, hyperparameter tuning}
+\subsubsection{k-NN: Choice of hyperparameter k, hyperparameter tuning}
+I tried to reproduce the F1-Score for all datasets except Abalone, KDDCUP99-Rev and KDDCUP99, because where not in the official ODDS Dataset. 
+In the original Dataset there were sort of the same datasets, but I think the auther updated it. So I rejected them from further analysis. 
+First I tried reproducing by using the classic Python machine leaning library sckit-learn. 
+I noticed that the result differ from the ones in the paper.
+As the auther of the paper noticed, they used the python library PyOD, wich is well known in the scientif community.
+After implementing the code, I recognized that again the result differ substantially. 
+Unfortunately in the reproduction package supplied by the authers, there are no description of reproducting k-NN.
+They concentrated on their own .
+For the F1 score of k-NN I suppose that they optimized for the best contmination.
+Contamination is PyOD specific hyperparameter, that manages the sensitivity.
+For every contamination rate = x, take x\% of the highest anomaliescore and mark it as one.
+The difference to 100 are inliers.
+Therefor I decided to use  ROCAUC wich is not influenced by contamination. 
+
+\subsection{Breakdown-Point h of FAST-MCD}
+\subsection{InterCont: hyperparameter k, m, u, hyperparameter tuning,}
+In paper it is described how they did it. They call it ablation analysis.
+First they switched the tanh activation function to LeakyReLU.
+Then they just normalized the query and the vectors once, then they deployed a variant that just did the second normalization (the conventional way).
+a variant in wich the order of the two normalizations is reversed. 
+A variatnt with no normalizations. 
+
+
+\subsection{Literatur}
+\citep[p.5]{hilal2022financial}
+
+
+\subsection{Metrics}
+\textcolor{green}
+{Comparing the anomaly detection performance of unsupervised anomaly detection algorithms
+is not as straight forward as in the classical supervised classification case. In contrast to simply
+compare an accuracy value or precision/recall, the order of the anomalies should be taken into
+account. In classification, a wrongly classified instance is for sure a mistake. This is different in
+unsupervised anomaly detection. For example, if a large dataset contains ten anomalies and
+they are ranked among the top-15 outliers, this is still a good result, even if it is not perfect. To
+this end, a common evaluation strategy for unsupervised anomaly detection algorithms is to
+rank the results according to the anomaly score and then iteratively apply a threshold from the
+first to the last rank. This results in N tuple values (true positive rate and false positive rate),
+which form a single receiver operator characteristic (ROC). Then, the area under the curve
+(AUC), the integral of the ROC, can be used as a detection performance measure. A nice inter-
+pretation of the AUC is also given when following the proof from [70] and transform it into
+the anomaly detection domain: The AUC is then the probability that an anomaly detection
+algorithm will assign a randomly chosen normal instance a lower score than a randomly cho-
+sen anomalous instance. Hence, we think the AUC is a perfect evaluation method and ideal for
+comparison. However, the AUC only takes the ranking into account and completely neglects
+the relative difference of the scores among each other. Other measures can be used to cope
+with this shortcoming by using more sophisticated rank comparisons. Schubert et al. [38] com-
+pares different rank correlation methodologies, for example Spearman’s pi and Kendall’s tau as an
+alternative to AUC with a focus on targeting outlier ensembles. A second possible drawback of
+using AUC might be that it is not ideal for unbalanced class problems and methods like area
+under precision-recall curve or Matthews correlation coefficient could possibly better empha-
+size small detection performance changes. Nevertheless, AUC based evaluation has been
+evolved to be the de facto standard in unsupervised anomaly detection, most likely due to its
+practical interpretability, and thus also serves as the measure of choice in our evaluation.
+Please note that the AUC, when it is used in a traditional classification task, typically
+involves a parameter, for example k, to be altered. In unsupervised anomaly detection, the
+AUC is computed by varying an outlier threshold in the ordered result list. As a consequence,
+if a parameter has to be evaluated (for example different k), this yields to multiple AUC values.
+Another important question in this context is how to evaluate k, the critical parameter for most
+of the nearest-neighbor and clustering-based algorithms. In most publications, researchers
+often fix k to a predefined setting or choose “a good k” depending on a favorite outcome. We
+believe that the latter is not a fair evaluation, because it somehow involves using the test data
+(the labels) for training. In our evaluation, we decided to evaluate many different k’s between
+10 and 50 and finally report the averaged AUC as well as the standard deviation. In particular,
+for every k, the AUC is computed first by varying a threshold among the anomaly scores as
+described above. Then, the mean and standard deviation for all these AUCs is reported. This
+procedure basically corresponds to a random-k-picking strategy within the given interval,
+which is often used in practice when k is chosen arbitrarily. The lower bound of 10 was chosen
+because of statistical fluctuations occurring below. For the upper bound, we set a value of 50
+such that it is still suitable for our smaller datasets. We are aware, that one could argue to
+increase the upper bound for the larger datasets or even make it smaller for the small datasets
+like breast-cancer. Fig 8 shows a broader evaluation of the parameter k illustrating that our
+lower and upper bound is in fact useful.}
+
+\textcolor{green}
+{Although unsupervised anomaly detection does not utilize any label information in practice,
+they are needed for evaluation and comparison. When new algorithms are proposed, it is com-
+mon practice that an available public classification dataset is modified and the method is com-
+pared with the most known algorithms such as k-NN and LOF. There is a set of typically used
+datasets for classification, which are retrieved from UCI machine learning repository [61]. The
+typical preprocessing comprises of selecting one class as the anomalous class and sub-sampling
+some small amount of instances from that randomly. Unfortunately, the resulting datasets are
+hardly published and cannot be regenerated by other scientists. Since the number of anomalies
+is typically very low, a different subset might result in very different detection scores
+We also put a
+strong emphasis on a semantic background such the evaluation makes sense. This includes the
+two assumptions that (1) anomalies are rare and (2) are different from the norm. Additionally,
+we consider only point anomaly detection tasks as meaningful datasets for benchmarking since
+a different preprocessing might again lead to non-comparable results.
+With our dataset selection, we cover a
+broad spectrum of application domains including medical applications, intrusion detection,
+image and speech recognition as well as the analysis of complex systems. Additionally, the
+datasets cover a broad range of properties with regard to dataset size, outlier percentage and
+dimensionality. To our knowledge, this is the most comprehensive collection of unsupervised
+anomaly detection datasets for algorithm benchmarking. As already stated, we published the
+datasets to encourage researchers to compare their proposed algorithms with this work and
+hope to establish an evaluation standard in the community \citep[p.20]{goldstein2016comparative}}

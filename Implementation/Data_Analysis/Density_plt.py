@@ -5,7 +5,7 @@ import seaborn as sns
 from sklearn.preprocessing import MinMaxScaler
 
 # 1. Load and Scale
-mat = scipy.io.loadmat('Data/wineori.mat')
+mat = scipy.io.loadmat('../../Reproduction/Data/wineori.mat')
 X = mat['X']
 # Fix: Ensure we catch the correct label key
 y = mat['y'].ravel() if 'y' in mat else mat['Y'].ravel()

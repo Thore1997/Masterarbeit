@@ -5,7 +5,7 @@ from pandas.plotting import radviz
 from sklearn.preprocessing import MinMaxScaler
 
 # 1. Daten laden
-data = scipy.io.loadmat('Data/Thyroid/thyroid.mat')
+data = scipy.io.loadmat('../../Reproduction/Data/Thyroid/thyroid.mat')
 X = data['X']
 y = data['y'].flatten()
 
