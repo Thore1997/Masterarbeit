@@ -72,7 +72,11 @@ The LeakyReLu is once again implemented.
 
 The smaller G-Network is desigened the same.
 From line 38 to line 45 the architecture of the G-Network is defined.
-The difference between F and G are in the size of the
+The difference between F and G are in the sizes.
+The G network uses the complementary kernel\_size and the number of neurons are divided by 4. 
+This network uses only LeakyReLu activation functions.
+The hyperparameter stays the same for all activation functions.
+The number of neurons are again doubled in the first hidden layer, hence the hiddensize is divided by 2.
 
 Moreover the authers implemented the F1 and AUC metrics, which I also want to analyse, but I want to analyse the AUPRC as well.
 So I make small adjustements to their code.

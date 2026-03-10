@@ -154,8 +154,6 @@ class trainer():
                     loss_test = criterion_test(scores_internal_test, correct_class).to(device)
                     test_losses_contrastloss[indexes] += loss_test.mean(dim=1).to(device)
 
-        # --- EVERYTHING ABOVE IS UNCHANGED ---
-
         f1_score = helper_functions.f1_calculator(categories, test_losses_contrastloss)
         y_labels_boolean_modified = np.array(categories) == 0
         test_losses_contrastloss = test_losses_contrastloss.cpu()
