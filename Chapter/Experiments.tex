@@ -14,6 +14,7 @@ I used python 3.12, because there werent all the packages available for the late
 I used a virtual environment to manage the dependencies of the project and created a requiremtents.txt file to list all the packages and their versions.
 
 
+\subsubsection{InterCont}
 The authers of the InterCont method, supplied a reproduction package with their paper. 
 The reproduction of the InterCont method went flawlessly and I could reproduce the results of the paper.
 Nevertheless, the authers did not include code for other methods, supposably because they are widely used and implemented in standard libraries.
@@ -55,7 +56,7 @@ Depending on the number of dimensions of the dataset, the kernel\_size is set to
 My dataset has 13 dimensions, so the kernel\_size is set to 2.
 The hdn\_size refers to the hiddensize argument.
 Hiddensize determines how many neurons are in the hidden layers.
-Here the hiddenlayers are hardcorded to 200 in line 87. 
+Here the hiddenlayers are hardcoded to 200 in line 87. 
 
 
 The first hidden layer is defined in line 31.
@@ -77,21 +78,36 @@ The G network uses the complementary kernel\_size and the number of neurons are 
 This network uses only LeakyReLu activation functions.
 The hyperparameter stays the same for all activation functions.
 The number of neurons are again doubled in the first hidden layer, hence the hiddensize is divided by 2.
+\todo{fill in the normalization}
 
-Moreover the authers implemented the F1 and AUC metrics, which I also want to analyse, but I want to analyse the AUPRC as well.
-So I make small adjustements to their code.
-
-
+Going ahead, the contrastive 
 
 
-\subsubsection{Cross-Validation}
-The problem is, that the test error depends on the test data  set.
-The question is, how to estimate the test error using the training data only?
-Cross-validation (CV) is often been used to hyperparamatic tuning.
-CV randomly and repeatedly slits the data into training and test data.
-Split the data set in $k$ equally large parts.
-Part $i$ is the validation data set 
-The model is trained using the remaining observations ans we compute the loss.
-We repeat it for each validation data set $i = 1. ...  k$.
-The final measure is 
-Alternatives are: Elbow Method, Regularisation (?) 
+This method does not implement an cross validation procedure. 
+Instead they use a permutation based approach to determine the anomaly score.
+The dataset is spilt into 50\% training and 50\% testing data.
+The training data include only the data from the normal class, while in the test data they include the abnormal data with the normal data. 
+This approach is called semi-supervised learning.
+To reach the goal of stable and reliable results, the authors implemented a shuffle procedure.
+The train and test data stays the same all the time.
+But inside this datasets, the order of the columns are being changed, hence shuffeld.
+
+To get randomness into the shuffle process, the authors used the pytorch function torch.randomperm()
+This function uses a pseudo-random number generator, hence there is no argument set, the default engine has been used.
+
+
+
+The authors code is written to implement a high number of different datasets.
+My dataset is a .mat-file wich is the dataloader is in part about.
+But there 
+A lot of code is not necessary to implement my dataset, but I want to keep it, because redundant code will not negatively influence my results.
+The interesting thing is, that the hyperparameters are hardcoded and those values are for datasets with more dimensions and instances.
+Therefore in the nextchapter I will perform sensitivity analysis on chosen hyperparameters.
+Moreover the authors implemented just the F1 and AUC metrics, which I also want to analyse, but I want to analyse the AUPRC as well.
+So I made small adjustements to their code which is for transparency reasons marked.
+
+
+
+
+
+
