@@ -1,55 +1,60 @@
 import scipy.io
 import os
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold
 from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
 from sklearn.preprocessing import MinMaxScaler
 from pyod.models.knn import KNN
 
-# 1. Define the exact path
+# 1. Load Data
 file_path = os.path.join('Reproduction', 'Data', 'wineori.mat')
+mat_data = scipy.io.loadmat(file_path)
+X = mat_data['X']
+y = mat_data['y'].ravel()
 
-if not os.path.exists(file_path):
-    print(f"❌ Error: Could not find {file_path}")
-else:
-    # --- EVERYTHING HAPPENS INSIDE THIS BLOCK ---
-    mat_data = scipy.io.loadmat(file_path)
+# Separate Normals and Anomalies
+X_normals = X[y == 0]
+y_normals = y[y == 0]
+X_anomalies = X[y == 1]
+y_anomalies = y[y == 1]
 
-    # Standardize keys: your file has 'X' and 'y'
-    X = mat_data['X']
-    y = mat_data['y'].ravel()
+# 2. Initialize Cross-Validation
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+fold_metrics = {'f1': [], 'roc_auc': [], 'auprc': []}
 
-    # 2. Split Strategy: Train ONLY on Normals (Semi-Supervised)
-    # This teaches the model what "Normal" looks like.
-    X_normals = X[y == 0]
-    X_anomalies = X[y == 1]
+print(f"--- PyOD k-NN 5-Fold Cross-Validation ---")
 
-    # Use 70% of normals for training, 30% for testing
-    X_train, X_test_norm = train_test_split(X_normals, test_size=0.5, random_state=42)
+# 3. CV Loop
+for fold, (train_idx, test_idx) in enumerate(kf.split(X_normals)):
+    # Split normal data into training and "test-normal"
+    X_train_fold = X_normals[train_idx]
+    X_test_norm_fold = X_normals[test_idx]
 
-    # The Test set = the remaining 30% normals + ALL anomalies
-    X_test = np.vstack([X_test_norm, X_anomalies])
-    y_test = np.hstack([np.zeros(len(X_test_norm)), np.ones(len(X_anomalies))])
+    # Create the final test set for this fold (Remaining Normals + All Anomalies)
+    X_test_fold = np.vstack([X_test_norm_fold, X_anomalies])
+    y_test_fold = np.hstack([np.zeros(len(X_test_norm_fold)), np.ones(len(X_anomalies))])
 
-    # 3. Min-Max Normalization
+    # 4. Scaling (Fit ONLY on training data to avoid data leakage)
     scaler = MinMaxScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
+    X_train_fold = scaler.fit_transform(X_train_fold)
+    X_test_fold = scaler.transform(X_test_fold)
 
-    # 4. Initialize PyOD k-NN
-    # Try n_neighbors=10 or 20; '3' is often too small for wineori benchmarks
-    clf = KNN(n_neighbors=3, method='largest')
+    # 5. Model Training
+    clf = KNN(n_neighbors=5, method='largest', contamination=0.077)
+    clf.fit(X_train_fold)
 
-    # 5. Train (Only on the clean 'Normal' data)
-    clf.fit(X_train)
+    # 6. Predictions & Scores
+    predictions = clf.predict(X_test_fold)
+    test_scores = clf.decision_function(X_test_fold)
 
-    # 6. Predict
-    predictions = clf.predict(X_test)  # Binary labels (0 or 1)
-    test_scores = clf.decision_function(X_test)  # Raw anomaly scores
+    # Record Metrics
+    fold_metrics['f1'].append(f1_score(y_test_fold, predictions))
+    fold_metrics['roc_auc'].append(roc_auc_score(y_test_fold, test_scores))
+    fold_metrics['auprc'].append(average_precision_score(y_test_fold, test_scores))
 
-    # 7. Output Scores
-    print(f"--- PyOD k-NN Evaluation (Semi-Supervised) ---")
-    # Binary F1 is the standard for anomaly detection papers
-    print(f"F1 Score (Binary): {f1_score(y_test, predictions):.4f}")
-    print(f"ROC-AUC Score:     {roc_auc_score(y_test, test_scores):.4f}")
-    print(f"AUPRC Score:       {average_precision_score(y_test, test_scores):.4f}")
+    print(f"Fold {fold + 1}: ROC-AUC = {fold_metrics['roc_auc'][-1]:.4f}")
+
+# 7. Final Results
+print(f"\n--- Final Average Results ---")
+for metric, scores in fold_metrics.items():
+    print(f"Mean {metric.upper()}: {np.mean(scores):.4f} (+/- {np.std(scores):.4f})")

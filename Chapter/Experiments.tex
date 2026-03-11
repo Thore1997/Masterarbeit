@@ -83,7 +83,7 @@ The number of neurons are again doubled in the first hidden layer, hence the hid
 Going ahead, the contrastive 
 
 
-This method does not implement an cross validation procedure. 
+This method does not implement an cross validation procedure to avoid overfitting. 
 Instead they use a permutation based approach to determine the anomaly score.
 The dataset is spilt into 50\% training and 50\% testing data.
 The training data include only the data from the normal class, while in the test data they include the abnormal data with the normal data. 
@@ -94,6 +94,19 @@ But inside this datasets, the order of the columns are being changed, hence shuf
 
 To get randomness into the shuffle process, the authors used the pytorch function torch.randomperm()
 This function uses a pseudo-random number generator, hence there is no argument set, the default engine has been used.
+
+
+The authors took k-NN as an classic machine learning algorithm benchmark.
+Unfortunately they did not provide in their reproduction packagae any code to test their results.
+Therefore I decided to code my own basic k-NN algorithm to benchmark a machine learning method.
+To make the methods comparable I decided to implement a semi-supervised learning approach into the k-NN as well.
+I split the data into same-sized training and testing datasets.
+Similiar to the InterCont Method, I put in the normal data into the training dataset and the normal plus abnormal data into the testing dataset.
+The seperation takes place between the line 16 to 19.
+
+
+After that the training is performed by using an 5-fold cross validation approach.
+That means that the training dataset is cut again into training and testing witha 80/20 split.
 
 
 
