@@ -97,16 +97,46 @@ This function uses a pseudo-random number generator, hence there is no argument 
 
 
 The authors took k-NN as an classic machine learning algorithm benchmark.
-Unfortunately they did not provide in their reproduction packagae any code to test their results.
+Unfortunately they did not provide in their reproduction package any code to test their results.
 Therefore I decided to code my own basic k-NN algorithm to benchmark a machine learning method.
 To make the methods comparable I decided to implement a semi-supervised learning approach into the k-NN as well.
+
+
+\todo{insert arguments why semi supervised can be allpied}
+
+\subsubsection{k-NN}
+The k-NN algorithm is implemented by using the PyOD library, wich is a widely used library for anomaly detection in sientific research.
+I also used parts of the well known library scikit-learn to implement the cross validation procedure and to calculate my desired metrics.
+First I seperated the dataset into the test and training dataset.
 I split the data into same-sized training and testing datasets.
-Similiar to the InterCont Method, I put in the normal data into the training dataset and the normal plus abnormal data into the testing dataset.
-The seperation takes place between the line 16 to 19.
+Similiar to the InterCont Method, I put in the normal data into the training dataset and the normal plus abnormal data into the test dataset.
 
 
-After that the training is performed by using an 5-fold cross validation approach.
-That means that the training dataset is cut again into training and testing witha 80/20 split.
+Next the cross validation procedure is implemented by using the KFold function from scikit-learn.
+The KFold function takes the number of folds as an argument, which I set to 5.
+I chose a 5 fold cross validation approach, because my dataset has not many instances. 
+By choosing a relatively small amount of folds, I can ensure that the training dataset is not too small and the testing dataset is not too small as well.
+I also set the shuffle argument to True, which means that the data will be shuffled before splitting it into folds.
+The random state argument is set to 42, which is a commonly used value in the scientific community to ensure reproducibility of the results.
+
+
+I sat the contamination parameter to 7,7\%, reflecting the outlier ratio.
+That ensures, that the threshold for determining the anomaly score is set to reasonable value grounded on scientif literatur.
+The  method parameter determines the distance metric used to calcilate the distances between the data points.
+I chose the default setting "largest" which means the distance is calcultate the Minkowski distance with p=2 wich is mathematically equivalent to the Euclidean distance.
+The test data is normalized by using the min-max-normalization.
+
+
+\subsubsection{MCD}
+The FAST-MCD algorithm is also implemented by using the PyOD library. 
+I chose an unsupervised learning approach for the MCD algorithm, because it is not possible to implement a semi-supervised learning approach for this method.
+Because of its statistical nature, the MCD algorithm does not have a training phase, but it calculates the anomaly score based on the whole dataset.
+Therefore I did not implement a cross validation procedure for the MCD algorithm, because it is not possible to split the dataset into a training and testing dataset.
+The contamination parameter is also set to the outlier ratio of 7,7\%.
+The random state argument is set to 42. 
+This ensures that the results are reproducible, because the FAST-MCD algorithm takes random initial subsets and performs the C-Steps thereafter.
+By choosing a random state, the reproduction of the results is ensured, because the same random subsets will be chosen in each run of the algorithm.
+
 
 
 

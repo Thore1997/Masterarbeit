@@ -20,27 +20,26 @@ y_anomalies = y[y == 1]
 
 # 2. Initialize Cross-Validation
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
-fold_metrics = {'f1': [], 'roc_auc': [], 'auprc': []}
+# Added 'f1_macro' to the metrics dictionary
+fold_metrics = {'f1': [], 'f1_macro': [], 'roc_auc': [], 'auprc': []}
 
 print(f"--- PyOD k-NN 5-Fold Cross-Validation ---")
 
 # 3. CV Loop
 for fold, (train_idx, test_idx) in enumerate(kf.split(X_normals)):
-    # Split normal data into training and "test-normal"
     X_train_fold = X_normals[train_idx]
     X_test_norm_fold = X_normals[test_idx]
 
-    # Create the final test set for this fold (Remaining Normals + All Anomalies)
     X_test_fold = np.vstack([X_test_norm_fold, X_anomalies])
     y_test_fold = np.hstack([np.zeros(len(X_test_norm_fold)), np.ones(len(X_anomalies))])
 
-    # 4. Scaling (Fit ONLY on training data to avoid data leakage)
+    # 4. Scaling
     scaler = MinMaxScaler()
     X_train_fold = scaler.fit_transform(X_train_fold)
     X_test_fold = scaler.transform(X_test_fold)
 
     # 5. Model Training
-    clf = KNN(n_neighbors=5, method='largest', contamination=0.077)
+    clf = KNN(n_neighbors=5, method='largest', contamination=0.0775)
     clf.fit(X_train_fold)
 
     # 6. Predictions & Scores
@@ -49,10 +48,15 @@ for fold, (train_idx, test_idx) in enumerate(kf.split(X_normals)):
 
     # Record Metrics
     fold_metrics['f1'].append(f1_score(y_test_fold, predictions))
+    # --- IMPLEMENTATION OF MACRO F1 ---
+    fold_metrics['f1_macro'].append(f1_score(y_test_fold, predictions, average='macro'))
+    # ---------------------------------
     fold_metrics['roc_auc'].append(roc_auc_score(y_test_fold, test_scores))
     fold_metrics['auprc'].append(average_precision_score(y_test_fold, test_scores))
 
     print(f"Fold {fold + 1}: ROC-AUC = {fold_metrics['roc_auc'][-1]:.4f}")
+    print(f"Fold {fold + 1}: F1 (Binary) = {fold_metrics['f1'][-1]:.4f}")
+    print(f"Fold {fold + 1}: F1 (Macro) = {fold_metrics['f1_macro'][-1]:.4f}")
 
 # 7. Final Results
 print(f"\n--- Final Average Results ---")
