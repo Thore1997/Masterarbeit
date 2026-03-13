@@ -1,0 +1,141 @@
+\section{Context}
+Outlier Analysis is an important task for research and real world applications.
+In recent years, machine learning is increasingly used for outlier detection tasks.
+\citep{shenkar2022anomaly} recently published a interesting machine learning approach based on contrastive learning, which I will focus on.
+Oulier detection at its core is an classification task with highly imbalanced data.
+Nevertheless, a uniform definition of outliers could yet not be found. In 2017 \citet{ayadi2017outlier} found 12 different interpretations of outlier.
+All of them dont differ so much, so I will use the definition of Hawkins, because of the influece his paper had on this topic.
+Ouliers, also called anomalies \citep{chandola2009anomaly}, are observations, that deviate extremely from the defined norm.
+They are the product of a different mechanisms, that aren't included into the research question. \citep{hawkins1980identification}
+On the one hand, depending on the context they can be researchers target and provide useful information.
+For instance outliers develope by measuring recording errors, misreporting or sample errors.
+On the other hand, if they are not the target, they have to be identified and carefully treated. \citep{smiti2020critical}
+For more information about outlier treatment I recommend.
+\todo{insert survey about outlier treatment}
+
+High stakes real world application can be found, where outlier detection plays a crucial role.
+In Cybersecurity, outlier detection can be used to detect intrusions or maleware throuigh unusual network traffic.
+\todo{insert paper that this describes}
+In financial domains, outliers are been used to identify criminal activity.
+For example in fraudulent financial behaviour.
+The difference in usage of a stolen credit card by the criminal, can be detected by outlier detection methods. \citep{rezapour2019anomaly}
+In Healthcare, outlier detection methods can be used to detect early rare diseases or help medical staff by diagnosing. 
+
+
+There are 3 different types of outliers: 
+\begin{enumerate}
+\item Global outliers, sometimes named point anomalies, are the simplest type of anomaly. 
+When a obervation with respect to rest of the its distribution has extreme values, you could consider it a outlier.
+E.g. a Person spends 100€ a week and someday the person spends 1000€. that would be possibly be a global outlier, because it is 
+a extreme value out of the normal distribution. 
+\item Contextual outliers, sometimes named conditional outliers, are outliers that are outliers bescause of their specific contexts.
+A data instance is defined by it behavioral and contextual attributes. 
+Contextual attributes define contextual atrributes and behavioral attributes define non-contextual attributes.
+Using the credit card fraud example, behavioral atrributes are the amount of paymets done in a certain period.
+Contextual attribute is the time dimension of this longitudinal data. 
+If a person spends 100€ in a week, accept for christmas holiday. There the Person spends 1000€.
+the contextual outlier would be, if a transaction of 1000€ emerges in mid july.
+1000€ is not an extreme charakteristic, because it will be spend in a different time.
+But it is a unusual period of time. 
+\item Collective outliers are observations that are by itselfe not unsual but their accurance together as a collection. 
+Using the example as before, a single use of a credit card for a normal payment is not a outlier, but when a person pays 50 times
+a small payment, that would be considered a collective outlier.
+\end{enumerate}
+
+
+There are different other types of detection methods, that have to be circumvented from outlier detection.
+Noisy data has no useful information and hinders the analysis. 
+It need to be identified and corrected because it makes computation difficult or impossible to do.
+Noisy data contains incorrect data types, missing values or incorrect data \citep{smiti2020critical}.
+
+
+Novelty Detection, often synonymously used with outlier detection, targets new and previously unconsidered patterns in the data \citep{domingues2019probabilistic}.
+The findings are normally incorporated into a new model and not like in outlier detection being removed or eximaned further \citep{chandola2009anomaly}.
+
+Out-Of-Destribution detection (OOD) targets unfamiliar datapoints.
+Algorithms classify datapoint in different classes and the goal is find datapoints that wont fit into the classes.
+Openset recognition is closely related to OOD. 
+The classification task differs from OOD, such as the algorithm has classify known categories correctly while rejecting unknown classes.
+
+
+A fairly new approach in outlier detection is to provide meaningful explanations for outliers.
+There is a need to tell not just wich observation is a outlier, but to tell why that specific outlier is a outlier.
+E.g. in Fraud detection, analyst need to understand why a transaction was being flagged as fraudulent and wether it need human intervention.
+A common approach is to a ssign a importnace level to the outlier.
+The more far away an outlier is from the "normal" data distribution, the more likely it need human attention 
+Therefor a user can prioritize. 
+
+
+A different type a providing meaningfull insights in outliers to highlight causal interactions among outliers. 
+Causal in a sense, that one outlier produced other outliers in chronological way.
+So if you remove that first outlier, you would be removing the other outliers too.
+For example a traffic jam in one part of the city is beeing caused of another part of the city
+Users therefor can use that information to prevent the first outlier, so that other outliers don't develope \citep{panjei2022survey}.
+
+
+
+\subsubsection{Challenges}
+The curse of dimenionality (CoD) plays a big role in highdimensional datasets.
+However, in the big data era, the sheer number of variables that can be collected from a single sample can be
+problematic. we discuss four important problems of dimensionality as it applies to data sparsity, multicollinearity, testing and overfitting
+First, as the dimensionality p increases, the volume that the samples may occupy grows rapidly. If we treat the distance between points
+(e.g., Euclidian distance) as a measure of similarity, then we interpret greater distance as greater dissimilarity. As p increases, this
+dissimilarity increases because the mean distance between points increases as wurzelp (Fig. 2a). This effect is stark at high values of
+p. For example, at p = 100, the closest pair of points are farther from one another than the most distant two points are for about p < 15
+400this month The assessment of whether a particular data value is an outlier accordingly also becomes difficult. For example, 68\% of normally
+distributed points in one dimension fall within sigma of the mean, but this fraction drops off precipitously for large values of p (Fig. 2b).
+For example, at p = 10, the fraction of points within sigma of the mean is only 0.017\%, which is equivalent to the points within 0.00022sigma in
+one dimension (Fig. 2b, dashed lines). Putting it another way, points within sigmaat p = 10 are as rare as points outside of 3.8sigma at p = 1. 
+These are not intuitive observations—proportions of how points are distributed at higher dimensions are not the same as in one dimension.
+hat if we use a different distance measure to express similarity between subjects, such as correlation? Unfortunately, we cannot escape the CoD—the range of
+correlations between points drops rapidly (Fig. 2c) with p. For example, at p = 100, among 10,000 random pairs of points we see no correlations greater than 0.5, and most
+are extremely tightly grouped around 0. As the number of variables increases, the number of subjects in each set of categories decreases and the
+correlation between any two subjects across variables also decreases.
+When the number of dimensions is larger than the number of samples (p > n), another effect that confounds analysis is perfect multicollinearity.
+In this case, we can always express at least one of the variables as a linear combination of the others. For example, if we
+have p = 3 variables but only n = 2 subjects and we think of the subjects as two 3D vectors, then from linear algebra we know that
+these vectors define either a point (i.e., they have the same three values) or a line. In both cases, the three variables are related linearly.
+This is the case any time there are fewer samples than dimensions—the variables span a lower-dimensional subspace in which some
+of the dimensions become redundant and expressible in terms of other dimensions, thus yielding perfect multiple correlation.
+Finally, overfitting is another CoD that occurs because the flexibility of prediction equations5 is in part determined
+by the number of variables involved. With increased flexibility, prediction and classification rules adapt to both the
+patterns in the population and the random idiosyncrasies of the training sample. \citep[p.1pp]{altman2018curse}
+\todo{research: embeddings to solve the curse of dimensionality}
+
+
+scarcity of Lables
+
+Concept drift
+
+
+A paper published by \citep{shenkar2022anomaly} introduced a newly method, based on a internal contrastive learning approach, called InterCont.
+The authors compared their methods agaist a wast number of benchmark methods and supllied comprehensive results.
+Their method achieved high values on their chosen metrics. 
+Surprisingly the well established k-NN algorithm achieved a higher mean and a lower variance, especially in the F1 metric compared to the InterCont.
+
+
+I will take this result to establish my own set of experiments and compare 3 different outlier detection methods. 
+The InterCont will be the primary method I would like to analyse. 
+As an classic machine learning benchmark method and to analyse the result I mentioned above, I will include k-NN as well.
+As a third method I will include the minimum covariance determinant (MCD) as a statistical benchmark.
+
+
+I suppose 2 different Hypothesis in my work:
+\begin{enumerate}
+    \item H1: The k-NN will produce the best outcome of all methods. 
+    \item H2: InterCont will produce the second best outcome. 
+\end{enumerate}
+
+
+My thesis will be structured as follows:
+I begin with describing the theoretical basis for InterCont. 
+Therefore I will concentrate on different machine learning paradigms and after that I will describe the basic arcitecture of machine learning algorithm.
+In the next step I will describe contrastive learning and apply the arcitectual specifics of contrastive learning algorithms.
+That will lead me to the description of the details in the InterCont algorithm.
+After that I will transition to the benchmark methods, beginning with k-NN.
+I will describe the statistical basis for MCD afterwards, compleating the theoretical basis for all methods.
+After that I will transition to the implementation section.
+There I will describe my chosen dataset and I will analyse with different visualisation techniques the caracteristics of my dataset.
+After describing the experimental design and setup I will transiion to the results.
+In the end I will apply the theory to the result and I will explain how the results fit into it. 
+ 

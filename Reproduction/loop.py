@@ -8,7 +8,7 @@ import scipy
 
 # 1. Setup Data and Hyperparameters
 class Args:
-    batch_size = 3000
+    batch_size = 128
     faster_version = 'no'
 
 args = Args()

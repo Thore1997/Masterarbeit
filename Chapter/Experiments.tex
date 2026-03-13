@@ -95,6 +95,23 @@ But inside this datasets, the order of the columns are being changed, hence shuf
 To get randomness into the shuffle process, the authors used the pytorch function torch.randomperm()
 This function uses a pseudo-random number generator, hence there is no argument set, the default engine has been used.
 
+The authors tun the code 500 random splits and so did I.
+The authors did not provide a loop, so I coded it by myselve.
+I did not want to loop the main.py, because then the PC hab to load the data for every loop. 
+I applied the semi-supvervised approach in dataloading procedure in the logic of my loop.
+I sat the random\_state to 42.
+That is a often chosen value in scientific research to ensure reproducability.
+I could not tell, if the authors hab chosen another value.  
+The metrics are calculated accourdingly to the helper functions.
+
+
+In the helperfunction\_py is the code for calculating the F1-score.
+Here the threshold is not hardcoded as in my other methods.
+Instead it is a dynamically coded that meany that the ground thruth lables are incorporated into the threshold calculation.
+Then the model takes the threshold and applies it to the sorted outlier ratios.
+By comparing the taken instances to the ground truth, the method calculates Precision.
+But the number of items picked are equal to the number of actual outliers, Precision equals Recall, hence the F1-score equals the same. 
+
 
 The authors took k-NN as an classic machine learning algorithm benchmark.
 Unfortunately they did not provide in their reproduction package any code to test their results.
