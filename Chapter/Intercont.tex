@@ -1,40 +1,36 @@
-\section{InterCont}
-
-\textcolor{red}{Neural Networks}
-This section is about the newly proposed Intercont method of \citep{shenkar2022anomaly}. 
-Included in the method, the authers used neural networks(NN).
-I will begin by explaining the most common learning paradigms.
-I will then describe what a NN is and briefly identify the use cases for it.
-After that I will analyse the architecture and explore different types of networks including feedforwanrd and feedbackward networks.
-Thereafter I will describe the training process and differentiate bewteen different types of learning methods.
-Finally I will describe InterCont method.
+\section{Outlier Detection based on machine learning}
 
 
-\begin{figure}[H] 
-    \centering
-    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Neural_network_architecure}
-    \vspace{-100pt}
-    \caption{Architecture of the Neural Network}
-    \label{fig:nn_arch}
-\end{figure}
+This section will be about the newly proposed Intercont method of \citep{shenkar2022anomaly}. 
+Leading to that and to give background knowledge, the basics of machine learning will be described.
+I begin with traditional machine learning paradigms and define the paradigm which is used in the InterCont method.
+I will discuss pros and cons of each paradigm.
 
 
-A neural network is a model inspired by the structure and function of the human brain. 
-It is suitable for a lot of tasks: for example classification, clustering, pattern recognition and predictive tasks.
-The goal is to construct a generalizable model.
-That means, that the model performs on unseen data nearly as good as on the training data \todo{check statement}
-\todo{insert example papers maybe in the financial domain?}
+%\begin{figure}[H] 
+%    \centering
+%    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Neural_network_architecure}
+%    \vspace{-100pt}
+%    \caption{Architecture of the Neural Network}
+%    \label{fig:nn_arch}
+%\end{figure}
 
-\subsubsection{Different Machine Leanrin Paradigms}
+Rather than focusing on isolated methods, machine learning paradigms function as overarching frameworks for interpreting data. 
+While specific algorithms act as individual components, the paradigm itself offers the "big picture" view necessary to navigate the field.
+Therefor most methods can be implemented in different paradigms.
+Generally there are three traditional machine learning paradigms:
+Supervised, unsupervised, reinforcement learning.   
+There are plenty of different subtypes of learning paradigms. 
+For further information I recommend the survey of \citet{sarker2021machine}.
+In the paper the authors depict not well known paradigms like semi-supervised learning, multi-label learning or transfer learning.
 
-There are different learning paradigms in machine learning. 
-Nevertheless those depicted afterwards are somewhat of the extremes, because there a mixtures of all paradigms.
-The most widley used paradigms is the supervised learning paradigm. 
+
+The most widley used paradigm is the supervised learning. 
 Supervised learning is mostly used for classification and regression tasks.
-In supervised Learning, the model ist tranined on labled data. 
+In supervised learning, the model ist tranined on labled data. 
 The label defines the correct anwer for the model in advance.
 The models goal is to learn a mapping function.
-Depending on the task, the model is capable to presenting a satisfiying asnwer, if its presented new unseen data.
+Depending on the task, the model is capable to presenting a satisfiying answer, if its presented new unseen data.
 Therefor it is also named an task-driven approach. \citep[p.3]{sarker2021machine}
 On the one hand, supervised learning leads to results with high accurarcy, reliable predictions and its performance is easy to measure.
 On the other hand, it requires labled data, wich are highly cost and time intensive to generate.
@@ -53,18 +49,6 @@ The models tend to be computational intensive espacially with large datasets. Th
 \cite[p.4]{sarker2021machine}
 
 
-A hybrid approach is semi-supervised learning. 
-A small amount of labled data combined with a large amount of unlabeled data for training is used to gain understanding of the overall structure and improve the models accurarcy. 
-Therefor the initial tranining is been done with labled data and afterwards its predictions 
-Semi-Supervised learning tries to mitigate the disadvantages of the other ones. 
-The labeling cost are reduce, because the labeled datasets are smaller than in supervised learning. 
-It can use the vast amount of unlabled data available in many real world domains.
-Its generalizations are improved by leveraging the large unlabeled dataset. \citep[p.4]{sarker2021machine}
-The model gains a better understanding of the overall data structure, which can lead to better performance on unseen data than purely supervised models trained on limited labels. 
-The disadvantage lays in it initial small labled dataset. If its first predictions are  inaccurate, these errors can be amplified for the unlabled data.
-Moreover it requires careful selection of tuning algorithms, as different semi-supervised methods have varying effectiveness based on the data. 
-
-
 Reinforcement learning is a paradigm that enables software agents and machines to automatically find the optimal behavior in a goven context.
 It's an environment-driven approach.
 The goal is to increase the efficiency of the examined environment. 
@@ -75,7 +59,7 @@ While it is particularly effective for sophisticated applications—such as robo
 further information for every paradigm, see \citep{emmert2022taxonomy}
 
 
-Self-supervised learning is often credited as a type of unsupervised learning.
+The method of \citet{shenkar2022anomaly} uses a self-supervised learning which is often credited as a type of unsupervised learning.
 It's goal is to label the data on its own and therefor does not need human intervention mitigating the problem of costly data labeling.
 Nevertheless it has supervised characteristics as well.
 It uses loss functions to measure its performance against labels wich it self created.
@@ -88,22 +72,30 @@ Those networks reduce complexity by reducing the dimensionality of the input.
 If a new datapoint is introduced, the model embedds the data and and classifies the data accourdingly to the localtion in the embedding space. 
 \citep{raina2007self}
 \todo{the difference between unsupervised and self-supervised learning?} 
-\todo{maybe tell the story about computer vision}
+
 
 \subsection{Neural Network}
+In this section I will describe the traditional architecture of a neural network (NN)
+I will concentrate on the main building blocks: Layers, activation functions and loss functions. 
+A neural network is a model inspired by the structure and function of the human brain. 
+It is suitable for a lot of tasks: for example classification, clustering, pattern recognition and predictive tasks.
+The goal is to construct a generalizable model.
+That means, that the model performs on unseen data nearly as good as on the training data \todo{check statement}
+\todo{insert example papers maybe in the financial domain?}
+
+
 The arcitecture of a neural network consists of layers. 
 Those layers consist of nodes, wich are mathematical functions.
-The first layer is the input layer. 
-It receives the input data. \colorbox{red}{Each node in the input layer corrensponds to a feature in the data.}
+The first layer is the input layer and it receives the raw data. \colorbox{red}{Each node in the input layer corrensponds to a feature in the data.}
 After performing the first computation through the node, the result is pushed to the next layer, called hidden layer.
 The network can be made up of aribrary number of hidden layers. 
-Models that use more than two hidden layers are often referred to as "deep networks".
+Models that use one hidden layer are called shallow network and models that use more than two hidden layers are referred to as "deep networks".
 The more hidden layers are used, the more complex pattern recognition can be done by the network.
 With deep learning, high dimensional data can be processed effectively.
 Between layers there are the weights, biases and activation functions. 
 The weight determines how important the connection between these two nodes are. 
 The more imporant it is, the higher the weight. 
-The bias is a threshold value that determines if the node should pass the result to the next layer.
+The bias is a value that determines if the node should pass the result to the next layer. \todo{is that right?}
 If the threshold is met, the node is passing the result to the next layer.
 Until the last layer, called  output layer, is reached.
 The output is compared to the real value of labled data using a loss function. 
@@ -114,20 +106,22 @@ The goal is to minimize the loss function and getting an generalizable model tha
 By restarting this cycle an epoch is fulfilled. 
 
 \todo{consider: example of chain rule?}
-\todo{Whats mthematical functions are used in NN?}
-\todo{insert: diagram of NN}
 \todo{explain why backpropagation needs differentialablity}
 
 
-\subsubsection{Activation function}
-
-The model passes the input and multiplies it with the weight and adds a bias. 
-The result is def into the activation function. If the function is met, the activation function passes the result onto another layer.
 An activation function is influences the models ability to approximate the target function.
-Therefore the activation function is used to bring non-linearity into the model.
 The approximation of a network using just linear activation functions have to be linear too.
-The most commonly used activation functions are logistic, tanh and RELU.
-Logistic and tanh functions are a subclasses of sigmoid functions.
+To introduce non-linearity into the model an activation function is used. 
+The model passes the input by multiplying the input (X) with the initial weight (W) and adds a bias (b). 
+The activation function (omega) assigns a value to the incoming input.
+The activation functions have to be non-linear, differential and monotone increasing. 
+In the next step, the value is passed the output onto the next layer.
+
+
+\subsubsection*{Activation Function}
+The most commonly used activation functions are logistic/sigmoid, tanh and ReLU.
+For further information about less known activation functions, I recommend the survey of \citep{nwankpa2018activation}. 
+\todo{find credable journal}
 The logistic function is defined as: 
 
 
@@ -136,17 +130,17 @@ The logistic function is defined as:
 \end{equation}
 
 
-\begin{figure}[t] 
-    \centering
-    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Sigmoid.pdf}
-    \caption{Architecture of the Neural Network}
-    \label{fig:nn_arch}
-\end{figure}
+%\begin{figure}[t] 
+%    \centering
+%    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Sigmoid.pdf}
+%    \caption{Architecture of the Neural Network}
+%    \label{fig:nn_arch}
+%\end{figure}
 
 
-Logistic functions are bounded to an intervall of 0 to 1, therefore the model can interpret it as probabilities.
-The "S-shaped" function is at any point differentialble and monotonical increasing  with a exact inflection point.
-The maximum derivated at z=0 is 0.25.
+A logistic function is bounded to an intervall of 0 to 1, therefore the model can interpret it as probabilities.
+The "S-shaped" function meets the above presented requirements.
+The maximum is derivated at z=0 is 0.25.
 This allows for a smooth gradient preventing jumps in output values resulting in more stable results.
 A mayor issue is the vanishing gradient problem.
 For extrem input values, the function produces satured/ flat outcomes. 
@@ -154,6 +148,7 @@ If the model backpropagates,the small gradients are multiplied and therefor shri
 In addition the output is not zero-centered. The results are lay between zero and one. 
 This causes the gradient to be all negative or all positive, resulting in a undesirable dynamics.
 Because an exponential function is used, the computational costs are high compared to other modern activation functions
+
 
 The hyperbolic tangent (tanh) activation function is used to resolve some of the criticism of logistic function. 
 It is defined as: 
@@ -163,13 +158,15 @@ It is defined as:
 \end{equation}
 
 
-\begin{figure}[H] 
-    \centering
-    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Tanh.pdf}
-    \vspace{-100pt}
-    \caption{Architecture of the Neural Network}
-    \label{fig:nn_arch}
-\end{figure}
+%\begin{figure}[H] 
+%    \centering
+%    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Tanh.pdf}
+%    \vspace{-100pt}
+%    \caption{Architecture of the Neural Network}
+%    \label{fig:nn_arch}
+%\end{figure}
+
+
 Its is a scaled and shifted version of the logistic function centered around zero.
 Therefore the values lay between -1 and 1. 
 The output mean is more centered around zweo resulting in a more balanced weights and faster convergence during training.
@@ -177,6 +174,7 @@ The maximum derivative is 1.0, resulting in a faster learning if the inputs are 
 The tanh activation function is not fully capable of solving the vanishing gradient problem.
 On the one hand, the range of possible outputs is larger, therefor a gradient vanishes more rarer.
 On the other hand, does the gradient still vanishes but with more extreme values than before.
+
 
 The rectified linear unit (ReLu) activation funcion is used to eliminate the vanishing gradient problem completly.
 The ReLu activation function belongs to the class of piecewise activation functions.
@@ -186,21 +184,21 @@ The ReLu is defined as:
     f(z) = \max(0, x)
 \end{equation}
 
-\begin{figure}[H] 
-    \centering
-    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/ReLu.pdf}
-    \vspace{-100pt}
-    \caption{Architecture of the Neural Network}
-    \label{fig:nn_arch}
-\end{figure}
+%\begin{figure}[H] 
+%    \centering
+%    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/ReLu.pdf}
+%    \vspace{-100pt}
+%    \caption{Architecture of the Neural Network}
+%    \label{fig:nn_arch}
+%\end{figure}
 
-\begin{figure}[H] 
-    \centering
-    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Leaky_ReLu.pdf}
-    \vspace{-100pt}
-    \caption{Architecture of the Neural Network}
-    \label{fig:nn_arch}
-\end{figure}
+%\begin{figure}[H] 
+%    \centering
+%    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Leaky_ReLu.pdf}
+%    \vspace{-100pt}
+%    \caption{Architecture of the Neural Network}
+%    \label{fig:nn_arch}
+%\end{figure}
 
 
 The activation function produces a value of zero, if the input value is less than or equal to zero.
@@ -209,34 +207,39 @@ For all positive value the gradient is 1, solving the vanishing gradient problem
 Nodes that receive a negative input, the activation function  assigns a value of zero, shutting the node off.
 That leads to more efficient and lighter models but creating a problem, by making the node permantly inactive and not contributing to the network.
 The Leaky ReLu activation function is solving this problem, by letting negative values backpropagate by a smaller factor.
+The authors of the InterCont method used a LeakyReLU activation function to mitigate disadvantages of other activation functions.
 
 
-\subsubsection{Optimizer}
-\todo{whats an optimizer}
+\subsubsection*{Loss Function}
+
+
+
+\subsubsection*{Optimizer}
+An optimzer is used to determine the biases and wheights in a NN. 
+When the network backpropagates, the initial biases and wheigts have to change, to minimize the loss function. 
+Most optimizers are based on Gradient descent.
+The gradient is calculated by deriving the loss with respect to each weight.
+The goal is to find the direction of the gradient.
+The optimizer shift the weights in taht downhill direction.
+Using the learning rate, the optimizer is constraint in its step size. 
+The smaller it is, the more epochs it need to minimize the loss function.
 \todo{why do we use it}
-\todo{what are the most common optimzer in ML}
 \todo{describe Adam Optimzer}
+\todo{find a good survey about optimizer}
 
 
-Models that use this iteration process are called feedforward neural neutworks. 
-The calculation are pushed in just one direction.
-A different type of neural networks are the so called feedback neural networks. 
-\todo{insert: feedbackward network, use cases disadvantages and advantages}
-\todo{insert Diagram}
-\todo{do I need this?}
-
-\subsubsection{Over and Underfitting}
+\subsubsection*{Over and Underfitting}
 Two common issues that affect a model's performance and generalization ability are overfitting and underfitting. 
 These problems are major contributors to poor performance in machine learning models.
 
 
-\begin{figure}[H] 
-    \centering
-    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Bias_Variance_Tradeoff.pdf}
-    \vspace{-100pt}
-    \caption{Architecture of the Neural Network}
-    \label{fig:nn_arch}
-\end{figure}
+%\begin{figure}[H] 
+%    \centering
+%    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Bias_Variance_Tradeoff.pdf}
+%    \vspace{-100pt}
+%    \caption{Architecture of the Neural Network}
+%    \label{fig:nn_arch}
+%\end{figure}
 
 
 Bias and Variance: 
@@ -270,14 +273,14 @@ Ridge Regularization and Lasso Regularization.
 
 
 \subsection{Contrastive Learning}
-\subsubsection{General Information}
+\subsubsection*{General Information}
 Contrastive learning is a fairly new machine learning paradigm wich tracked in recent years a lot of tension.
 It's goal is to learn numerical representation from unlabled data without human intervention.
 It is aplicable to a lot of different data domains like text, images, speech etc.
 The model learns by comparing examples of positives pairs and negative pairs and mapping such in a embedding space.
 %%\input{Images/InterCont/Survey_Contrastive_Learning.pdf}
 
-\subsubsection{data processing}
+\subsubsection*{data processing}
 In contrastive learning, the model starts with an anchor, which is simply the specific piece of data (like an image) being analyzed. 
 To help the model learn, a positive pair is created by applying random changes to that anchor such as cropping, flipping, or adjusting the colors. 
 Because these two versions come from the same original source, the model is taught to place them close together in its internal memory, known as the embedding space.
@@ -305,16 +308,16 @@ Ultimately, the selection of negatives must be carefully tailored to the specifi
 \todo{add: Sliding Window: critizms: geometric Concentration, syntax vs semantics trade off, selection bias and false negatives}
 
 
-\subsubsection{feature extraction}
+\subsubsection*{feature extraction}
 
 
-\begin{figure}[H] 
-    \centering
-    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Contrastive_learning_intuition.pdf}
-    \vspace{-100pt}
-    \caption{Architecture of the Neural Network}
-    \label{fig:nn_arch}
-\end{figure}
+%\begin{figure}[H] 
+%    \centering
+%    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Contrastive_learning_intuition.pdf}
+%    \vspace{-100pt}
+%    \caption{Architecture of the Neural Network}
+%    \label{fig:nn_arch}
+%\end{figure}
 
 
 The encoder network takes the augmented instances as input and maps them to a latent representation space,
@@ -334,13 +337,13 @@ To maximize the mutual information gain, the Intercont methods uses an encoder n
 \todo{add: explain in great detail how a encoder network is foring the data through a bottleneck, the embedding size has enough capacity}
 
 
-\begin{figure}[H] 
-    \centering
-    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/contrastive_learning_pipeline.pdf}
-    \vspace{-100pt}
-    \caption{Architecture of the Neural Network}
-    \label{fig:nn_arch}
-\end{figure}
+%\begin{figure}[H] 
+%    \centering
+%    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/contrastive_learning_pipeline.pdf}
+%    \vspace{-100pt}
+%    \caption{Architecture of the Neural Network}
+%    \label{fig:nn_arch}
+%\end{figure}
 
 
 A projection network is employed to refine the learned representations further. 
@@ -351,10 +354,10 @@ By mapping the representations to a lower-dimensional space, the projection netw
 in the data, facilitating better separation between similar and dissimilar instances.(https://encord.com/blog/guide-to-contrastive-learning/)
 
 
-\subsubsection{architecture}
+\subsubsection*{architecture}
 
 
-\subsubsection{Contrastive loss function}
+\subsubsection*{Contrastive loss function}
 The loss function, often called objective function, is used to describe the difference between the predictions and the actual outcomes in the trainig. 
 Hence in contrastive learning, the loss function places similiar embeddings closer together and places dissimiliar embeddings further appart.
 The specific choice of the loss function depends on the network arcitecture and the characteristics of the dataset. 
@@ -362,7 +365,7 @@ The most commonly used loss functions in contrastive learning are Noise-contrast
 Nevertheless in practice they are often adjusted by symmetric addition and averaging.
 Classical loss functions, that are used in other fields of machine learning like Means-Squared-Error (MSE) and Cross Entropy loss are sometimes applied.
 
-\subsubsection{Cross entropy loss}
+\subsubsection*{Cross entropy loss}
 Cross entropy loss measures the difference between a variables predicted distribution and it actual distribution.
 It's often used for classification problems.
 In contrastive learning, the training set is ofter divided into batches.
@@ -370,7 +373,7 @@ and it's defined as follows:
 \todo{add:why do we used batches here?}
 \todo{research: cross-entropy and the loss function in Wu 2018, He 2020}
 
-\subsubsection{Noise-contrastive estimation (NCE)}
+\subsubsection*{Noise-contrastive estimation (NCE)}
 NCE is a advancement of the softmax activation function. 
 This softmax is technically a activation function, but instead of used in hidden layers, like tanh or ReLU, it is exclusively used in the output layer.
 Softmax calculates the the attribution acore for each category and normalizes them into probabilities. 
@@ -379,13 +382,13 @@ To avoid this phenomena the NCE addresses this by trasnforming the problem into 
 \todo{add: details}
 \todo{add: definition equation}
 
-\subsubsection{Info Noise-contrastive estimation (InfoNCE)}
+\subsubsection*{Info Noise-contrastive estimation (InfoNCE)}
 The Info-NCE is an optimization of the NCE for maximizing the mutual information between positive pairs and minimizes it between negative ones.
 \todo{define: mutual information}
 \todo{add: definition equation}
 
 
-\subsubsection{InterCont}
+\subsection{InterCont}
 In the paper of \citeauthor{shenkar2022anomaly} they propose a novel outlier detection method, based on a self-supervised contrastive learning alorithm.
 First I will describe how the arcitecture is designed.
 The model consists two fully connected neural networks F and G. F has two hidden layers. The first hidden layer has 200 nodes and the secound has 400.
@@ -418,13 +421,13 @@ The result are applied to a Batch Normalization so it re-centers and rescales th
 
 
 
-\begin{figure}[H] 
-    \centering
-    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Shenkar_Wolf .pdf}
-    \vspace{-100pt}
-    \caption{Architecture of the Neural Network}
-    \label{fig:nn_arch}
-\end{figure}
+%\begin{figure}[H] 
+%    \centering
+%    \includegraphics[trim={-100pt -100pt -100pt -300pt}, clip, width=\textwidth]{Images/Shenkar_Wolf .pdf}
+%    \vspace{-100pt}
+%    \caption{Architecture of the Neural Network}
+%    \label{fig:nn_arch}
+%\end{figure}
 
 
 \textcolor{green}{In Paper}
