@@ -341,26 +341,61 @@ Some, like BYOL \todo{insert paper} do add another non linear layer, called pred
 %\end{figure}
 
 
+\begin{figure*}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.498\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Images/contrastive_learning_pipeline.pdf}
+        % \caption{Caption.}
+        \label{fig:calvo_mse}
+    \end{subfigure}
+      \begin{subfigure}[b]{0.498\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Images/Contrastive_learning_intuition.pdf}
+        % \caption{Caption.}
+        \label{fig:calvo_complexity}
+    \end{subfigure}
+    \caption{}
+    \label{fig:calvo}
+\end{figure*}
+
 \subsubsection*{Contrastive loss function}
-The loss function, often called objective function, is used to describe the difference between the predictions and the actual outcomes in the trainig. 
-Hence in contrastive learning, the loss function places similiar embeddings closer together and places dissimiliar embeddings further appart.
+The contrastive loss function has a different goal, as the loss functions discussed in chapter 2.
+The goal is to discriminate and minimze the distance between positive samples and the anchor and maximize the distance between negative samples and the anchor.
 The specific choice of the loss function depends on the network arcitecture and the characteristics of the dataset. 
-The most commonly used loss functions in contrastive learning are Noise-contrastive estimation (NCE) and it's adjusted version InfoNoise-contrastive estimation (Info-NCE loss function).
-Nevertheless in practice they are often adjusted by symmetric addition and averaging.
-Classical loss functions, that are used in other fields of machine learning like Means-Squared-Error (MSE) and Cross Entropy loss are sometimes applied.
+The most commonly used contrastive loss function  is the Info noise contrastive estimation (InfoNCE).
+Nevertheless often in practice adjusted versions are implemented too.
+To get an overview of different contastive loss functions I reccomend the paper of \todo{insert paper}
+In this thesis I will concentrate on the InfoNCE, because thats the contrastive loss function used in the method of \citet{shenkar2022anomaly}.
 
 
-\subsubsection*{Noise-contrastive estimation (NCE)}
-With increasing number of categories, the predictions coulf become consevative and therefor assigning for each cathegory a relative similiar probability.
-To avoid this phenomena the NCE addresses this by trasnforming the problem into a binary task, distiguishing true and noise samples. 
-\todo{add: details}
-\todo{add: definition equation}
+\subsubsection*{Info noise-contrastive estimation (InfoNCE)}
+InfoNCE is an optimized version of the noise contrastive estimation (NCE) proposed by \citet{gutmann2010noise}.
+First published by \citet{oord2018representation}, the authors proposed an function that incorporates mutual information. 
+InfoNCE maximized the mutual information between positiv pairs and minimized mutual information between negative pairs.
+It is defines as: 
 
 
-\subsubsection*{Info Noise-contrastive estimation (InfoNCE)}
-The Info-NCE is an optimization of the NCE for maximizing the mutual information between positive pairs and minimizes it between negative ones.
-\todo{define: mutual information}
-\todo{add: definition equation}
+\begin{equation}
+    \mathcal{L}_{N} = -\mathbb{E}_{X} \left[ \log \frac{f_k(x_{t+k}, c_t)}{\sum_{x_j \in X} f_k(x_j, c_t)} \right] .
+\end{equation}
+
+
+where xt+k represents the positive samples, xj represents the negative samples, fk represents the density ratio, so well the pairs match and N is the difficulty, a scaling facor for information.
+This equation calculates an average of all the data and uses the log to deal with the exponential growth of the scores. 
+The goal is to maximize the the probability of pciking the right sample. 
+By adding a negatve sign to the los expectation, the equation minimizes the value. 
+So if the probablity is 1 the loss will be 0.
+
+
+The loss function maximizes the mutual information.
+Mutual information refers to the information relationship between variables. 
+It is a parameter that determines the knowledge of variables, depending on the knowledge of another variable. 
+By minimizing the loss it is mathematically quaranteed, that the information shared between the data and the representation is maximized.
+That means that the learn representation contains as much information of the data as possible resulting in the essence of the data.
+For further mathematical proof, I recommend the paper of \citet{oord2018representation}
+It also shows that the information is restricted by the number of negative samples. 
+The more negative samples I add, the more information the method
 
 
 \subsubsection*{Cross entropy loss}
@@ -384,7 +419,18 @@ That prevents neurons from dying, so they still contribute. Moreover it ensures 
 reducing the risk of vanishing gradients.
 
 
-To maximize the mutual information gain, the Intercont methods uses an encoder network based on noise contrastive estimation. \citep{oord2018representation}
+To maximize the mutual information gain, the Intercont methods uses an encoder network based on InfoNCE. \citep{oord2018representation}
+
+
+where q represents the anchor, k represents the number of samples including one positive and every negative samples in the current batch and k+ represents the positive samples.
+Tau represents temperature hyperparameter that determines how far the model pushes or pulls the respective samples. 
+If tau is low (Tau<1), the model concentrates on the hard negatives and ignores easy samples.
+If tau is high (Tau>1), the model is more uniformly, treating negative and positive samples nearly the same.
+
+
+The numerator resembles the pull. 
+With increasing number of categories, the predictions coulf become consevative and therefor assigning for each cathegory a relative similiar probability.
+To avoid this phenomena the NCE addresses this by trasnforming the problem into a binary task, distiguishing true and noise samples. 
 
 
 The goal is to produce an score, that is low for similar data pairs and high for dissimilar pairs.
