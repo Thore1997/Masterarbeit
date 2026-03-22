@@ -263,39 +263,44 @@ The objective of model selection is to minimize the sum of bias and variance to 
 \todo{Batch trainig for Intercont}
 
 \subsection{Contrastive Learning}
-\subsubsection*{General Information}
-Contrastive learning is a fairly new machine learning paradigm wich tracked in recent years a lot of tension.
-It's goal is to learn numerical representation from unlabled data without human intervention.
-It is aplicable to a lot of different data domains like text, images, speech etc.
-The model learns by comparing examples of positives pairs and negative pairs and mapping such in a embedding space.
+The proposed method of \citet{shenkar2022anomaly} applies contrastive learning onto tabular data, which is an unseen application of contrastive learning, 
+because that type of learning has seen significant attention in computer vision and natural language processing.
+The goal is to build a network, that can destinguish between different instances, e.g. an image of a cat, and images of different animals. \todo{expression}
+Therefore the netwroks needs to extract usefull information to discrimminate.
+This chapter will be about contrastive learning in general. 
+Therefore I will explain the main components. 
+There are different ways of building an contrastive learning network, but main architecture converged into a stable structure. (Hu,p.6)
+The chapter is organized as follows: First I will explain the data augmentation using data augmentation in computer vision as an example.
+Then I will explain the traditional network structure.
+That includes the encoder network, the projection head and sometimes the prediction head.
+Lastly I will explain the main contrastive loss functions.
 %%\input{Images/InterCont/Survey_Contrastive_Learning.pdf}
 
-\subsubsection*{data processing}
-In contrastive learning, the model starts with an anchor, which is simply the specific piece of data (like an image) being analyzed. 
-To help the model learn, a positive pair is created by applying random changes to that anchor such as cropping, flipping, or adjusting the colors. 
-Because these two versions come from the same original source, the model is taught to place them close together in its internal memory, known as the embedding space.
-In contrast, a negative pair is formed using a completely different piece of data. 
-The goal is to push these dissimilar examples as far away from the anchor as possible. 
-By training with many of these negative pairs, the model becomes much better at identifying the unique details that set different objects apart.
-This process prevents the model from simply "memorizing" the training data (overfitting) and instead helps it understand broader concepts. 
-This makes the model more robust and better at identifying new, unseen data. Common techniques used to create these variations include: cropping, color modification, rotaion etc.
-By focusing on making the features of the anchor and its positive version similar while maximizing the distance from negative examples, the model develops a more accurate and flexible understanding of the data.
+
+\subsubsection*{Data Augmentation}
+The model is given an anchor, which is a specific piece of data (like an image) which represents the desired target to destinguish from. 
+The model is given a positive sample by applying a random data augmentation technique.
+For example in computer vision the most used data augmentation techniques include: cropping, flipping and rotating. 
+Because this positive pair originated from the same source, the model placees them close together in the feature space.
+There are different techniques for data augmentation.
+For more information about data augmentation techniques in contrsative learning, I recommend \todo{insert survey about}
 
 
-In contrastive learning, the selection of positive and negative samples is a critical factor in determining model performance. 
-While choosing positive pairs is relatively straightforward, identifying appropriate negative samples presents a more significant challenge. 
-To be effective, negative pairs must be both informative and sufficiently difficult for the model to distinguish from the anchor.
-Hard negatives are samples that reside close to the anchor in the feature space because they are semantically similar, yet they belong to different categories or instances. \citep{jang2023difficulty}
-These samples provide rich, high-quality information that forces the model to learn more granular and distinguishing characteristics of the data. 
-By incorporating hard negatives, the model gains the diversity necessary to recognize subtle differences, which effectively prevents overfitting and reduces bias. 
-This curation process results in improved generalization across new datasets. 
-Ultimately, the selection of negatives must be carefully tailored to the specific task and the nature of the data to fully maximize the benefits of the contrastive framework. \citep[p.4+5]{hu2024comprehensive}
-
-
-\todo{add: Methods of sampling negatives}
-\todo{add: InterCont uses the sliding window approach - why do they do this and why is it advantageous} 
+In contrast, a negative pair is formed by finding a different piece of data, hence the negative sample. 
+The goal is to push the negative samples further away from the anchor as the positive samples.
+The selection of negatives samples is a challenging task.
+Negative samples have to be informative and challenging for the network, introducing diversity into the model.
+Hard negatives are close to and semantically similiar to the anchor.\todo{insert paper Jang et al.}  
+By training with many of these negative samples, the model becomes much better at identifying the unique details that set different objects apart.
+This process prevents the model from overfitting the training data and mitigates problems concerning data biases, increasing the overall modells generalization performance.
+But including an abitrary number of random data instances is not providing the needed hard negatives. 
+It is always recommended to include the specific nature of the task and dataset, when curating negative samples to minize misleading influences. \todo{why?}
+\todo{add: Methods of sampling negatives} 
 \todo{add: Sliding window other papers that use that}
 \todo{add: Sliding Window: critizms: geometric Concentration, syntax vs semantics trade off, selection bias and false negatives}
+
+
+\todo{insert solution for sample selection to critize InterCont}
 
 
 \subsubsection*{Network Structure}
@@ -310,21 +315,21 @@ Ultimately, the selection of negatives must be carefully tailored to the specifi
 %\end{figure}
 
 
-The encoder network takes the augmented instances as input and maps them to a latent representation space,
-where meaningful features and similarities are captured. 
+The encoder network takes the augmented instances as input and embedds them to the latent space, where meaningful features and similarities are captured. 
 A latent space is a abstract, compressed and low-dimensional vector space of the input data, where essential features and underlying patterns are encoded.
-The goal is to filter out noise and redundant information. 
-It perserves semantic relationsships. Data points that are similar in the original, will be mapped to points that are close together. 
-Points that are dissimilar will be far apart.
-The latent space is produced by representation learning. 
-Autoencoders are the most common way to learn a latent space. They consists of two main parts:
-The encoder takes the high dimensional input and maps it to a much smaller vector in the latent space. This enforces the necessary compression.
-The middle layer of the autoencoder is the bottleneck, wich contains the ompressed, low dimensional representation. 
-The Decoder takes the compressed vector and attemps to reconstruct the original high dimensional input. 
-The autoencoder is trained to minimize the difference between the original input and the reconstructed output. By forcing the information through the bottleneck, the 
-enoder learns only the most essential features required for accurate reconstruction.
-To maximize the mutual information gain, the Intercont methods uses an encoder network based on noise contrastive estimation. \citep{oord2018representation}
-\todo{add: explain in great detail how a encoder network is foring the data through a bottleneck, the embedding size has enough capacity}
+The goal is to filter out noise and redundant information.  
+The networks hidden layers 
+They consists of two main parts: The encoder takes the high dimensional input and maps it to a much smaller vector in the latent space. 
+This enforces the necessary compression.
+The hidden layer is designed as a bottleneck, wich means it contain fewer nodes than the corresponding layer before. 
+The decoder takes the compressed vector and attemps to reconstruct the original high dimensional input. 
+The encoder is trained to minimize the difference between the original input and the reconstructed output. 
+By forcing the information through the bottleneck, the enoder learns only the most essential features required for accurate reconstruction.
+The output of the encoder network is pushed to the projection head.
+\todo{insert momentum ecoder?}
+That is a non-linear layer to refine the learned representations further. 
+it is standard practice in most contrastive learning algorithms.
+Some, like BYOL \todo{insert paper} do add another non linear layer, called prediction layer, to further enhance the results of the algorithm.
 
 
 %\begin{figure}[H] 
@@ -336,17 +341,6 @@ To maximize the mutual information gain, the Intercont methods uses an encoder n
 %\end{figure}
 
 
-A projection network is employed to refine the learned representations further. 
-The projection network takes the output of the encoder network and projects it onto a lower-dimensional space, 
-often referred to as the projection or embedding space. 
-This additional projection step helps enhance the discriminative power of the learned representations. 
-By mapping the representations to a lower-dimensional space, the projection network reduces the complexity and redundancy 
-in the data, facilitating better separation between similar and dissimilar instances.(https://encord.com/blog/guide-to-contrastive-learning/)
-
-
-\subsubsection*{architecture}
-
-
 \subsubsection*{Contrastive loss function}
 The loss function, often called objective function, is used to describe the difference between the predictions and the actual outcomes in the trainig. 
 Hence in contrastive learning, the loss function places similiar embeddings closer together and places dissimiliar embeddings further appart.
@@ -355,6 +349,20 @@ The most commonly used loss functions in contrastive learning are Noise-contrast
 Nevertheless in practice they are often adjusted by symmetric addition and averaging.
 Classical loss functions, that are used in other fields of machine learning like Means-Squared-Error (MSE) and Cross Entropy loss are sometimes applied.
 
+
+\subsubsection*{Noise-contrastive estimation (NCE)}
+With increasing number of categories, the predictions coulf become consevative and therefor assigning for each cathegory a relative similiar probability.
+To avoid this phenomena the NCE addresses this by trasnforming the problem into a binary task, distiguishing true and noise samples. 
+\todo{add: details}
+\todo{add: definition equation}
+
+
+\subsubsection*{Info Noise-contrastive estimation (InfoNCE)}
+The Info-NCE is an optimization of the NCE for maximizing the mutual information between positive pairs and minimizes it between negative ones.
+\todo{define: mutual information}
+\todo{add: definition equation}
+
+
 \subsubsection*{Cross entropy loss}
 Cross entropy loss measures the difference between a variables predicted distribution and it actual distribution.
 It's often used for classification problems.
@@ -362,21 +370,6 @@ In contrastive learning, the training set is ofter divided into batches.
 and it's defined as follows: 
 \todo{add:why do we used batches here?}
 \todo{research: cross-entropy and the loss function in Wu 2018, He 2020}
-
-\subsubsection*{Noise-contrastive estimation (NCE)}
-NCE is a advancement of the softmax activation function. 
-This softmax is technically a activation function, but instead of used in hidden layers, like tanh or ReLU, it is exclusively used in the output layer.
-Softmax calculates the the attribution acore for each category and normalizes them into probabilities. 
-With increasing number of categories, the predictions coulf become consevative and therefor assigning for each cathegory a relative similiar probability.
-To avoid this phenomena the NCE addresses this by trasnforming the problem into a binary task, distiguishing true and noise samples. 
-\todo{add: details}
-\todo{add: definition equation}
-
-\subsubsection*{Info Noise-contrastive estimation (InfoNCE)}
-The Info-NCE is an optimization of the NCE for maximizing the mutual information between positive pairs and minimizes it between negative ones.
-\todo{define: mutual information}
-\todo{add: definition equation}
-
 
 \subsection{InterCont}
 In the paper of \citeauthor{shenkar2022anomaly} they propose a novel outlier detection method, based on a self-supervised contrastive learning alorithm.
@@ -389,6 +382,9 @@ The LeakyRELU is different from the describtion above. It introduces a small non
 The authers use a slope coefficient of 0.2.
 That prevents neurons from dying, so they still contribute. Moreover it ensures that gradients can propagate backwards through the network eben for negativ activations, 
 reducing the risk of vanishing gradients.
+
+
+To maximize the mutual information gain, the Intercont methods uses an encoder network based on noise contrastive estimation. \citep{oord2018representation}
 
 
 The goal is to produce an score, that is low for similar data pairs and high for dissimilar pairs.
