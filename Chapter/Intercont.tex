@@ -263,11 +263,11 @@ The objective of model selection is to minimize the sum of bias and variance to 
 \todo{Batch trainig for Intercont}
 
 \subsection{Contrastive Learning}
-The proposed method of \citet{shenkar2022anomaly} applies contrastive learning onto tabular data, which is an unseen application of contrastive learning, 
+The proposed method of \citet{shenkar2022anomaly} applies an internal contrastive learning algorithm (InterCont) onto tabular data, which is an unseen application of contrastive learning, 
 because that type of learning has seen significant attention in computer vision and natural language processing.
 The goal is to build a network, that can destinguish between different instances, e.g. an image of a cat, and images of different animals. \todo{expression}
 Therefore the netwroks needs to extract usefull information to discrimminate.
-This chapter will be about contrastive learning in general. 
+This chapter will define a framework to analyse contrastive learning algorithms. 
 Therefore I will explain the main components. 
 There are different ways of building an contrastive learning network, but main architecture converged into a stable structure. (Hu,p.6)
 The chapter is organized as follows: First I will explain the data augmentation using data augmentation in computer vision as an example.
@@ -406,46 +406,74 @@ and it's defined as follows:
 \todo{add:why do we used batches here?}
 \todo{research: cross-entropy and the loss function in Wu 2018, He 2020}
 
+
 \subsection{InterCont}
-In the paper of \citeauthor{shenkar2022anomaly} they propose a novel outlier detection method, based on a self-supervised contrastive learning alorithm.
-First I will describe how the arcitecture is designed.
-The model consists two fully connected neural networks F and G. F has two hidden layers. The first hidden layer has 200 nodes and the secound has 400.
-The second Layer is equally build with two layers, but the input data is smaller, so the number of nodes differ.
-In the first hidden layer are 50 nodes and in the second are 100 nodes. As a gernalisation the authers specified the number of nodes as dependent on the embedding size u.
-They took the LeakyRELU activation function except of the first hidden layer of F. There they use a Tanh activation. 
-The LeakyRELU is different from the describtion above. It introduces a small non-zero slope coeficient for negative inputs. 
-The authers use a slope coefficient of 0.2.
-That prevents neurons from dying, so they still contribute. Moreover it ensures that gradients can propagate backwards through the network eben for negativ activations, 
-reducing the risk of vanishing gradients.
+This chapter will be about the proposed internal conrastive learning algorithm of \citeauthor{shenkar2022anomaly}.
+To exert the framwork discussed above, I will begin with the data augmentation techniques the authors chose.
+Followed by a description of the networks structure and ending with the chosen contrastive loss function.
 
 
-To maximize the mutual information gain, the Intercont methods uses an encoder network based on InfoNCE. \citep{oord2018representation}
+The authors proposed a sliding window approach for data augmentation. 
+The single coumns of the table is taken and split up accourdingly to its hyperparameters.
+Resulting in two vectors of different sizes that which complement each other.
+The anchor is represented by the larger vector bi and the complementary vector ai represents the positive sample.
+The negative samples are the positive samples of other columns, hence the name internal contrastive learning.
+\todo{insert different papers that apply sliding window approach}
+\todo{add: critique}
 
 
-where q represents the anchor, k represents the number of samples including one positive and every negative samples in the current batch and k+ represents the positive samples.
+The network structure consists of two fully connected unsymmetric neural networks, called F and G. 
+They have to be unsymmetric because the input vectors b and a have different sizes.
+The authers defined the number of nodes as dependent on the embedding size u.
+Network F is used for the larger anchor vector b and has two hidden layers. 
+The first hidden layer consists on 200 nodes and the secound hidden layer consists of 400 nodes.
+Network G is equally build with two hidden layers, but the complementary positve sample is smaller, so the number of nodes differ.
+Therefore the first hidden layer consists of 50 nodes and the second hidden layer consist of 100 nodes.
+Following the framework, the authors implemented a bottleneck design, so the network is forced to learn the most important characteristics of the underlying data distribtion.
+
+
+They used a LeakyReLU activation function except for the first hidden layer of Network F.
+There they use a Tanh activation. \todo{why?}
+The LeakyReLU is different from the description above. \todo{really?} 
+It introduces a small non-zero slope coeficient for negative inputs. 
+The authors used a slope coefficient of 0.2.
+That prevents neurons from dying, so they still contribute. 
+Moreover it ensures that gradients can propagate backwards through the network eben for negativ activations, reducing the risk of vanishing gradients. \todo{compare pros and cons from above}
+
+
+The authors chose the InfoNCE as the contrastive loss function exlpained above.
+Maximizing the mutual information gain in the process and produce a score, that is low for similar data pairs and high for dissimilar pairs.
+So the sample is not from the underlying distribution it gets high score, thus is more likely a outlier. 
+They defined it as follows:
+
+
+\begin{equation}
+   \ell(F, G, \Phi(x_i), j) = -\ln \frac{\exp(F^N(b_i^j) \cdot G^N(a_i^j) / \tau)}{\sum_{j'=1}^{m} \exp(F^N(b_i^j) \cdot G^N(a_i^{j'}) / \tau)}.
+\end{equation}
+
+
+The networks are double normalized and there are written as FN and GN. 
+Later in the thesis I will explain how and why the normalization took place.
+The numerator resembles the pull.
+It is product of the positive pair (anchor and positive sample) and defiding it by tau.
 Tau represents temperature hyperparameter that determines how far the model pushes or pulls the respective samples. 
 If tau is low (Tau<1), the model concentrates on the hard negatives and ignores easy samples.
 If tau is high (Tau>1), the model is more uniformly, treating negative and positive samples nearly the same.
+The exponential relation 
+where  represents the anchor, k represents the number of samples including one positive and every negative samples in the current batch and k+ represents the positive samples.
 
 
-The numerator resembles the pull. 
-With increasing number of categories, the predictions coulf become consevative and therefor assigning for each cathegory a relative similiar probability.
-To avoid this phenomena the NCE addresses this by trasnforming the problem into a binary task, distiguishing true and noise samples. 
-
-
-The goal is to produce an score, that is low for similar data pairs and high for dissimilar pairs.
-The input data of the InterCont Method is supposed to be of tabular data.
 The training set contains n in-class samples x. All of them are vectors of d dimensions.
-If the sample is not from the underlying distribution it gets high score, thus is more likely a outlier. 
+
 First a subsample is taken of k consecutive variables and m = d + 1 - k pairs %(a,b)% are generated.
 Whereas k determines the number of variables that are considered and there cant exceed d dimensions.
 a is the vector including all variables k and b is the vector of the rest d - k. 
 The pairs are complementing each other. 
 The method learns mapping yb using two networks F,G. Each network facilitates a or b.
-The mutual information is been maximized by using the noise contrastive estimation framework of \citep{oord2018representation}.
-In this framwork b is used as a query and the complementary a vector is used as a positive sample. Otherwise it is a negative sample.
-Contrestive learning minimizes the distance bewteen query and positive sample and maximizes the distance bewteen query and negative sample.
-Thats calles a masking effect, because 
+
+
+
+
 \todo{add: describe the contrastive noise framwork - how is MI maximized?}
 The result are applied to a Batch Normalization so it re-centers and rescales the data for faster, more stable and less sensitive to hoe you initialize weights
 \todo{insert details how its done and why}
@@ -460,6 +488,11 @@ The result are applied to a Batch Normalization so it re-centers and rescales th
 %    \caption{Architecture of the Neural Network}
 %    \label{fig:nn_arch}
 %\end{figure}
+
+
+\todo{pros and cons about InterCont}
+An advantage of the sliding window is the interpretability. 
+Because it gets obvious which instance is accountable for the high 
 
 
 \textcolor{green}{In Paper}
@@ -480,11 +513,8 @@ and we employ two different encoders. \cite[p.3]{shenkar2022anomaly}
 
 
 
-temperatur constant of the loss 
-mutual information
+
 L2 Norm 
 cross entropy loss Adam optimzier 
-LeakyRELU activation 
 bagging efferct
-tanh activation 
 Batch normalization 
