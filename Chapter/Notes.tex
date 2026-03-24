@@ -60,6 +60,19 @@ But is it so clear to implement a deep learing method, when a lazy learner metho
 
 
 \subsection{Inercont}
+
+\textcolor{green}{In Paper}
+The contemporaneous NeuTraL AD work by Qiu et al. (2021) employs per-sample contrastive loss
+for identifying anomalies in tabular data, similar to our work. However, there are crucial differences:
+(1) NeuTraL AD learns specific masks, while we apply the entire set of the masks specified by a
+window size k. (2) The role of NeuTraL AD masks is to mask-out parts that are irrelevant for specific
+classes. In our case, we perform a two sided matching that identifies the masked part form the original.
+(3) NeuTraL AD learns a single feature extractor (“encoder”) for both the original and transformed
+data. In our case, the two sides of the contrastive loss are of very different dimensions $d - k$ and $k$
+and we employ two different encoders. \cite[p.3]{shenkar2022anomaly}
+\todo{do I need this?}
+
+
 \todo{insert whats about and how will you write this passage}
 \textcolor{green}{procedure}
 explain what contrastive learing is.

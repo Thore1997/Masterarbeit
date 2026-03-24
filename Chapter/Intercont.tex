@@ -409,22 +409,35 @@ and it's defined as follows:
 
 \subsection{InterCont}
 This chapter will be about the proposed internal conrastive learning algorithm of \citeauthor{shenkar2022anomaly}.
-To exert the framwork discussed above, I will begin with the data augmentation techniques the authors chose.
+The goal is to determine a score y, that assigns a low value for samples that are samples from the underlying distribution.
+Otherwise the score should by higher.
+I will begin by explaining the main hyperparameters and initialization of the model.
+To exert the framwork discussed above, I will compare and explain the data augmentation techniques of InterCont with the framwork ones.
 Followed by a description of the networks structure and ending with the chosen contrastive loss function.
 
 
+The model has two main hyperparameters: 
+\begin{enumerate}
+    \item k determines the number of consecutive number of the features to form the positive sample a (hereby k < d).
+    \item u determines the embedding size.
+    \item Tau is a temperature constant in the contrastive loss function.
+\end{enumerate}
+
+
 The authors proposed a sliding window approach for data augmentation. 
-The single coumns of the table is taken and split up accourdingly to its hyperparameters.
-Resulting in two vectors of different sizes that which complement each other.
-The anchor is represented by the larger vector bi and the complementary vector ai represents the positive sample.
-The negative samples are the positive samples of other columns, hence the name internal contrastive learning.
+The model initializes by taking a the columns of the data S as a vector Xi with the length of d.  
+The number of pairs Phi(xi) = {(ai,bi)}is calculated by m = d + 1 - k.
+As explained before, k is taken as the length of the positive sample.
+The anchor (bi) is represented by the residual number of features, d - k, hence bi is complementary vector of.
+The negative samples are the positive samples of the other constucted positive pairs, hence the name internal contrastive learning.
+For a better understanding, see fig.
 \todo{insert different papers that apply sliding window approach}
 \todo{add: critique}
 
 
 The network structure consists of two fully connected unsymmetric neural networks, called F and G. 
 They have to be unsymmetric because the input vectors b and a have different sizes.
-The authers defined the number of nodes as dependent on the embedding size u.
+The authors define the number of nodes as dependent on the embedding size u.
 Network F is used for the larger anchor vector b and has two hidden layers. 
 The first hidden layer consists on 200 nodes and the secound hidden layer consists of 400 nodes.
 Network G is equally build with two hidden layers, but the complementary positve sample is smaller, so the number of nodes differ.
@@ -453,31 +466,48 @@ They defined it as follows:
 
 
 The networks are double normalized and there are written as FN and GN. 
-Later in the thesis I will explain how and why the normalization took place.
-The numerator resembles the pull.
-It is product of the positive pair (anchor and positive sample) and defiding it by tau.
+N stand for a normalized vector. 
+Two seperatly normalizations take place:
+The first rowwise normalization has the goal to treat all scales the same, because outliers can be detected simply by observing the scale of a feature. 
+By performing rowwise normalization the authors create dependencies between the variables, hence a specific value of b is relative to a specific value of all other values. 
+Therefore the output vector b are put togehter columnwise to create the matrix B with the form of u x m
+The normalization is done rowwise to fit in there L2 norm of 1, resulting in the Matrxi BN. 
+The L2 norm normalized the values to a width of -1 to 1.
+The second columnwise normalization takes place thereafter.
+Again the normalization is done to meet the L2 norm resulting in the normalized network of FN.
+Double normalization is done for the postive samples as well to achieve the normalized network of GN.
+
+ 
+This normalization is class-independent, because it depends on the feature's natrue and not on class. 
+Outlier detection, as an classification problem, needs a class-dependent normalization, hence the second normlalization takes place. 
+There the anchor and the negative and positive samples are normilzation to their unit norm 1.
+
+
+The numerator of equation resembles the pull.
+It is the product of the anchor and positive sample (positive pair) and devided by tau.
+Because of the normaliztion, the dott product of the two mappings are the Cosine Simularities.
+The higher the prdouct is, the similiar the vector is.
+If the Fn(bi) * Gn (ai) = 1, the two vectors pointing in the same direction. 
+The lower the resulting value is, the more unsame the two vectors are, culmanating in a result of -1, when the vectors are opposite.
+The denominator is the prodcut of the anchor and the negative samples (negative samples) devided by Tau. 
+The resulting product is summed up for all number of negative pairs.
+The numerator and denominator are put into an natural exponential function.
+That means, depending on the analysed vectors, the higher the value of the term, the higher the effects score if some parameter changes.  
 Tau represents temperature hyperparameter that determines how far the model pushes or pulls the respective samples. 
 If tau is low (Tau<1), the model concentrates on the hard negatives and ignores easy samples.
 If tau is high (Tau>1), the model is more uniformly, treating negative and positive samples nearly the same.
-The exponential relation 
+Tau is constant throuigh the whole process. 
+The authors chose Tau = 0.01.
+That means, as long as the product of the positive pair ot the summed producted of the negative pair ist not smaller than Tau = 0.01, the both numinator and denominator are 
+
 where  represents the anchor, k represents the number of samples including one positive and every negative samples in the current batch and k+ represents the positive samples.
 
-
-The training set contains n in-class samples x. All of them are vectors of d dimensions.
-
-First a subsample is taken of k consecutive variables and m = d + 1 - k pairs %(a,b)% are generated.
-Whereas k determines the number of variables that are considered and there cant exceed d dimensions.
-a is the vector including all variables k and b is the vector of the rest d - k. 
-The pairs are complementing each other. 
-The method learns mapping yb using two networks F,G. Each network facilitates a or b.
-
+The loss is taken as the outlier score y(x)
 
 
 
 \todo{add: describe the contrastive noise framwork - how is MI maximized?}
 The result are applied to a Batch Normalization so it re-centers and rescales the data for faster, more stable and less sensitive to hoe you initialize weights
-\todo{insert details how its done and why}
-\todo{insert double normalization}
 
 
 
@@ -495,16 +525,6 @@ An advantage of the sliding window is the interpretability.
 Because it gets obvious which instance is accountable for the high 
 
 
-\textcolor{green}{In Paper}
-The contemporaneous NeuTraL AD work by Qiu et al. (2021) employs per-sample contrastive loss
-for identifying anomalies in tabular data, similar to our work. However, there are crucial differences:
-(1) NeuTraL AD learns specific masks, while we apply the entire set of the masks specified by a
-window size k. (2) The role of NeuTraL AD masks is to mask-out parts that are irrelevant for specific
-classes. In our case, we perform a two sided matching that identifies the masked part form the original.
-(3) NeuTraL AD learns a single feature extractor (“encoder”) for both the original and transformed
-data. In our case, the two sides of the contrastive loss are of very different dimensions $d - k$ and $k$
-and we employ two different encoders. \cite[p.3]{shenkar2022anomaly}
-\todo{do I need this?}
 
 
 
@@ -514,7 +534,8 @@ and we employ two different encoders. \cite[p.3]{shenkar2022anomaly}
 
 
 
-L2 Norm 
+
+
 cross entropy loss Adam optimzier 
 bagging efferct
 Batch normalization 
