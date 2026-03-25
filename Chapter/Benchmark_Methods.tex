@@ -1,19 +1,52 @@
-\section{k-NN}
-The k-nearest neighbor (kNN) algorithm is a nonparametic classification algorithm. It is been known for its simplicity and accuracy.
-It is a supervised learning algorithm, that means, that a labled traning dataset is been used to train the model and afterwards a class of unlabled data can be classified.
+\section{Benchmark Methods}
+
+
+\subsection{The role of benchmarks}
+To analyse the performance of InterCont I need to chose established benchmark methods to compare them.
+By comparing it to established methods, the scientific community can analyse where and why the methods excels or fails in a given dataset.
+As described before, there a plenty of outlier detection methods, each with their advantages and disadvantages.
+In other scientific paper, the authors take a high number of methods, to compare them against their proposal. 
+For example in \citep{shenkar2022anomaly} they compared the InterCont method against
+That procedure would be out of the scope of my thsis so I chose two methods, with a statistical and distance-based approach.
+
+
+This chapter is organized as follows: 
+First I will introduce the Minimum Covariance Determinant as a traditional statistical method.
+Then I will introduce k-Nearest Neighbor as a traditional distance-based approach. 
+I will broadly explain the literature of it and definde the mechanics of it. 
+Then I will explain advantages and disadvantages with published solutions to show the literature.
+
+
+\subsection{k-Nearest Neighbor }
+The k-nearest neighbor (kNN) algorithm is a nonparametic classification algorithm. It is been known for its simplicity and accuracy \todo{add paper}.
+First described in a technical report for the US Airforce by  \citet{fix1951discriminatory} the formal proof was given by \citet{1053964}.
+\citet{knox1998algorithms} were the first to introduce k-NN as a method to detect outliers. 
+They defined an outlier as one, if a fraction of the other instances in the dataset lay outside a predevined distance of D, introducing a new hyperparameter into the model.
+\citet{ramaswamy2000efficient} mitigated this hyperparameter by introducing a model, which uses an internally calculated outlier score which is the calculated distances between all neighbors. 
+If the outlier ratio is known, the n point with the highest outlier score are defined as outliers. 
+The authors of InterCont did not specifiy which version they used but wrote, that they used the PyOD package by \citet{zhao2019pyod}.
+In this package they use the \citet{ramaswamy2000efficient} version, hence I will use this version of k-NN as a benchmark.
+
+
+If the outlier ratio is known, the outlier ratio is taken to defined n\% of the top outlier scores to be 
+I will implement a supervised learning approach, but other approaches like unsupervised learning is implemented as well.
+The distances of the labled traning dataset will be calculated and afterwards the test dataset can be classified.
 It is a "lazy learning" algorithm that means it does not achieve generalizations. The entire traningset is being used for traning.
 When a new unlabled data is presented into the dataset, the k-NN algorithm determines in wich class the unlabled data should go by determining the wich classes the neighboring belong to.
 Outlier detection is a binary classification problem. That means, that the considered neighbors for a new tuple, only can be inliers or outliers. 
 If the 
 
 
-There are two operations calculated, when new data is presented to the model:
-\citep[p.1256 pp.]{9065747}
+To determine the nearest neighbor, you need to calculate the distance between the unseen istance and the neighbors. 
+There different measurements to calculate the distance between the neighbors.
+In traditional k-NN, the Euclidean distance is often used. 
+By using the Euclidean-distance , k-NN is not affine equivariant.
+Non-uniforly changes in the scale changes the distance landscap and thus leading to different set of nearest neighbors.
+Resulting in different classifications. 
 
 
-$K$ is the number of neighbors that would be considered for classifying a new unlabled tuple. 
+$K$ is the only hyperparameter and determines the number of neighbors that would be considered for classifying a unseen instance. 
 Even though this classifier is simple, the value of ‘K’ plays an important role in classifying the unlabeled data.
-$K$ is an hyperparameter, that means it is an external configuration variable that need be determined befor the process begins.
 It is task of hyperparamatic tuning to find a optimal number of $k$. 
 You have to consider the bias-variance-trade of when you choose the optimal $K$. 
 The smaller $K$ is, the more likley it is that the model suffers from overfitting, leading to higher variance and lower bias.
@@ -23,13 +56,6 @@ The resulting decision boundaries maybe missing local patterns.
 It is advised to choose a odd-number $K$, otherwiseat at an even classification the model could fail.  
 
 
-To determine the nearest neighbor, you need to calculate the distance between the new tuple and the neighbors. 
-In classical k-NN, you use the Euclidean distance. 
-By using the Euclidean-distance , k-NN is not affine equivariant.
-Non-uniforly changes in the scale changes the distance landscap and thus leading to different set of nearest neighbors.
-Resulting in different classifications. 
-
-
 k-NN has many advantages. Its results are easy to understand and interpret.
 The algorithm stays efficient with large traning sets eventhough it is invfluence by the curse of dimensional
 There is no need for complex mathematical calculations, making it user-friendly.
@@ -37,11 +63,19 @@ Its is a non-paramatic model, that does not require any assumptions about the un
 That makes it flexible for complex datasets.
 
 
-Some disadvantage of k-NN might be: the computational complexity. 
+K-NN is disadventagous in real world settings, because the ourlier ratio is often not known.
+Therefore setting the threshold manually will be abritrary.
+Other k-NN based methods mitigate this problem.
+The Angle-based outlier detection by \citet{kriegel2008angle} used abgles instead of distances.
+They define an outlier as a point wich variance in their angles to other instances is lower than to inliers.
+The Lo
+
+The disadventages of k-NN : the computational complexity. 
 For a classification the model requires to store the entire dataset. Especially for large datasets, that could lead to slow prediction time. 
 Moreover, storing the entire dataset is memory-intensive.
 Because of the dependence of distance measurments, noisy data can influence the accurarcy negatively.
 Chosing $K$ is vital for the models results. Through hyperparamatric tuning, one has to optimize the model. 
+
 
 \begin{figure}[h] 
     \centering
@@ -53,17 +87,15 @@ Chosing $K$ is vital for the models results. Through hyperparamatric tuning, one
 \textcolor{red}{\citep{yang2023outlier} for further information}
 
 
-\newpage
-\textcolor{green}
-{The k-nearest-neighbor global unsupervised anomaly detection algorithm is a straightforward
+
+The k-nearest-neighbor global unsupervised anomaly detection algorithm is a straightforward
 way for detecting anomalies and not to be confused with k-nearest neighbor classification. As
 the name already implies, it focuses on global anomalies and is not able to detect local anoma-
-lies. First, for every record in the dataset, the k-nearest-neighbors have to be found. Then, an
+lies.  Then, an
 anomaly score is computed using these neighbors, whereas two possibilities have been pro-
 posed: Either the distance to the k th-nearest-neighbor is used (a single one) [41] or the average
 distance to all of the k-nearest-neighbors [42] is computed. In the following, we refer to the
-first method as kth-NN and the latter as k-NN. In practical applications, the k-NN method is
-often preferred [13, 19]. However, the absolute value of the score depends very much on the
+first method as kth-NN and the latter as k-NN.  However, the absolute value of the score depends very much on the
 dataset itself, the number of dimensions, and on normalization. As a result, it is in practice not
 easy to select an appropriate threshold, if required.
 The choice of the parameter k is of course important for the results. If it is chosen too low,
@@ -79,7 +111,7 @@ cially generated two-dimensional dataset with four Gaussian clusters and uniform
 anomalies. After applying the global k-NN, the outlier scores are visualized by the bubble-size
 of the corresponding instance. The color indicates the label, whereas anomalies are red. It can
 be seen, that k-NN cannot detect the anomalies close to the clusters well and assign small
-scores \citep[p.8+9]{goldstein2016comparative}}
+scores \citep[p.8+9]{goldstein2016comparative}
 
-
+\subsection{Minimum Covariance Determinant}
 

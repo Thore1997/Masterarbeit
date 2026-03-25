@@ -492,17 +492,20 @@ The lower the resulting value is, the more unsame the two vectors are, culmanati
 The denominator is the prodcut of the anchor and the negative samples (negative samples) devided by Tau. 
 The resulting product is summed up for all number of negative pairs.
 The numerator and denominator are put into an natural exponential function.
-That means, depending on the analysed vectors, the higher the value of the term, the higher the effects score if some parameter changes.  
+That means, depending on the analysed vectors, the higher the value of the term, the higher the effects score if some parameter changes.
+
+
 Tau represents temperature hyperparameter that determines how far the model pushes or pulls the respective samples. 
 If tau is low (Tau<1), the model concentrates on the hard negatives and ignores easy samples.
 If tau is high (Tau>1), the model is more uniformly, treating negative and positive samples nearly the same.
 Tau is constant throuigh the whole process. 
 The authors chose Tau = 0.01.
-That means, as long as the product of the positive pair ot the summed producted of the negative pair ist not smaller than Tau = 0.01, the both numinator and denominator are 
-
+That means, as long as the product of the positive pair of the summed producted of the negative pair ist not smaller than Tau = 0.01, the superscriots of both numinator and denominator are above 1 and there agressivly accelerates. 
+The denominator will be bigger than the numerator, hence the result will lay between 0 and 1. 
+To create the outlier score y(x), the term will be multiplied by -ln, that means, that a resulting 1 will be transformed to a 0 and vise verca.
 where  represents the anchor, k represents the number of samples including one positive and every negative samples in the current batch and k+ represents the positive samples.
 
-The loss is taken as the outlier score y(x)
+\todo{add batch learning}
 
 
 
