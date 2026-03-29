@@ -1,5 +1,5 @@
 \section{Metrics}
-\subsubsection{Introduction}
+\subsection{Introduction}
 As mentioned befor, there are a plethora of different methods to detect outliers.
 To make the results comparable, we need to use performance metrics.
 The slection of appropiate metrics is a difficult but crucial task, to make sure that the results are meaningful and comparable.
@@ -25,7 +25,7 @@ sets. His survey, based on the papers published at the International Conferences
 The vast majority of ML research focus on the settings where the examples are assumed
 to be identically and independently distributed (IID)}
 
-\subsubsection{implement to describe wich metric is commonly used}
+\subsection{implement to describe wich metric is commonly used}
 \textcolor{green}
 {We found 276 papers that clearly
 presented the performance metrics of their proposed models.
@@ -47,7 +47,7 @@ In the paper \citep[postfix]{nassif2021}, the authers found that the true positi
 and computational time \citep[postfix]{nassif2021}}
 
 
-\subsubsection{Traditional Metrics - Confusion Matrix}
+\subsection{Traditional Metrics - Confusion Matrix}
 A simple way to evaluate the performance of a method, is to count the rightly and wrongly assigned instances to the classes.
 In supervised outlier detection, the goal is to classify the presented data into outliers and inliers, using the ground truth of labled datasets.
 Comparing it with the ground truth, you can plot them into a matrix, resulting in the confusion matrix.
@@ -62,7 +62,7 @@ Outliers that are wrongly classified as inliers are called false negatives, whil
 All basic metrics are derived fromt the confusion matrix \citep[p.4]{saito2015precision}. 
 The most often used metrics derived from the confusion matrix are:
 
-\subsubsection{Defition of Accuracy, Precision, True Positive Rate and Specificity}
+\subsection{Defition of Accuracy, Precision, True Positive Rate and Specificity}
 \enumerate
 
     \item Accuracy: Measures the overall efectiveness of the method, by calculating the proportion of correctly classified instances to the total number of instances.
@@ -99,7 +99,7 @@ The most often used metrics derived from the confusion matrix are:
 \todo{consider: maybe its better to plot this as a table}
 
 \textcolor{red}{First describe the dataset, then critizise the metrics and choose them!}
-\subsubsection{Critique of Accuracy}
+\subsection{Critique of Accuracy}
 Accuracy is a commonly used metric in outlier detection. \todo{adding: Papers that use accuracy as a metric}
 In a comprehensive survey of 290 papers on machine learning-based anomaly detection, it was found that 112 of those papers used Accuracy \citep[p.78664]{nassif2021}. 
 Nevertheless Accurarcy is not suitable for outlier detection tasks, because the datasets are imbalanced in nature. 
@@ -110,7 +110,7 @@ Resulting in the given percentage of misclassified instances.
 Therefore, a metric used for imbalanced datasets should consider the distributions of the classes. \citep[p.8]{branco2016survey}  
 
 
-\subsubsection{Invariance characteristics}
+\subsection{Invariance characteristics}
 To analyse the robustness of the traditional metrics, I will apply the  framework of \citet{sokolova2009systematic}.
 The authers analysed different approaches to survey the invariance properties of up to 24 metrics.
 Invariance is the robustness of the metrics if the confusion matrix changes.
@@ -140,7 +140,7 @@ Hence, in scenarios where the cost of a false negative is high, like in the data
     }
 
 
-\subsubsection{Critique of Recall}
+\subsection{Critique of Recall}
     - Whats the Problem?
     - Why wont I use it for my Datasets
 \textcolor{red}
@@ -162,7 +162,7 @@ Hence, in scenarios where the cost of a false negative is high, like in the data
     Scientific Source: Chicco  Jurman (2020) argue that because Recall ignores two quadrants of the confusion matrix (TN and FP), it provides an incomplete and potentially biased summary of model quality.
     Precision-Recall trade off
 
-\subsubsection{Definition of F1-Score}
+\subsection{Definition of F1-Score}
 F1 score: The F1 score is the harmonic mean of
 precision and recall, offering a balanced measure of model
 accuracy, particularly where both false positives and false
@@ -188,7 +188,7 @@ and recall otherwise.
     The Problem: In many real-world scenarios (like fraud detection or medical diagnosis), the cost of a False Negative (missing a fraud) is much higher than a False Positive (a false alarm). 
     The F1 score "forces" a 1:1 trade-off that may not align with your econometric cost-benefit analysis.
     The Solution: In such cases, researchers often use F2 (weighing Recall higher) or F0.5 (weighing Precision higher).}
-\subsubsection{Critique of Specificity}
+\subsection{Critique of Specificity}
     - Whats the Problem?
     - Why wont I use it for my Datasets
 Conversely, two measures that separately estimate a classifier’s performance on different classes are sensitivity and specificity (often employed in biomedical and medical
@@ -206,7 +206,7 @@ applications, and in studies which involve image and visual data)
 }
 
 
-\subsubsection{Definition of ROC and AUC}
+\subsection{Definition of ROC and AUC}
     - how is it calculated
     - Where has it been used
     - Advantages and Disadvantages of AUC
@@ -236,7 +236,7 @@ ROC do apply and can be beneficial.
 Following \citep[p.1017]{sokolova2006beyond}
 
 
-\subsubsection{Definition of AUCPR}
+\subsection{Definition of AUCPR}
     - how is it calculated
     - Where has it been used
     - Advantages and Disadvantages of AUCPR
@@ -256,13 +256,5 @@ reflecting its effectiveness in distinguishing between classes
 in imbalanced situations. \citep{ok2024exploring}
 
 
-\subsubsection{adding: Runtime}
+\subsection{adding: Runtime}
 
-
-\subsubsection{h-measure}
-    - Definition
-    - How does it work
-    - Advantages and Disadvantages
-You should reach for the H-measure when you are comparing two different classifiers (e.g., a Random Forest vs. a Logistic Regression) and their ROC curves cross each other. 
-In these cases, AUC can be deceptive and might rank the "worse" model higher simply because of its mathematical inconsistency
-\textcolor{green}{different types of metrics and defintitions}

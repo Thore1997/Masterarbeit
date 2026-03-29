@@ -1,45 +1,66 @@
-\section{Minimum Covariance Determinant}
-%There are plentyfull of methods to detect outliers. Each with advantages and disadvantages.
-%The most popular methods could be categorized as followes: statistical-based, distance-based, density-based,  clustering-based,
-%graph-based, ensemble-based and learning-based.\citep{wang2019progress} 
-%In this thesis, I will examine 3 different methods. A statistical, a clustering-based and a learning-based Method.
-%Statistical methods or distribution-based methods, consider a data point as an outlier, if it extremly deviates from its distribution.
-%Statisticians used tools like Box-plots, mean-variance or regression models to detect extreme data points \citep[p.3]{smiti2020critical}.
-
-The Minimum Covariance Determinant is a outlier-robust statistical outlier detection method.
+\subsection{Minimum Covariance Determinant}
+The Minimum Covariance Determinant (MCD) is a parametric method to determine a robust mean and the covariance metrix.
+Those estimators can be used in combination with the Mahalanobis distance, to detect outliers. 
 It was issued in 1984 by \citet{rousseeuw1984least} and later in 1985 theoretically justified in \citet{rousseeuw1985multivariate}.
-The algorithms was effective but computationally complex.
+The algorithms was effective but computationally complex and not practical for real-world applications.
 Therefore a more efficient algorithm was published in 1999 by \citet{rousseeuw1999fast}
-First I will explain the Minimum Covariance Determinant (MCD) is constructed.
-Afterwards I will transition to the FAST-MCD algorithm, which I will use in my experiments.
+I will concentrate on the FAST-MCD algorithm, because thats the version I will implement in my experiments.
+Nevertheless, I will explain the difference between FAST-MCD and MCD.
 
 
-%Used for mahalanobis distance the breakdown point would be 0, because it takes just one outlier for the variance matrix and/or mean vector to take on arbitraty values. 
-%To solve this problem, I will use the minimum covariance determinant (MCD). 
-
-
-The goal of MCD is to find in a given set of data a subset $H$ of $h$ \todo{which onw is right? h or n?} observations in $p$ variables, that minimizes the subsets determinant covariance matrix.
-The determinant $det(A)$ is a scalar of a sqaure matrix $A$.
-It determines among other things  the change in orientation and volume.
-The absolut value of the determinant the factor of wich the volume changes by multiply the determinant with its matrix $A$.
-If the determinant is negative, additionally to changes in volume, the orientation changes as well.
+I chose MCD as a traditional statistical benchmark, because of its unique properties.
+It is parametric, hence it implies that the data follows a gaussian distribution.
 
 
 %\includegraphics[width=\linewidth]{Images/MCD.pdf}
 
 
-MCD is affine equivariant. That means that MCD estimations of the mean and covariance will follow accordingly to 
-affine transformations. For example in a change of measurement, the data will be roted, translated or rescaled but the resulting 
-mean and covariance will transform correctly and not stay the same.
-Thats important for outlier detection, because estimated outliers will stay outlier even affine transformation took place. \citet{hubert2018minimum}
+\subsection*{Construction}
+The goal of FAST-MCD is to find in a given dataset a subset $H$ of $h$ \todo{which onw is right? h or n?} observations, with the minimal determinant.
+As seen in Fig. the MCD draws the smallest possible ellipsoid, compared to classical methods \todo{which methods?}
+The MCD location estimate is the mean and the MCD scatter estimate is the covariance matrix.
+When the smallest possible elipsoid is found, a robust distance, like the mahalanobis distance, is used to determine the distances between the subset mean (center) to the specific instance.
+By using the robust MCD estimator, the mahalanobis distance does not suffer from the masking effect either.
+The instances with the highest distance are defined as outliers.
 
 
-MCD estimators can only be calculated when the number of subset observations ($h$) exceeds the number of variables ($p$), becaus if not the determinant 
-of the resulting covariance matrix will be 0. \citet{hubert2018minimum} recommends at least five observations per dimension to avaid excessiv noise. 
-The subsets $h$ size is lays between $\frac{n}{2} \le h \le n$. Clearly it is not possible for subsets observations $h$ to expand the number of total observations $n$. 
+This approach implies that the subset with the minimal determinant is easily found.
+Calculating the $\binom{n}{h}$ possible subsets grows exponentially as dataset sizes increases.
+Therefore \citet{rousseeuw1999fast} proposed the FAST-MCD estimation to decrease computational costs, by adding concentration step (C-Steps). 
+The MCD estimation is as follows:  
+
+
+\begin{enumerate}
+    \item Determine the number observations $h$ by applying $h = \frac{n+p+1}{2}$
+    \item carry out two concentration steps
+    \item for the 10 results with lowest $det(S3)$: carry out C-steps until convergence
+    \item report the mean and covariance matrix with the lowest $det(S)$
+\end{enumerate}
+ 
+Instead it takes many initial choices of Subsets and are applying the concentrantion steps to each until convergence and keept the solution with the lowest determinant.
+The C-Step algorithm is as follows:
+
+\begin{enumerate}
+    \item Initialize by drawing a random number $p+1$ subsamples $J$ and calculate the sample mean and the sample covariance matrix. If the resulting $det(S0)=0$ then add another random observation until $det(S0)>0$.
+    \item If $det(S1)=/0$ compute the mahalanobis distances for all $n$
+    \item To compute $H2$ sort the distances of (2) from smallest to biggest
+    \item Select the $h$ smallest distances and compute the mean and coverance matrix
+    \item Repeat until convergence
+\end{enumerate}
+\citep[p.214]{rousseeuw1999fast}
+
+
+The MCD has one hyperparameter: The size of the subset $h$.
+The subsets $h$ size lays between $\frac{n}{2} \le h \le n$. 
+
+MCD estimators can only be calculated when the number of subset observations ($h$) exceeds the number of variables ($p$), because the determinant of the resulting covariance matrix will be 0. 
+\citet{hubert2018minimum} recommends at least five observations per dimension to avaid excessiv noise. 
+
+Clearly it is not possible for subsets observations $h$ to expand the number of total observations $n$. 
 The difference between $n$ and $h$ are the added outliers.
 The lower bound of $h$ is set to be at 50\% because of the so called majority rule.
 If the majority of a dataset contains added outliers, the estimator can't distinguish between inliers data structure and outlier data structure. \todo{cite source}
+
 
 The MCD estimator is the most robust when 
 
@@ -51,44 +72,20 @@ wich corresponds to 0.5 at the population level. But the robusteness is been pai
 If the dataset does not contain more than 25\% of outliers, than it is suitable to choose $h  0.75n$. \citep[p.217]{rousseeuw1999fast}
 The newly calculated estimator is less robust, but more efficient then before. 
 
+
 The resulting $\hat{\mu}_{\text{MCD}}$ is the mean vector of the remaining subset $h$. 
 And t
 
 
 The mean an covariance will be transformed accordingly.
-This means that for any nonsingular p × p matrix A and
-any p-dimensional column vector b it holds that
+This means that for any nonsingular p × p matrix A and any p-dimensional column vector b it holds that
+
 
 Therefore, transforming an h-subset with lowest determinant yields an h-subset XHA0 with lowest determinant among all
 h-subsets of the transformed data set XA0, and its covariance matrix is transformed appropriately
 Finally, we note that the robust mahalanobis distances are affine invariant, meaning they stay the same after transforming the data, which implies that the weighted
 estimator is affine equivariant too.
 
-To compute the MCD estimator one has to evaluate $\binom{n}{h}$ of all subsets size $h$.
-Therefor \citet{rousseeuw1999fast} proposed an algorithn to increase calculation efficency. 
-The algorithm of the concentration steps has the following steps \citep[p.214]{rousseeuw1999fast} 
-
-\begin{enumerate}
-    \item Initialize by drawing a random number $p+1$ subsamples $J$ and calculate the sample meand and the sample covariance matrix. If the resulting $det(S0)=0$ then add another random observation until $det(S0)>0$.
-    \item If $det(S1)=/0$ compute the mahalanobis distances for all $n$
-    \item To compute $H2$ sort the distances of (2) from smallest to biggest
-    \item Select the $h$ smallest distances and compute the mean and coverance matrix
-    \item Repeat until convergence
-\end{enumerate}
-
-
-\todo{add Algorithm FAST-MCD}
-The general idea of FAST-MCD is not to compute all N over H combinations. That would be time consuming and not ressource efficient.
-Instead it takes many initial choices of Subsets and are applying the concentrantion steps to each until convergence and keept the solution 
-with the lowest determinant.
-The algorithm steps are as follows:
-
-\begin{enumerate}
-    \item Determine the number observations $h$ by applying $h = \frac{n+p+1}{2}$
-    \item carry out two concentration steps
-    \item for the 10 results with lowest $det(S3)$: carry out C-steps until convergence
-    \item report the mean and covariance matrix with the lowest $det(S)$
-\end{enumerate}
 
 As above mentioned, I will calculate just two concentration steps with all initial subsets.
 After that I will select the ten results with the smallest determinants.
@@ -97,75 +94,36 @@ I will do this selective iteration, because the distinction between robust and n
 If one can be sure, that the dataset contains less then 25\% of outliers, you can choose $h=0.75n$ wich is a good compromise between breakdown value and statistical efficiency.
 If the dataset contains many observations (e.g. n > 600), then you can create
 
-\textcolor{green}
-Briefly, statistical detection methods show efficient experi-
-mental results when probabilistic distribution models are given
-but suffer from high computational costs when applied in large
-data sets and the curse of dimensionality. Therefore these methods
-cannot be applied in both large and high dimensional data sets.
-Another disadvantage of these techniques is that they are not
-applicable to data sets where the distribution is unknown. \citep[p.5]{smiti2020critical}
+\subsection*{Characteristics}
 
+MCD is affine equivariant. That means that MCD estimations of the mean and covariance will follow accordingly to 
+affine transformations. For example in a change of measurement, the data will be roted, translated or rescaled but the resulting 
+mean and covariance will transform correctly and not stay the same.
+Thats important for outlier detection, because estimated outliers will stay outlier even affine transformation took place. \citet{hubert2018minimum}
 
     
-\subsection{Oulier detection methods based on statistics}
-The Mahalanobis Distance is a measurment in multidimensional space for the distance between a vector and its distribution mean.
-It considers the correlation between dimensions not like for example Euclidean distance that just considers two different points, but ignores correlation between variables. 
-But uncorrelated variables are further away from its distribution mean than highly correlated variables. 
-By considering the correlation between variables, it is effective for outlier detection in multidimensional datasets, because 
-observations that dont have extreme values in single variables, can be flagged as an outlier when considering all variable in combination. 
+\subsection*{Mahalanobis Distance}
+The Mahalanobis Distance serves as a sophisticated metric for measuring the distance between a data point and the mean of a multidimensional distribution. 
+It is defined as follows:
 
-The Mahalanobis distance $D_M$ is defined as: 
 
 \begin{equation}
     D_M(\mathbf{x}, \mathbf{\mu}) = \sqrt{ (\mathbf{x} - \mathbf{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x} - \mathbf{\mu}) }
     \label{eq:mahalanobis}
 \end{equation}
 
-where as $x$ is the vector of the obervation, $\mu$ is the mean vector and $\Sigma$ is the covariance matrix. 
-By multiplying the distance between the vektor and its mean and the inverse of the covariance matrix, we standardize the distances to their correlations.
-Resulting in a high Mahalanobis distance for uncorrelated vaiables and and a low $M_D$ for highly correlated variables.
-
-The Mahalanobis distance is scale-invariant. In the appendix is a formal proof.
-It is not affected by the different scales of features because it measures the distance in units of standard deviations.
-So changes in feature units can be made without influencing the resulting distance and there is no need to manually tranform features with different
-units to ensure they contribute equally to the distance calculation.
-
-By assuming, that the dataset follows a multivariante normal distribution, you also can assume, that the squared Mahalanobis distance is following a $X^2$ distribution.
-You can construct a parametic $X^2$ test to spot outliers with a given significance level ($alpha$). 
-Therefor you determine the degrees of freedom, choose a significance level and find the critical $X^2$ value.
-If the Mahalanobis distance is bigger than the critical vlue, you can call this observation with a given percentage of uncertainty an outlier. 
-
-Unfortuantely the Mahalanobis distance suffers from a masking effect.
-And by simply testing the biggest Mahalanobis distance for outiers, you could get false negative results.
-Because it is not robust against outliers itselve.
-
-Both input variables, sample mean and covariance matrix, are highly influenced by outliers.
-If a outlier occurs, the sample mean will be draged into the direction of the outlier.
-Resulting in an artificial scaled down outlier. 
-The covariance matrix describes the shape and orientation of the distribution.
-The inflating effect of an outlier, streches the ellipsiod in the direction of the ourlier. 
-Resulting in an smaller values in the matrix, because you use the inverse.
-
-To solve the masking effect, plenty of robust Mahalanobis distance calculation were proposed in the literatur.
-An estimator is called robust, if an outlier just has a small or no effect on the resulting estimators . 
-To asses the robustness of an estimator, \citet{hampel1971general} proposed the breakdown point.
-Given a dataset $X$ of size $n$, and an examined location estimator $T_n$, the breakdown value is define as:
-
-\begin{equation}
-    \epsilon_{n}^{*}(T_{n}, X_{n}) = \frac{1}{n} \min \left\{ m : \sup_{X_{n},{m}} \left\| T_{n}(X_{n,m}) - T_{n}(X_{n}) \right\| = +\infty \right\}
-\end{equation}
-
-where as $m$ is the minimum number of observations that need to be replaced with outliers, $X_m$ is the contaminated dataset where $m$ points from $X$ have been replaced by arbitrary values.
-It measures the robustness by determing the smallest fraction of outlier needed, for the estimator to take on arbitrary values.
-$epsilon_n^*$ is the smallest fraction that causes this unbounded change. 
-The maximum value of $epsilon_n^*$ is 0.4 because if the estimator reaches beyond this boundary, it would imply that the estimator would prefer the uncontaminated smaller portion 
-of the dataset. If the contaminted data reaches the majority of the dataset, no estimator can distinguish the true underlying distribution from the contaminated one. 
-The result could be wrong, because the estimator could have chosen the contaminated dataset as the core dataset.
+Unlike the Euclidean distance, which treats all variables independently, the Mahalanobis Distance accounts for the correlations between dimensions by incorporating the inverse of the covariance matrix. 
+This approach effectively standardizes the data, making the metric scale-invariant and allowing it to identify outliers that might appear normal when looking at single variables but are anomalous when viewed in combination.
+In a statistical context, if a dataset follows a multivariate normal distribution, the squared Mahalanobis distance follows a Chi-squared distribution. 
+This relationship allows researchers to perform parametric tests to flag outliers at a specific significance level. 
+However, the standard calculation suffers from a significant limitation known as the masking effect. 
+Because the sample mean and covariance matrix are themselves sensitive to extreme values, a single outlier can pull the mean toward itself and inflate the covariance, essentially "masking" its own presence and leading to false negatives in outlier detection.
+To counter this, robust estimators are used to ensure that a small portion of contaminated data does not disproportionately influence the results. 
+The reliability of these estimators is measured by the breakdown point, which represents the smallest fraction of outliers required to make an estimator take on arbitrary or infinite values. 
+Theoretically, this breakdown point cannot exceed 0.5; once more than half the data is contaminated, no estimator can distinguish the true underlying distribution from the noise, as the outliers would become the new majority.
 
 
-
-\todo{Add: related work: }
+\subsection*{Variants of MCD}
 Even recently reaseach has een done for new extension for MCD.
 Because FAST-MCD begins by drawing random subsets, multiple runs of FastMCD on the same dataset may yield different results (a problem often mitigated by fixing the random seed in implementations). 
 Furthermore, it requires drawing many initial subsets to ensure at least one is free of outliers, which can be computationally intensive. 
@@ -176,6 +134,10 @@ Unlike its predecessor, DetMCD is permutation invariant, meaning its result is i
 Moreover, DetMCD typically runs even faster than FastMCD and is less sensitive to data contamination (outliers).
 
 
+\subsection*{Pros and Cons}
+Briefly, statistical detection methods show efficient experimental results when probabilistic distribution models are given but suffer from high computational costs when applied in large data sets and the curse of dimensionality. 
+Therefore these methods cannot be applied in both large and high dimensional data sets.
+Another disadvantage of these techniques is that they are not applicable to data sets where the distribution is unknown. \citep[p.5]{smiti2020critical}
 
 
 
