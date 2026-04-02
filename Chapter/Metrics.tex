@@ -34,12 +34,12 @@ The confusion matrix are constructed as seen in figure.
 The horizontal presents the methods hypothesised class and the vertical presents the true class.
 
 
-\begin{figure}[h] 
-    \centering
-    \includegraphics[width=1\linewidth]{Images/Confusion Matrix.pdf}
-    \caption{Confusion Matrics}
-    \label{fig:my_example}
-\end{figure}
+%\begin{figure}[h] 
+%    \centering
+%    \includegraphics[width=1\linewidth]{Images/Confusion Matrix.pdf}
+%    \caption{Confusion Matrics}
+%    \label{fig:my_example}
+%\end{figure}
 
 
 The main diagonal represents correctly classified instances.
@@ -59,7 +59,10 @@ The most often used metrics derived from the confusion matrix are:
         \text{Accuracy} = \frac{TP + TN}{TP + FN + FP + TN}
     \end{equation}
 
-    \item Precision: Measures the proportion of true positives to the amount of all instances that are predicted as positives.
+    The disadvantage of accuracy is that it can be misleading when the method classifies none instance as an outlier, because the dataset is imbalanced.
+    If the outlier ratio us very small, the method can classify this small percentage wrong, but achieve a high accuracy, by ignoring the incorrectly classified outliers.
+
+    \item Precision: Measures the proportion of correctly classified outliers (true positives) to the sum of all instances that are predicted as positives, hence correctly and incorrectly classified outliers.
     The focus is the class agreement of the data labels with the positives labels given by the classifier.
     It is defined as: 
 
@@ -67,14 +70,29 @@ The most often used metrics derived from the confusion matrix are:
         \text{Precision} = \frac{TP}{TP + FP}
     \end{equation}
 
-    \item True Positive Rate (TPR) or Recall/Sensitivity: Measures the proportion of true positives to the number of actual positives.
+    The disadvantage of precision is that it can lead to conservative classification behaviour, because the method can optimze by ony classify the most obvious outliers.
+    If the method classifies an outlier incorrectly, the denominator will increase, hence the precision will decrease. 
+    This metric ignores the false negatives, that will be high, if the method classifies conservatively.
+    Thats especially problematic, in high stakes scenarious, where the cost of missing an outlier is high, like in fraud detection or medical diagnosis.
+
+    \item True Positive Rate (TPR) or Recall/Sensitivity: Measures the proportion of correctly classified outliers (true positives) to the sum of correctly classified outliers and false classified inliers.
+    The incorrect classified inliers should be classified as outliers.
     It is defined as: 
 
     \begin{equation}
         \text{TPR} = \frac{TP}{P} = \frac{TP}{TP + FN}
     \end{equation}
 
-    \item Specificity: Measures the proportion of true negatives to the number of actual negatives.
+    The disadvantage of recall is that it can lead to high number of false positives, because the method can optimize by classifieng all instances as outliers.
+    If the method classifies an inlier incorrectly, the denominator will increase, hence the recall will decrease, but if the method classifies an outlier correctly, the numerator will increase, hence the recall increases as well.
+    This metric ignores the false positives, that will be high, if the method classifies all instances as outliers.
+    A possible bad implementation of recall could be manufacturing, where an outlier could trigger a kill switch, which could lead to high restarting costs.
+    Precision and recall share a trade--off relationship. 
+    Optimizing the relationship between precision and recall is crucial for evaluating the performance of outlier detection methods, especially in imbalanced datasets.
+    This relationship will be explained above and will lead to the definition of the metric: Area under the Precision-Recall Curve (AUCPR).
+
+    \item Specificity: Measures the proportion of correctly classified inliers (true negatives) to the sum of incorrectly classified outliers and correctly classified inliers.
+    The focus is on the class of inliers, hence the negatives.
     It's goal is to measure the efectiveness of the method to identify negatives.
     It is defined as:
 
