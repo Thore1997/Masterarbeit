@@ -1,68 +1,55 @@
 \section{Metrics}
-\subsection{Introduction}
-As mentioned befor, there are a plethora of different methods to detect outliers.
-To make the results comparable, we need to use performance metrics.
-The slection of appropiate metrics is a difficult but crucial task, to make sure that the results are meaningful and comparable.
-On the one hand, to make methods comparable in research, it is necessary to introduce metrics that are widely used and accepted by the research community.
-On the other hand, the metrics should be suitable for the specific dataset and the specific problem of outlier detection, to make sure that the results are meaningful and not misleading.
-Therefor I will begin with metrics, that are accepted by the research community, and end with a metric that is suitable for the specific datasets I use in this thesis. 
-The metrics accepted by the research community are: the true positive rate and the false positive rate.
-After that I will clarify more sophisticated metrics, such as the F1-Score, Accuracy and Precision.
-In the end I will explain the h-measure and decribe why it is suitable for the specific datatests I will use for this thesis.
+Performance metrics are essential for analyzing the success of outlier detection and ensuring that different methods can be compared effectively. 
+Selecting the right metrics is a difficult but vital task to ensure the results remain meaningful and consistent. 
+This process requires balancing two needs: first, using metrics that are widely accepted by the research community to maintain standard benchmarks; and second, choosing metrics that fit the specific dataset and the unique challenges of outlier detection to avoid misleading conclusions.
+
+
+An analysis of 276 papers explicitly documenting model performance reveals that the True Positive Rate (TPR)—alternatively referred to as sensitivity, recall, or the detection rate—represents the most frequently utilized metric. 
+The TPR quantifies the proportion of anomalous instances correctly identified by the model. 
+Complementarily, 116 of the surveyed papers employed the False Positive Rate (FPR), also designated as the false alarm rate, which measures the frequency of benign instances erroneously classified as anomalies.
+A critical observation from this literature review is that 64 out of 290 papers relied exclusively on a single performance metric, predominantly Accuracy or the Area Under the Curve (AUC). 
+Such a reductive approach is often insufficient for a comprehensive determination of a machine learning model's qualitative performance, particularly in imbalanced domains. 
+Beyond predictive efficacy, a significant subset of the literature incorporates computational performance indicators, including CPU utilization, execution time, and specific training or testing durations. 
+These metrics are essential for assessing the operational efficiency of an algorithm. 
+These findings corroborate the research by \citep[postfix]{nassif2021}, which highlights the ubiquity of TPR while noting that FPR was reported in only 116 of the 290 surveyed studies, alongside a secondary focus on various measures of computational latency.
+
+
+The confusion matrix is taken as a starting point to derive different scientifically accepted metrix.
+I will explain the basic metrics even if they are not often used in outlier detection, because they are commonly known in the research community. 
+Thereafter I will go on with more sophisticated metrics, such as the F1-Score, Accuracy and Precision.
+In the end I will explain agnostic metrics which are the Area under the ROC-Curve (AUC) and the Area under the Precision-Recall Curve (AUPRC)
+
+
 \todo{adding: concentrating on binary classification, not multiclass or hierarchical classification, because the datasets I use are binary.}
 \todo{adding: explaining why wont use runtime}
 \todo{critique other paper wich use not suitabl metrics, }
 \todo{explain that a whole framework of metrics has to be implemented, because every metric has its own advantages and disadvantages.}
-\textcolor{red}{Supervised Machine Learning (ML) has several ways of evaluating the performance of
-learning algorithms and the classifiers they produce. Measures of the quality of clas-
-sification are built from a confusion matrix which records correctly and incorrectly
-recognized examples for each class. This paper argues that the measures commonly used now (accuracy, precision, recall,
-F-Score and ROC Analysis) do not fully meet the needs of learning problems in which the classes are 
-equally important and where several algorithms are compared. Our find-
-ings agree with those of [1] who surveys the comparison of algorithms on multiple data
-sets. His survey, based on the papers published at the International Conferences on ML
-2003–2004, notes that algorithms are mainly compared on accuracy.
-The vast majority of ML research focus on the settings where the examples are assumed
-to be identically and independently distributed (IID)}
-
-\subsection{implement to describe wich metric is commonly used}
-\textcolor{green}
-{We found 276 papers that clearly
-presented the performance metrics of their proposed models.
-Figure 6 shows that the performance metric used most was
-True Positive Rate (TPR), which is also known as detection
-date, sensitivity, and recall. It measures the anomalies that are
-correctly classified. Moreover, 116 papers used False Positive
-Rate (FPR) as a performance metric. This metric measures
-anomalies that are falsely classified, and it can be known
-as false alarm rate as well.  In addition, we find that 64 of the
-290 papers used only one performance metric, and most of
-those papers used only accuracy or AUC, which is not suffi-
-cient to determine the quality performance of the ML model.
-Furthermore, a lot of papers present computational
-performance metrics in addition to performance metrics, such
-as CPU utilization, execution time, training time, testing time,
-Those two metrics are widely used in research. 
-In the paper \citep[postfix]{nassif2021}, the authers found that the true positive rate is widley used, while the false positive rate is used in only 116 of the 290 papers.
-and computational time \citep[postfix]{nassif2021}}
 
 
-\subsection{Traditional Metrics - Confusion Matrix}
-A simple way to evaluate the performance of a method, is to count the rightly and wrongly assigned instances to the classes.
-In supervised outlier detection, the goal is to classify the presented data into outliers and inliers, using the ground truth of labled datasets.
-Comparing it with the ground truth, you can plot them into a matrix, resulting in the confusion matrix.
-The horizontal presents the true class and the vertical presents the hypothesized class of the method.
+\subsection{Confusion Matrix}
+A simple way to evaluate the performance of a method, is to apply the confusion matrix to the results. 
+Outlier detection, as defined as an imbalanced binary classification problem, can by analysed a traditional 2X2 confusion matrix.
+Therefore the results are compared to the ground truth and are sorted into the matrixes cells.
+The confusion matrix are constructed as seen in figure.
+The horizontal presents the methods hypothesised class and the vertical presents the true class.
 
-%\input{Images/Confusion Matrix.pdf}
 
-The diagonal presenting the results the methods made, that are correct.
-Outliers that are correctly classified by the method are called true positives, while inliers that are correctly classified are called true negatives.
+\begin{figure}[h] 
+    \centering
+    \includegraphics[width=1\linewidth]{Images/Confusion Matrix.pdf}
+    \caption{Confusion Matrics}
+    \label{fig:my_example}
+\end{figure}
+
+
+The main diagonal represents correctly classified instances.
+Outliers that are correctly classified are called true positives, while correctly classified inliers are called true negatives.
 The other diagonal presents the falsly classified data instances.
 Outliers that are wrongly classified as inliers are called false negatives, while inliers that are wrongly classified as outliers are called false positives.
 All basic metrics are derived fromt the confusion matrix \citep[p.4]{saito2015precision}. 
 The most often used metrics derived from the confusion matrix are:
 
-\subsection{Defition of Accuracy, Precision, True Positive Rate and Specificity}
+
 \enumerate
 
     \item Accuracy: Measures the overall efectiveness of the method, by calculating the proportion of correctly classified instances to the total number of instances.
@@ -98,8 +85,7 @@ The most often used metrics derived from the confusion matrix are:
 \endenumerate
 \todo{consider: maybe its better to plot this as a table}
 
-\textcolor{red}{First describe the dataset, then critizise the metrics and choose them!}
-\subsection{Critique of Accuracy}
+
 Accuracy is a commonly used metric in outlier detection. \todo{adding: Papers that use accuracy as a metric}
 In a comprehensive survey of 290 papers on machine learning-based anomaly detection, it was found that 112 of those papers used Accuracy \citep[p.78664]{nassif2021}. 
 Nevertheless Accurarcy is not suitable for outlier detection tasks, because the datasets are imbalanced in nature. 
@@ -110,24 +96,8 @@ Resulting in the given percentage of misclassified instances.
 Therefore, a metric used for imbalanced datasets should consider the distributions of the classes. \citep[p.8]{branco2016survey}  
 
 
-\subsection{Invariance characteristics}
-To analyse the robustness of the traditional metrics, I will apply the  framework of \citet{sokolova2009systematic}.
-The authers analysed different approaches to survey the invariance properties of up to 24 metrics.
-Invariance is the robustness of the metrics if the confusion matrix changes.
-The authers identified 7 different approaches to analyse the Invariace carakteristics of the above called metrics.
-I will use three datasets wich are highly imbalanced and vary in the number of dimensions and instances.
-Therefore, the following 
- 
-Precision, Recall and Specificity are calculated from the values of the confusion matrix and simply. 
-If the threshold is changed, so must change the confusion matrix' values as well. 
 
 
-Precision negates this problem by not considering the distributions but by ignoring the true negatives. 
-Nevertheless, this approach has its own disadvantages. 
-By ignoring the negatives the method can optimize for that metric by classifying conservatively, predicting only the most obvious outliers.
-
-
-Hence, in scenarios where the cost of a false negative is high, like in the datasets I analyse, precision is not suitable as well. 
 
 
 \textcolor{red}{Precision rarely operates in a vacuum. There is a fundamental trade-off governed by the classification threshold.
@@ -140,29 +110,11 @@ Hence, in scenarios where the cost of a false negative is high, like in the data
     }
 
 
-\subsection{Critique of Recall}
-    - Whats the Problem?
-    - Why wont I use it for my Datasets
-\textcolor{red}
-    -   The "Cheap" Maximization Problem
-    Recall is mathematically "cheap" to maximize. An algorithm can achieve a perfect Recall of 1.0 (100\%) simply by labeling every single data point as an outlier.
-    The Problem: A model that flags everything is technically perfect according to the Recall metric, but it is practically useless because it provides zero discrimination between classes.
-    Recall is calculated as TP/(TP+FN). Notice that the FP (False Positive) count is entirely absent from this equation.
-    -   Complete Ignorance of False Positives (Type I Errors)
-    The Problem: In an econometric or business context (like fraud detection), a high-recall model might flag thousands of legitimate transactions as "fraudulent." 
-    The cost of investigating these false alarms is often high, but Recall does not reflect this "noise."
-    Thesis Application: If you compare your three outlier detection methods and Method A has a higher Recall than Method B, you cannot conclude Method A is better without checking if it also produces ten times as many false alarms
-    -   Threshold Vulnerability
-    Recall is highly dependent on the chosen classification threshold.
-    The Problem: Many unsupervised outlier detection algorithms produce a continuous Anomaly Score. By lowering the threshold, you can artificially inflate Recall.
-    The Result: This makes it difficult to compare algorithms fairly unless you use a threshold-independent metric like ROC-AUC or PR-AUC, which evaluate Recall across all possible thresholds.
-    -   Asymmetric Information Loss
-    Recall only looks at the "Positive" (Outlier) class. It tells you nothing about how well the model identifies the "Negative" (Inlier) class.
-    The Problem: A model could have high Recall but be failing catastrophically at understanding the "Normal" geometric structure of your data.
-    Scientific Source: Chicco  Jurman (2020) argue that because Recall ignores two quadrants of the confusion matrix (TN and FP), it provides an incomplete and potentially biased summary of model quality.
-    Precision-Recall trade off
 
-\subsection{Definition of F1-Score}
+
+
+
+\subsection*{Definition of F1-Score}
 F1 score: The F1 score is the harmonic mean of
 precision and recall, offering a balanced measure of model
 accuracy, particularly where both false positives and false
@@ -188,30 +140,13 @@ and recall otherwise.
     The Problem: In many real-world scenarios (like fraud detection or medical diagnosis), the cost of a False Negative (missing a fraud) is much higher than a False Positive (a false alarm). 
     The F1 score "forces" a 1:1 trade-off that may not align with your econometric cost-benefit analysis.
     The Solution: In such cases, researchers often use F2 (weighing Recall higher) or F0.5 (weighing Precision higher).}
-\subsection{Critique of Specificity}
-    - Whats the Problem?
-    - Why wont I use it for my Datasets
-Conversely, two measures that separately estimate a classifier’s performance on different classes are sensitivity and specificity (often employed in biomedical and medical
-applications, and in studies which involve image and visual data)
-\textcolor{red}{
-    -   The "Large Negative" Dilution Effect
-    The formula for Specificity is TN/(TN+FP). In outlier detection, the number of True Negatives (TN) is usually massive (e.g., millions of normal transactions).
-    The Problem: Because the denominator is dominated by the TN count, even a significant absolute number of False Positives (FP) will not noticeably move the metric.
-    The Consequence: A model could produce 5,000 "false alarms" (False Positives), but if there are 1,000,000 inliers, the Specificity remains a seemingly perfect 99.5\%. 
-    This hides the fact that the model is overwhelming the user with errors. \citep{saito2015precision}
-    -   Complete Ignorance of the Outlier Class
-    Specificity focuses entirely on the "Negative" class. It uses only the bottom row of the confusion matrix (TN and FP).
-    The Problem: It tells you absolutely nothing about the model's ability to find actual outliers. 
-    A model that labels everything as an inlier will achieve a perfect Specificity of 100\%, despite being a total failure at detecting anomalies.
-}
 
 
-\subsection{Definition of ROC and AUC}
+\subsection{Metrics based on Area under the Curve}
     - how is it calculated
     - Where has it been used
     - Advantages and Disadvantages of AUC
-ROC AUC (Receiver Operating Characteristic Area Un-
-der Curve): ROC AUC assesses the likelihood of a random
+ROC AUC (Receiver Operating Characteristic Area Under Curve): ROC AUC assesses the likelihood of a random
 abnormal sample being more anomalous than a normal one. It
 is visualized as a curve plotting the true positive rate (TPR)
 against the false positive rate (FPR), and can be mathemati-
@@ -236,7 +171,7 @@ ROC do apply and can be beneficial.
 Following \citep[p.1017]{sokolova2006beyond}
 
 
-\subsection{Definition of AUCPR}
+\subsection*{Definition of AUCPR}
     - how is it calculated
     - Where has it been used
     - Advantages and Disadvantages of AUCPR
@@ -256,5 +191,71 @@ reflecting its effectiveness in distinguishing between classes
 in imbalanced situations. \citep{ok2024exploring}
 
 
-\subsection{adding: Runtime}
+\subsection*{adding: Runtime}
 
+\subsection*{Critique}
+To analyse the robustness of the traditional metrics, I will apply the  framework of \citet{sokolova2009systematic}.
+The authers analysed different approaches to survey the invariance properties of up to 24 metrics.
+Invariance is the robustness of the metrics if the confusion matrix changes.
+The authers identified 7 different approaches to analyse the Invariace carakteristics of the above called metrics.
+I will use three datasets wich are highly imbalanced and vary in the number of dimensions and instances.
+Therefore, the following 
+ 
+Precision, Recall and Specificity are calculated from the values of the confusion matrix and simply. 
+If the threshold is changed, so must change the confusion matrix' values as well. 
+
+
+Precision negates this problem by not considering the distributions but by ignoring the true negatives. 
+Nevertheless, this approach has its own disadvantages. 
+By ignoring the negatives the method can optimize for that metric by classifying conservatively, predicting only the most obvious outliers.
+
+
+Hence, in scenarios where the cost of a false negative is high, like in the datasets I analyse, precision is not suitable as well. 
+
+\subsection*{Critique of Recall}
+    - Whats the Problem?
+    - Why wont I use it for my Datasets
+\textcolor{red}
+    -   The "Cheap" Maximization Problem
+    Recall is mathematically "cheap" to maximize. An algorithm can achieve a perfect Recall of 1.0 (100\%) simply by labeling every single data point as an outlier.
+    The Problem: A model that flags everything is technically perfect according to the Recall metric, but it is practically useless because it provides zero discrimination between classes.
+    Recall is calculated as TP/(TP+FN). Notice that the FP (False Positive) count is entirely absent from this equation.
+    -   Complete Ignorance of False Positives (Type I Errors)
+    The Problem: In an econometric or business context (like fraud detection), a high-recall model might flag thousands of legitimate transactions as "fraudulent." 
+    The cost of investigating these false alarms is often high, but Recall does not reflect this "noise."
+    Thesis Application: If you compare your three outlier detection methods and Method A has a higher Recall than Method B, you cannot conclude Method A is better without checking if it also produces ten times as many false alarms
+    -   Threshold Vulnerability
+    Recall is highly dependent on the chosen classification threshold.
+    The Problem: Many unsupervised outlier detection algorithms produce a continuous Anomaly Score. By lowering the threshold, you can artificially inflate Recall.
+    The Result: This makes it difficult to compare algorithms fairly unless you use a threshold-independent metric like ROC-AUC or PR-AUC, which evaluate Recall across all possible thresholds.
+    -   Asymmetric Information Loss
+    Recall only looks at the "Positive" (Outlier) class. It tells you nothing about how well the model identifies the "Negative" (Inlier) class.
+    The Problem: A model could have high Recall but be failing catastrophically at understanding the "Normal" geometric structure of your data.
+    Scientific Source: Chicco  Jurman (2020) argue that because Recall ignores two quadrants of the confusion matrix (TN and FP), it provides an incomplete and potentially biased summary of model quality.
+    Precision-Recall trade off
+
+\subsection*{Critique of Specificity}
+    - Whats the Problem?
+    - Why wont I use it for my Datasets
+Conversely, two measures that separately estimate a classifier’s performance on different classes are sensitivity and specificity (often employed in biomedical and medical
+applications, and in studies which involve image and visual data)
+\textcolor{red}{
+    -   The "Large Negative" Dilution Effect
+    The formula for Specificity is TN/(TN+FP). In outlier detection, the number of True Negatives (TN) is usually massive (e.g., millions of normal transactions).
+    The Problem: Because the denominator is dominated by the TN count, even a significant absolute number of False Positives (FP) will not noticeably move the metric.
+    The Consequence: A model could produce 5,000 "false alarms" (False Positives), but if there are 1,000,000 inliers, the Specificity remains a seemingly perfect 99.5\%. 
+    This hides the fact that the model is overwhelming the user with errors. \citep{saito2015precision}
+    -   Complete Ignorance of the Outlier Class
+    Specificity focuses entirely on the "Negative" class. It uses only the bottom row of the confusion matrix (TN and FP).
+    The Problem: It tells you absolutely nothing about the model's ability to find actual outliers. 
+    A model that labels everything as an inlier will achieve a perfect Specificity of 100\%, despite being a total failure at detecting anomalies.
+}
+
+
+
+\textcolor{red}{Supervised Machine Learning (ML) has several ways of evaluating the performance of learning algorithms and the classifiers they produce. 
+Measures of the quality of classification are built from a confusion matrix which records correctly and incorrectly recognized examples for each class. 
+This paper argues that the measures commonly used now (accuracy, precision, recall, F-Score and ROC Analysis) do not fully meet the needs of learning problems in which the classes are equally important and where several algorithms are compared. 
+Our findings agree with those of [1] who surveys the comparison of algorithms on multiple datasets. 
+His survey, based on the papers published at the International Conferences on ML 2003–2004, notes that algorithms are mainly compared on accuracy.
+The vast majority of ML research focus on the settings where the examples are assumed to be identically and independently distributed (IID)}
