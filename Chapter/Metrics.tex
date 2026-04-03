@@ -155,7 +155,7 @@ The higher the value is, the better the model distinguishes between outliers and
 As seen in the figure, ROC AUC is plotting the true positive rate (TPR) at the ordinate against the false positive rate (FPR) at the abscissa, and can be mathematically expressed as an integral. 
 Visually, the higher the ROC AUC is, the more the curve bends outwards to the point (0;1), hence ROC AUC = 1.
 At this point the FPR is minimal and the TPR is maximal.
-If ROC AUC = 0.5, the model guesses like a coin flip.
+If ROC AUC = 0.5, the model guesses like a coin flip, which defines a baseline for analysing a models performance.
 Visually represented by a linear rising graph.
 If  ROC AUC = 0 the model classifies outliers as inliers and vice versa perfectly.
 Therefore the graph bends to the poin (1;0). 
@@ -185,17 +185,36 @@ Therefore the FPR tends to be small in inbalaced datasets, hence the curve biase
 
 In defence of ROC AUC, authors \todo{insert paper} argue, that the metric measures the fundamental desciminative power of a model, not like precision-based metrics (e.g. F1-Score)
 It stays consistent, even if the outlier ratio changes, what makes it suitable for models comparisons. 
+\todo{discuss if the argument is valid}
 
 
 
+The area under the precision-recall curve (AUPRC) resolves the argument of the overly optimistic ROC AUC.
+Therefore the AUPRC ignores the true negatives and focussing on the models main task: detecting true positives.
+As mentioned above, precision and recall share a trade-off relation as well.
+If one metric increases, the other will decrease.
+In other words, there is a trade-off between every outlier (recall) and detecting it correctly (precision)
+The AUPRC lays between 0 and 1, with 1 as the pefect model.
+Pefect in the sense that it detects all outliers correctly.
+As shown in the figure, the diagram plots the recall curve at the abscissa and precision at the ordinate.
+The better the performance of a model is, the more the graph bends towards the right corner of the diagram.
+The closer it gets to 
+This framework makes it possible to compare the performance of different methods. 
+If the performance of model A is always better than the performance of model B, the graph of model A will always be above the graph of model B.
+If the graphs cross each other, then the one model will be better suited for high precision tasks and the other for high-recall tasks.
+The AUPRC does not have a fixed baseline, instead it depends on the analysed data and is the outlier ratio.
 
 
-\subsection*{Definition of AUCPR}
-    - how is it calculated
-    - Where has it been used
-    - Advantages and Disadvantages of AUCPR
-AUCPR (Area Under the Precision-Recall Curve):
-AUCPR, designed for imbalanced datasets, emphasizes the minority class by plotting precision against recall across various thresholds. 
+Suppose a naive model guessing the number of outlier in a given dataset.
+Statistically the results depend on the prevelance of the share of outliers and inliers.
+
+
+
+  
+
+
+\todo{insert baseline argument}
+, designed for imbalanced datasets, emphasizes the minority class by plotting precision against recall across various thresholds. 
 It evaluates the model’s performance in scenarios where false negatives carry more weight than false positives, making it particularly useful in fields where the consequences of missing true positive cases are critical [27]. 
 Similar to ROC AUC, AUCPR can be mathematically expressed as an integral across the entire precision-recall curve [28]. 
 This integral representation provides a comprehensive assessment of the model’s performance over various threshold levels, reflecting its effectiveness in distinguishing between classes in imbalanced situations. \citep{ok2024exploring}
