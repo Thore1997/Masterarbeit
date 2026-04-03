@@ -142,24 +142,52 @@ The most often used metrics derived from the confusion matrix are:
 \endenumerate
 \todo{consider: maybe its better to plot this as a table}
 
-\subsection{Metrics absence of Thresholds}
+\subsection{Metrics absence of thresholds}
 The above explained metrix have in common, that they depend on a threshold value.
-This threshold determines, when an outlier is defined as one. 
+To bypass the threshold selection, alternatively one can use the Area und der ROC Curve (ROC AUC) and the Area under the Precision-Recall Curve (AUPRC)
 
 
 \subsection*{Metrics based on Area under the Curve}
-    - how is it calculated
-    - Where has it been used
-    - Advantages and Disadvantages of AUC
-ROC AUC (Receiver Operating Characteristic Area Under Curve): ROC AUC assesses the likelihood of a random abnormal sample being more anomalous than a normal one. 
-It is visualized as a curve plotting the true positive rate (TPR) against the false positive rate (FPR), and can be mathematically expressed as an integral across all thresholds. 
-The ROC AUC value ranges from 0 to 1, where a higher value indicates better model discrimination [25].
-the whole two dimensional area under the entire ROC curve.
+\todo{insert FPR}
+The ROC AUC is an aggregate measurement of performance across all possible classification thresholds and it ranges between 0 and 1.
+Therefore it can be interpreted as a probability that randomly chosen outlier gets a higher outlier score than a randomly chosen inlier.
+The higher the value is, the better the model distinguishes between outliers and inliers.
+As seen in the figure, ROC AUC is plotting the true positive rate (TPR) at the ordinate against the false positive rate (FPR) at the abscissa, and can be mathematically expressed as an integral. 
+Visually, the higher the ROC AUC is, the more the curve bends outwards to the point (0;1), hence ROC AUC = 1.
+At this point the FPR is minimal and the TPR is maximal.
+If ROC AUC = 0.5, the model guesses like a coin flip.
+Visually represented by a linear rising graph.
+If  ROC AUC = 0 the model classifies outliers as inliers and vice versa perfectly.
+Therefore the graph bends to the poin (1;0). 
+
+\todo{insert ROC AUC diagram}
+
+ROC AUC is a good choice for imbalaced classification tasks, like outlier detection, because it evaluates the models ability to rank a ranomd outlier higher than a random normal point.
+It does this by incorporating the trade-off relaitonship between precision and recall and does not simply optimize for one class.
+Espacially in unsupervised outlier detection, where outlier scores are produced by the methods, ROC AUC can be benefitial, because it does not require a threshold.
+Furthermore, ROC AUC is scale invariant and just requieres a consistent ranking of the outlier scores. 
+Thats means, that ROC AUC is suitabele for comparing different methods, that are producing different types of outlier score scales. \todo{is that right? Example}
+
+
 ROC curve is one of the strongest metrics used to efficiently assess intrusion detection systems performance, and it is a graphical tool that illustrates accuracy across FPS \citep[postfix]{nassif2021}
-\todo{image of ROC}
 A comprehensive evaluation of classifier performance can be obtained by the ROC insert ROC equation denotes the conditional probability that a data entry has the class label C. 
 An ROC curve plots the classification results from the most positive to the most negative classification. 
 Due to the wide use in cost/benefit decision analysis, ROC and the Area under the Curve (AUC) apply to learning with asymmetric cost functions and imbalanced data sets
+
+
+ROC AUC as advantages in inbalaed datasets, but has disadventages, too.
+Especially in inbalased datasets, ROC AUC can be over optimistic, because it includes the the FPR.
+The number of true negative instances are a lot higher than the true positives. 
+The denominator is dominated by the true negatives. 
+The change in the FPR by misclassifying inliers, will not be substantial. 
+Therefore the FPR tends to be small in inbalaced datasets, hence the curve biased to the left corner.
+
+
+In defence of ROC AUC, authors \todo{insert paper} argue, that the metric measures the fundamental desciminative power of a model, not like precision-based metrics (e.g. F1-Score)
+It stays consistent, even if the outlier ratio changes, what makes it suitable for models comparisons. 
+
+
+
 
 
 \subsection*{Definition of AUCPR}
