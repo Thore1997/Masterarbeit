@@ -399,7 +399,14 @@ anomaly detection datasets for algorithm benchmarking. As already stated, we pub
 datasets to encourage researchers to compare their proposed algorithms with this work and
 hope to establish an evaluation standard in the community \citep[p.20]{goldstein2016comparative}}
 
-
+\textcolor{red}{Precision rarely operates in a vacuum. There is a fundamental trade-off governed by the classification threshold.
+    -   The Problem: Increasing the threshold to improve Precision almost inevitably decreases Recall %(TP/(TP+FN))%.
+    Thesis Application: In your comparison of three outlier detection methods, reporting only Precision would mask whether a method is "cherry-picking" easy outliers while failing on the complex ones. 
+    This is why the F1-Score (the harmonic mean) or PR-AUC is preferred in top-tier journals.
+    -   Precision does not tell you if the model is actually "learning" the structure of the data or just getting "lucky" with a specific threshold.
+    The Problem: Unlike the Matthews Correlation Coefficient (MCC), which requires the model to perform well on both the minority and majority classes, Precision can be "gamed" by a model that over-predicts the majority class to minimize False Positives.
+    Another disadvantage of Precision is the base rate fallacy \todo {adding: base rate fallacy and paper sokolova2009systematic}
+    }
 \subsection{k-NN}
 \input{Chapter/Intercont.tex}
 The Ordinary Least Squared was being critized because of its lack of robusteness. Just one outlier could have a large negative effect.

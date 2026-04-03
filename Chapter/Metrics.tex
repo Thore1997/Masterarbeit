@@ -47,6 +47,14 @@ Outliers that are correctly classified are called true positives, while correctl
 The other diagonal presents the falsly classified data instances.
 Outliers that are wrongly classified as inliers are called false negatives, while inliers that are wrongly classified as outliers are called false positives.
 All basic metrics are derived fromt the confusion matrix \citep[p.4]{saito2015precision}. 
+In scientific literature, a heuristic approach is often taken.
+All of them need a threshold to seperate outliers from inliers, which is a mayor disadvantage.
+In real-world scenarios, the outlier ratio is not known, and therefore need to be calculated from already collected data.
+Setting the threshold to high, increases the number of outliers incorrectly classified as inliers.
+Setting the threshold to low, increases the number of inliers incorrectly classified as outliers.
+Depending on the domain, this might lead to incorrect decisions.  
+Especially in unsupervised learning, the outlier ratio is used as the threshold, avoiding an abritrary value selection.
+In scientific research this provides a plain level field to compare different outlier detection methods.
 The most often used metrics derived from the confusion matrix are:
 
 
@@ -87,7 +95,7 @@ The most often used metrics derived from the confusion matrix are:
     If the method classifies an inlier incorrectly, the denominator will increase, hence the recall will decrease, but if the method classifies an outlier correctly, the numerator will increase, hence the recall increases as well.
     This metric ignores the false positives, that will be high, if the method classifies all instances as outliers.
     A possible bad implementation of recall could be manufacturing, where an outlier could trigger a kill switch, which could lead to high restarting costs.
-    Precision and recall share a trade--off relationship. 
+    Precision and recall share a trade-off relationship. 
     Optimizing the relationship between precision and recall is crucial for evaluating the performance of outlier detection methods, especially in imbalanced datasets.
     This relationship will be explained above and will lead to the definition of the metric: Area under the Precision-Recall Curve (AUCPR).
 
@@ -99,94 +107,59 @@ The most often used metrics derived from the confusion matrix are:
     \begin{equation}
         \text{Specificity} = \frac{TN}{FP + TN}
     \end{equation}
+
+    \item F1 score: The F1 score is the harmonic mean of precision and recall, creating a metric that incorporates the relationship between both. 
+    It is defined as: 
+    
+    \begin{equation}
+    F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+    \end{equation}
+
+    By using the harmonic mean, the metric is sensitive to small input values.
+    If either precision or recall is low, the resulting metric will be smaller than the traditional mean. 
+    Therefore the F1-Score is only high in cases where both recall and precision are high too.
+    As mentioned before, the two metrics share a trade-off relationship.
+    That means, if the model optimizes one metric, the other will decrease, hence decrease the F1-Score as well.
+    By optimizing the F1-Score, the model balances both precision and recall.
+
+
+    The F1-Score is threshold depending, because its inputs are depending on the threshold as well.
+    The choice of this threshold influences both the precision and recall, thereby affecting the F1 score.
+    
+
+    A mayor point of critique is that F1-Score ignores the correctly classified inliers (true negatives).
+    In outlier detection, the inlier class is the vast majority of your data.
+    A metric that ignores how well you identify the normal class is technically providing an incomplete picture of the models performance.
+        
+        
+    The F1-Score treats prescision and recall as equal important.
+    In real-world scenarios an equally important trade-off may not align with the cost-benefit analysis.
+    Diagnosing an healthy patient with cancer may be not so severe as the opposite way around.
+    Classifing an accused criminial as more dangerous as he really is, could lead to a stricter scentence then he deserves. 
+    Depending on the domain, the solution is to reqeight the recall or the precision, resulting in for example the F2-Score (weighing Recall higher) or F0.5-Score (weighing Precision higher).
+
 \citep[p.430]{sokolova2009systematic}
 \endenumerate
 \todo{consider: maybe its better to plot this as a table}
 
-
-Accuracy is a commonly used metric in outlier detection. \todo{adding: Papers that use accuracy as a metric}
-In a comprehensive survey of 290 papers on machine learning-based anomaly detection, it was found that 112 of those papers used Accuracy \citep[p.78664]{nassif2021}. 
-Nevertheless Accurarcy is not suitable for outlier detection tasks, because the datasets are imbalanced in nature. 
-That means that the minority class (outlier) is much smaller than the majority class (inliers).
-The impact of the outliers will be reduced when compared to the inliers.
-For a small given percentage of outliers, accuracy can be estimated high by only classifying all instances as inliers.
-Resulting in the given percentage of misclassified instances.
-Therefore, a metric used for imbalanced datasets should consider the distributions of the classes. \citep[p.8]{branco2016survey}  
+\subsection{Metrics absence of Thresholds}
+The above explained metrix have in common, that they depend on a threshold value.
+This threshold determines, when an outlier is defined as one. 
 
 
-
-
-
-
-\textcolor{red}{Precision rarely operates in a vacuum. There is a fundamental trade-off governed by the classification threshold.
-    -   The Problem: Increasing the threshold to improve Precision almost inevitably decreases Recall %(TP/(TP+FN))%.
-    Thesis Application: In your comparison of three outlier detection methods, reporting only Precision would mask whether a method is "cherry-picking" easy outliers while failing on the complex ones. 
-    This is why the F1-Score (the harmonic mean) or PR-AUC is preferred in top-tier journals.
-    -   Precision does not tell you if the model is actually "learning" the structure of the data or just getting "lucky" with a specific threshold.
-    The Problem: Unlike the Matthews Correlation Coefficient (MCC), which requires the model to perform well on both the minority and majority classes, Precision can be "gamed" by a model that over-predicts the majority class to minimize False Positives.
-    Another disadvantage of Precision is the base rate fallacy \todo {adding: base rate fallacy and paper sokolova2009systematic}
-    }
-
-
-
-
-
-
-\subsection*{Definition of F1-Score}
-F1 score: The F1 score is the harmonic mean of
-precision and recall, offering a balanced measure of model
-accuracy, particularly where both false positives and false
-negatives are consequential. It is defined as:
-The F1 score depends on a specific threshold setting to
-determine the binary classification of cases as normal or
-anomaly. The choice of this threshold influences both the
-precision and recall, thereby affecting the F1 score. This metric
-indicates the overall robustness of anomaly detection models
-in balanced class distributions [26].
-    - how is it calculated
-    - Where has it been used
-    - Advantages and Disadvantages of F1
-The F-score is evenly balanced when beta = 1. It favours precision when beta > 1,
-and recall otherwise.
-\textcolor{red}{
-    -   The Exclusion of True Negatives (TN)
-    The most significant mathematical critique of the F1 score is that it completely ignores the True Negative quadrant of the confusion matrix.
-    The Problem: The formula (F1=2TP+FP+FN2TP) does not include TN. In outlier detection, the "Normal" class is the vast majority of your data.
-    A metric that ignores how well you identify the normal class is technically providing an incomplete picture of the models "total" knowledge.
-    -   Equal Weighting of Precision and Recall
-    The F1 score is a specific case of the F$\beta$ measure where $\beta$=1, meaning it gives equal importance to Precision and Recall.
-    The Problem: In many real-world scenarios (like fraud detection or medical diagnosis), the cost of a False Negative (missing a fraud) is much higher than a False Positive (a false alarm). 
-    The F1 score "forces" a 1:1 trade-off that may not align with your econometric cost-benefit analysis.
-    The Solution: In such cases, researchers often use F2 (weighing Recall higher) or F0.5 (weighing Precision higher).}
-
-
-\subsection{Metrics based on Area under the Curve}
+\subsection*{Metrics based on Area under the Curve}
     - how is it calculated
     - Where has it been used
     - Advantages and Disadvantages of AUC
-ROC AUC (Receiver Operating Characteristic Area Under Curve): ROC AUC assesses the likelihood of a random
-abnormal sample being more anomalous than a normal one. It
-is visualized as a curve plotting the true positive rate (TPR)
-against the false positive rate (FPR), and can be mathemati-
-cally expressed as an integral across all thresholds. The ROC
-AUC value ranges from 0 to 1, where a higher value indicates
-better model discrimination [25].
+ROC AUC (Receiver Operating Characteristic Area Under Curve): ROC AUC assesses the likelihood of a random abnormal sample being more anomalous than a normal one. 
+It is visualized as a curve plotting the true positive rate (TPR) against the false positive rate (FPR), and can be mathematically expressed as an integral across all thresholds. 
+The ROC AUC value ranges from 0 to 1, where a higher value indicates better model discrimination [25].
 the whole two dimensional area under the entire ROC curve.
-ROC curve is one of the strongest metrics used to efficiently
-assess intrusion detection systems performance, and it is a
-graphical tool that illustrates accuracy across FPS \citep[postfix]{nassif2021}
+ROC curve is one of the strongest metrics used to efficiently assess intrusion detection systems performance, and it is a graphical tool that illustrates accuracy across FPS \citep[postfix]{nassif2021}
 \todo{image of ROC}
-A comprehensive evaluation of classifier performance can be obtained by the ROC 
-insert ROC equation 
-denotes the conditional probability that a data entry has the class label C. An
-ROC curve plots the classification results from the most positive to the most negative
-classification. Due to the wide use in cost/benefit decision analysis, ROC and the Area
-under the Curve (AUC) apply to learning with asymmetric cost functions and imbal-
-anced data sets
-\textcolor{red}{critique on traditional metrics}
-e argue that performance measures other than accuracy, F-score, precision, recall or
-ROC do apply and can be beneficial. 
-Following \citep[p.1017]{sokolova2006beyond}
+A comprehensive evaluation of classifier performance can be obtained by the ROC insert ROC equation denotes the conditional probability that a data entry has the class label C. 
+An ROC curve plots the classification results from the most positive to the most negative classification. 
+Due to the wide use in cost/benefit decision analysis, ROC and the Area under the Curve (AUC) apply to learning with asymmetric cost functions and imbalanced data sets
 
 
 \subsection*{Definition of AUCPR}
@@ -194,19 +167,10 @@ Following \citep[p.1017]{sokolova2006beyond}
     - Where has it been used
     - Advantages and Disadvantages of AUCPR
 AUCPR (Area Under the Precision-Recall Curve):
-Absolutly implement into the data analysis!
-AUCPR, designed for imbalanced datasets, emphasizes the mi-
-nority class by plotting precision against recall across various
-thresholds. It evaluates the model’s performance in scenarios
-where false negatives carry more weight than false positives,
-making it particularly useful in fields where the consequences
-of missing true positive cases are critical [27]. Similar to
-ROC AUC, AUCPR can be mathematically expressed as an
-integral across the entire precision-recall curve [28]. This
-integral representation provides a comprehensive assessment
-of the model’s performance over various threshold levels,
-reflecting its effectiveness in distinguishing between classes
-in imbalanced situations. \citep{ok2024exploring}
+AUCPR, designed for imbalanced datasets, emphasizes the minority class by plotting precision against recall across various thresholds. 
+It evaluates the model’s performance in scenarios where false negatives carry more weight than false positives, making it particularly useful in fields where the consequences of missing true positive cases are critical [27]. 
+Similar to ROC AUC, AUCPR can be mathematically expressed as an integral across the entire precision-recall curve [28]. 
+This integral representation provides a comprehensive assessment of the model’s performance over various threshold levels, reflecting its effectiveness in distinguishing between classes in imbalanced situations. \citep{ok2024exploring}
 
 
 \subsection*{adding: Runtime}
@@ -229,6 +193,18 @@ By ignoring the negatives the method can optimize for that metric by classifying
 
 
 Hence, in scenarios where the cost of a false negative is high, like in the datasets I analyse, precision is not suitable as well. 
+
+
+\subsection*{Accuracy}
+Accuracy is a commonly used metric in outlier detection. \todo{adding: Papers that use accuracy as a metric}
+In a comprehensive survey of 290 papers on machine learning-based anomaly detection, it was found that 112 of those papers used Accuracy \citep[p.78664]{nassif2021}. 
+Nevertheless Accurarcy is not suitable for outlier detection tasks, because the datasets are imbalanced in nature. 
+That means that the minority class (outlier) is much smaller than the majority class (inliers).
+The impact of the outliers will be reduced when compared to the inliers.
+For a small given percentage of outliers, accuracy can be estimated high by only classifying all instances as inliers.
+Resulting in the given percentage of misclassified instances.
+Therefore, a metric used for imbalanced datasets should consider the distributions of the classes. \citep[p.8]{branco2016survey}  
+
 
 \subsection*{Critique of Recall}
     - Whats the Problem?
