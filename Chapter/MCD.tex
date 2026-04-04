@@ -1,34 +1,49 @@
-\subsection{Minimum Covariance Determinant}
-The Minimum Covariance Determinant (MCD) is a parametric method to determine a robust mean and the covariance metrix.
-Those estimators can be used in combination with the Mahalanobis distance, to detect outliers. 
-It was issued in 1984 by \citet{rousseeuw1984least} and later in 1985 theoretically justified in \citet{rousseeuw1985multivariate}.
-The algorithms was effective but computationally complex and not practical for real-world applications.
-Therefore a more efficient algorithm was published in 1999 by \citet{rousseeuw1999fast}
-I will concentrate on the FAST-MCD algorithm, because thats the version I will implement in my experiments.
-Nevertheless, I will explain the difference between FAST-MCD and MCD.
+\section*{Introduction}
+\subsection*{The Problem}
+Naivly 
+The motivation for constructing the MCD, was the masking effect of outliers.
+Outliers bias non-robust estimators like the mean, by pullig it towards their direction.
+That hides the outlier, by making it less obvious.
+
+Proposed in 1984 by \citet{rousseeuw1984least} and later in 1985 theoretically justified in \citet{rousseeuw1985multivariate}, the authors published a way to determine a robust mean and covariance matrix.
+In combination with the Mahalanobis distance, MCD can be used to detect outliers.
+
+
+The goal of MCD and subsequentially FAST-MCD is to find in a given dataset a subset $H$ of $h$ \todo{which onw is right? h or n?} observations, with the minimal determinant.
+As seen in Fig. the MCD draws the smallest possible ellipsoid, compared to classical methods \todo{which methods?}
+When the smallest possible elipsoid is found, a robust distance, like the mahalanobis distance, is used to determine the distances between the subset mean (center) to the specific instance.
+Intuitively,  as seen in figure, the goal of MCD is to draw an elipsoid around a subset of the data with the highest local density and not around the complete datatset, which will include outlier. 
+Eliminating the masking effect of possible outliers. 
+%\includegraphics[width=\linewidth]{Images/MCD.pdf}
+\todo{insert diagram}
 
 
 I chose MCD as a traditional statistical benchmark, because of its unique properties.
+
+
+This chapter will be organized as follows:
+
+
+\subsection*{Statistical Porperties}
 It is parametric, hence it implies that the data follows a gaussian distribution.
 
+The MCD has a very high breakdown point.
+The breakdown point describes the percentage of abitrary large instances that can be added without the estimator breaks down.
+MCD will stay consistens even if 50\% arbirary datapoints are added to the dataset, thats the so called majority rule.
+It does this by ignoring the instances outside the subset.
+If the abitrary instances get above 50\%, MCD will prioritize those instances and not the subset anymore.
+If the outlier ratio does exceed 50\% those cant be named outliers anymore, because they reach the status of inliers, because they are the mayority class. 
 
-%\includegraphics[width=\linewidth]{Images/MCD.pdf}
-
-
-\subsection*{Construction}
-The goal of FAST-MCD is to find in a given dataset a subset $H$ of $h$ \todo{which onw is right? h or n?} observations, with the minimal determinant.
-As seen in Fig. the MCD draws the smallest possible ellipsoid, compared to classical methods \todo{which methods?}
-The MCD location estimate is the mean and the MCD scatter estimate is the covariance matrix.
-When the smallest possible elipsoid is found, a robust distance, like the mahalanobis distance, is used to determine the distances between the subset mean (center) to the specific instance.
-By using the robust MCD estimator, the mahalanobis distance does not suffer from the masking effect either.
-The instances with the highest distance are defined as outliers.
+As long as those changes are affine transformations, the result will not change.
+That means, the dataset does not need to be normalized.  
 
 
-This approach implies that the subset with the minimal determinant is easily found.
-Calculating the $\binom{n}{h}$ possible subsets grows exponentially as dataset sizes increases.
-Therefore \citet{rousseeuw1999fast} proposed the FAST-MCD estimation to decrease computational costs, by adding concentration step (C-Steps). 
-The MCD estimation is as follows:  
-
+\section*{FAST-MCD}
+\subsection*{Motivation}
+The algorithms was effective but computationally complex and not practical for real-world applications.
+To find the ,atrix with the smallest determinant, you have to calculate the $\binom{n}{h}$ subsets which for even small dataset will get to an abitrary big number of possibilities. 
+Therefore a more efficient algorithm, called FAST-MCD was published in 1999 by \citet{rousseeuw1999fast} which include concentration steps (C-Steps).
+The FAST-MCD estimation is as follows:  
 
 \begin{enumerate}
     \item Determine the number observations $h$ by applying $h = \frac{n+p+1}{2}$
@@ -50,18 +65,13 @@ The C-Step algorithm is as follows:
 \citep[p.214]{rousseeuw1999fast}
 
 
-The MCD has one hyperparameter: The size of the subset $h$.
+\subsection*{Implementation}
+
+
+\section*{Hyperparameter}
+\subsection*{Definition and Chossing}
+The MCD has one hyperparameter: The number of observations in the subset $h$.
 The subsets $h$ size lays between $\frac{n}{2} \le h \le n$. 
-
-MCD estimators can only be calculated when the number of subset observations ($h$) exceeds the number of variables ($p$), because the determinant of the resulting covariance matrix will be 0. 
-\citet{hubert2018minimum} recommends at least five observations per dimension to avaid excessiv noise. 
-
-Clearly it is not possible for subsets observations $h$ to expand the number of total observations $n$. 
-The difference between $n$ and $h$ are the added outliers.
-The lower bound of $h$ is set to be at 50\% because of the so called majority rule.
-If the majority of a dataset contains added outliers, the estimator can't distinguish between inliers data structure and outlier data structure. \todo{cite source}
-
-
 The MCD estimator is the most robust when 
 
 \begin{equation}
@@ -73,12 +83,13 @@ If the dataset does not contain more than 25\% of outliers, than it is suitable 
 The newly calculated estimator is less robust, but more efficient then before. 
 
 
+\subsection*{Dimensionality Contraints}
+MCD estimators can only be calculated when the number of subset observations ($h$) exceeds the number of variables ($p$), because the determinant of the resulting covariance matrix will be 0. 
+\citet{hubert2018minimum} recommends at least five observations per dimension to avaid excessiv noise. 
+
+
+
 The resulting $\hat{\mu}_{\text{MCD}}$ is the mean vector of the remaining subset $h$. 
-And t
-
-
-The mean an covariance will be transformed accordingly.
-This means that for any nonsingular p × p matrix A and any p-dimensional column vector b it holds that
 
 
 Therefore, transforming an h-subset with lowest determinant yields an h-subset XHA0 with lowest determinant among all
@@ -102,7 +113,8 @@ mean and covariance will transform correctly and not stay the same.
 Thats important for outlier detection, because estimated outliers will stay outlier even affine transformation took place. \citet{hubert2018minimum}
 
     
-\subsection*{Mahalanobis Distance}
+\section*{Outlier Detection with Mahalanobis Distance}
+\subsection*{Definition}
 The Mahalanobis Distance serves as a sophisticated metric for measuring the distance between a data point and the mean of a multidimensional distribution. 
 It is defined as follows:
 
@@ -123,7 +135,11 @@ The reliability of these estimators is measured by the breakdown point, which re
 Theoretically, this breakdown point cannot exceed 0.5; once more than half the data is contaminated, no estimator can distinguish the true underlying distribution from the noise, as the outliers would become the new majority.
 
 
-\subsection*{Variants of MCD}
+\subsection*{Decision Threshold}
+
+
+
+\section*{Variants of MCD}
 Even recently reaseach has een done for new extension for MCD.
 Because FAST-MCD begins by drawing random subsets, multiple runs of FastMCD on the same dataset may yield different results (a problem often mitigated by fixing the random seed in implementations). 
 Furthermore, it requires drawing many initial subsets to ensure at least one is free of outliers, which can be computationally intensive. 
@@ -134,7 +150,7 @@ Unlike its predecessor, DetMCD is permutation invariant, meaning its result is i
 Moreover, DetMCD typically runs even faster than FastMCD and is less sensitive to data contamination (outliers).
 
 
-\subsection*{Pros and Cons}
+\section*{Summary with Pros and Cons}
 Briefly, statistical detection methods show efficient experimental results when probabilistic distribution models are given but suffer from high computational costs when applied in large data sets and the curse of dimensionality. 
 Therefore these methods cannot be applied in both large and high dimensional data sets.
 Another disadvantage of these techniques is that they are not applicable to data sets where the distribution is unknown. \citep[p.5]{smiti2020critical}

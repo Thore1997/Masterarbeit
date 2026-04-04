@@ -407,6 +407,12 @@ hope to establish an evaluation standard in the community \citep[p.20]{goldstein
     The Problem: Unlike the Matthews Correlation Coefficient (MCC), which requires the model to perform well on both the minority and majority classes, Precision can be "gamed" by a model that over-predicts the majority class to minimize False Positives.
     Another disadvantage of Precision is the base rate fallacy \todo {adding: base rate fallacy and paper sokolova2009systematic}
     }
+
+
+ 
+To analyze the robustness of these traditional metrics, I will apply the framework established by \citet{sokolova2009systematic}, who analyzed different approaches to survey the invariance properties of up to 24 metrics. 
+Invariance refers to the robustness of these metrics when the confusion matrix changes, and the authors identified seven different approaches to analyze these characteristics. 
+I will apply this framework to three datasets which are highly imbalanced and vary in their number of dimensions and instances.
 \subsection{k-NN}
 \input{Chapter/Intercont.tex}
 The Ordinary Least Squared was being critized because of its lack of robusteness. Just one outlier could have a large negative effect.
