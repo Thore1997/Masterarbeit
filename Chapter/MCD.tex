@@ -1,31 +1,31 @@
-\section*{Introduction}
-\subsection*{The Problem}
-Naivly 
-The motivation for constructing the MCD, was the masking effect of outliers.
+\section*{Minimum Covariance Determinant}
+Statistical methods work differently then the methods discussed before. 
+The methods making assumptions about the distribution of the data and  estimate population parameters, like mean and covariance.
+Resulting in statistical inference, the method can predict with a percentage of how likely it is, that the analysed datapoint is an outlier.
+In multivariate dataset, the covariance is an important parameter, because it describes the shape of the data in p-dimensional space.
+Therefore using the mahalanobis distance, which incorporates the covariance, can be benefitial.
+Naivy, by estimating the mean and covariance matrix and the resulting mahalanobis distance, you could define the $n$ largest distances as ourliers.
+
+
+But the results of this procedure would be distorted by the masking effect.
+Because the sample mean and covariance matrix are themselves sensitive to extreme values, a single outlier can pull the mean toward itself and inflate the covariance, essentially "masking" its own presence and leading to false negatives in outlier detection.
+The MCD, proposed in 1984 by \citet{rousseeuw1984least} and later in 1985 theoretically justified in \citet{rousseeuw1985multivariate}, wasproposed as a solution to estimate robust estimators. 
 Outliers bias non-robust estimators like the mean, by pullig it towards their direction.
-That hides the outlier, by making it less obvious.
-
-Proposed in 1984 by \citet{rousseeuw1984least} and later in 1985 theoretically justified in \citet{rousseeuw1985multivariate}, the authors published a way to determine a robust mean and covariance matrix.
-In combination with the Mahalanobis distance, MCD can be used to detect outliers.
 
 
-The goal of MCD and subsequentially FAST-MCD is to find in a given dataset a subset $H$ of $h$ \todo{which onw is right? h or n?} observations, with the minimal determinant.
+This chapter is organized as follows: First I will explain the goal and the construction of MCD.
+
+
+\subsection*{Theoretical Foundation}
+The goal of MCD is to find a subset $H$ of $h$ \todo{which onw is right? h or n?} observations in a given dataset, with the minimal determinant.
 As seen in Fig. the MCD draws the smallest possible ellipsoid, compared to classical methods \todo{which methods?}
 When the smallest possible elipsoid is found, a robust distance, like the mahalanobis distance, is used to determine the distances between the subset mean (center) to the specific instance.
 Intuitively,  as seen in figure, the goal of MCD is to draw an elipsoid around a subset of the data with the highest local density and not around the complete datatset, which will include outlier. 
-Eliminating the masking effect of possible outliers. 
+Eliminating the masking effect of possible outliers.
+
+
 %\includegraphics[width=\linewidth]{Images/MCD.pdf}
-\todo{insert diagram}
 
-
-I chose MCD as a traditional statistical benchmark, because of its unique properties.
-
-
-This chapter will be organized as follows:
-
-
-\subsection*{Statistical Porperties}
-It is parametric, hence it implies that the data follows a gaussian distribution.
 
 The MCD has a very high breakdown point.
 The breakdown point describes the percentage of abitrary large instances that can be added without the estimator breaks down.
@@ -34,15 +34,18 @@ It does this by ignoring the instances outside the subset.
 If the abitrary instances get above 50\%, MCD will prioritize those instances and not the subset anymore.
 If the outlier ratio does exceed 50\% those cant be named outliers anymore, because they reach the status of inliers, because they are the mayority class. 
 
-As long as those changes are affine transformations, the result will not change.
-That means, the dataset does not need to be normalized.  
+
+MCD is affine equvariant, that means, that the estimators stay consistent if affine transformations are undertaken.
+Affine transformations are changes to the data, that does not change the geometric structure of the data.
+In data preprocessing are affine transformation often used.
+Rescaling data is an affine transformation, but the MCD estimators stay the same, instead of k-NN or deep learning models, that need to be normalized \citet{hubert2018minimum}.
+  
 
 
 \section*{FAST-MCD}
-\subsection*{Motivation}
-The algorithms was effective but computationally complex and not practical for real-world applications.
-To find the ,atrix with the smallest determinant, you have to calculate the $\binom{n}{h}$ subsets which for even small dataset will get to an abitrary big number of possibilities. 
-Therefore a more efficient algorithm, called FAST-MCD was published in 1999 by \citet{rousseeuw1999fast} which include concentration steps (C-Steps).
+A disadvantage of the original algorithm is that it is computationally complex and for bigger dataset get impossible to estimate.
+To find the matrix with the smallest determinant, you have to calculate all possible $\binom{n}{h}$ subsets.  
+Therefore a more efficient algorithm, called FAST-MCD, was published in 1999 by \citet{rousseeuw1999fast} which includes concentration steps (C-Steps).
 The FAST-MCD estimation is as follows:  
 
 \begin{enumerate}
@@ -66,38 +69,6 @@ The C-Step algorithm is as follows:
 
 
 \subsection*{Implementation}
-
-
-\section*{Hyperparameter}
-\subsection*{Definition and Chossing}
-The MCD has one hyperparameter: The number of observations in the subset $h$.
-The subsets $h$ size lays between $\frac{n}{2} \le h \le n$. 
-The MCD estimator is the most robust when 
-
-\begin{equation}
-    h = \lfloor \frac{n+p+1}{2} \rfloor \approx \frac{n}{2}
-\end{equation}
-
-wich corresponds to 0.5 at the population level. But the robusteness is been paid by efficency. 
-If the dataset does not contain more than 25\% of outliers, than it is suitable to choose $h  0.75n$. \citep[p.217]{rousseeuw1999fast}
-The newly calculated estimator is less robust, but more efficient then before. 
-
-
-\subsection*{Dimensionality Contraints}
-MCD estimators can only be calculated when the number of subset observations ($h$) exceeds the number of variables ($p$), because the determinant of the resulting covariance matrix will be 0. 
-\citet{hubert2018minimum} recommends at least five observations per dimension to avaid excessiv noise. 
-
-
-
-The resulting $\hat{\mu}_{\text{MCD}}$ is the mean vector of the remaining subset $h$. 
-
-
-Therefore, transforming an h-subset with lowest determinant yields an h-subset XHA0 with lowest determinant among all
-h-subsets of the transformed data set XA0, and its covariance matrix is transformed appropriately
-Finally, we note that the robust mahalanobis distances are affine invariant, meaning they stay the same after transforming the data, which implies that the weighted
-estimator is affine equivariant too.
-
-
 As above mentioned, I will calculate just two concentration steps with all initial subsets.
 After that I will select the ten results with the smallest determinants.
 I will do this selective iteration, because the distinction between robust and nonrobust solutions aleady becomes visible after two or three steps.  
@@ -105,17 +76,28 @@ I will do this selective iteration, because the distinction between robust and n
 If one can be sure, that the dataset contains less then 25\% of outliers, you can choose $h=0.75n$ wich is a good compromise between breakdown value and statistical efficiency.
 If the dataset contains many observations (e.g. n > 600), then you can create
 
-\subsection*{Characteristics}
 
-MCD is affine equivariant. That means that MCD estimations of the mean and covariance will follow accordingly to 
-affine transformations. For example in a change of measurement, the data will be roted, translated or rescaled but the resulting 
-mean and covariance will transform correctly and not stay the same.
-Thats important for outlier detection, because estimated outliers will stay outlier even affine transformation took place. \citet{hubert2018minimum}
+\section*{Hyperparameter}
+The MCD main hyperparameter is the number of observations in the subset $h$.
+The range of $h$ is defined by: 
 
-    
-\section*{Outlier Detection with Mahalanobis Distance}
-\subsection*{Definition}
-The Mahalanobis Distance serves as a sophisticated metric for measuring the distance between a data point and the mean of a multidimensional distribution. 
+
+\begin{equation}
+    \frac{n+p+1}{2} \le h \le n. 
+\end{equation}
+
+
+The lower boundary includes a minimum of 50\% of the data and additionaly the number of dimensions $p+1$.
+If $p > h$ the resulting determinant of covariance matrix will be 0, hence the covariance matrix can't be inverted and the mahalanobis distances cant be estimated.
+\citet{hubert2018minimum} recommends at least five observations per dimension to avaid excessiv noise. 
+
+There is a trade-off relationship between the breakdown value and statistical efficiency.
+The higher the robustness is chosen, the less efficient the estimators get. 
+If the dataset does not contain more than 25\% of outliers, than it is suitable to choose $h  0.75n$. \citep[p.217]{rousseeuw1999fast}
+The newly calculated estimator is less robust, but more efficient then before. 
+
+The resulting $\hat{\mu}_{\text{MCD}}$ is the mean vector of the remaining subset $h$ which is used to calculate the mahalanobis distances.
+The Mahalanobis Distance serves as a sophisticated metric for measuring the distance between a data point and the mean of a multidimensional distribution by including the covariance. 
 It is defined as follows:
 
 
@@ -124,19 +106,34 @@ It is defined as follows:
     \label{eq:mahalanobis}
 \end{equation}
 
+
 Unlike the Euclidean distance, which treats all variables independently, the Mahalanobis Distance accounts for the correlations between dimensions by incorporating the inverse of the covariance matrix. 
 This approach effectively standardizes the data, making the metric scale-invariant and allowing it to identify outliers that might appear normal when looking at single variables but are anomalous when viewed in combination.
 In a statistical context, if a dataset follows a multivariate normal distribution, the squared Mahalanobis distance follows a Chi-squared distribution. 
 This relationship allows researchers to perform parametric tests to flag outliers at a specific significance level. 
-However, the standard calculation suffers from a significant limitation known as the masking effect. 
-Because the sample mean and covariance matrix are themselves sensitive to extreme values, a single outlier can pull the mean toward itself and inflate the covariance, essentially "masking" its own presence and leading to false negatives in outlier detection.
-To counter this, robust estimators are used to ensure that a small portion of contaminated data does not disproportionately influence the results. 
-The reliability of these estimators is measured by the breakdown point, which represents the smallest fraction of outliers required to make an estimator take on arbitrary or infinite values. 
-Theoretically, this breakdown point cannot exceed 0.5; once more than half the data is contaminated, no estimator can distinguish the true underlying distribution from the noise, as the outliers would become the new majority.
 
 
-\subsection*{Decision Threshold}
+To detect outliers, the procedure includes an statisticall hypothesis test \todo{right? discordancy test}.
+Testing if the observed datapoint comes from the same multivariante normal distribution as the rest of the data.
+To calculate the test statistics, the mahalanobis distance needs to be transformed so it follows a $\chi^2$ distirbution.
+The mahalanobis distances is transformed as follows:
 
+\begin{equation}
+    RD_i^2 = (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})^T \hat{\Sigma}_{\text{MCD}}^{-1} (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})
+    \label{eq:robust_mahalanobis}
+\end{equation}
+
+If the mahalanobis distance of the suppodes outlier is greater than the critical $\chi^2$, the probability (p-value) wether this is an inlier is $1- \alpha$.
+By increasing $\alpha$, I will increase the size of the elipsoid and an possible outlier has to be further away fromt the $\hat{\mu}_{\text{MCD}}$.
+In this case the results will be more certain, but will restrict datapoint to be considered as outliers.
+
+
+In my thesis I will implement a fixed threshold approach.
+To ensure comparability, I will implement approach as described in the other two methods, which is to set the threshold to the outlier ratio.
+Therefore, the MCD will rank the distances of datapoints to the MCD mean and the furthest $n\%$ will be defined as outliers.
+The hypothesis approach does have an advantage in scenarios, where the outlier ratio is not known.
+The detecting is adjusting accourdingly to the unknown outlier ratio.
+Nevertheless, the outlier ratio in my experiments is known 
 
 
 \section*{Variants of MCD}
@@ -150,12 +147,25 @@ Unlike its predecessor, DetMCD is permutation invariant, meaning its result is i
 Moreover, DetMCD typically runs even faster than FastMCD and is less sensitive to data contamination (outliers).
 
 
-\section*{Summary with Pros and Cons}
-Briefly, statistical detection methods show efficient experimental results when probabilistic distribution models are given but suffer from high computational costs when applied in large data sets and the curse of dimensionality. 
-Therefore these methods cannot be applied in both large and high dimensional data sets.
-Another disadvantage of these techniques is that they are not applicable to data sets where the distribution is unknown. \citep[p.5]{smiti2020critical}
+Briefly, MCD is defined by it high breakdownpoint, which ensures with even a very high outlier ratio a consistent estimation.
+MCD does not need normalizations because it is adffine equivariant. 
+This eleminates problems with normalization and ensures reliability even if scales are changed.
+MCD mitigates the masking problem, making it a supplementary to the statistical hypothesis testing.
+Lastly, the statistical approach of MCD making the results transparent and quantifiable, by assigning a probability to every datapoint.
 
 
+On the opposite, even FAST-MCD is computationally complex and limited by the site of the dataset making it not suitable for modern big data applications.
+MCD assumes a gaussian normal distribution and looses performance in dataset with different distributions.
+MCD suffers from the Curse of Dimensionality, because it requires more instances than variables. 
+The estimation is impossible if this requirement is not met.
+FAST-MCD in peticular is a stochastic approach, which means, that two runs can estimate different results.
+For solving this problem, there a variance of MCD that to solve it. \citep[p.5]{smiti2020critical}
+
+
+I chose MCD as a benchmark because of its simplicity and statistical approach compared to the machine-leanring approach of the other methods.
+It provides for the given dataset an answer wether the dataset justifies a complex algorithm like InterCont, or if a traditional statsistical method is enough. 
+Moreover the affine equivariant charakteristic of MCD provides a second benchmark.
+By comparing it to methods, that are not affine equivariant, I expect draw conclusions about the way InterCont learns the underlying geometry of the data \todo{achtung mit dieser aussage}
 
 
 

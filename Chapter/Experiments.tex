@@ -5,7 +5,7 @@ Therefor I will describe the experimental setup and analyse the the arcitecture 
 The goal is to supply an indepth understanding of the implementation and the technical details to fulfill a reproduction of my results. 
 
 
-\subsubsection{Experimental design}
+\subsubsection*{Experimental design}
 The experiments are run on a Desktop PC, equiped with a NVIDIA GeForce RTX 3090 and a 12th gen Intel(R) Core(TM) i9 - 12900k 3.2 GHz CPU.
 The PC has 65536 RAM and 24326 MB of VRAM. 
 It runs Windows 11 Enterprise Version 25H2.
@@ -14,7 +14,7 @@ I used python 3.12, because there werent all the packages available for the late
 I used a virtual environment to manage the dependencies of the project and created a requiremtents.txt file to list all the packages and their versions.
 
 
-\subsubsection{InterCont}
+\subsubsection*{InterCont}
 The authers of the InterCont method, supplied a reproduction package with their paper. 
 The reproduction of the InterCont method went flawlessly and I could reproduce the results of the paper.
 Nevertheless, the authers did not include code for other methods, supposably because they are widely used and implemented in standard libraries.
@@ -121,7 +121,7 @@ To make the methods comparable I decided to implement a semi-supervised learning
 
 \todo{insert arguments why semi supervised can be allpied}
 
-\subsubsection{k-NN}
+\subsubsection*{k-NN}
 The k-NN algorithm is implemented by using the PyOD library, wich is a widely used library for anomaly detection in sientific research.
 I also used parts of the well known library scikit-learn to implement the cross validation procedure and to calculate my desired metrics.
 First I seperated the dataset into the test and training dataset.
@@ -144,7 +144,7 @@ I chose the default setting "largest" which means the distance is calcultate the
 The test data is normalized by using the min-max-normalization.
 
 
-\subsubsection{MCD}
+\subsubsection*{MCD}
 The FAST-MCD algorithm is also implemented by using the PyOD library. 
 I chose an unsupervised learning approach for the MCD algorithm, because it is not possible to implement a semi-supervised learning approach for this method.
 Because of its statistical nature, the MCD algorithm does not have a training phase, but it calculates the anomaly score based on the whole dataset.
@@ -153,8 +153,6 @@ The contamination parameter is also set to the outlier ratio of 7,7\%.
 The random state argument is set to 42. 
 This ensures that the results are reproducible, because the FAST-MCD algorithm takes random initial subsets and performs the C-Steps thereafter.
 By choosing a random state, the reproduction of the results is ensured, because the same random subsets will be chosen in each run of the algorithm.
-
-
 
 
 The authors code is written to implement a high number of different datasets.
