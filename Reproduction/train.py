@@ -5,6 +5,7 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import roc_auc_score
 import helper_functions
 from sklearn.metrics import roc_auc_score, average_precision_score
+
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 
@@ -23,55 +24,54 @@ class DatasetBuilder(Dataset):
 
 
 class encoder_a(nn.Module):
-    def __init__(self, kernel_size,hdn_size,d):
+    def __init__(self, kernel_size, hdn_size, d):
         super(encoder_a, self).__init__()
 
-        self.fc1 = nn.Linear(d-kernel_size, hdn_size) #F network
+        self.fc1 = nn.Linear(d - kernel_size, hdn_size)  # F network
         self.activation1 = nn.Tanh()
-        self.fc2 = nn.Linear(hdn_size, hdn_size*2)
+        self.fc2 = nn.Linear(hdn_size, hdn_size * 2)
         self.activation2 = nn.LeakyReLU(0.2)
-        self.fc3 = nn.Linear(hdn_size*2, hdn_size)
+        self.fc3 = nn.Linear(hdn_size * 2, hdn_size)
         self.activation3 = nn.LeakyReLU(0.2)
-        self.batchnorm_1 = nn.BatchNorm1d(d-kernel_size+1)
-        self.batchnorm_2 = nn.BatchNorm1d(d-kernel_size+1)
+        self.batchnorm_1 = nn.BatchNorm1d(d - kernel_size + 1)
+        self.batchnorm_2 = nn.BatchNorm1d(d - kernel_size + 1)
 
-        self.fc1_y = nn.Linear(kernel_size, int(hdn_size/4)) #G network
+        self.fc1_y = nn.Linear(kernel_size, int(hdn_size / 4))  # G network
         self.activation1_y = nn.LeakyReLU(0.2)
-        self.fc2_y = nn.Linear(int(hdn_size/4), int(hdn_size/2))
+        self.fc2_y = nn.Linear(int(hdn_size / 4), int(hdn_size / 2))
         self.activation2_y = nn.LeakyReLU(0.2)
-        self.fc3_y = nn.Linear(int(hdn_size/2), hdn_size)
+        self.fc3_y = nn.Linear(int(hdn_size / 2), hdn_size)
         self.activation3_y = nn.LeakyReLU(0.2)
         self.kernel_size = kernel_size
-        self.batchnorm1_y=nn.BatchNorm1d(d-kernel_size+1)
-
+        self.batchnorm1_y = nn.BatchNorm1d(d - kernel_size + 1)
 
     def forward(self, x):
         x = x.permute(0, 2, 1)
-        y,x = helper_functions.positive_matrice_builder(x, self.kernel_size)
+        y, x = helper_functions.positive_matrice_builder(x, self.kernel_size)
         x = self.activation1(self.fc1(x))
-        x=self.batchnorm_1(x)
+        x = self.batchnorm_1(x)
         x = self.activation2(self.fc2(x))
-        x=self.batchnorm_2(x)
+        x = self.batchnorm_2(x)
         x = self.activation3(self.fc3(x))
         y = self.activation1_y(self.fc1_y(y))
-        y=self.batchnorm1_y(y)
+        y = self.batchnorm1_y(y)
         y = self.activation2_y(self.fc2_y(y))
         y = self.activation3_y(self.fc3_y(y))
-        x=nn.functional.normalize(x,dim=1)
-        y=nn.functional.normalize(y,dim=1)
-        x=nn.functional.normalize(x,dim=2)
-        y=nn.functional.normalize(y,dim=2)
+        x = nn.functional.normalize(x, dim=1)
+        y = nn.functional.normalize(y, dim=1)
+        x = nn.functional.normalize(x, dim=2)
+        y = nn.functional.normalize(y, dim=2)
         return (x, y)
 
 
 class trainer():
-    def __init__(self,args):
+    def __init__(self, args):
         self.num_epochs = 2000
         self.no_btchs = args.batch_size
-        self.no_negatives=1000
-        self.temperature=0.01
-        self.lr=0.001
-        self.faster_version=args.faster_version
+        self.no_negatives = 1000
+        self.temperature = 0.01
+        self.lr = 0.001
+        self.faster_version = args.faster_version
 
     def train_and_evaluate(self, train, test, categories):
         train = torch.as_tensor(train, dtype=torch.float)
@@ -79,12 +79,13 @@ class trainer():
         test_losses_contrastloss = torch.zeros(test.shape[0], dtype=torch.float).to(device)
         d = train.shape[1]
         n = train.shape[0]
-        if self.faster_version == 'yes':
-            num_permutations = min(int(np.floor(100 / (np.log(n) + d)) + 1), 2)
-        else:
-            num_permutations = int(np.floor(100 / (np.log(n) + d)) + 1)
+
+        # Hardcoded number of permutations to 5
+        num_permutations = 5
+
         print("going to run for: ", num_permutations, ' permutations')
-        hiddensize = 200
+
+        hiddensize = 50
         if d <= 40:
             kernel_size = 2
             stop_crteria = 0.001
@@ -154,13 +155,18 @@ class trainer():
                     loss_test = criterion_test(scores_internal_test, correct_class).to(device)
                     test_losses_contrastloss[indexes] += loss_test.mean(dim=1).to(device)
 
+        # Original F1 Calculator
         f1_score = helper_functions.f1_calculator(categories, test_losses_contrastloss)
+
+        # NEW: Macro F1 Calculator implementation
+        f1_macro = helper_functions.f1_macro_calculator(categories, test_losses_contrastloss)
+
         y_labels_boolean_modified = np.array(categories) == 0
         test_losses_contrastloss = test_losses_contrastloss.cpu()
 
         # Metric calculation
         auc_score = roc_auc_score(y_labels_boolean_modified, -test_losses_contrastloss)
-        # Added AUPRC implementation here:
         auprc_score = average_precision_score(y_labels_boolean_modified, -test_losses_contrastloss)
 
-        return (f1_score, auc_score, auprc_score)
+        # Returning all metrics including Macro F1
+        return (f1_score, f1_macro, auc_score, auprc_score)

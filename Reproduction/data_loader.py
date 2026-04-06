@@ -18,7 +18,7 @@ class Data_Loader:
         rel_path = os.path.join("Data/",dataset_name)
         abs_file_path = os.path.join(script_dir, rel_path)
         mat_files=['annthyroid','arrhythmia','breastw','cardio','forest_cover','glass','ionosphere','letter','lympho','mammography','mnist','musk',
-                   'optdigits','pendigits','pima','satellite','satimage','shuttle','speech','thyroid','vertebral','vowels','wbc','wine','wineori','wine_normalized']
+                   'optdigits','pendigits','pima','satellite','satimage','shuttle','speech','thyroid','vertebral','vowels','wbc','wine','wineori','wine_normalized','wine_robust']
         if dataset_name in mat_files :
             print ('generic mat file')
             return self.build_train_test_generic_matfile(abs_file_path)
@@ -238,6 +238,7 @@ class Data_Loader:
                        35, 36, 37, 38, 39, 40, 41]
         revised_pd = revised_pd.reindex(columns=new_columns)
         revised_pd.loc[revised_pd[41] != 'normal.', 41] = 1.0
+        revised_pd.loc[revised_pd[41] == 'normal.', 41] = 0.0
         revised_pd.loc[revised_pd[41] == 'normal.', 41] = 0.0
         kdd_anomaly = np.array(revised_pd.loc[revised_pd[41] == 1.0], dtype=np.double)
         kdd_normal = np.array(revised_pd.loc[revised_pd[41] == 0.0], dtype=np.double)

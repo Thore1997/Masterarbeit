@@ -5,14 +5,14 @@ from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
 from pyod.models.mcd import MCD
 
 
-file_path = os.path.join('Reproduction', 'Data', 'wineori.mat')
+file_path = os.path.join('Reproduction', 'Data', 'wine.mat')
 data = scipy.io.loadmat(file_path)
 X = data['X']
 y = data['y'].ravel()
 
 
 
-clf = MCD(contamination=0.0775, random_state=42)
+clf = MCD(contamination=0.077, random_state=42)
 clf.fit(X)
 
 

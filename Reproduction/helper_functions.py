@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import random
 import pandas as pd
+from sklearn.metrics import f1_score
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 
@@ -50,8 +51,8 @@ def take_per_row(A, indx, num_elem=2):
 
 
 def f1_calculator(classes, losses):
-    classes=classes.numpy()
-    losses=losses.cpu().numpy()
+    classes = classes.numpy()
+    losses = losses.cpu().numpy()
     df_version_classes = pd.DataFrame(data=classes)
     df_version_losses = pd.DataFrame(losses).astype(np.float64)
     Na = df_version_classes[df_version_classes.iloc[:, 0] == 1].shape[0]
@@ -63,7 +64,32 @@ def f1_calculator(classes, losses):
     return (f1)
 
 
-def a_minus_b (a,b):
+def f1_macro_calculator(classes, losses):
+    # Convert inputs to numpy arrays safely
+    y_true = classes.cpu().numpy() if torch.is_tensor(classes) else np.array(classes)
+    y_scores = losses.cpu().numpy() if torch.is_tensor(losses) else np.array(losses)
+
+    # Identify how many actual anomalies exist
+    Na = np.sum(y_true == 1)
+
+    # Handle the case where no anomalies are present to avoid errors
+    if Na == 0:
+        return 0.0
+
+    # Pick the top Na highest scores to create binary predictions (1 for anomaly)
+    threshold_val = np.sort(y_scores)[-Na]
+    y_pred = (y_scores >= threshold_val).astype(int)
+
+    # Ensure prediction array matches ground truth length
+    if len(y_pred) > len(y_true):
+        y_pred = y_pred[:len(y_true)]
+
+    # Calculate Macro F1 (arithmetic mean of F1 for each class)
+    macro_f1 = f1_score(y_true, y_pred, average='macro')
+    return macro_f1
+
+
+def a_minus_b(a, b):
     sidx = b.argsort()
     idx = np.searchsorted(b, a, sorter=sidx)
     idx[idx == len(b)] = 0

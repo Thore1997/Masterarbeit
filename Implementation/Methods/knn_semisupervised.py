@@ -3,11 +3,11 @@ import os
 import numpy as np
 from sklearn.model_selection import KFold
 from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import RobustScaler
 from pyod.models.knn import KNN
 
 # 1. Load Data
-file_path = os.path.join('Reproduction', 'Data', 'wineori.mat')
+file_path = os.path.join('Reproduction', 'Data', 'wine.mat')
 mat_data = scipy.io.loadmat(file_path)
 X = mat_data['X']
 y = mat_data['y'].ravel()
@@ -18,7 +18,6 @@ y_normals = y[y == 0]
 X_anomalies = X[y == 1]
 y_anomalies = y[y == 1]
 
-# 2. Initialize Cross-Validation
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
 # Added 'f1_macro' to the metrics dictionary
 fold_metrics = {'f1': [], 'f1_macro': [], 'roc_auc': [], 'auprc': []}
@@ -34,12 +33,12 @@ for fold, (train_idx, test_idx) in enumerate(kf.split(X_normals)):
     y_test_fold = np.hstack([np.zeros(len(X_test_norm_fold)), np.ones(len(X_anomalies))])
 
     # 4. Scaling
-    scaler = MinMaxScaler()
+    scaler = RobustScaler()
     X_train_fold = scaler.fit_transform(X_train_fold)
     X_test_fold = scaler.transform(X_test_fold)
 
     # 5. Model Training
-    clf = KNN(n_neighbors=5, method='largest', contamination=0.0775)
+    clf = KNN(n_neighbors=5, method='largest', contamination=0.077)
     clf.fit(X_train_fold)
 
     # 6. Predictions & Scores
@@ -48,9 +47,7 @@ for fold, (train_idx, test_idx) in enumerate(kf.split(X_normals)):
 
     # Record Metrics
     fold_metrics['f1'].append(f1_score(y_test_fold, predictions))
-    # --- IMPLEMENTATION OF MACRO F1 ---
     fold_metrics['f1_macro'].append(f1_score(y_test_fold, predictions, average='macro'))
-    # ---------------------------------
     fold_metrics['roc_auc'].append(roc_auc_score(y_test_fold, test_scores))
     fold_metrics['auprc'].append(average_precision_score(y_test_fold, test_scores))
 
