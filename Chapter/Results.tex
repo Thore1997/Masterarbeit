@@ -1,4 +1,60 @@
 \section{Results}
+
+In this section, I will present the results of the experiments previous conduced.
+The results are summarized in Table \ref{tab:results}. 
+The table includes the mean and standard deviation (SD) of the F1-Score, ROC AUC, and AUPRC for each method evaluated. 
+The methods compared include MCD, k-NN (unsupervised), k-NN (semi-supervised), and InterCont.
+After presenting the results, I will display the confusion matrices for each method.
+Additionally I will plot the the AUPRC and ROC AUC to further analyse the performance of each method.
+
+
+\begin{table}[h]
+\centering
+\caption{Experimental Results}
+\label{tab:results}
+\begin{tabular}{lcccccc} % l=left aligned, r=right aligned
+\toprule
+\textbf{Method}         & \textbf{F1-Score} & \textbf{SD} & \textbf{ROC AUC} & \textbf{SD} & \textbf{AUPRC} & \textbf{SD}          \\
+\midrule
+MCD                     & 50.00             &       & \textbf{97.56}    &          & 71.04             &        \\
+k-NN (unsupervised)     & 50.00             &       &         94.29     &          & 49.83             &        \\
+k-NN (semi-supervised)  & \textbf{89.07}    & 3.97  &         96.12     & 2.42     & 88.03             & 8.36   \\
+InterCont               & 77.44             & 10.59 &         96.70     & 2.06     & \textbf{99.48}    & 0.32   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+The best performances are written in bold letters. 
+The method with the highest F1-Score is the semi-supervised k-NN method with 89.07\%, while the method with the highest ROC AUC is MCD with 97.56\%.
+InterCont performs best in terms of AUPRC, with a resulting score of 99.48\%.
+The differences between the methods vary alot.
+The difference of the best to worst performance in terms of F1-Score, 79.07 percentage points.
+AUPRC differs by 69.46 percentage points between the best and worst performing method.
+While the difference between the best and worst performance in terms of ROC AUC is only 13.20 percentage points.
+
+
+The standard deviations differ a lot between the methods as well.
+MCD has no standard deviation, as it is a deterministic method.
+The unsupervised k-NN method has the highest deviation in terms of F1-Score, with 20 percentage points, while the semi-supervised k-NN method has the lowest deviation with 3.97 percentage points.
+InterCont deviates by 10.59 percentage points in terms of F1-Score.
+The standard deviation of ROC AUC are not differing so much between methods as F1-Score or AUPRC.
+The unsupervised k-NN method has the highest deviation with 4.83 percentage points, while InterCont has the lowest deviation with 2.06 percentage points.
+The semi-supervised k-NN method has a deviation of 2.42 percentage points, which is only slightly higher than InterCont.
+The standard deviation of AUPRC is highest for the unsupervised k-NN method with 12.49 percentage points, while InterCont has the lowest deviation with 0.32 percentage points.
+The semi-supervised k-NN method has a deviation of 8.36 percentage points, which is higher than InterCont but much lower than the unsupervised k-NN method.
+
+
+The authors of InterCont tested their results with a wilcoxon signed rank test. 
+They conducted that by statistical sinificance, that their model outperforms other methods.
+I can't apply a wilcoxon signed rank test to the results of my experiments, because this I applied only one dataset.
+Therefore the num
+
+
+
+
+
+
 \section{Discussion}
 
 As a general detection performance result, we can conclude that nearest-neighbor based
