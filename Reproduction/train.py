@@ -2,9 +2,8 @@ import torch
 from torch import nn
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
-from sklearn.metrics import roc_auc_score
-import helper_functions
 from sklearn.metrics import roc_auc_score, average_precision_score
+import helper_functions
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -80,35 +79,38 @@ class trainer():
         d = train.shape[1]
         n = train.shape[0]
 
-        # Hardcoded number of permutations to 5
         num_permutations = 5
-
         print("going to run for: ", num_permutations, ' permutations')
 
         hiddensize = 50
         if d <= 40:
             kernel_size = 2
             stop_crteria = 0.001
-        if 40 < d and d <= 160:
+        elif 40 < d <= 160:
             kernel_size = 10
             stop_crteria = 0.01
-        if 160 < d:
+        else:
             kernel_size = d - 150
             stop_crteria = 0.01
+
         for permutations in range(num_permutations):
             if num_permutations > 1:
                 random_idx = torch.randperm(train.shape[1])
-                train = train[:, random_idx]
-                test = test[:, random_idx]
-            dataset_test = DatasetBuilder(test)
-            dataset_train = DatasetBuilder(train)
+                train_perm = train[:, random_idx]
+                test_perm = test[:, random_idx]
+            else:
+                train_perm = train
+                test_perm = test
+
+            dataset_test = DatasetBuilder(test_perm)
+            dataset_train = DatasetBuilder(train_perm)
             model_a = encoder_a(kernel_size, hiddensize, d).to(device)
             criterion = nn.CrossEntropyLoss()
             optimizer_a = torch.optim.Adam(model_a.parameters(), lr=self.lr)
             trainloader = DataLoader(dataset_train, batch_size=self.no_btchs,
                                      shuffle=True, num_workers=0, pin_memory=True)
             testloader = DataLoader(dataset_test, batch_size=self.no_btchs,
-                                    shuffle=True, num_workers=0, pin_memory=True)
+                                    shuffle=False, num_workers=0, pin_memory=True)
 
             ### training
             for epoch in range(self.num_epochs):
@@ -129,22 +131,26 @@ class trainer():
                     loss.backward()
                     optimizer_a.step()
                     running_loss += loss.item()
+
                 if (running_loss / (i + 1) < stop_crteria):
                     break
+
+                # Progress logging
                 if n < 2000:
                     if (epoch + 1) % 100 == 0:
-                        print('[%d, %5d]  loss: %.3f' % (epoch + 1, i + 1, running_loss / (i + 1)))
+                        print('[Perm %d, Epoch %d] loss: %.3f' % (permutations + 1, epoch + 1, running_loss / (i + 1)))
                 else:
                     if (epoch + 1) % 10 == 0:
-                        print('[%d, %5d]  loss: %.3f' % (epoch + 1, i + 1, running_loss / (i + 1)))
-            ### testing
+                        print('[Perm %d, Epoch %d] loss: %.3f' % (permutations + 1, epoch + 1, running_loss / (i + 1)))
+
+            ### testing phase for current permutation
             model_a.eval()
             criterion_test = nn.CrossEntropyLoss(reduction='none')
             with torch.no_grad():
                 for i, sample in enumerate(testloader, 0):
                     pre_query = sample['data'].to(device)
                     indexes = sample['index'].to(device)
-                    pre_query_test = torch.unsqueeze(pre_query, 1)  # batch X feature X 1
+                    pre_query_test = torch.unsqueeze(pre_query, 1)
                     pre_query_test, positives_matrice_test = model_a(pre_query_test)
                     scores_internal_test = helper_functions.scores_calc_internal(pre_query_test, positives_matrice_test,
                                                                                  self.no_negatives,
@@ -153,20 +159,23 @@ class trainer():
                     correct_class = torch.zeros((np.shape(scores_internal_test)[0], np.shape(scores_internal_test)[2]),
                                                 dtype=torch.long).to(device)
                     loss_test = criterion_test(scores_internal_test, correct_class).to(device)
+
+                    # Accumulate loss (Anomaly Score) for each sample
                     test_losses_contrastloss[indexes] += loss_test.mean(dim=1).to(device)
 
-        # Original F1 Calculator
-        f1_score = helper_functions.f1_calculator(categories, test_losses_contrastloss)
+        # Post-processing scores
+        # We work with positive losses (higher loss = more anomalous)
+        final_scores_np = test_losses_contrastloss.cpu().numpy()
 
-        # NEW: Macro F1 Calculator implementation
+        # Calculation of metrics
+        f1_bin = helper_functions.f1_calculator(categories, test_losses_contrastloss)
         f1_macro = helper_functions.f1_macro_calculator(categories, test_losses_contrastloss)
 
-        y_labels_boolean_modified = np.array(categories) == 0
-        test_losses_contrastloss = test_losses_contrastloss.cpu()
+        y_labels_boolean = np.array(categories) == 0  # True if Anomaly
 
-        # Metric calculation
-        auc_score = roc_auc_score(y_labels_boolean_modified, -test_losses_contrastloss)
-        auprc_score = average_precision_score(y_labels_boolean_modified, -test_losses_contrastloss)
+        # ROC and PR metrics use the raw scores (higher = more likely anomaly)
+        auc_score = roc_auc_score(y_labels_boolean, final_scores_np)
+        auprc_score = average_precision_score(y_labels_boolean, final_scores_np)
 
-        # Returning all metrics including Macro F1
-        return (f1_score, f1_macro, auc_score, auprc_score)
+        # Returning 5 values: F1-Bin, F1-Macro, ROC-AUC, AUPRC, and the raw anomaly scores
+        return f1_bin, f1_macro, auc_score, auprc_score, final_scores_np

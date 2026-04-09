@@ -1,8 +1,9 @@
 import os
 import scipy.io
 import numpy as np
+import pandas as pd
 from pyod.models.knn import KNN
-from sklearn.preprocessing import StandardScaler, RobustScaler
+from sklearn.preprocessing import RobustScaler
 from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
 
 # 1. Load Data
@@ -12,12 +13,10 @@ X = mat_data['X']
 y = mat_data['y'].ravel()
 
 # 2. Scaling
-# In unsupervised learning, we scale the entire dataset together
 scaler = RobustScaler()
 X_scaled = scaler.fit_transform(X)
 
 # 3. Initialize and Fit Model
-# We use fixed hyperparameters here
 outlier_ratio = 0.077
 clf = KNN(
     n_neighbors=20,
@@ -26,15 +25,19 @@ clf = KNN(
     contamination=outlier_ratio,
     n_jobs=-1
 )
-
-# The model trains on X and calculates internal scores simultaneously
 clf.fit(X_scaled)
 
 # 4. Extract Results
-# decision_scores_: The raw outlier scores (higher = more anomalous)
-# labels_: Binary labels (1 = outlier, 0 = inlier) based on 'contamination'
 scores = clf.decision_scores_
 labels = clf.labels_
+
+# --- NEW: Extract Outliers ---
+# Get the indices where the label is 1
+outlier_indices = np.where(labels == 1)[0]
+
+# Extract the actual data points defined as outliers
+outliers_data = X[outlier_indices]
+outlier_scores = scores[outlier_indices]
 
 # 5. Evaluate
 auc = roc_auc_score(y, scores)
@@ -46,3 +49,8 @@ print("--- Unsupervised k-NN Results ---")
 print(f"ROC-AUC: {auc:.4f}")
 print(f"AUPRC:   {auprc:.4f}")
 print(f"F1 Score: {f1:.4f}")
+
+print("\n--- Outlier Detection Summary ---")
+print(f"Total points classified as outliers: {len(outlier_indices)}")
+print(f"Indices of outliers: {outlier_indices}")
+

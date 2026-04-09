@@ -4,6 +4,7 @@ from train import trainer
 import argparse
 import argparse
 import torch
+from intercont_bootrstap import run_icl_bootstrapping
 
 
 def main(args):
@@ -35,3 +36,4 @@ if __name__ == '__main__':
     print(f"F1 Macro (Balanced): {f1_macro:.4f}")  # This is your new output
     print(f"ROC-AUC:             {auc_score:.4f}")
     print(f"AUPRC:               {auprc_score:.4f}")
+
