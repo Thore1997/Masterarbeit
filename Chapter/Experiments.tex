@@ -136,6 +136,11 @@ By choosing a relatively small amount of folds, I can ensure that the training d
 I also set the shuffle argument to True, which means that the data will be shuffled before splitting it into folds.
 The random state argument is set to 42, which is a commonly used value in the scientific community to ensure reproducibility of the results.
 
+For this semisupervised approach does k-NN learn a mapping of the training data.
+In the next step, the method calculated the distances between the test and the k nearest training data point.
+The resulting distances are then used to calculate the anomaly score for each test data point.
+Therefor it determines the largest distance to the k nearest neighbors and uses this distance as the anomaly score.
+The contamination parameter is set to 15.4 because all outliers are included in the test dataset.
 
 I sat the contamination parameter to 7,7\%, reflecting the outlier ratio.
 That ensures, that the threshold for determining the anomaly score is set to reasonable value grounded on scientif literatur.
@@ -147,9 +152,14 @@ The test data is normalized by using the min-max-normalization.
 \subsubsection*{MCD}
 The FAST-MCD algorithm is also implemented by using the PyOD library. 
 I chose an unsupervised learning approach for the MCD algorithm, because it is not possible to implement a semi-supervised learning approach for this method.
-Because of its statistical nature, the MCD algorithm does not have a training phase, but it calculates the anomaly score based on the whole dataset.
-Therefore I did not implement a cross validation procedure for the MCD algorithm, because it is not possible to split the dataset into a training and testing dataset.
-The contamination parameter is also set to the outlier ratio of 7,7\%.
+To make the results comparable, I mikmiked a training and testing phase.
+The training phase, MCD estimales the covariance matrix and the mean of the normal data.
+I use the same Resample method as the authors of InterCont. 
+The covariance matrix and the mean is used for the testing phase which is the residual dataset which include all outliers.
+The datapoints with the highest Mahalanobis distance to the mean are classified as outliers, the treshold is set to 15.4\% because the testdataset contains all outliers and normal data.
+The cycle is repeated 500 times, because the InterCont method is also run 500 times with different shuffles of the data.
+The resulting metrics are the averaged over the 500 runs and the standard deviation is calculated as well.
+
 The random state argument is set to 42. 
 This ensures that the results are reproducible, because the FAST-MCD algorithm takes random initial subsets and performs the C-Steps thereafter.
 By choosing a random state, the reproduction of the results is ensured, because the same random subsets will be chosen in each run of the algorithm.

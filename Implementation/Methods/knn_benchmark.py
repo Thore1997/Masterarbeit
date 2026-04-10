@@ -48,7 +48,7 @@ def start_semi_knn_benchmark(dataset_name='wine', num_splits=500):
 
             # 3. Model Training (Semi-Supervised)
             # Wir nehmen contamination=0.01, da das Training-Set nominell sauber ist
-            clf = KNN(n_neighbors=5, method='largest', contamination=0.077)
+            clf = KNN(n_neighbors=5, method='largest', contamination=0.154)
             clf.fit(X_train_scaled)
 
             # 4. Scoring & Predictions
