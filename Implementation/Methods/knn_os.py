@@ -39,8 +39,9 @@ f1 = f1_score(y, labels)
 
 # 6. Print Results
 print("--- Unsupervised k-NN Results ---")
+print(f"F1 Score: {f1:.4f}")
 print(f"ROC-AUC: {auc:.4f}")
 print(f"AUPRC:   {auprc:.4f}")
-print(f"F1 Score: {f1:.4f}")
+
 
 

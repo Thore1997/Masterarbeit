@@ -23,7 +23,7 @@ def run_single_mcd(train_data, test_data, test_labels, contamination=0.077):
 
     # 2. MCD Modell (Fit auf sauberen Trainingsdaten)
     # Da train_data nur Normale enthält, setzen wir eine kleine contamination
-    clf = MCD(contamination=0.01, random_state=42)
+    clf = MCD(contamination=0.154, random_state=42)
     clf.fit(X_train_scaled)
 
     # 3. Ergebnisse auf Test-Set
