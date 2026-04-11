@@ -58,6 +58,33 @@ The F1-Score is 77.44\% compared to 75.49\% for k-NN and 50.52\% for MCD.
 The standard deviation differes between the methods.
 MCD has the biggest standard deviation with 28.37\%.
 InterCont's SD is 10.59\% and k-NN has the smallest SD with 6.13\%.
+The method with the highest F1-Score is the semi-supervised k-NN method with 89.07\%, while the method with the highest ROC AUC is MCD with 97.56\%.
+InterCont performs best in terms of AUPRC, with a resulting score of 99.48\%.
+The differences between the methods vary alot.
+The difference of the best to worst performance in terms of F1-Score, 39.07 percentage points.
+AUPRC differs by 49.65 percentage points between the best and worst performing method.
+While the difference between the best and worst performance in terms of ROC AUC is only 3.27 percentage points.
+
+
+The standard deviations differ a lot between the methods as well.
+Because MCD and the unsupervised k-NN method are deterministic methods, they have no standard deviation in terms of F1-Score, ROC AUC, and AUPRC.
+The deviation of F1-Score is lower for the semi-supervised k-NN method with 3.97 compared with the 10.59 percentage points of InterCont.
+The standard deviation of the methods in terms of ROC AUC are not differing so much F1-Score or AUPRC.
+The semi-supervised k-NN method has a deviation of 2.42 percentage points, which is only slightly higher than InterCont 2.06 percentage.
+InterCont has the lowest deviation with respect to AUPRC with 0.32 percentage points instead of the 8.36 percentage of the semi-supervised k-NN method.
+
+
+The authors of InterCont tested their results with a wilcoxon signed rank test. 
+They conducted that by statistical sinificance, that their model outperforms other methods.
+I can't apply a wilcoxon signed rank test to the results of my experiments, because this I applied only one dataset.
+
+
+Alternatively I could bootstrap the results to get confidence intervals for the performance metrics.
+This would allow me to compare the methods statistically, even with only one dataset.
+But this would be time consuming and computationally expensive, especially for the InterCont method.
+
+A different approach is to use the Cochran's Q test, to determine if the results of all four are significantly different from each other.
+If the Cochran Q Test indicates that there are significant differences, I will perform a pairwise McNemar's test to determine which specific methods differ from each other.
 
 
 
