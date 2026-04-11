@@ -1,73 +1,155 @@
 \section{Results}
 
 In this section, I will present the results of the experiments previous conduced.
-The results are summarized in Table \ref{tab:results}. 
-The table includes the mean and standard deviation (SD) of the F1-Score, ROC AUC, and AUPRC for each method evaluated. 
-The methods compared include MCD, k-NN (unsupervised), k-NN (semi-supervised), and InterCont.
+The main results are summarized in table \ref{tab:results_bench}.
+The restults include the mean and standard deviation (SD) of the F1-Score, ROC AUC, and AUPRC for each method evaluated. 
+To conclude my results I will apply a statistical test.
 After presenting the results, I will display the confusion matrices for each method.
 Additionally I will plot the the AUPRC and ROC AUC to further analyse the performance of each method.
 
 
+%\begin{table}[h]
+%\centering
+%\caption{Experimental Results - Oneshot classification}
+%\label{tab:results_os}
+%\begin{tabular}{lcccccc} % l=left aligned, r=right aligned
+%\toprule
+%\textbf{Method}         & \textbf{F1-Score} &  \textbf{ROC AUC}         & \textbf{AUPRC}                        &        \\
+%\midrule
+%MCD                     & 50.00             & \textbf{97.56}            & \textbf{71.04}                        &        \\
+%k-NN (unsupervised)     & 50.00             & 94.54                     & 50.51                                 &        \\
+%\bottomrule
+%\end{tabular}
+%\end{table}
+
+%The main finding is, that MCD performs better for this dataset that k-NN.
+%The F1-Score is the same for both methods.
+%The both deviate between the ROC AUC and the AUPRC. 
+%ROC AUC is 3.02 percentage points bigger for MCD than k-NN, which is a slight difference.
+
+
+%AUPRC is 20.53 percentage points bigger fpor MCD than k-NN which is a big difference and needs more investigation.
+%That indicates, that even with the multidimensional skewed dataset, MCD is capable of determinang an unbiased 
+\todo{sollte ich das wirklich mitreinnehmen?}
+
+
 \begin{table}[h]
 \centering
-\caption{Experimental Results}
-\label{tab:results}
-\begin{tabular}{lcccccc} % l=left aligned, r=right aligned
+\caption{Experimental Results of benchmark protocol}
+\label{tab:results_bench}
+\begin{tabular}{lcccccc} 
 \toprule
 \textbf{Method}         & \textbf{F1-Score} & \textbf{SD} & \textbf{ROC AUC} & \textbf{SD} & \textbf{AUPRC} & \textbf{SD}          \\
 \midrule
-MCD                     & 50.00             &       & \textbf{97.56}    &          & 71.04             &        \\
-k-NN (unsupervised)     & 50.00             &       &         94.29     &          & 49.83             &        \\
-k-NN (semi-supervised)  & \textbf{89.07}    & 3.97  &         96.12     & 2.42     & 88.03             & 8.36   \\
-InterCont               & 77.44             & 10.59 &         96.70     & 2.06     & \textbf{99.48}    & 0.32   \\
+MCD  (semi-supervised)  & 64.14             & 9.41  &  95.94            & 3.59     & 77.82             & 16.43  \\
+k-NN (semi-supervised)  & 75.49             & 6.13  &  95.87            & 1.89     & 72.85             & 11.54  \\
+InterCont               & \textbf{77.44}    & 10.59 &  \textbf{96.70}   & 2.06     & \textbf{99.48}    & 0.32   \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
 The best performances are written in bold letters. 
-The method with the highest F1-Score is the semi-supervised k-NN method with 89.07\%, while the method with the highest ROC AUC is MCD with 97.56\%.
-InterCont performs best in terms of AUPRC, with a resulting score of 99.48\%.
-The differences between the methods vary alot.
-The difference of the best to worst performance in terms of F1-Score, 79.07 percentage points.
-AUPRC differs by 69.46 percentage points between the best and worst performing method.
-While the difference between the best and worst performance in terms of ROC AUC is only 13.20 percentage points.
+The InterCont method is dominating the result.
+In all metrics it produces the highest scores.
+The F1-Score is 77.44\% compared to 75.49\% for k-NN and 50.52\% for MCD.
 
 
-The standard deviations differ a lot between the methods as well.
-MCD has no standard deviation, as it is a deterministic method.
-The unsupervised k-NN method has the highest deviation in terms of F1-Score, with 20 percentage points, while the semi-supervised k-NN method has the lowest deviation with 3.97 percentage points.
-InterCont deviates by 10.59 percentage points in terms of F1-Score.
-The standard deviation of ROC AUC are not differing so much between methods as F1-Score or AUPRC.
-The unsupervised k-NN method has the highest deviation with 4.83 percentage points, while InterCont has the lowest deviation with 2.06 percentage points.
-The semi-supervised k-NN method has a deviation of 2.42 percentage points, which is only slightly higher than InterCont.
-The standard deviation of AUPRC is highest for the unsupervised k-NN method with 12.49 percentage points, while InterCont has the lowest deviation with 0.32 percentage points.
-The semi-supervised k-NN method has a deviation of 8.36 percentage points, which is higher than InterCont but much lower than the unsupervised k-NN method.
-
-
-The authors of InterCont tested their results with a wilcoxon signed rank test. 
-They conducted that by statistical sinificance, that their model outperforms other methods.
-I can't apply a wilcoxon signed rank test to the results of my experiments, because this I applied only one dataset.
-Therefore the num
+The standard deviation differes between the methods.
+MCD has the biggest standard deviation with 28.37\%.
+InterCont's SD is 10.59\% and k-NN has the smallest SD with 6.13\%.
 
 
 
 
 
+The differences between the ROC AUC are small. 
+The width between the smallest and the biggest is 0.83 percentage points.
+InterCont performs best in terms of ROC AUC, with a value of 96.7\%
+The ROC AUC for k-NN and MCD are near at each other with 95.87\% and 95.94\%.
+The SD are somewhat similiar. 
 
-\section{Discussion}
 
-As a general detection performance result, we can conclude that nearest-neighbor based
-algorithms perform better in most cases when compared to clustering algorithms. Also, the sta-
-bility concerning a not-perfect choice of k is much higher for the nearest-neighbor based meth-
-ods. The reason for the higher variance in clustering-based algorithms is very likely due to the
-non-deterministic nature of the underlying k-means clustering algorithm. Despite of this
-disadvantage, clustering-based algorithms have a lower computation time. As a conclusion, we
-recommend to prefer nearest-neighbor based algorithms if computation time is not an issue. If
-a faster computation is required for large datasets, for example in a near real-time setting, clus-
-tering-based anomaly detection might be the method of choice. For small datasets, clustering-
-based methods should be avoided.Among the nearest-neighbor based methods, the global k-NN algorithm is a good candidate
-on average.
+
+
+The difference between of the methods AUPRC differ severly. 
+26.63 percentage points lay between the best and orst performing method.
+The InterCont performs the best with 99.48\%.
+For the rest of the methods the AUPRC are nearer together.
+With 72.85\% for k-nn and 77.82\% for MCD, the difference are 4.97 percentage points.
+
+
+
+
+As the authors of the InterCont, I will perform the Wilcoxon-Signed-Rank test, to analyse the different performances. 
+The Wilcoxon-Signed-Rank is a non-parametric test to determine which methods performs best. 
+
+
+
+
+\subsection{Discussion}
+The goal is to write why the results fit into the theory.
+
+
+The story is, that outlier detection should be implemented into realworld application.
+Problem is the scarcity of labels. 
+Therefore, 
+
+I could not reproduce all results from the original paper.
+For k-NN I only achieved similiar results, by using a semisupervised approach
+
+Results that are worthy to discuss
+
+1. MCD achieved the highest ROC AUC, but the deviation is not big
+2. InterCont achieves the highest AUPRC, but MCD is better in ROC AUC.
+
+Explanations:
+MCD needs gaussian distribution feature 3 and 4 are nearly normally distributed, which could explain how the statistical fit likley contributed to high results.
+
+
+Intercont success is down to handle multidimentional data through learning the manifold structure.
+I could be because of the UMAP can handle the outlers successfully too and it is constructed in a simliar way.
+
+
+k-NN can handle the data depending on the approach.
+Unsupervised is worst perfomring method, but if you let the method get access to a bit of the information before estimation, the results increase very much.
+The authors compared the semisupervised approach to the selfsupervised approach - is that a fair comparison? 
+Why do I thinnk that this is not a fail comparison? - Because selfsupervised means that the algorithm creates its own "lables" by applying contrastive learning.
+For semi-supervised approach you need labeled data wich in the real world is not immpossible but hard to get \todo{insert introduction/scarcity of Lables}
+
+
+UMAP analysis showed that the outliers are tightly and distingly clustered and therefor the ROC AUC are so high. 
+The feature Proline can be identified as a collective outlier. THe sliding window approach and the mahalanobis distance capture this therefore the results are better in MCD, InterCont then of k-NN.
+
+
+InterCont shows the lowest SD because of the 500 random splits and the contrastive mechanism provided a stable learning signal. \todo{ist that comparable with semisupervised knn?}
+
+\subsubsection*{F1 difference bweteen unsupervised and semi-supervised}
+The difference in F1 score between unsupervised and semisupervised knn is die to the approach. 
+By training only on normal data, semisupervised k-nn can establish a very stable and accurate reference for normal behavior. 
+When the outliers are introduced, their distance to these pure neighbors is much more pronounced. 
+
+
+By defining the outlier ratio to the actual outlier ratio, I force the models to get to the most optimal sport on the precision recall curve,
+That maximized the F1-Score, becasue it is the harmonic mean of precision and recall (you can read about that on the authors website, where they published the paper)
+
+\section{Limitations}
+
+This chapter is about limitation of my thesis.
+My approach is very dependend on the chosen datset.
+In outlier detection, it is common practice to run the experiments on different datasets, to analyse the strengths and weaknesses of the method.
+I did not sufficient hyperparamter tuning via phythons optuna.
+I just made grid search which is not as concrete 
+
+
+As a general detection performance result, we can conclude that nearest-neighbor based algorithms perform better in most cases when compared to clustering algorithms. 
+Also, the stability concerning a not-perfect choice of k is much higher for the nearest-neighbor based methods. 
+The reason for the higher variance in clustering-based algorithms is very likely due to the non-deterministic nature of the underlying k-means clustering algorithm. 
+Despite of this disadvantage, clustering-based algorithms have a lower computation time. 
+As a conclusion, we recommend to prefer nearest-neighbor based algorithms if computation time is not a issue. 
+If a faster computation is required for large datasets, for example in a near real-time setting, clustering-based anomaly detection might be the method of choice. 
+For small datasets, clustering based methods should be avoided.
+Among the nearest-neighbor based methods, the global k-NN algorithm is a good candidate on average.
 
 
 \todo{insert analysis of the outliers}
