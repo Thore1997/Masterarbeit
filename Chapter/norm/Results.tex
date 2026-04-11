@@ -1,0 +1,258 @@
+\section{Results}
+
+In this section, I will present the results of the experiments previous conduced.
+The main results are summarized in table \ref{tab:results_bench}.
+The restults include the mean and standard deviation (SD) of the F1-Score, ROC AUC, and AUPRC for each method evaluated. 
+To conclude my results I will apply a statistical test.
+After presenting the results, I will display the confusion matrices for each method.
+Additionally I will plot the the AUPRC and ROC AUC to further analyse the performance of each method.
+
+
+%\begin{table}[h]
+%\centering
+%\caption{Experimental Results - Oneshot classification}
+%\label{tab:results_os}
+%\begin{tabular}{lcccccc} % l=left aligned, r=right aligned
+%\toprule
+%\textbf{Method}         & \textbf{F1-Score} &  \textbf{ROC AUC}         & \textbf{AUPRC}                        &        \\
+%\midrule
+%MCD                     & 50.00             & \textbf{97.56}            & \textbf{71.04}                        &        \\
+%k-NN (unsupervised)     & 50.00             & 94.54                     & 50.51                                 &        \\
+%\bottomrule
+%\end{tabular}
+%\end{table}
+
+%The main finding is, that MCD performs better for this dataset that k-NN.
+%The F1-Score is the same for both methods.
+%The both deviate between the ROC AUC and the AUPRC. 
+%ROC AUC is 3.02 percentage points bigger for MCD than k-NN, which is a slight difference.
+
+
+%AUPRC is 20.53 percentage points bigger fpor MCD than k-NN which is a big difference and needs more investigation.
+%That indicates, that even with the multidimensional skewed dataset, MCD is capable of determinang an unbiased 
+\todo{sollte ich das wirklich mitreinnehmen? - Ja}
+
+
+\begin{table}[h]
+\centering
+\caption{Experimental Results of benchmark protocol}
+\label{tab:results_bench}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{Method}         & \textbf{F1-Score} & \textbf{SD} & \textbf{ROC AUC} & \textbf{SD} & \textbf{AUPRC} & \textbf{SD}          \\
+\midrule
+MCD  (semi-supervised)  & 64.14             & 9.41  &  95.94            & 3.59     & 77.82             & 16.43  \\
+k-NN (semi-supervised)  & 68.12             & 8.62  &  95.87            & 1.89     & 72.85             & 11.54  \\
+InterCont               & \textbf{77.44}    & 10.59 &  \textbf{96.70}   & 2.06     & \textbf{99.48}    & 3.2   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+The performance utilizes F1-Score, ROC AUC, and AUPRC, accompanied by their respective standard deviations (SD). 
+In the F1-Score analysis, InterCont yields the highest mean at 77.44, followed by k-NN at 68.12 and MCD at 64.14. 
+The SD values indicate that k-NN maintains the lowest variability at 8.62, while MCD and InterCont show higher fluctuations at 9.41 and 10.59.
+
+
+The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 96.70, k-NN at 95.87, and MCD at 95.94. 
+The stability of these scores is evidenced by low SD values, with k-NN demonstrating the least variance at 1.89, compared to 2.06 for InterCont and 3.59 for MCD.
+
+
+For the AUPRC metric, InterCont achieves a mean of 99.48, significantly higher than MCD at 77.82 and k-NN at 72.85. 
+The InterCont method exhibits near-zero variance with an SD of 0.32. 
+Conversely, MCD shows the highest instability in this metric with an SD of 16.43, while k-NN records an SD of 11.54. 
+These figures reflect the comparative effectiveness and consistency of each method within the tested framework.
+
+
+
+The authors of InterCont tested their results with a wilcoxon signed rank test. 
+They conducted that by statistical sinificance, that their model outperforms other methods.
+I can't apply a wilcoxon signed rank test to the results of my experiments, because this I applied only one dataset. \todo{argue why I dont chose Wilcoxon}
+
+
+For the statistical analysis and to answer the research question , I decided to use a parametric approach.
+Due to the central limit theorem and the number of runs (n=500) the distribution of the metrics will approximatly follow normal, regardless of the underlying distribution. \todo{really?}
+Therefore I will deploy an One-Way ANOVA to analyse if there is a statistically significant difference between the methods.
+If so, I will further investigate by apply Welchs's t-Test, to determine local superior performance.
+
+
+The One-Way ANOVA, sometimes called ANOVA from summary statistics, tests if the means of the methods are differente, hence
+
+\begin{equation}
+    Ho = my1 = my2 = my3
+\end{equation}
+
+If the Null is rejected ($p<0.05$) that means that at least one mean diviates from the the other. 
+It does not define which methods are different.
+To estimate the F-statistics the  Between-Group Variance and Within-group variance has to be calculated.
+The Between-Group variance measures the difference between the global mean and the methods mean of the specific metric.
+This is the actual difference caused by the method.
+
+The Within-Group Variance measures the variance inside the metric of a specific method.
+Therefore I use the already estimated standard deviation. 
+
+
+In the next step the mean squares of the between and within variance is estimated. 
+Therefore I divide the variance by their degrees of freedom ($df$).
+The $df$ is equal to the number of methods minus 1 for the Between-Group variance.
+And for the Within-Group variance the $df$ is number of total runs - number of methods.
+Because of the high number of runs, the denominator will be large, hence the mean squared will be small.
+That means than even a small variance between the means will likely result in a high F value and a low p-value \todo{really}
+The reliability of the SS within will be precise as well. \todo{why?}
+
+
+The F-Value is calculated as follows:
+
+\begin{equation}
+    F = \frac{MS_between}{MS_within}
+\end{equation}
+
+That resembles the ratio of signal to noise.
+If the F-Value is greater than $1$, the difference between the methods is larger than would be expected by random chance.
+The results are displayed in \ref{tab:ANOVA}
+
+
+\begin{table}[h]
+\centering
+\caption{Results of One-Way ANOVA}
+\label{tab:ANOVA}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{Metric}         & F-Statistic       & P-Value   &   \\
+\midrule
+F1-Score                & 254.1747          & $9.12 \times 10^{-96}$     &   \\
+ROC AUC                 & 15.3523           & $2.51 \times 10^{-07}$     &   \\
+AUPRC                   & 727.5883          & $1.79 \times 10^{-221}$     &   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+To determine which specific methods performs for a specific metric better than the other, I will deploy a independent samples t-test, also known as Welchs's t-test.
+The Welchs's t-test is a paranetric test to compare independend groups with different variances. 
+Because I have 3 methods, I will perform 3 different pairs.
+I chose this and not the well known stuendts t-test, because the students t-test assumes homoscedasticity.
+The test assumes, that the runs are independently performed and the means are normally distributed.
+Both assumptions are satisfied.
+The test statistic is calculated as follows: 
+
+
+\begin{equation}
+    t = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}
+\end{equation}
+
+The numerator resembles the signal, as in difference in means.
+The denominator is the the noise, as in difference in estimazted standard error.
+The $df$ are estimated, by adjusting the df based on the variance of each group to account for the fact that the two groups dont share a common variance.
+Therefore the Welch-Satterthwaite equation estimates the number:
+
+\begin{equation}
+    \nu \approx \frac{\left( \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2} \right)^2}{\frac{(s_1^2 / n_1)^2}{n_1 - 1} + \frac{(s_2^2 / n_2)^2}{n_2 - 1}}
+\end{equation}
+
+Therefore the $df$ can be decimal number.
+It reflects how much effective information I have \todo{more precise}
+When the variances of the two estmators are equal, the $df$ would be the same as in student's t-test.
+With increasing difference in variance between two estimators, the lower the number of $df$ will be.
+The result will be more conservative leading to a higher p-value.
+Because $n=500$ the t-distirbution will follow a normal distribution.
+
+Because I compare three different methods, I need to adjust the significance level.
+The likelihood of finding a significant result would be increased, resultin in a potentially increased false positives. 
+The Bonferroni corrected alpha is applied by simply deviding the significance level by the number of methods.
+Therefore, to reject the Null, the p-value has to be lower than 0.0167. 
+\todo{maybe insert familiy wise error rate (FWER)}
+
+
+\begin{table}[h]
+\centering
+\caption{p-values of Welch's test for ROC AUC}
+\label{tab:Welch1}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{ROC AUC}    & MCD       & k-NN      & InterCont  &    \\
+\midrule
+MCD                 & -             &               &    &     \\
+k-NN                & 6.9975e-01    & -             &    &     \\
+InterCont           & 4.4455e-05    & 5.2073e-11    & -  &     \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+In the Table \ref{tab:Welch1} are the results of the Welches test for the ROC AUC.
+It displays the only combination of methods, which result is not statistically different.
+The ROC AUC mean of MCD and k-NN are statistically indistinguishable.
+All other possible combinations are with probability of under 1.67\% different from each other.
+The remaining result of the other metrics did not include exciting result and are included in the appendix. 
+ 
+To conclude, the results of the InterCont were higher in every metric and can be interpreted as statistically different from the other.
+
+
+\subsection{Discussion}
+The goal is to write why the results fit into the theory.
+
+
+The story is, that outlier detection should be implemented into realworld application.
+Problem is the scarcity of labels. 
+Therefore, 
+
+I could not reproduce all results from the original paper.
+For k-NN I only achieved similiar results, by using a semisupervised approach
+
+Results that are worthy to discuss
+
+1. MCD achieved the highest ROC AUC, but the deviation is not big
+2. InterCont achieves the highest AUPRC, but MCD is better in ROC AUC.
+
+Explanations:
+MCD needs gaussian distribution feature 3 and 4 are nearly normally distributed, which could explain how the statistical fit likley contributed to high results.
+
+
+Intercont success is down to handle multidimentional data through learning the manifold structure.
+I could be because of the UMAP can handle the outlers successfully too and it is constructed in a simliar way.
+
+
+k-NN can handle the data depending on the approach.
+Unsupervised is worst perfomring method, but if you let the method get access to a bit of the information before estimation, the results increase very much.
+The authors compared the semisupervised approach to the selfsupervised approach - is that a fair comparison? 
+Why do I thinnk that this is not a fail comparison? - Because selfsupervised means that the algorithm creates its own "lables" by applying contrastive learning.
+For semi-supervised approach you need labeled data wich in the real world is not immpossible but hard to get \todo{insert introduction/scarcity of Lables}
+
+
+UMAP analysis showed that the outliers are tightly and distingly clustered and therefor the ROC AUC are so high. 
+The feature Proline can be identified as a collective outlier. THe sliding window approach and the mahalanobis distance capture this therefore the results are better in MCD, InterCont then of k-NN.
+
+
+InterCont shows the lowest SD because of the 500 random splits and the contrastive mechanism provided a stable learning signal. \todo{ist that comparable with semisupervised knn?}
+
+\subsubsection*{F1 difference bweteen unsupervised and semi-supervised}
+The difference in F1 score between unsupervised and semisupervised knn is die to the approach. 
+By training only on normal data, semisupervised k-nn can establish a very stable and accurate reference for normal behavior. 
+When the outliers are introduced, their distance to these pure neighbors is much more pronounced. 
+
+
+By defining the outlier ratio to the actual outlier ratio, I force the models to get to the most optimal sport on the precision recall curve,
+That maximized the F1-Score, becasue it is the harmonic mean of precision and recall (you can read about that on the authors website, where they published the paper)
+
+\section{Limitations}
+
+This chapter is about limitation of my thesis.
+My approach is very dependend on the chosen datset.
+In outlier detection, it is common practice to run the experiments on different datasets, to analyse the strengths and weaknesses of the method.
+I did not sufficient hyperparamter tuning via phythons optuna.
+I just made grid search which is not as concrete 
+
+
+As a general detection performance result, we can conclude that nearest-neighbor based algorithms perform better in most cases when compared to clustering algorithms. 
+Also, the stability concerning a not-perfect choice of k is much higher for the nearest-neighbor based methods. 
+The reason for the higher variance in clustering-based algorithms is very likely due to the non-deterministic nature of the underlying k-means clustering algorithm. 
+Despite of this disadvantage, clustering-based algorithms have a lower computation time. 
+As a conclusion, we recommend to prefer nearest-neighbor based algorithms if computation time is not a issue. 
+If a faster computation is required for large datasets, for example in a near real-time setting, clustering-based anomaly detection might be the method of choice. 
+For small datasets, clustering based methods should be avoided.
+Among the nearest-neighbor based methods, the global k-NN algorithm is a good candidate on average.
+
+
+\todo{insert analysis of the outliers}
+\todo{explain why MCD is bad for real world data, why k-NN is better for multimodel clusters. Why is contrastive learning the best choice for the real world dataset}
+\todo{the resulting intercont scores are interpretable, k-NN is the distance interpretable}

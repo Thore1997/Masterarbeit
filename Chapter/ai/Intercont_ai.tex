@@ -1,0 +1,98 @@
+The InterCont method proposed by \citep{shenkar2022anomaly} is grounded in fundamental machine learning paradigms. 
+To establish the necessary technical background, it is essential to categorize the traditional learning frameworks and identify the specific paradigm utilized by this method. 
+Machine learning is generally divided into supervised, unsupervised, and self-supervised learning, each offering distinct advantages and limitations.
+
+
+Supervised learning relies on labeled datasets, where a model learns a mapping from inputs to specific targets \citep{lecun2015deep}. 
+While this paradigm achieves high accuracy for defined tasks, it is constrained by the high cost of manual data labeling and a tendency to struggle with out-of-distribution data. 
+In contrast, unsupervised learning identifies underlying patterns in data without explicit labels, making it highly scalable but often less precise for specific classification tasks.
+
+
+The InterCont method operates within the self-supervised learning paradigm, specifically leveraging contrastive learning. 
+This approach generates its own supervisory signals from the data structure itself \citep{jaiswal2020survey}. 
+By doing so, it captures rich representations without the need for human-annotated labels, bridging the gap between the scalability of unsupervised methods and the performance of supervised systems. 
+However, the success of this paradigm is heavily dependent on the quality of data augmentations and the selection of informative negative samples (suggestions for citation on contrastive learning efficiency needed here, e.g., \citep{chen2020simple}).
+
+
+Machine learning paradigms serve as overarching frameworks for interpreting data, providing the foundational logic for how algorithms process information. 
+While individual algorithms act as specific components, the paradigm defines the broader strategy for learning. 
+Consequently, many methods can be adapted across different paradigms depending on the data structure and the intended objective. 
+Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning, and reinforcement learning. 
+However, numerous specialized subtypes exist, such as semi-supervised, multi-label, and transfer learning \citep{sarker2021machine}.
+
+
+Supervised learning is the most widely utilized paradigm, primarily employed for classification and regression tasks. 
+In this task-driven approach, the model is trained on labeled data, where each input is paired with the correct output or "ground truth" \citep[p.3]{sarker2021machine}. 
+The model's objective is to learn a mapping function that can accurately predict labels for new, unseen data. 
+While supervised learning offers high accuracy and easily measurable performance, it is constrained by the significant time and cost required to generate labeled datasets. 
+Furthermore, these models often struggle with scenarios or data distributions not represented during training.
+
+
+In contrast, unsupervised learning is a data-driven approach that utilizes unlabeled data. 
+Without predefined output labels or external supervision, the model must explore the data to discover hidden patterns, underlying structures, or natural groupings \citep[p.4]{sarker2021machine}. 
+This paradigm is highly scalable and effective for identifying complex relationships within large volumes of data without the need for expensive human annotation. 
+However, because there is no objective "truth" to measure against, these models can be less accurate than supervised versions, and their results are often more difficult to interpret and computationally intensive.
+
+
+The InterCont method proposed by \citet{shenkar2022anomaly} utilizes self-supervised learning, a paradigm often considered a subset of unsupervised learning because it does not require human-annotated labels. 
+However, it possesses supervised characteristics by generating its own "pseudo-labels" from the data's inherent structure, using loss functions to measure performance against these self-generated targets. 
+This approach is particularly effective in fields like computer vision, where the potential number of classes is vast. 
+By employing metric learning, the model transforms input data—such as an image—into a numerical representation called an anchor within an embedding space. 
+The network learns to position similar images closer together and dissimilar images further apart in this space. 
+This process reduces dimensionality and complexity, allowing the model to recognize core features even when presented with slight variations of the original data.
+
+
+Artificial neural networks (NN) are computational models inspired by the biological structure of the human brain, designed to handle tasks such as classification, pattern recognition, and predictive modeling. 
+A core objective in developing these networks is to achieve high generalization, ensuring that the model performs accurately on unseen test data, nearly as well as it does on the training set.
+
+
+The architecture of a neural network is composed of hierarchical layers. 
+The input layer receives raw data, where each node typically corresponds to a specific feature of the dataset. 
+he data then progresses through one or more hidden layers; networks with a single hidden layer are considered "shallow," while those with multiple layers are termed deep networks. 
+Deep learning allows for the extraction of complex patterns from high-dimensional data. 
+Within these layers, connections between nodes are governed by weights and biases. 
+Weights signify the relative importance of a connection, while the bias is an adjustable parameter that allows the activation function to shift, helping the model better fit the data.
+
+
+During training, the network's output is evaluated against the ground truth using a loss function. 
+To minimize this loss, the model employs backpropagation. 
+By applying the chain rule of calculus, the model calculates the gradient—the partial derivative of the loss function with respect to each weight and bias. 
+An optimizer then uses these gradients to update the parameters in the direction that reduces error. 
+A single pass through the entire training dataset is referred to as an epoch.
+
+
+Activation functions are essential for introducing non-linearity into the model, allowing it to approximate complex functions. 
+For a network to learn through backpropagation, these functions must be differentiable. 
+
+
+Common functions include:
+\begin{itemize}
+    \item   Sigmoid/Logistic: Defined as 
+                \begin{equation}
+                    z = \frac{1}{1 + e^{-x}}
+                \end{equation}, 
+            it maps inputs to a range between 0 and 1, making it useful for probability-based outputs. 
+            However, it suffers from the vanishing gradient problem, where gradients become extremely small for high or low input values, halting the learning process.
+
+    \item   Hyperbolic Tangent (tanh): Defined as
+                \begin{equation}
+                    \tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}
+                \end{equation} 
+            this function is zero-centered with an output range of -1 to 1. 
+            While it often converges faster than sigmoid, it is still susceptible to vanishing gradients.
+
+    \item   Rectified Linear Unit (ReLU): Defined as f(z)=max(0,z), ReLU addresses the vanishing gradient problem by maintaining a constant gradient of 1 for all positive inputs. 
+            To prevent "dying ReLU"—where nodes become permanently inactive due to negative inputs—variants like LeakyReLU are used, which allow a small, non-zero gradient for negative values.
+\end{itemize}
+
+The InterCont method specifically utilizes LeakyReLU to ensure robust gradient flow \citep{shenkar2022anomaly}.
+The selection of a loss function—such as Mean Squared Error (MSE) or Mean Absolute Error (MAE)—depends on the specific task. 
+For contrastive learning methods like InterCont, specialized contrastive loss functions are employed to manage the distances between data points in the embedding space \citep{terven2025comprehensive}. 
+The optimizer, such as Adam or Stochastic Gradient Descent (SGD), manages the step size of updates via the learning rate. 
+A learning rate that is too high may cause the model to diverge, while one that is too low significantly increases training time.
+
+
+A primary challenge in training is the bias-variance tradeoff. 
+Underfitting (high bias) occurs when a model is too simple to capture the underlying data patterns. 
+Overfitting (high variance) occurs when a model is overly complex and learns the stochastic noise of the training data rather than the generalizable signal. 
+Techniques to mitigate these issues include increasing data volume, implementing dropout layers, or using early stopping to maintain the optimal balance between bias and variance.
