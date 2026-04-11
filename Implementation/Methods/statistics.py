@@ -41,18 +41,18 @@ def perform_summary_anova(metric_name, means, sds, ns):
 # Format: [Method_1, Method_2, Method_3]
 data_package = {
     "F1-Score": {
-        "m": [0.6414, 0.7549, 0.7744],
-        "s": [0.05, 0.04, 0.06],
+        "m": [0.6414, 0.6812, 0.7744],
+        "s": [0.0941, 0.0862, 0.1059],
         "n": [500, 500, 500]
     },
-    "Runtime": {
-        "m": [120.5, 110.2, 145.8],
-        "s": [15.2, 12.1, 18.5],
+    "ROC AUC": {
+        "m": [0.9594, 0.9587, 0.9670],
+        "s": [0.0359, 0.0189, 0.0206],
         "n": [500, 500, 500]
     },
-    "Memory": {
-        "m": [450.0, 448.5, 452.1],
-        "s": [50.2, 48.9, 52.3],
+    "AUPRC": {
+        "m": [0.7782, 0.7285, 0.9948],
+        "s": [0.1643, 0.1154, 0.032],
         "n": [500, 500, 500]
     }
 }
@@ -69,10 +69,10 @@ for metric, vals in data_package.items():
     print(f"{res['metric']:<12} | {res['f_stat']:<10.4f} | {res['p_value']:<12.2e} | {status}")
 
     # --- 3. OPTIONAL: PAIRWISE POST-HOC (Only if ANOVA is significant) ---
-    if res['p_value'] < 0.05:
+    if res['p_value'] < 0.0167:
         print(f"   > Post-hoc pairwise comparisons for {metric}:")
         pairs = [(0, 1), (1, 2), (0, 2)]
-        method_names = ["M1", "M2", "M3"]
+        method_names = ["MCD", "k-NN", "InterCont"]
 
         for i, j in pairs:
             # Welch's T-Test from stats
