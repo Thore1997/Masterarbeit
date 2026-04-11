@@ -30,7 +30,7 @@ Additionally I will plot the the AUPRC and ROC AUC to further analyse the perfor
 
 %AUPRC is 20.53 percentage points bigger fpor MCD than k-NN which is a big difference and needs more investigation.
 %That indicates, that even with the multidimensional skewed dataset, MCD is capable of determinang an unbiased 
-\todo{sollte ich das wirklich mitreinnehmen?}
+\todo{sollte ich das wirklich mitreinnehmen? - Ja}
 
 
 \begin{table}[h]
@@ -49,34 +49,42 @@ InterCont               & \textbf{77.44}    & 10.59 &  \textbf{96.70}   & 2.06  
 \end{table}
 
 
-The best performances are written in bold letters. 
-The InterCont method is dominating the result.
-In all metrics it produces the highest scores.
-The F1-Score is 77.44\% compared to 75.49\% for k-NN and 50.52\% for MCD.
+The performance utilizes F1-Score, ROC AUC, and AUPRC, accompanied by their respective standard deviations (SD). 
+In the F1-Score analysis, InterCont yields the highest mean at 77.44, followed by k-NN at 75.49 and MCD at 64.14. 
+The SD values indicate that k-NN maintains the lowest variability at 6.13, while MCD and InterCont show higher fluctuations at 9.41 and 10.59.
 
 
-The standard deviation differes between the methods.
-MCD has the biggest standard deviation with 28.37\%.
-InterCont's SD is 10.59\% and k-NN has the smallest SD with 6.13\%.
-The method with the highest F1-Score is the semi-supervised k-NN method with 89.07\%, while the method with the highest ROC AUC is MCD with 97.56\%.
-InterCont performs best in terms of AUPRC, with a resulting score of 99.48\%.
-The differences between the methods vary alot.
-The difference of the best to worst performance in terms of F1-Score, 39.07 percentage points.
-AUPRC differs by 49.65 percentage points between the best and worst performing method.
-While the difference between the best and worst performance in terms of ROC AUC is only 3.27 percentage points.
+The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 96.70, k-NN at 95.87, and MCD at 95.94. 
+The stability of these scores is evidenced by low SD values, with k-NN demonstrating the least variance at 1.89, compared to 2.06 for InterCont and 3.59 for MCD.
 
 
-The standard deviations differ a lot between the methods as well.
-Because MCD and the unsupervised k-NN method are deterministic methods, they have no standard deviation in terms of F1-Score, ROC AUC, and AUPRC.
-The deviation of F1-Score is lower for the semi-supervised k-NN method with 3.97 compared with the 10.59 percentage points of InterCont.
-The standard deviation of the methods in terms of ROC AUC are not differing so much F1-Score or AUPRC.
-The semi-supervised k-NN method has a deviation of 2.42 percentage points, which is only slightly higher than InterCont 2.06 percentage.
-InterCont has the lowest deviation with respect to AUPRC with 0.32 percentage points instead of the 8.36 percentage of the semi-supervised k-NN method.
+For the AUPRC metric, InterCont achieves a mean of 99.48, significantly higher than MCD at 77.82 and k-NN at 72.85. 
+The InterCont method exhibits near-zero variance with an SD of 0.32. 
+Conversely, MCD shows the highest instability in this metric with an SD of 16.43, while k-NN records an SD of 11.54. 
+These figures reflect the comparative effectiveness and consistency of each method within the tested framework.
+
 
 
 The authors of InterCont tested their results with a wilcoxon signed rank test. 
 They conducted that by statistical sinificance, that their model outperforms other methods.
-I can't apply a wilcoxon signed rank test to the results of my experiments, because this I applied only one dataset.
+I can't apply a wilcoxon signed rank test to the results of my experiments, because this I applied only one dataset. \todo{argue why I dont chose Wilcoxon}
+
+
+For the statistical analysis and to answer the research question , I decided to use a parametric approach.
+Due to the central limit theorem and the number of runs (n=500) the distribution of the metrics will approximatly follow normal, regardless of the underlying distribution. \todo{really?}
+Therefore I will deploy an One-Way ANOVA to analyse if there is a statistically significant difference between the methods.
+If so, I will further investigate by apply Welchs's t-Test, to determine local superior performance.
+
+
+The One-Way ANOVA, sometimes called ANOVA from summary statistics, tests if the means of the methods are differente, hence
+
+\begin{equation}
+    Ho = my1 = my2 = my3
+\end{equation}
+
+If the Null is rejected ($p<0.05$) that means that at least one mean diviates from the the other. 
+It does not define which methods are different.
+To estimate the F-statistics the  Between-Group Variance and Within-group variance has to be calculated.
 
 
 Alternatively I could bootstrap the results to get confidence intervals for the performance metrics.
@@ -90,26 +98,11 @@ If the Cochran Q Test indicates that there are significant differences, I will p
 
 
 
-The differences between the ROC AUC are small. 
-The width between the smallest and the biggest is 0.83 percentage points.
-InterCont performs best in terms of ROC AUC, with a value of 96.7\%
-The ROC AUC for k-NN and MCD are near at each other with 95.87\% and 95.94\%.
-The SD are somewhat similiar. 
 
 
 
 
-The difference between of the methods AUPRC differ severly. 
-26.63 percentage points lay between the best and orst performing method.
-The InterCont performs the best with 99.48\%.
-For the rest of the methods the AUPRC are nearer together.
-With 72.85\% for k-nn and 77.82\% for MCD, the difference are 4.97 percentage points.
 
-
-
-
-As the authors of the InterCont, I will perform the Wilcoxon-Signed-Rank test, to analyse the different performances. 
-The Wilcoxon-Signed-Rank is a non-parametric test to determine which methods performs best. 
 
 
 
