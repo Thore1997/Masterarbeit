@@ -16,7 +16,7 @@ To address this, the Minimum Covariance Determinant (MCD) was proposed by \citet
 \todo{insert image}
 
 \subsection*{Minimum Covariance Determinant (MCD)}
-The objective of the MCD is to identify a subset $H$ containing $h$ observations (where $h$ is typically between $\frac{n+p+1}{2}$ and $n$) \todo{right place?} that yields the minimum possible covariance matrix determinant.
+The objective of the MCD is to identify a subset $H$ containing $h$ observations that yields the minimum possible covariance matrix determinant.
 Geometrically, the MCD seeks the smallest possible ellipsoid that encapsulates a specific fraction of the data. \todo{which one is right?}  
 By drawing this ellipsoid around the region of highest local density rather than the entire dataset, the MCD effectively excludes outliers and eliminates the masking effect.
 
@@ -40,10 +40,20 @@ To resolve this, \citet{rousseeuw1999fast} introduced the FAST-MCD algorithm, wh
 \item Select the ten results with the lowest determinants ($det(S)$) and continue C-Steps until convergence.
 \item  Report the mean ($\mu^MCD$) and covariance ($\Sigma^MCD$) from the subset with the overall lowest determinant
 \end{enumerate}
-\todo{insert C-Steps}
+
 
 The C-Step operates by calculating the Mahalanobis distances for all $n$ observations based on a current subset's parameters, then forming a new subset from the $h$ observations with the smallest distances. 
 This process is guaranteed to decrease the determinant of the covariance matrix at each iteration until convergence \citep[p.214]{rousseeuw1999fast}.\todo{why does it converge?}
+
+
+\begin{enumerate}
+    \item Initialize by drawing a random number $p+1$ subsamples $J$ and calculate the sample mean and the sample covariance matrix. If the resulting $det(S0)=0$ then add another random observation until $det(S0)>0$.
+    \item If $det(S1)=/0$ compute the mahalanobis distances for all $n$
+    \item To compute $H2$ sort the distances of (2) from smallest to biggest
+    \item Select the $h$ smallest distances and compute the mean and coverance matrix
+    \item Repeat until convergence
+\end{enumerate}
+\citep[p.214]{rousseeuw1999fast}
 
 
 \subsection*{Implementation}
@@ -69,6 +79,8 @@ Once the robust estimators $\mu^MCD$ and $\Sigma^MCD$ are calculated, the Robust
 RD_i^2 = (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})^T \hat{\Sigma}_{\text{MCD}}^{-1} (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})
 \label{eq:robust_mahalanobis}
 \end{equation}
+
+
 Assuming the clean data follows a multivariate normal distribution, RD2 follows a $\chi^2$ distribution.
 This allows for a formal discordancy test: if RD2 exceeds a critical threshold defined by a significance level $\alpha$, the point is flagged as an outlier. 
 Increasing $\alpha$ expands the decision ellipsoid, requiring outliers to be further from the center to be detected.
