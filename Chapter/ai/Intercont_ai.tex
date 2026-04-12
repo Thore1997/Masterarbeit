@@ -1,66 +1,67 @@
- \subsection{Internal Contrastive Learning (InterCont)}
- This chapter examines the internal contrastive learning algorithm proposed by \citet{shenkar2022anomaly}. 
- The objective is to determine a score y, which assigns a low value to samples originating from the underlying distribution, while assigning higher values to potential outliers. 
- The discussion begins with an explanation of the primary hyperparameters and the initialization of the model. 
+\subsection{Internal Contrastive Learning (InterCont)}
+This chapter examines the internal contrastive learning algorithm proposed by \citet{shenkar2022anomaly}.  The objective is to determine an outlier score $y$, which assigns a low value to samples originating from the underlying distribution, while assigning higher values to potential outliers. 
+The discussion begins with an explanation of the primary hyperparameters and the initialization of the model. 
 
+\todo{start with paradigm}
+To utilize the framework established in the previous sections, the data augmentation techniques specific to InterCont are compared \todo{really comparing?} with conventional contrastive learning strategies. 
+This is followed by a detailed description of the network architecture and an analysis of the chosen contrastive loss function. 
+The model is characterized by three primary hyperparameters:
 
- To utilize the framework established in the previous sections, the data augmentation techniques specific to InterCont are compared with conventional contrastive learning strategies. 
- This is followed by a detailed description of the network architecture and an analysis of the chosen contrastive loss function. 
- The model is characterized by two primary hyperparameters:
-
- \begin{enumerate}
-    \item k determines the number of consecutive number of the features to form the positive sample a (hereby k < d).
-    \item u determines the embedding size.
-    \item Tau is a temperature constant in the contrastive loss function.
+\begin{enumerate}
+    \item $k$ determines the number of consecutive number of the features to form the positive sample a (hereby $k < d$).
+    \item $u$ determines the embedding size.
+    \item $\tau$ is a temperature constant in the contrastive loss function.
 \end{enumerate}
+\todo{right place}
 
-
+\todo{add a whole epoch}
 The authors proposed a sliding window approach for data augmentation to facilitate internal contrastive learning. 
-The model initialization involves treating the columns of the dataset S as a vector Xi​ with a total length of d. 
-The number of generated pairs Φ(xi​)={(ai​,bi​)} is determined by the formula m=d+1−k, where k represents the defined length of the positive sample ai​. 
-The anchor bi​ is composed of the residual features d−k, functioning as the complementary vector to the positive sample. 
+The model initialization involves treating the columns of the dataset $S$ as a vector $X_i$ with a total length of $d$. 
+The number of generated pairs $\phi(x_i)={(a_i,b_i)}$ is determined by the formula $m=d+1-k$, where $k$ represents the defined length of the positive sample $a_i$. 
+The anchor $b_i$ is composed of the residual features $d-k$, functioning as the complementary vector to the positive sample. 
 A distinguishing feature of this method is that the negative samples are derived from the positive samples of other constructed pairs within the same data instance, which characterizes the internal nature of the contrastive learning process. 
 For a visual representation of this mechanism, see Figure.
+\todo{insert image}
 \todo{insert different papers that apply sliding window approach}
 \todo{add: critique}
 
 
-The network architecture comprises two asymmetrical, fully connected neural networks, designated as F and G. 
-This asymmetry is necessitated by the disparate dimensions of the input vectors b and a. 
-The authors define the internal dimensionality of these networks based on the embedding size u. 
-Network F, which processes the larger anchor vector b, incorporates two hidden layers: the first containing 200 nodes and the second containing 400 nodes. 
-Network G is structured similarly with two hidden layers, yet because it processes the smaller complementary positive sample a, the node counts are adjusted accordingly. 
-Specifically, the first hidden layer of G consists of 50 nodes, while the second hidden layer consists of 100 nodes. 
+The network architecture comprises two asymmetrical, fully connected neural networks, designated as $F$ and $G$. 
+This asymmetry is necessitated by the disparate dimensions of the input vectors $b$ and $a$. 
+The authors define the internal dimensionality of these networks based on the embedding size $u$. 
+Network $F$, which processes the larger anchor vector $b$, incorporates two hidden layers: the first containing 200 nodes and the second containing 400 nodes. 
+Network $G$ is structured similarly with two hidden layers, yet because it processes the smaller complementary positive sample $a$, the node counts are adjusted accordingly. 
+Specifically, the first hidden layer of $G$ consists of 50 nodes, while the second hidden layer consists of 100 nodes. 
 Adhering to the framework previously described, the authors utilize a bottleneck design, ensuring the network is constrained to extract only the most significant characteristics of the underlying data distribution.
+\todo{add the missing parts}
 
-
-The architecture utilizes the LeakyReLU activation function across its layers, with the sole exception of the first hidden layer in Network F, which employs a Tanh activation. 
-The inclusion of Tanh in the initial layer of the anchor network serves to center the input data and bound activations within the range of -1 to 1, facilitating stability during the early stages of feature extraction for the larger input vector. 
+The architecture utilizes the LeakyReLU activation function across its layers, with the sole exception of the first hidden layer in Network $F$, which employs a Tanh activation. 
+The inclusion of Tanh in the initial layer of the anchor network serves to center the input data and bound activations within the range of -1 to 1, facilitating stability during the early stages of feature extraction for the larger input vector. \todo{review}
 LeakyReLU diverges from the standard Rectified Linear Unit by incorporating a small non-zero slope coefficient for negative input values. 
-The authors defined this slope coefficient as 0.2. 
-This adjustment prevents the occurrence of "dead neurons" by ensuring that every unit remains capable of contributing to the model's learning process. 
+The authors defined this slope coefficient as 0.2. \todo{what does this mean?}
+This adjustment prevents the occurrence of "dead neurons"\todo{different wording} by ensuring that every unit remains capable of contributing to the model's learning process. 
 Furthermore, this design ensures that gradients can propagate backward through the network even during negative activations, thereby mitigating the risk of vanishing gradients and allowing for more consistent optimization across the entire network depth.
 
 
 The authors selected InfoNCE as the contrastive loss function, which serves to maximize the mutual information gain during the training process. 
 This function generates a score that is low for similar data pairs and high for dissimilar pairs. 
-Consequently, if a sample does not originate from the underlying distribution, it receives a higher score, indicating a greater probability of being an outlier. 
+Consequently, if a sample does not originate from the underlying distribution, it receives a higher score, indicating a greater probability of being an outlier. \todo{wording}
 The specific implementation of the loss function is defined as follows:
 
 \begin{equation}
    \ell(F, G, \Phi(x_i), j) = -\ln \frac{\exp(F^N(b_i^j) \cdot G^N(a_i^j) / \tau)}{\sum_{j'=1}^{m} \exp(F^N(b_i^j) \cdot G^N(a_i^{j'}) / \tau)}.
 \end{equation}
 
-The architectures are double normalized and denoted as FN​ and GN​, where N signifies a normalized vector. 
+The networks are double normalized and denoted as $F_N$ and $G_N$. 
 This process involves two distinct normalization stages. 
-The initial row-wise normalization is intended to standardize scales across features, as outliers can often be identified simply by the magnitude of a specific feature. 
-By performing row-wise normalization, the authors establish dependencies between variables, ensuring that a specific value in the vector b is defined relative to the other values within the same instance. 
-To facilitate this, the output vectors b are aggregated column-wise to form the matrix B∈Ru×m.
-This matrix is normalized row-wise to satisfy an L2​ norm of 1, resulting in the matrix BN​, which effectively scales the values within the range of -1 to 1. 
-Subsequently, a second column-wise normalization is applied to BN​. 
-This secondary L2​ normalization yields the final normalized network output FN​. 
-An identical double normalization procedure is performed on the positive samples to produce the normalized network output GN​. 
-This dual-stage normalization ensures that the contrastive loss is computed on a spherical feature space, preventing the model from relying on absolute feature magnitudes and forcing it to focus on the structural relationships within the data.
+The initial row-wise normalization is intended to standardize scales across features, as outliers can often be identified simply by the magnitude of a specific feature. \todo{which norm?}
+By performing row-wise normalization, the authors establish dependencies between variables, ensuring that a specific value in the vector $b$ is defined relative to the other values within the same instance. 
+To facilitate this, the output vectors $b$ are aggregated column-wise to form the matrix $B\in\mathbb{R}^{u\times m}$.\todo{right expression?}
+This matrix is normalized row-wise to satisfy an L2 norm of 1, resulting in the matrix $BN$, which effectively scales the values within the range of -1 to 1. \todo{again row-wise? something of, now its three norm?} 
+Subsequently, a second column-wise normalization is applied to $B_N$.\todo{is that the right expression for BN?} 
+This secondary L2 normalization yields the final normalized network output $F_N$. \todo{what?}
+An identical double normalization procedure is performed on the positive samples to produce the normalized network output $G_N$. 
+This dual-stage normalization ensures that the contrastive loss is computed on a spherical feature space, preventing the model from relying on absolute feature magnitudes and forcing it to focus on the structural relationships within the data. \todo{source}
 
 
 \todo{cations with this one}
@@ -70,10 +71,17 @@ Consequently, the second normalization stage is applied, wherein the anchor, the
 This step ensures that all vectors are projected onto a hypersphere, allowing the model to focus on the angular relationships and semantic similarities required to identify deviations from the expected data structure.
 
 
-The numerator of the equation represents the pull between the anchor and the positive sample. 
-It is calculated as the product of the anchor and the positive sample, forming the positive pair, which is then divided by the temperature hyperparameter τ. Due to the double normalization process, the dot product of the two mappings corresponds to their cosine similarity. 
+The numerator of the equation represents the pull between the anchor and the positive sample. \todo{diff place?}
+It is calculated as the product of the anchor and the positive sample, forming the positive pair, which is then divided by the temperature hyperparameter $\tau$. 
+Due to the double normalization process, the dot product of the two mappings corresponds to their cosine similarity. \todo{define cosine similarity} 
 A higher product indicates a greater degree of similarity between the vectors. 
-If FN​(bi​)⋅GN​(ai​)=1, the two vectors point in the identical direction within the feature space. 
+If $F_N(b_i)*G_N(a_i)=1$ the two vectors point in the identical direction within the feature space.
 Conversely, a lower value signifies a lack of similarity, reaching a minimum of -1 when the vectors are diametrically opposed.
 
-The denominator constitutes the push, represented by the product of the anchor and the negative samples divided by τ. This product is summed across the total number of negative pairs. Both the numerator and the denominator are processed through a natural exponential function. Consequently, the exponential nature of the scores ensures that higher values exert a disproportionately larger influence on the resulting loss, effectively penalizing the model more severely when the anchor is not sufficiently separated from negative samples or closely aligned with the positive sample.
+
+The denominator constitutes the push, represented by the product of the anchor and the negative samples divided by $\tau$. \todo{different wording, push?}
+This product is summed across the total number of negative pairs. 
+Both the numerator and the denominator are processed through a natural exponential function. 
+Consequently, the exponential nature of the scores ensures that higher values exert a disproportionately larger influence on the resulting loss, effectively penalizing the model more severely when the anchor is not sufficiently separated from negative samples or closely aligned with the positive sample.
+
+\todo{add pros and cons}
