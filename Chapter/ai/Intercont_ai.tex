@@ -1,101 +1,79 @@
-\section{Outlier Detection based on Internal Contrastive Learning (InterCont)}
+ \subsection{Internal Contrastive Learning (InterCont)}
+ This chapter examines the internal contrastive learning algorithm proposed by \citet{shenkar2022anomaly}. 
+ The objective is to determine a score y, which assigns a low value to samples originating from the underlying distribution, while assigning higher values to potential outliers. 
+ The discussion begins with an explanation of the primary hyperparameters and the initialization of the model. 
 
 
-The InterCont method proposed by \citep{shenkar2022anomaly} is grounded in fundamental machine learning paradigms. 
-To establish the necessary technical background, it is essential to categorize the traditional learning frameworks and identify the specific paradigm utilized by this method. 
-Machine learning is generally divided into supervised, unsupervised, and self-supervised learning, each offering distinct advantages and limitations.
+ To utilize the framework established in the previous sections, the data augmentation techniques specific to InterCont are compared with conventional contrastive learning strategies. 
+ This is followed by a detailed description of the network architecture and an analysis of the chosen contrastive loss function. 
+ The model is characterized by two primary hyperparameters:
+
+ \begin{enumerate}
+    \item k determines the number of consecutive number of the features to form the positive sample a (hereby k < d).
+    \item u determines the embedding size.
+    \item Tau is a temperature constant in the contrastive loss function.
+\end{enumerate}
 
 
-Supervised learning relies on labeled datasets, where a model learns a mapping from inputs to specific targets \citep{lecun2015deep}. 
-While this paradigm achieves high accuracy for defined tasks, it is constrained by the high cost of manual data labeling and a tendency to struggle with out-of-distribution data. 
-In contrast, unsupervised learning identifies underlying patterns in data without explicit labels, making it highly scalable but often less precise for specific classification tasks.
+The authors proposed a sliding window approach for data augmentation to facilitate internal contrastive learning. 
+The model initialization involves treating the columns of the dataset S as a vector Xi​ with a total length of d. 
+The number of generated pairs Φ(xi​)={(ai​,bi​)} is determined by the formula m=d+1−k, where k represents the defined length of the positive sample ai​. 
+The anchor bi​ is composed of the residual features d−k, functioning as the complementary vector to the positive sample. 
+A distinguishing feature of this method is that the negative samples are derived from the positive samples of other constructed pairs within the same data instance, which characterizes the internal nature of the contrastive learning process. 
+For a visual representation of this mechanism, see Figure.
+\todo{insert different papers that apply sliding window approach}
+\todo{add: critique}
 
 
-The InterCont method operates within the self-supervised learning paradigm, specifically leveraging contrastive learning. 
-This approach generates its own supervisory signals from the data structure itself \citep{jaiswal2020survey}. 
-By doing so, it captures rich representations without the need for human-annotated labels, bridging the gap between the scalability of unsupervised methods and the performance of supervised systems. 
-However, the success of this paradigm is heavily dependent on the quality of data augmentations and the selection of informative negative samples (suggestions for citation on contrastive learning efficiency needed here, e.g., \citep{chen2020simple}).
+The network architecture comprises two asymmetrical, fully connected neural networks, designated as F and G. 
+This asymmetry is necessitated by the disparate dimensions of the input vectors b and a. 
+The authors define the internal dimensionality of these networks based on the embedding size u. 
+Network F, which processes the larger anchor vector b, incorporates two hidden layers: the first containing 200 nodes and the second containing 400 nodes. 
+Network G is structured similarly with two hidden layers, yet because it processes the smaller complementary positive sample a, the node counts are adjusted accordingly. 
+Specifically, the first hidden layer of G consists of 50 nodes, while the second hidden layer consists of 100 nodes. 
+Adhering to the framework previously described, the authors utilize a bottleneck design, ensuring the network is constrained to extract only the most significant characteristics of the underlying data distribution.
 
 
-Machine learning paradigms serve as overarching frameworks for interpreting data, providing the foundational logic for how algorithms process information. 
-While individual algorithms act as specific components, the paradigm defines the broader strategy for learning. 
-Consequently, many methods can be adapted across different paradigms depending on the data structure and the intended objective. 
-Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning, and reinforcement learning. 
-However, numerous specialized subtypes exist, such as semi-supervised, multi-label, and transfer learning \citep{sarker2021machine}.
+The architecture utilizes the LeakyReLU activation function across its layers, with the sole exception of the first hidden layer in Network F, which employs a Tanh activation. 
+The inclusion of Tanh in the initial layer of the anchor network serves to center the input data and bound activations within the range of -1 to 1, facilitating stability during the early stages of feature extraction for the larger input vector. 
+LeakyReLU diverges from the standard Rectified Linear Unit by incorporating a small non-zero slope coefficient for negative input values. 
+The authors defined this slope coefficient as 0.2. 
+This adjustment prevents the occurrence of "dead neurons" by ensuring that every unit remains capable of contributing to the model's learning process. 
+Furthermore, this design ensures that gradients can propagate backward through the network even during negative activations, thereby mitigating the risk of vanishing gradients and allowing for more consistent optimization across the entire network depth.
 
 
-Supervised learning is the most widely utilized paradigm, primarily employed for classification and regression tasks. 
-In this task-driven approach, the model is trained on labeled data, where each input is paired with the correct output or "ground truth" \citep[p.3]{sarker2021machine}. 
-The model's objective is to learn a mapping function that can accurately predict labels for new, unseen data. 
-While supervised learning offers high accuracy and easily measurable performance, it is constrained by the significant time and cost required to generate labeled datasets. 
-Furthermore, these models often struggle with scenarios or data distributions not represented during training.
+The authors selected InfoNCE as the contrastive loss function, which serves to maximize the mutual information gain during the training process. 
+This function generates a score that is low for similar data pairs and high for dissimilar pairs. 
+Consequently, if a sample does not originate from the underlying distribution, it receives a higher score, indicating a greater probability of being an outlier. 
+The specific implementation of the loss function is defined as follows:
+
+\begin{equation}
+   \ell(F, G, \Phi(x_i), j) = -\ln \frac{\exp(F^N(b_i^j) \cdot G^N(a_i^j) / \tau)}{\sum_{j'=1}^{m} \exp(F^N(b_i^j) \cdot G^N(a_i^{j'}) / \tau)}.
+\end{equation}
+
+The architectures are double normalized and denoted as FN​ and GN​, where N signifies a normalized vector. 
+This process involves two distinct normalization stages. 
+The initial row-wise normalization is intended to standardize scales across features, as outliers can often be identified simply by the magnitude of a specific feature. 
+By performing row-wise normalization, the authors establish dependencies between variables, ensuring that a specific value in the vector b is defined relative to the other values within the same instance. 
+To facilitate this, the output vectors b are aggregated column-wise to form the matrix B∈Ru×m.
+This matrix is normalized row-wise to satisfy an L2​ norm of 1, resulting in the matrix BN​, which effectively scales the values within the range of -1 to 1. 
+Subsequently, a second column-wise normalization is applied to BN​. 
+This secondary L2​ normalization yields the final normalized network output FN​. 
+An identical double normalization procedure is performed on the positive samples to produce the normalized network output GN​. 
+This dual-stage normalization ensures that the contrastive loss is computed on a spherical feature space, preventing the model from relying on absolute feature magnitudes and forcing it to focus on the structural relationships within the data.
 
 
-In contrast, unsupervised learning is a data-driven approach that utilizes unlabeled data. 
-Without predefined output labels or external supervision, the model must explore the data to discover hidden patterns, underlying structures, or natural groupings \citep[p.4]{sarker2021machine}. 
-This paradigm is highly scalable and effective for identifying complex relationships within large volumes of data without the need for expensive human annotation. 
-However, because there is no objective "truth" to measure against, these models can be less accurate than supervised versions, and their results are often more difficult to interpret and computationally intensive.
+\todo{cations with this one}
+This normalization is class-independent, as it is determined by the inherent nature of the features rather than the specific class labels. 
+In contrast, outlier detection, when framed as a classification problem, necessitates a class-dependent normalization to effectively distinguish anomalous patterns from the majority distribution. 
+Consequently, the second normalization stage is applied, wherein the anchor, the positive samples, and the negative samples are each normalized to satisfy a unit L2 norm of 1. 
+This step ensures that all vectors are projected onto a hypersphere, allowing the model to focus on the angular relationships and semantic similarities required to identify deviations from the expected data structure.
 
 
-The InterCont method proposed by \citet{shenkar2022anomaly} utilizes self-supervised learning, a paradigm often considered a subset of unsupervised learning because it does not require human-annotated labels. 
-However, it possesses supervised characteristics by generating its own "pseudo-labels" from the data's inherent structure, using loss functions to measure performance against these self-generated targets. 
-This approach is particularly effective in fields like computer vision, where the potential number of classes is vast. 
-By employing metric learning, the model transforms input data—such as an image—into a numerical representation called an anchor within an embedding space. 
-The network learns to position similar images closer together and dissimilar images further apart in this space. 
-This process reduces dimensionality and complexity, allowing the model to recognize core features even when presented with slight variations of the original data.
+The numerator of the equation represents the pull between the anchor and the positive sample. 
+It is calculated as the product of the anchor and the positive sample, forming the positive pair, which is then divided by the temperature hyperparameter τ. Due to the double normalization process, the dot product of the two mappings corresponds to their cosine similarity. 
+A higher product indicates a greater degree of similarity between the vectors. 
+If FN​(bi​)⋅GN​(ai​)=1, the two vectors point in the identical direction within the feature space. 
+Conversely, a lower value signifies a lack of similarity, reaching a minimum of -1 when the vectors are diametrically opposed.
 
-
-Artificial neural networks (NN) are computational models inspired by the biological structure of the human brain, designed to handle tasks such as classification, pattern recognition, and predictive modeling. 
-A core objective in developing these networks is to achieve high generalization, ensuring that the model performs accurately on unseen test data, nearly as well as it does on the training set.
-
-
-The architecture of a neural network is composed of hierarchical layers. 
-The input layer receives raw data, where each node typically corresponds to a specific feature of the dataset. 
-he data then progresses through one or more hidden layers; networks with a single hidden layer are considered "shallow," while those with multiple layers are termed deep networks. 
-Deep learning allows for the extraction of complex patterns from high-dimensional data. 
-Within these layers, connections between nodes are governed by weights and biases. 
-Weights signify the relative importance of a connection, while the bias is an adjustable parameter that allows the activation function to shift, helping the model better fit the data.
-
-
-During training, the network's output is evaluated against the ground truth using a loss function. 
-To minimize this loss, the model employs backpropagation. 
-By applying the chain rule of calculus, the model calculates the gradient—the partial derivative of the loss function with respect to each weight and bias. 
-An optimizer then uses these gradients to update the parameters in the direction that reduces error. 
-A single pass through the entire training dataset is referred to as an epoch.
-
-
-Activation functions are essential for introducing non-linearity into the model, allowing it to approximate complex functions. 
-For a network to learn through backpropagation, these functions must be differentiable. 
-
-
-Common functions include:
-\begin{itemize}
-    \item   Sigmoid/Logistic: Defined as 
-                \begin{equation}
-                    z = \frac{1}{1 + e^{-x}}
-                \end{equation}, 
-            it maps inputs to a range between 0 and 1, making it useful for probability-based outputs. 
-            However, it suffers from the vanishing gradient problem, where gradients become extremely small for high or low input values, halting the learning process.
-
-    \item   Hyperbolic Tangent (tanh): Defined as
-                \begin{equation}
-                    \tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}
-                \end{equation} 
-            this function is zero-centered with an output range of -1 to 1. 
-            While it often converges faster than sigmoid, it is still susceptible to vanishing gradients.
-
-    \item   Rectified Linear Unit (ReLU): Defined as f(z)=max(0,z), ReLU addresses the vanishing gradient problem by maintaining a constant gradient of 1 for all positive inputs. 
-            To prevent "dying ReLU"—where nodes become permanently inactive due to negative inputs—variants like LeakyReLU are used, which allow a small, non-zero gradient for negative values.
-\end{itemize}
-
-The InterCont method specifically utilizes LeakyReLU to ensure robust gradient flow \citep{shenkar2022anomaly}.
-The selection of a loss function—such as Mean Squared Error (MSE) or Mean Absolute Error (MAE)—depends on the specific task. 
-For contrastive learning methods like InterCont, specialized contrastive loss functions are employed to manage the distances between data points in the embedding space \citep{terven2025comprehensive}. 
-The optimizer, such as Adam or Stochastic Gradient Descent (SGD), manages the step size of updates via the learning rate. 
-A learning rate that is too high may cause the model to diverge, while one that is too low significantly increases training time.
-
-
-A primary challenge in training is the bias-variance tradeoff. 
-Underfitting (high bias) occurs when a model is too simple to capture the underlying data patterns. 
-Overfitting (high variance) occurs when a model is overly complex and learns the stochastic noise of the training data rather than the generalizable signal. 
-Techniques to mitigate these issues include increasing data volume, implementing dropout layers, or using early stopping to maintain the optimal balance between bias and variance.
+The denominator constitutes the push, represented by the product of the anchor and the negative samples divided by τ. This product is summed across the total number of negative pairs. Both the numerator and the denominator are processed through a natural exponential function. Consequently, the exponential nature of the scores ensures that higher values exert a disproportionately larger influence on the resulting loss, effectively penalizing the model more severely when the anchor is not sufficiently separated from negative samples or closely aligned with the positive sample.
