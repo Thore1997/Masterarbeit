@@ -7,7 +7,7 @@ The goal is to supply an indepth understanding of the implementation and the tec
 
 \subsubsection*{Experimental design}
 The experiments are run on a Desktop PC, equiped with a NVIDIA GeForce RTX 3090 and a 12th gen Intel(R) Core(TM) i9 - 12900k 3.2 GHz CPU.
-The PC has 65536 RAM and 24326 MB of VRAM. 
+The PC has 65536 MB RAM and 24326 MB of VRAM. 
 It runs Windows 11 Enterprise Version 25H2.
 For the code to implement I used the latest version of the integrated development environment (IDE) PyCharm 2025.3.3.
 I used python 3.12, because there werent all the packages available for the latest version of python.
@@ -59,16 +59,16 @@ Hiddensize determines how many neurons are in the hidden layers.
 Here the hiddenlayers are hardcoded to 200 in line 87. 
 
 
-The first hidden layer is defined in line 31.
-It is defined as an fully connected layer and takes all 200 output values from the previous layer as inputs.
-The inputs are projected to double the number of outputs, hence 400 neurons.
-Temporarily expanding the dimensionality of the dataset to find non-linear relationships.
-The LeakyReLu activation function with its hyperparameter set to 0,2 is implemented in line 32.
+%The first hidden layer is defined in line 31.
+%It is defined as an fully connected layer and takes all 200 output values from the previous layer as inputs.
+%The inputs are projected to double the number of outputs, hence 400 neurons.
+%Temporarily expanding the dimensionality of the dataset to find non-linear relationships.
+%The LeakyReLu activation function with its hyperparameter set to 0,2 is implemented in line 32.
 
 
-The output layer the results from the previous layer is compressed to the predefined hiddensize, hence 200 neurons. 
-Because of the compression, the neural network is forced to learn the most important relationsships.
-The LeakyReLu is once again implemented.
+%The output layer the results from the previous layer is compressed to the predefined hiddensize, hence 200 neurons. 
+%Because of the compression, the neural network is forced to learn the most important relationsships.
+%The LeakyReLu is once again implemented.
 
 
 The smaller G-Network is desigened the same.

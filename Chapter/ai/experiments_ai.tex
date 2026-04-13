@@ -1,0 +1,140 @@
+\section{Experiments}
+
+This chapter delineates the technical specifications and configurations utilized throughout the experimental phase of this research
+The following sections provide a comprehensive description of the hardware environment and the software architecture to facilitate the exact reproduction of the reported results. 
+The experiments were conducted on a workstation equipped with an Intel Core i9-12900K processor operating at 3.2 GHz and an NVIDIA GeForce RTX 3090 GPU. 
+The system features 64 GB of physical RAM and 24 GB of video memory (VRAM), providing sufficient computational capacity for intensive outlier detection tasks. 
+The software environment was managed under the Windows 11 Enterprise operating system, specifically version 25H2. 
+
+
+For the implementation of the algorithms and the execution of the experimental pipeline, the PyCharm 2025.3.3 integrated development environment was employed. 
+Although more recent iterations of the Python interpreter exist, Python 3.12 was selected as the foundational language to ensure full compatibility with the required library ecosystem, as several critical packages had not yet been updated for newer releases. 
+To maintain strict control over software dependencies and ensure environment stability, a virtual environment was utilized. 
+All specific library versions and dependencies are documented within a provided requirements.txt file, which serves as a definitive reference for the software configuration required for replication.
+
+
+The authors of the \textbf{InterCont} method provided a comprehensive reproduction package alongside their publication, which enabled a seamless replication of the original results. 
+However, the provided codebase did not include implementations for alternative outlier detection methods, presumably due to their ubiquity in established computational libraries. 
+Consequently, the k-Nearest Neighbors (k-NN) and Minimum Covariance Determinant (MCD) methods were independently implemented for this study. 
+These implementations were designed to ensure parity with standard algorithmic definitions and to facilitate a robust comparative analysis within the experimental framework.
+
+The reproduction package is structured into four distinct Python modules: $main.py$, $train.py$, $data_loader.py$, and $helper_functions.py$. 
+The main.py script serves as the primary orchestrator for the experimental pipeline, managing configuration parameters, initiating data loading procedures, and executing the training sequence. 
+While these configurations are adjustable via command-line arguments, the experiments in this study were conducted using the default settings. 
+These parameters include the dataset selection, an option for an accelerated version of the algorithm, and the batch size. 
+The default batch size is set to 3000, which, given the dimensions of the datasets utilized in this research, effectively results in a full-batch gradient descent. 
+This default value was likely established by the authors to accommodate the larger datasets and higher dimensionality present in the source repository.
+\todo{insert batch size into theory}
+
+
+The dataset utilized for the experiments can be specified via command-line arguments; however, since the provided reproduction package includes the entire ODDS repository and the default selection corresponds to the specific dataset under investigation, this parameter remained unchanged. 
+Furthermore, the configuration includes an option to enable an accelerated version of the algorithm. 
+This feature was not activated, as the primary dataset is of a manageable size that does not necessitate the optimizations offered by the "fast" implementation. 
+Consequently, the experiments were executed using the standard computational framework as defined by the default settings
+
+
+To ensure computational efficiency, the authors included a logic sequence at the conclusion of the execution script to prioritize the use of the GPU; the process defaults to the CPU only if a dedicated graphics processor is unavailable. 
+This device allocation logic is consistently applied within the train.py module, which governs the core training procedures of the InterCont method. 
+At the initialization of this module, a data pipeline is established through a specialized data wrapper. 
+This component determines the structural dimensions of the dataset and defines the mechanisms for individual row retrieval. 
+To facilitate the subsequent evaluation of calculated anomaly scores, the wrapper preserves the original index identifiers. 
+This architectural choice ensures that the machine learning algorithm can accurately map each anomaly score back to its corresponding observation in the source data.
+
+
+The encoder class establishes the neural network architecture, specifically defining an F network that processes $d-kernel_size$ features. 
+This input layer utilizes a tanh activation function to normalize outputs within the $[-1,1]$ range. 
+The $kernel_size$ hyperparameter is determined by the input dimensionality; for a 13-dimensional dataset, it is set to 2. 
+Furthermore, the hidden layers are configured with a fixed capacity of 200 neurons.
+The $G$ network architecture is configured to utilize the complementary $kernel_size$ for its input features. 
+In this implementation, the number of neurons within the hidden layers is reduced by a factor of four compared to the F network, resulting in a narrower hidden layer width of 50 neurons
+\todo{fill in the normalization}
+
+
+The implementation excludes a cross-validation procedure to mitigate overfitting, utilizing instead a permutation-based approach to derive anomaly scores. 
+The experimental framework employs a semi-supervised learning paradigm, where the dataset is partitioned into equal halves for training and testing. 
+The training set is composed exclusively of observations from the normal class, whereas the testing set contains a mixture of both normal and abnormal data. 
+To ensure the stability and reliability of the results, a shuffling procedure is integrated into the pipeline. 
+While the specific observations within the training and testing subsets remain constant, the internal order of the columns is permuted during the process. 
+This structural shuffling serves to robustly evaluate the method's performance across varying feature arrangements.
+
+
+To introduce stochasticity into the shuffling process, the authors utilized the PyTorch function torch.randperm(). 
+This function relies on a pseudo-random number generator; since no specific generator argument was specified, the default engine was employed. 
+Consistent with the original study, the experiments were executed over 500 random splits. 
+As the reproduction package did not include a native looping mechanism for these iterations, a custom loop was implemented to manage the process. 
+To optimize computational efficiency and avoid redundant data loading operations, the semi-supervised data-splitting logic was integrated directly into the loop structure rather than repeatedly executing the main.py script. 
+The $random_state$ was explicitly set to 42, a standard convention in scientific research to ensure the reproducibility of results. 
+While it is unclear which specific seed value was utilized by the original authors, this fixed state allows for internal consistency across all iterations. 
+Finally, performance metrics were derived in accordance with the logic defined within the $helper_functions$ module.
+
+
+The $helper_functions.py$ module contains the logic for calculating the $F1-score$, employing a dynamic thresholding mechanism rather than a fixed value. 
+In this implementation, the threshold is determined by incorporating the ground truth labels directly into the calculation process. 
+The model applies this threshold to the ranked outlier ratios to identify anomalous instances. 
+Because the number of instances selected by this threshold is constrained to equal the total number of actual outliers in the dataset, the Precision and Recall values are mathematically identical. 
+Consequently, the resulting F1-score is equivalent to both metrics, reflecting the model's performance under a fixed-count retrieval constraint.
+\todo{explain the dataloader dataset generation}
+
+The authors utilized k-Nearest Neighbors (k-NN) as a classical machine learning benchmark; however, the reproduction package did not include the source code necessary to verify these benchmark results. 
+Consequently, a custom k-NN algorithm was implemented to serve as a baseline for the machine learning comparison. 
+To ensure a rigorous and consistent evaluation across all methods, the same semi-supervised learning framework employed for the InterCont method was integrated into the k-NN implementation. 
+This alignment ensures that performance differences can be attributed to the algorithmic architectures rather than variations in data handling or training paradigms.
+\todo{insert arguments why semi supervised can be allpied}
+
+
+The \textbf{k-NN} algorithm was implemented using the PyOD library, which is a frequently utilized resource for anomaly detection in scientific research. 
+To facilitate the experimental procedure and derive relevant performance metrics, components from the scikit-learn library were also employed. 
+The dataset was partitioned into equally sized training and testing subsets to maintain consistency with the experimental design used for the InterCont method. 
+This semi-supervised approach involved populating the training set exclusively with normal observations, while the testing set comprised a combination of both normal and anomalous data.
+
+
+A five-fold cross-validation procedure was implemented using the KFold function from the scikit-learn library. 
+Given the limited number of observations in the dataset, a five-fold approach was selected to maintain a sufficient volume of data in both the training and testing subsets for each iteration. 
+The shuffle parameter was enabled to ensure that the observations were randomized prior to partitioning. 
+Furthermore, the $random_state$ was set to 42 to maintain consistency with the other experimental components and to ensure the reproducibility of the results within the scientific framework.
+\todo{change to the real approach}
+
+
+In this semi-supervised configuration, the k-NN algorithm establishes a representation based on the normal observations within the training set. 
+Subsequently, the method calculates the distances between each test observation and its k nearest neighbors from the training data. 
+The anomaly score for each test point is derived from the maximum distance among these k nearest neighbors. 
+To align the model with the specific characteristics of the testing subset, the contamination parameter is defined as 0.154, reflecting the total proportion of outliers present in the test data.
+
+
+The k-NN implementation utilizes the default configuration for distance metrics, specifically selecting the largest distance to the $k$-nearest neighbors. 
+This calculation employs the Minkowski distance with the parameter $p=2$, which is mathematically equivalent to the Euclidean distance:
+\todo{insert norm}
+
+
+The \textbf{FAST-MCD} algorithm was implemented using the PyOD library. 
+Unlike the previous methods, an unsupervised learning approach was adopted for MCD, as the algorithm's architecture does not natively support a semi-supervised configuration. 
+To maintain experimental comparability, a training and testing phase was simulated. 
+During the training phase, the algorithm estimates the covariance matrix and the mean based on a subset of the data. 
+This study utilizes the same resampling methodology as the InterCont authors, applying the resulting covariance matrix and mean to a testing phase composed of the residual dataset containing all anomalous observations. 
+Observations exhibiting the highest Mahalanobis distance relative to the estimated mean are classified as outliers. 
+The classification threshold is set to 15.4\%, corresponding to the total outlier proportion within the test set.
+
+To ensure parity with the InterCont method's 500 shuffle iterations, this cycle was repeated 500 times. 
+The final performance metrics represent the average values across these iterations, supplemented by the calculation of the standard deviation. 
+The $random_state$ parameter was fixed at 42 to guarantee reproducibility. 
+This is particularly critical for the FAST-MCD algorithm, which relies on selecting random initial subsets before performing subsequent C-steps; a fixed seed ensures that the same initial subsets are selected in every execution.
+
+While the original codebase was designed to accommodate a vast array of datasets, including specialized logic within the data loader for .mat files, many components proved redundant for the specific dataset analyzed in this research. 
+This code was retained to preserve the integrity of the reproduction package, as redundant logic does not influence the experimental outcomes. 
+Notably, several hyperparameters within the original implementation were hardcoded with values optimized for larger, higher-dimensional datasets. 
+Consequently, the subsequent chapter provides a sensitivity analysis of these specific hyperparameters.
+Furthermore, while the original authors restricted their evaluation to F1-score and AUC metrics, this study extends the analysis to include the Area Under the Precision-Recall Curve (AUPRC). 
+Minor adjustments made to the source code to facilitate these additional metrics have been explicitly marked to ensure transparency.
+
+
+
+
+
+
+
+
+
+
+
+
+
