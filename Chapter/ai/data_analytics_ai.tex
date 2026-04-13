@@ -1,80 +1,80 @@
 \section{Experiments - insert To-dos}
-The Outlier Detection DataSets (ODDS) library, published by \citet{Rayana:2016}, serves as a widely utilized repository for benchmarking anomaly detection algorithms. 
-For instance, \citet{shenkar2022anomaly} employ these datasets to evaluate the performance of various outlier detection methods, including the previously discussed InterCont approach. 
-The repository comprises 32 distinct datasets characterized by varying dimensionalities and sample sizes. 
+The Outlier Detection DataSets (ODDS) library, published by \citet{Rayana:2016}, serves as a widely utilized repository for benchmarking anomaly detection algorithms. \todo{source}
+For instance, \citet{shenkar2022anomaly} employ these datasets to evaluate the performance of various outlier detection methods, including the previously discussed InterCont approach. \todo{find different paper that use ODDS as well} 
+The repository comprises 32 \todo{right number?} distinct datasets characterized by varying dimensionalities and sample sizes. 
 While utilizing a broad spectrum of datasets is advantageous for identifying the specific strengths and weaknesses of a method, analyzing all 32 datasets is beyond the scope of this thesis. 
 Consequently, this research focuses on a detailed evaluation of the Wine dataset to derive insights for the results section.
 
 
-The primary objective of the following analysis is to characterize the dataset's properties comprehensively. 
-This process begins with a statistical summary encompassing central tendencies, distributional shape, cardinality, and sparsity. 
+The primary objective of the following analysis is to characterize the dataset's properties comprehensively. \todo{explain why this is important - to analyse the type of outlier that i can use in the discussion} 
+This process begins with a statistical summary encompassing central tendencies, distributional shape, cardinality, and sparsity \todo{tested for cardinality and sparsity?}. 
 This is followed by an examination of bivariate relationships between variables. 
 Finally, the analysis addresses the geometric properties of the data, specifically focusing on its intrinsic dimensionality and manifold structure.
 
 
 The Wine dataset was submitted by \citet{wine_109} on June 30, 1991, to the UC Irvine Machine Learning Repository.
 The original data consists of chemical analyses of wines derived from three distinct Italian cultivars. 
-While initially intended for multi-class classification based on the three producers, \citet{Rayana:2016} transformed the data into an imbalanced binary classification task for the ODDS repository to facilitate outlier detection research. 
+While initially intended for multi-class classification based on the three producers, \citet{Rayana:2016} transformed the data into an imbalanced binary classification task for the ODDS repository 0to facilitate outlier detection research.  
 The processed version contains 129 instances and 13 attributes.
 
 
 In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as anomalies. 
 This results in an outlier ratio of 7.7\%, which places the dataset \todo{filling the average outlier ratio of ODDS} in comparison to other benchmarks in the repository. 
-Furthermore, the version provided by \citet{Rayana:2016} contains no missing values and consists exclusively of continuous variables. 
+Furthermore, the version provided by \citet{Rayana:2016} contains no missing values and consists exclusively of continuous variables. \todo{good point for limitations}
 To maintain visual clarity in the subsequent analysis, feature names are omitted from certain graphical representations; however, Figure 1 provides a corresponding reference for these variable names.
 \todo{insert image}
 
 
 \subsection{Analysis of the Wine Dataset}
 This section provides an analysis of the central tendencies of the Wine dataset, initiated through univariate examination. 
-Figure 3 illustrates the distribution of each feature using boxplots, which display the mean, median, interquartile range (IQR), and whiskers defined by 1.5*IQR. 
+Figure 3 illustrates the distribution of each feature using boxplots, which display the mean, median, interquartile range ($IQR$), and whiskers defined by 1.5*IQR \todo{use right command}. 
 In these visualizations, the red dotted line represents the arithmetic mean, while the grey line indicates the median. 
 
 
 Unlike the median, the mean is not robust against outliers.
-Consequently, the divergence between these two metrics serves as an indicator of distributional skewness. 
+Consequently, the divergence between these two metrics serves as an indicator of distributional skewness. \todo{source}
 A mean exceeding the median suggests a right-skewed distribution, whereas a mean lower than the median indicates a left-skewed distribution. 
 This phenomenon is particularly evident in Malic Acid (Feature 2).
 With the exceptions of Feature 8 and Feature 12, the variables in this dataset exhibit right-skewness, although the degree of asymmetry varies across the attributes. 
 These results indicate that the observations for most features tend to concentrate toward lower values with a trailing tail toward the higher end of the scale.
 
-The interquartile range (IQR) represents the central 50\% of the data distribution relative to the median. 
-A wider IQR indicates greater variance within a specific feature, whereas a narrow IQR suggests that the observations are more densely clustered. 
+The interquartile range ($IQR$) represents the central 50\% of the data distribution relative to the median.\todo{different wording?} 
+A wider $IQR$ indicates greater variance within a specific feature, whereas a narrow $IQR$ suggests that the observations are more densely clustered. 
 The features within the dataset exhibit significantly different scales of dispersion. 
-While Features 3, 4, 5, and 6 are characterized by relatively narrow IQRs, Feature 12 displays a notably large IQR, reflecting a higher degree of variability in its distribution compared to the other attributes.
+While Features 3, 4, 5, and 6 are characterized by relatively narrow $IQR$s, Feature 12 displays a notably large $IQR$, reflecting a higher degree of variability in its distribution compared to the other attributes.
 
 
 In the absence of outliers, the whiskers represent the full range of the observed data. 
 Similar to the relationship between the mean and the median, the relative lengths of the whiskers provide further evidence of distributional skewness. 
 A top whisker that is longer than the bottom whisker indicates a right-skewed distribution, whereas the inverse suggests left-skewness. 
-This asymmetry is particularly pronounced in Features 2, 6, 7, 10, and 12, where the data distributions are notably skewed toward higher values.
+This asymmetry is particularly pronounced in Features 2, 6, 7, 10, and 12, where the data distributions are notably skewed toward higher values. \todo{check if this comlies with the IQR}
 
 
 Specific features exhibit individual data points plotted beyond the whiskers, which represent potential global outliers within a univariate context.
-In the framework of a boxplot, these points signify observations that deviate significantly from the established distribution, often interpreted as global outliers due to their isolation from the primary cluster of values. 
+In the framework of a boxplot \todo{wording}, these points signify observations that deviate significantly from the established distribution, interpreted as an univariate global outliers due to their isolation from the primary cluster of values. 
 Within this dataset, Features 3 and 4 contain three instances categorized as outliers due to their unusually low values.
 Conversely, all other identified outliers across the remaining features are characterized by values that exceed the upper extreme of the distribution.
 
 
 While boxplots provide initial insights into distributional characteristics, they offer only limited information regarding the relationships between variables. 
 For instance, the boxplot analysis correctly identifies eight instances as outliers within the Proline dimension, suggesting that a significant majority of the anomaly class—which consists of ten outliers in total—possesses an unusually high concentration of this component. 
-This indicates the existence of a collective cluster specifically within this feature, implying that wines from the first grower are largely distinguishable by their Proline levels. 
+This indicates the existence of a collective cluster \todo{why?} specifically within this feature, implying that wines from the first grower are largely distinguishable by their Proline levels. 
 Conversely, several other dimensions contain boxplot outliers that do not correspond to the ground truth anomalies. 
-Such observations suggest that these extreme values may not be inherently erroneous or abnormal when viewed in a multivariate context, as their positioning could be explained by their correlations with other dimensions.
+Such observations suggest that these extreme values may not be inherently erroneous or abnormal when viewed in a multivariate context, as their positioning could be explained by their correlations with other dimensions. \todo{whats with the red dotts?}
 
 
 The correlation coefficients between the dimensions exhibit significant variation. 
 A positive coefficient indicates that the values of two features move in the same direction, whereas a negative coefficient implies an inverse relationship. 
 A coefficient of zero suggests that the variables are independent, meaning a shift in one feature does not correspond to a predictable change in the other. 
-The strongest positive correlation is observed between total phenols and flavonoids (Features 6 and 7), with a coefficient of 0.806292. 
-Similarly, a high positive correlation of 0.772444 exists between the OD280/OD350 of diluted wines and flavonoids (Features 12 and 7). 
-Regarding inverse relationships, Hue and color intensity exhibit a strong negative correlation of -0.639528. 
-The second most pronounced negative correlation, valued at -0.594243, occurs between the OD280/OD350 of diluted wines and color intensity (Features 12 and 10).
+The strongest positive correlation is observed between total phenols and flavonoids (Features 6 and 7), with a \todo{make it approximately} coefficient of 0.81. 
+Similarly, a high positive correlation of \todo{make it approximately} 0.77 exists between the OD280/OD350 of diluted wines and flavonoids (Features 12 and 7). 
+Regarding inverse relationships, Hue and color intensity exhibit a strong negative correlation of \todo{make it approximately} -0.64. 
+The second most pronounced negative correlation, valued at \todo{make it approximately} -0.59, occurs between the OD280/OD350 of diluted wines and color intensity (Features 12 and 10).
 
 
 Figure 4 presents the Pearson correlation coefficients for all pairs of dimensions. 
-The Pearson correlation was selected as the primary metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
-Typically, the Spearman rank correlation is preferred for datasets characterized by non-linear relationships or when significant global outliers are present, as it operates on the rank-order of values rather than their raw magnitudes. 
+The Pearson correlation was selected as the primary \todo{wording} metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
+Typically, the Spearman rank correlation is preferred for datasets characterized by non-linear relationships or when significant global outliers are present, as it operates on the rank-order of values rather than their raw magnitudes. \todo{source and true?} 
 However, the negligible difference between the two coefficients in this instance suggests that the relationships between the dimensions are predominantly linear. 
 Furthermore, the number of outliers is sufficiently small and the dataset imbalance sufficiently pronounced that these extreme values do not substantially distort the Pearson coefficient. 
 This metric quantifies the strength and direction of the linear relationship between two variables, assigning a numerical value within the range of -1 to 1.
@@ -90,33 +90,38 @@ Under the assumption of normality, the observations should align approximately a
 
 The analysis of Figure 5 reveals that no single feature adheres perfectly to a normal distribution, though the degree of deviation varies. 
 Features 3 and 4 demonstrate the closest approximation to normality, as their data points follow the reference line closely, with the exception of the extreme quantiles where individual instances begin to diverge. 
-When the ordered values form a convex or concave curve relative to the diagonal, it indicates the presence of heavy tails, signifying a higher frequency of extreme values than a normal distribution would predict. 
+When the ordered values form a convex or concave curve relative to the diagonal, it indicates the presence of heavy tails, signifying a higher frequency of extreme values than a normal distribution would predict. \todo{check}
 This characteristic is particularly evident in Feature 5, where instances in both the first and last quantiles deviate from the expected values. 
 Conversely, an S-shaped curve in the Q-Q plot indicates skewness; for example, Feature 7 displays such a pattern, confirming the previously noted left-skewed distribution where the empirical quantiles systematically exceed or fall below the theoretical normal line at different stages of the distribution.
-To provide statistical verification of these distributional observations, the Shapiro-Wilk test for normality is applied to each feature.
+To provide statistical verification of these distributional observations, the Shapiro-Wilk test for normality is applied to each feature. \todo{print result}
 
 
+\todo{add transistion}
+\todo{whats a manifold?}
 To extend the analysis of the dataset's geometric structure, Uniform Manifold Approximation and Projection (UMAP) is employed to reduce the data to a lower-dimensional space. 
 UMAP has become a prominent technique in scientific literature for visualizing manifold structures, allowing for the identification of clusters or data points residing on complex, curved surfaces. 
 As a non-linear dimensionality reduction method, UMAP is specifically engineered to preserve the local topological structure of the data, which is essential for interpreting high-dimensional relationships in a two-dimensional or three-dimensional projection.
+\todo{add papers whoch deploy UMAP too}
 
 
-The algorithm functions by constructing a weighted k-nearest neighbor graph, where the parameter k determines the extent of the local neighborhood considered. 
+\todo{why is this a representation learning algo?}
+The algorithm functions by constructing a weighted $k$-nearest neighbor graph, where the parameter $k$ determines the extent of the local neighborhood considered. 
 This step allows the algorithm to distinguish between regions of high density and more sparse areas of the feature space. 
 By defining a local radius around these nearest neighbors, UMAP approximates the underlying manifold and subsequently optimizes a low-dimensional representation that maintains these local connectivity patterns.
 
 
-The strength of the connection between a given instance and its neighbors is determined by their relative proximity; closer neighbors result in stronger edges, while increased distance weakens the connection. 
+The strength of the connection between a given instance and its neighbors is determined by their relative proximity.
+Closer neighbors result in stronger edges, while increased distance weakens the connection. 
 If instances fall outside of their respective local radii, the algorithm treats them as separated within the topological space. 
-These local neighborhood representations are then combined into a global structure using a fuzzy simplicial complex. 
+These local neighborhood representations are then combined into a global structure using a fuzzy simplicial complex. \todo{what?} 
 To visualize this in a lower-dimensional space, a scatter plot is initialized with the same number of instances positioned randomly. 
 Through an optimization process, instances with strong connections in the high-dimensional graph are pulled together, while those with weak or non-existent connections are pushed apart. 
-This iterative refinement continues until the system reaches a low-energy state, effectively capturing the global and local manifold structure of the dataset.
+This iterative refinement continues until the system reaches a low-energy state \todo{what?}, effectively capturing the global and local manifold structure of the dataset.
 
 
 The configuration of UMAP requires the specification of two primary hyperparameters, which fundamentally govern the construction of the low-dimensional embedding. 
-Since these parameters dictate the balance between the preservation of local and global structures, there is no universally optimal setting; rather, the choice depends on the specific analytical goals of the visualization.
-
+Since these parameters dictate the balance between the preservation of local and global structures, there is no universally optimal setting.
+Rather, the choice depends on the specific analytical goals of the visualization.
 
 
 The first hyperparameter, $n_neighbors$, determines the size of the local neighborhood UMAP considers when approximating the manifold structure. 
@@ -127,22 +132,24 @@ Selecting an appropriate value is essential for accurately reflecting whether th
 The second hyperparameter, $min\_dist$, dictates the minimum allowed distance between points in the low-dimensional embedding. 
 This parameter effectively controls the density of the visualization by determining how tightly points are packed together. 
 A smaller minimum distance allows the algorithm to represent dense clusters more compactly, which is useful for identifying distinct groupings within the manifold. 
-Conversely, a larger minimum distance forces points to maintain a greater separation, resulting in a more dispersed visualization that prioritizes the broad topological layout over local density
+Conversely, a larger minimum distance forces points to maintain a greater separation, resulting in a more dispersed visualization that prioritizes the broad topological layout over local density.
 
 
-
-To generate the visualization, the default hyperparameters were utilized, with the number of neighbors set to 15 and the minimum distance established at 0.1. 
+To generate the visualization, the default hyperparameters were utilized, with the $n_neighbors = 15$ and $min\_dist = 0.1$. 
 The primary objective of this projection was to determine whether the Wine dataset exhibits clearly defined, distinct clusters or if the classes are topologically integrated and blended together. 
 By maintaining these standard settings, the algorithm provides a balanced representation that preserves both the local connectivity necessary to identify groupings and the global manifold structure required to observe the transitions between different regions of the feature space. 
 This configuration allows for an objective assessment of the separability of the anomaly class from the inlier distribution in a reduced two-dimensional environment.
+It is important to note that UMAP utilizes a stochastic optimization process, which implies that the specific coordinates of the resulting visualization may vary across different runs. 
+However, through iterative adjustments of the hyperparameters, it was observed that the underlying cluster formations remain largely consistent. 
+Supporting evidence for this stability is provided in the appendix. \todo{do this}
 
 
-To ensure that all attributes contribute proportionally to the manifold construction and to prevent features with larger absolute scales from dominating the projection, the data is normalized using the Z-score transformation. 
+To ensure that all attributes contribute proportionally to the manifold construction and to prevent features with larger absolute scales from dominating the projection, the data is normalized using the Z-score transformation. \todo{why this norm and not robust dist?} 
 This method scales each feature by subtracting the mean and dividing by the standard deviation. 
 While the mean and standard deviation can be influenced by extreme values, Z-score normalization is generally considered more robust in preserving the relative distribution of a dataset compared to Min-Max scaling, which is highly sensitive to the exact boundaries of global outliers. 
 It is important to note that the axes in the resulting UMAP plot are not directly interpretable.
-As a non-linear dimensionality reduction technique, UMAP projects high-dimensional data into an abstract manifold where the new coordinates do not correspond to specific physical units or original features. 
-However, the spatial proximity between points in the visualization serves as a valid proxy for the similarity of instances within the original high-dimensional feature space, where smaller distances indicate greater characteristic resemblance.
+As a non-linear dimensionality reduction technique, UMAP projects high-dimensional data into an abstract manifold where the new coordinates do not correspond to specific physical units or original features. \todo{why is that?}
+However, the spatial proximity between points in the visualization serves as a valid proxy for the similarity of instances within the original high-dimensional feature space, where smaller distances indicate greater characteristic resemblance. \todo{right place?}
 
 
 The observations are color-coded according to their ground truth labels, with red indicating the outlier class and blue representing the inlier class. 
@@ -152,10 +159,10 @@ Within the inlier class, the proximity of the observations suggests a lack of fu
 Conversely, the clear spatial separation and high density of the outlier cluster indicate that these instances are highly distinct from the majority of the data. 
 This geometric isolation suggests that the chemical profiles of the anomalies are significantly and consistently different from those of the inliers, which typically facilitates more effective detection by manifold-based and distance-based algorithms.
 
-
-It is important to note that UMAP utilizes a stochastic optimization process, which implies that the specific coordinates of the resulting visualization may vary across different runs. 
-However, through iterative adjustments of the hyperparameters, it was observed that the underlying cluster formations remain largely consistent. 
-Supporting evidence for this stability is provided in the appendix. 
+ 
 In contrast to alternative dimensionality reduction techniques, UMAP is specifically designed to preserve a greater degree of global structure. 
 Nevertheless, any quantitative measurement of the exact distances between clusters should be interpreted with caution, as the transformation into a lower-dimensional space does not maintain absolute linear distances from the original manifold. 
-The final visualization is presented in Figure 6.
+The final visualization is presented in Figure 6. \todo{wrong place}
+
+\todo{write summary of the analysis}
+\todo{write transition}

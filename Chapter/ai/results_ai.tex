@@ -1,9 +1,9 @@
 \section{Results}
-This section presents the results of the previously conducted experiments
-The primary findings are summarized in Table \ref{tab:results_bench}, which details the mean and standard deviation (SD) of the F1-Score, ROC AUC, and AUPRC for each evaluated method. 
-To ensure a rigorous assessment of these findings, a statistical test is applied to the results. 
+This section presents the results of the previously conducted experiments.
+The primary findings are summarized in Table \ref{tab:results_bench}, which details the $mean$ and $standard deviation$ (SD) of the $F1-Score$, $ROC AUC$, and $AUPRC$ for each evaluated method. 
+To ensure a rigorous assessment of these findings, a ANOVA and subsequently Welch's t-test are applied to the results. \todo{add more details}
 Following this evaluation, the confusion matrices for each method are displayed. 
-The analysis is further extended through the plotting of AUPRC and ROC AUC curves to facilitate a more detailed performance comparison across all methods.
+The analysis is further extended through the plotting of $AUPRC$ and $ROC AUC$ curves to facilitate a more detailed performance comparison across all methods.
 
 
 %\begin{table}[h]
@@ -28,7 +28,7 @@ The analysis is further extended through the plotting of AUPRC and ROC AUC curve
 
 %AUPRC is 20.53 percentage points bigger fpor MCD than k-NN which is a big difference and needs more investigation.
 %That indicates, that even with the multidimensional skewed dataset, MCD is capable of determinang an unbiased 
-\todo{sollte ich das wirklich mitreinnehmen? - Ja}
+\todo{where should this go? - maybe appendix?}
 
 
 \begin{table}[h]
@@ -63,7 +63,7 @@ These figures reflect the comparative effectiveness and consistency of each meth
 
 
 The authors of InterCont utilized a Wilcoxon signed-rank test to evaluate their results, concluding that their model significantly outperforms alternative methods. 
-However, the Wilcoxon signed-rank test is not applicable to the present experimental results, as the evaluation is restricted to a single dataset. 
+However, the Wilcoxon signed-rank test is not applicable to the present experimental results, as the evaluation is restricted to a single dataset. \todo{weak argument, why am I not deploying?}
 The Wilcoxon signed-rank test is a non-parametric statistical hypothesis test designed to compare two related samples, matched samples, or repeated measurements on a single sample to assess whether their population mean ranks differ. 
 In the context of benchmarking machine learning models, this test typically requires performance metrics across multiple independent datasets to establish statistical significance. 
 Since this study evaluates performance on only one dataset, the requirement for a distribution of paired differences across multiple observations is not met, rendering the Wilcoxon signed-rank test unsuitable for this specific analysis.
