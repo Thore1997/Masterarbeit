@@ -13,7 +13,13 @@ However, this standard procedure is often compromised by the masking effect.
 Because classical estimators for the mean and covariance are highly sensitive to extreme values, even a single outlier can shift the mean toward itself and artificially inflate the covariance. 
 This effectively "masks" the outlier’s presence, leading to false negatives. 
 To address this, the Minimum Covariance Determinant (MCD) was proposed by \citet{rousseeuw1984least} and theoretically formalized in \citet{rousseeuw1985multivariate} to provide robust estimators that remain unaffected by data contamination.
-\todo{insert image}
+
+\begin{figure}[h] 
+    \centering
+    \includegraphics[width=0.6\linewidth]{Images/MCD.pdf}
+    \caption{grapfical depiction of the Minimum Covariance Determinant}
+    \label{fig:mcd}
+\end{figure}
 
 \subsection*{Minimum Covariance Determinant (MCD)}
 The objective of the MCD is to identify a subset $H$ containing $h$ observations that yields the minimum possible covariance matrix determinant.

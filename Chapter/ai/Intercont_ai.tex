@@ -18,11 +18,28 @@ The model is characterized by three primary hyperparameters:
 
 The authors proposed a sliding window approach for data augmentation to facilitate internal contrastive learning. 
 The model initialization involves treating the columns of the dataset $S$ as a vector $X_i$ with a total length of $d$. 
-The number of generated pairs $\phi(x_i)={(a_i,b_i)}$ is determined by the formula $m=d+1-k$, where $k$ represents the defined length of the positive sample $a_i$. 
-The anchor $b_i$ is composed of the residual features $d-k$, functioning as the complementary vector to the positive sample. 
-A distinguishing feature of this method is that the negative samples are derived from the positive samples of other constructed pairs within the same data instance, which characterizes the internal nature of the contrastive learning process. 
-For a visual representation of this mechanism, see Figure.
-\todo{insert image}
+
+
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \onehalfspacing
+        The number of generated pairs $\phi(x_i)={(a_i,b_i)}$ is determined by the formula $m=d+1-k$, where $k$ represents the defined length of the positive sample $a_i$. 
+        The anchor $b_i$ is composed of the residual features $d-k$, functioning as the complementary vector to the positive sample. 
+        A distinguishing feature of this method is that the negative samples are derived from the positive samples of other constructed pairs within the same data instance, which characterizes the internal nature of the contrastive learning process. 
+        For a visual representation of this mechanism, see Figure.  
+    \end{minipage}
+    \hfill 
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Images/Shenkar_Wolf}
+        \caption{Sliding Window Approach}
+    \end{minipage}
+    \label{fig:slidinwindow}
+\end{figure}
+
+
 \todo{insert different papers that apply sliding window approach}
 \todo{add: critique}
 

@@ -1,4 +1,4 @@
-\section{Experiments - insert To-dos}
+\section{Experiments}
 The Outlier Detection DataSets (ODDS) library, published by \citet{Rayana:2016}, serves as a widely utilized repository for benchmarking anomaly detection algorithms. \todo{source}
 For instance, \citet{shenkar2022anomaly} employ these datasets to evaluate the performance of various outlier detection methods, including the previously discussed InterCont approach. \todo{find different paper that use ODDS as well} 
 The repository comprises 32 \todo{right number?} distinct datasets characterized by varying dimensionalities and sample sizes. 
@@ -18,11 +18,28 @@ While initially intended for multi-class classification based on the three produ
 The processed version contains 129 instances and 13 attributes.
 
 
-In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as anomalies. 
-This results in an outlier ratio of 7.7\%, which places the dataset \todo{filling the average outlier ratio of ODDS} in comparison to other benchmarks in the repository. 
-Furthermore, the version provided by \citet{Rayana:2016} contains no missing values and consists exclusively of continuous variables. \todo{good point for limitations}
-To maintain visual clarity in the subsequent analysis, feature names are omitted from certain graphical representations; however, Figure 1 provides a corresponding reference for these variable names.
-\todo{insert image}
+In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as anomalies.  
+This results in an outlier ratio of 7.7\%, which places the dataset \todo{filling the average outlier ratio of ODDS} in comparison to other benchmarks in the repository.
+
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \onehalfspacing
+        In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as anomalies.  
+        This results in an outlier ratio of 7.7\%, which places the dataset %\todo{filling the average outlier ratio of ODDS}% 
+        in comparison to other benchmarks in the repository.
+        Furthermore, the version provided by \citet{Rayana:2016} contains no missing values and consists exclusively of continuous variables. %\todo{good point for limitations}
+        To maintain visual clarity in the subsequent analysis, feature names are omitted from certain graphical representations; however, Figure 1 provides a corresponding reference for these variable names.
+    \end{minipage}
+    \hfill 
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Images/Table_of_Names.pdf}
+        \caption{Table of Names}
+    \end{minipage}
+    \label{fig:names}
+\end{figure}
 
 
 \subsection{Analysis of the Wine Dataset}
@@ -56,6 +73,14 @@ Within this dataset, Features 3 and 4 contain three instances categorized as out
 Conversely, all other identified outliers across the remaining features are characterized by values that exceed the upper extreme of the distribution.
 
 
+\begin{figure}[h] 
+    \centering
+    \includegraphics[width=1\linewidth]{Images/boxplots.pdf}
+    \caption{Boxplots per Dimension}
+    \label{fig:boxplot}
+\end{figure}
+
+
 While boxplots provide initial insights into distributional characteristics, they offer only limited information regarding the relationships between variables. 
 For instance, the boxplot analysis correctly identifies eight instances as outliers within the Proline dimension, suggesting that a significant majority of the anomaly class—which consists of ten outliers in total—possesses an unusually high concentration of this component. 
 This indicates the existence of a collective cluster \todo{why?} specifically within this feature, implying that wines from the first grower are largely distinguishable by their Proline levels. 
@@ -72,6 +97,14 @@ Regarding inverse relationships, Hue and color intensity exhibit a strong negati
 The second most pronounced negative correlation, valued at \todo{make it approximately} -0.59, occurs between the OD280/OD350 of diluted wines and color intensity (Features 12 and 10).
 
 
+\begin{figure}[h] 
+    \centering
+    \includegraphics[width=1\linewidth]{Images/heatmap.pdf}
+    \caption{Heatmap of Correlations}
+    \label{fig:heatmap}
+\end{figure}
+
+
 Figure 4 presents the Pearson correlation coefficients for all pairs of dimensions. 
 The Pearson correlation was selected as the primary \todo{wording} metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
 Typically, the Spearman rank correlation is preferred for datasets characterized by non-linear relationships or when significant global outliers are present, as it operates on the rank-order of values rather than their raw magnitudes. \todo{source and true?} 
@@ -86,6 +119,7 @@ To investigate this further, Figure 5 presents a Normal Q-Q (Quantile-Quantile) 
 The Normal Q-Q plot is a scatterplot that maps the quantiles of the dataset against the quantiles of a standard normal distribution. 
 Under the assumption of normality, the observations should align approximately along a straight diagonal line.
 \todo{put Q-Q plot in the Appendix}
+\todo{put the most interesint plots inside here}
 
 
 The analysis of Figure 5 reveals that no single feature adheres perfectly to a normal distribution, though the degree of deviation varies. 
@@ -98,6 +132,7 @@ To provide statistical verification of these distributional observations, the Sh
 
 \todo{add transistion}
 \todo{whats a manifold?}
+\textcolor{red}{Priority}
 To extend the analysis of the dataset's geometric structure, Uniform Manifold Approximation and Projection (UMAP) is employed to reduce the data to a lower-dimensional space. 
 UMAP has become a prominent technique in scientific literature for visualizing manifold structures, allowing for the identification of clusters or data points residing on complex, curved surfaces. 
 As a non-linear dimensionality reduction method, UMAP is specifically engineered to preserve the local topological structure of the data, which is essential for interpreting high-dimensional relationships in a two-dimensional or three-dimensional projection.
@@ -150,6 +185,14 @@ While the mean and standard deviation can be influenced by extreme values, Z-sco
 It is important to note that the axes in the resulting UMAP plot are not directly interpretable.
 As a non-linear dimensionality reduction technique, UMAP projects high-dimensional data into an abstract manifold where the new coordinates do not correspond to specific physical units or original features. \todo{why is that?}
 However, the spatial proximity between points in the visualization serves as a valid proxy for the similarity of instances within the original high-dimensional feature space, where smaller distances indicate greater characteristic resemblance. \todo{right place?}
+
+
+\begin{figure}[h] 
+    \centering
+    \includegraphics[width=1\linewidth]{Images/UMAP.pdf}
+    \caption{UMAP of the Wine Dataset}
+    \label{fig:umap}
+\end{figure}
 
 
 The observations are color-coded according to their ground truth labels, with red indicating the outlier class and blue representing the inlier class. 
