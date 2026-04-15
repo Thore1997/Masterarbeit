@@ -1,49 +1,53 @@
 \section{Outlier Detection based on Internal Contrastive Learning (InterCont)}
-
-\todo{in general how does rep learning work in outlier detectiom}
-The InterCont method proposed by \citep{shenkar2022anomaly} is grounded in fundamental machine learning paradigms. \todo{write general then move on to InterCont}
-To establish the necessary technical background, it is essential to categorize the traditional learning frameworks and identify the specific paradigm utilized by this method. 
-Machine learning is generally divided into supervised and unsupervised learning, each offering distinct advantages and limitations. \todo{source}
-
-
-Supervised learning relies on labeled datasets, where a model learns a mapping from inputs to specific targets \citep{lecun2015deep}. 
-While this paradigm achieves high accuracy for defined tasks, it is constrained by the high cost of manual data labeling and a tendency to struggle with out-of-distribution data. 
-In contrast, unsupervised learning identifies underlying patterns in data without explicit labels, making it highly scalable but often less precise for specific classification tasks.
-
-
-The InterCont method operates within the self-supervised learning paradigm, specifically leveraging contrastive learning. 
-This approach generates its own supervisory signals from the data structure itself \citep{jaiswal2020survey}. 
-By doing so, it captures rich representations without the need for human-annotated labels, bridging the gap between the scalability of unsupervised methods and the performance of supervised systems. 
-However, the success of this paradigm is heavily dependent on the quality of data augmentations and the selection of informative negative samples (suggestions for citation on contrastive learning efficiency needed here, e.g., \citep{chen2020simple}).
-
+A modern approach to outlier detection is representation learing.
+Representation learning facilitates outlier detection by transforming high-dimensional raw data into a lower-dimensional latent space where essential features are preserved while noise and redundancies are discarded. 
+In the context of anomaly detection, the underlying assumption is that normal data instances adhere to specific structural patterns or manifolds that the model can learn to represent efficiently. \todo{source}
+The InterCont uses a autoencoder network structure to learn this representations.
+To get to the autoendcoder network, I will first explain the main paradigms of machine learning and after that I will explain the basic building block, the neural network.
+After explaining the main components of a neural network I will proceed with contrastive learning.
 
 Machine learning paradigms serve as overarching frameworks for interpreting data, providing the foundational logic for how algorithms process information. 
 While individual algorithms act as specific components, the paradigm defines the broader strategy for learning. 
 Consequently, many methods can be adapted across different paradigms depending on the data structure and the intended objective. \todo{why is that important for benchmarking methods} 
-Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning, and reinforcement learning. 
-However, numerous specialized subtypes exist, such as \todo{chose different paradigm as example}semi-supervised, multi-label, and transfer learning \citep{sarker2021machine}.
+Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning and smi-supervised learning . 
+However, numerous specialized subtypes exist, such as reinforcement learning, multi-label, and transfer learning \citep{sarker2021machine}.
+To establish the necessary technical background, it is essential to categorize the traditional learning frameworks and identify the specific paradigm utilized by this method. 
 
 
 Supervised learning is the most widely utilized paradigm, primarily employed for classification and regression tasks. 
-In this task-driven approach, the model is trained on labeled data, where each input is paired with the correct output or "ground truth" \citep[p.3]{sarker2021machine}. 
+Supervised learning relies on labeled datasets, where a model learns a mapping from inputs to specific targets \citep{lecun2015deep}. 
+In this task-driven approach, the model is trained on labeled data, where each input is paired with the ground truth \citep[p.3]{sarker2021machine}. 
 The model's objective is to learn a mapping function that can accurately predict labels for new, unseen data. 
-While supervised learning offers high accuracy and easily measurable performance, it is constrained by the significant time and cost required to generate labeled datasets. 
+While this paradigm achieves high accuracy for defined tasks, it is constrained by the high cost of manual data labeling and a tendency to struggle with out-of-distribution data. 
 Furthermore, these models often struggle with scenarios or data distributions not represented during training.
 \todo{explain semisupervised, discuss how this is novelty detection}
 
 
-In contrast, unsupervised learning is a data-driven approach that utilizes unlabeled data. 
+In contrast, unsupervised learning is a data-driven approach that utilizes unlabeled data by identifying underlying patterns in data without explicit labels, making it highly scalable but often less precise for specific classification tasks.
 Without predefined output labels or external supervision, the model must explore the data to discover hidden patterns, underlying structures, or natural groupings \citep[p.4]{sarker2021machine}. 
 This paradigm is highly scalable and effective for identifying complex relationships within large volumes of data without the need for expensive human annotation. 
 However, because there is no objective "truth" to measure against, these models can be less accurate than supervised versions, and their results are often more difficult to interpret and computationally intensive.
+\todo{are there supervised and unsupverised methods in OD}
 
 
-The InterCont method proposed by \citet{shenkar2022anomaly} utilizes self-supervised learning, a paradigm often considered a subset of unsupervised learning because it does not require human-annotated labels. 
-However, it possesses supervised characteristics by generating its own "pseudo-labels" from the data's inherent structure, using loss functions to measure performance against these self-generated targets. 
+Semi-supervised learning, utilizes labled data in conjunction unlabled data.
+The primary objective is to leverage the structural information inherent in the unlabeled samples to improve the model's generalization performance beyond what could be achieved using the labeled data alone.
+This approach is particularly valuable in scientific research where acquiring labeled instances is costly, while unlabeled data is readily available. 
+By assuming that data points in close proximity or on the same manifold share the same label, semi-supervised algorithms can propagate information from the labeled subset to the unlabeled majority, thereby refining the decision boundaries of the model.
+\todo{why can't I compare different paradigms with each other in my paper?}
+
+The authors of InterCont claim that it operates within the self-supervised learning paradigm, specifically leveraging contrastive learning. 
+This approach generates its own supervisory signals from the data structure itself \citep{jaiswal2020survey}. 
+Therefore self-supervised is often defined as a sub-paradigm of unsupervised learning, because no lables are needed.
+
+
+Nevertheless, the network is trained on labled normal data and tested on data that includes abnormal data.
+This approach resembles a semi-supervised paradm more than an unsupervised approach.
+By doing so, it captures rich representations without the need for human-annotated labels, bridging the gap between the scalability of unsupervised methods and the performance of supervised systems. 
 This approach is particularly effective in fields like computer vision, where the potential number of classes is vast. 
-By employing metric learning, the model transforms input data—such as an image—into a numerical representation called an anchor within an embedding space. 
-The network learns to position similar images closer together and dissimilar images further apart in this space. 
-This process reduces dimensionality and complexity, allowing the model to recognize core features even when presented with slight variations of the original data.
+By employing metric learning \todo{wording?}, the model transforms input data—such as an image—into a numerical representation called an anchor within an embedding space. 
+%The network learns to position similar images closer together and dissimilar images further apart in this space. 
+%This process reduces dimensionality and complexity, allowing the model to recognize core features even when presented with slight variations of the original data.
 \todo{use semisupervise to discuss differences between sel and semi}
 
 
