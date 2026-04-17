@@ -1,6 +1,4 @@
 \section{Benchmark Methods}
-
-
 To analyze the performance of the InterCont method, it is essential to establish a baseline using recognized benchmark methods. 
 Comparing a new proposal against established algorithms allows the scientific community to identify the specific conditions under which a method excels or fails. 
 While contemporary research often evaluates a vast array of techniques—for instance, \citep{shenkar2022anomaly} compared InterCont against several state-of-the-art models—such an extensive comparison is beyond the scope of this thesis. 
@@ -31,9 +29,14 @@ Under this framework, the $n$ points exhibiting the highest outlier scores are c
 
 While the original InterCont publication does not explicitly specify the $k$-NN variant employed, the authors utilize the PyOD library \citep{zhao2019pyod}.
 Given that PyOD implements the version proposed by \citet{ramaswamy2000efficient}, this specific iteration is utilized as the benchmark for this thesis.
+k-NN is an unsupervised learning approach. 
+Nevertheless, the experimental setup I chose differs from this paradigm to make the benchmark comparable to InterCont.
+There are different variants of k-NN, mitigating disadvantages of the original algorithm.
+For example by utilizing the average distance across the neighborhood enhances the robustness and stability of detected outliers \citep{angiulli2002fast}. 
+Because I construct this methods as a benchmark, I will implement the original version of k-NN, which is based on euklidiean distance to the specific $k$-th nearest neighbor.
+The setup is discribed in chapter "Experiments".
 
 
-The authors implemented an unsupervised learning approach. 
 The algorithm executes the following procedure:
 
 \begin{enumerate}
@@ -53,28 +56,30 @@ In traditional $k$-NN implementations, Euclidean distance is the standard metric
 
 
 It is defined as follows:
-
-
 \begin{equation}
     d(p, q) = \sqrt{\sum_{i=1}^{n} (q_i - p_i)^2}
 \end{equation}
 
 
+Where $p$ and $q$ represent two points in an $n$-dimensional space, and $p_i$ and $q_i$ denote the respective coordinates of these points along the $i$-th dimension.
+The squared differences between corresponding coordinates are summed, and the square root of this sum yields the Euclidean distance, which quantifies the straight-line distance between the two points in the feature space.
 However, the use of Euclidean distance renders $k$-NN non-affine equivariant. 
 Because this metric treats all dimensions equally, variables with larger numerical ranges will dominate the distance calculation, potentially masking outliers that exist within the distribution of smaller-scaled variables.
 This lack of equivariance implies that the model's outputs are sensitive to affine transformations. 
 Consequently, the relative scaling of variables directly influences the identification of potential outliers.
 
-
+\subsubsection*{Normalization}
 To mitigate the effects of variable scaling, the dataset must be normalized. 
-Min-Max Normalization is frequently employed to rescale all features to a fixed range, typically [0,1]. 
+Min-Max Normalization is frequently employed to rescale all features to a fixed range of [0,1]. 
+
 
 It is defined as follows:
-
 \begin{equation}
     x_{norm} = \frac{x_i - x_{min}}{x_{max} - x_{min}}
 \end{equation}
 
+
+Where $x_i$ is the original value of the feature, $x_{min}$ is the minimum value of that feature across the dataset, and $x_{max}$ is the maximum value.
 This technique performs a proportional transformation that preserves the original distributional and correlational structures. 
 However, it is sensitive to extreme global outliers, which can compress the remaining data into a narrow, indistinguishable range.
 
@@ -83,23 +88,24 @@ Alternatively, Z-score normalization is utilized.
 This method transforms a variable such that the resulting distribution has a mean of $\mu=0$ and a standard deviation of $\sigma=1$. 
 
 It is defined as follows:
-
 \begin{equation}
     z = \frac{x_i - \mu}{\sigma}
 \end{equation}
 
+
 While effective for data approximating a Gaussian distribution, the utility of Z-score normalization diminishes if the data is heavily skewed or non-Gaussian, as the mean may not accurately represent the central tendency of the distribution \todo{review}.
-
-
 The presence of extreme values often results in a distorted standard deviation $\sigma$, which complicates outlier detection due to the masking effect, where outliers inadvertently inflate the dispersion metrics used to identify them.
+
+
 The Robust Scaler addresses this by substituting the mean $\mu$ and standard deviation $\sigma$ with more resilient statistics: the Median \todo{insert letter} and the Interquartile Range ($IQR$). 
 By centering and scaling based on percentiles, the influence of anomalies on the transformation process is significantly reduced.
 
-It is defined as follows:
 
+It is defined as follows:
 \begin{equation}
     x_{robust} = \frac{x_i - \text{median}(X)}{\text{IQR}(X)}
 \end{equation}
+
 
 This method scales the data based on its internal distribution. 
 By subtracting the median in the numerator, the data is centered such that the median corresponds to 0. 
@@ -108,9 +114,11 @@ Observations exceeding the median result in positive values, whereas those below
 
 The denominator facilitates the scaling process. 
 By utilizing the $IQR$, the scaling factor is derived from a parameter that is inherently resistant to outliers. 
-Consequently, the scaling maintains the relative distances between "normal" observations without the distortion typically introduced by extreme values in the dataset.
+Consequently, the scaling maintains the relative distances between normal observations without the distortion typically introduced by extreme values in the dataset, preserving the sensitivity of the k-NN algorithm in distinguishing anomalous points from the regular data structure.
+Therefore, I chose to implement the Robust Scaler.
 
 
+\subsubsection*{Hyperparameter}
 In addition to the outlier threshold, the parameter $k$ represents the primary hyperparameter of the algorithm. 
 It defines the number of proximal observations utilized to compute the distance metrics.
 An excessively low value for $k$ typically leads to overfitting, as the model becomes hyper-sensitive to local noise. 
@@ -123,30 +131,24 @@ In this scenario, if an anomaly cluster contains fewer than $k$ observations, th
 This expansion skews the outlier scores and increases the likelihood of false negatives.
 Consequently, the resulting decision boundaries become overly generalized, failing to capture critical local patterns within the data.
 \todo{insert image}
-\todo{rewrite text so image fits}
 
 
 Selecting an optimal $k$ depends on the dataset's specific characteristics, including dimensionality, instance count, and the normalization technique applied. \todo{source}
-
 Various methodologies exist for determining $k$. 
 For instance, \citet{shenkar2022anomaly} employed a heuristic approach, manually setting the parameter to $k=5$. \todo{Is it GridSearch}
 A more statistically rigorous method involves utilizing $k$-fold cross-validation to optimize the trade-off between bias and variance. 
 This ensures that $k$ is tuned to the underlying data structure rather than selected arbitrarily.
 
 
-Numerous variants of k-NN exist for anomaly detection. 
-Utilizing the average distance across the neighborhood, rather than the absolute distance to the $k$-th neighbor, enhances the robustness and stability of detected outliers \citep{angiulli2002fast}. 
-The literature proposes two primary \todo{really?} methodologies for computing the anomaly score: the distance to the specific $k$-th nearest neighbor or the mean distance to all $k$-nearest neighbors. 
-By incorporating the average distance, the model mitigates the impact of local stochastic fluctuations, resulting in a more consistent scoring mechanism across diverse data distributions.
-\todo{What are they solving?}
-\todo{when can I use them as benchmarks}
+In $k$ fold cross validation the dataset is split into $k$ same sized subsets.
+The model is trained on $k-1$ of these subsets while the remaining subset is used for testing.
+This process is repeated $k$ times, with each subset serving as the test set once.
+The average performance across all $k$ iterations is then used to evaluate the model's generalization.
 
 
-In real-world applications, k-NN faces significant limitations because the true outlier ratio is frequently unknown, rendering any manual threshold selection arbitrary. 
-Various k-NN derivatives attempt to mitigate this dependency. 
-For example, Angle-Based Outlier Detection (ABOD) by \citet{kriegel2008angle} utilizes angular variance rather than spatial distances. 
-Under this framework, an outlier is defined as a point where the variance of angles to other instances is substantially lower than that of inliers.
-\todo{explain why I use plain k-nn as a benchmark method}
+k-NN safes the location of the datapoints in the training set and estimates the distances between the test points and the training points to make predictions.
+On the basis of the distance, the algorithm classifies the largest distances as ourliers.
+By iterating through different values of $k$ and evaluating the model's performance, the algorithm can identify the optimal number of neighbors that balances the trade-off between bias and variance. 
 
 
 The $k$-NN algorithm offers several distinct advantages. 
@@ -167,3 +169,15 @@ Consequently, the selection of $k$ is critical to the model's performance, neces
     \caption{grapfical depiction of $k$-NN algorithm}
     \label{fig:my_example}
 \end{figure}
+\todo{different image}
+
+
+k-NN serves as a traditional machine learning algorithm often used as a benchmark for evaluating the performance of novel methods.
+I chose k-NN as a benchmark because it focusses on global outliers and does not need assumptions about the underlying distribution of the data. 
+If the results of k-nn does not exceed the performance of InterCont, it would indicate that InterCont does provide insides to the internal structure of the data.
+
+
+
+
+
+
