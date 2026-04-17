@@ -27,6 +27,15 @@ They defined an observation as an outlier if a specific fraction of the dataset 
 Under this framework, the $n$ points exhibiting the highest outlier scores are classified as anomalies, where $n$ is determined by a user-defined outlier ratio.
 
 
+\begin{figure}[h] 
+    \centering
+    \includegraphics[width=1\linewidth]{Images/kNN/k-NN.png}
+    \caption{grapfical depiction of $k$-NN algorithm}
+    \label{fig:my_example}
+\end{figure}
+\todo{different image}
+
+
 While the original InterCont publication does not explicitly specify the $k$-NN variant employed, the authors utilize the PyOD library \citep{zhao2019pyod}.
 Given that PyOD implements the version proposed by \citet{ramaswamy2000efficient}, this specific iteration is utilized as the benchmark for this thesis.
 k-NN is an unsupervised learning approach. 
@@ -162,14 +171,6 @@ The computational complexity of $k$-NN presents significant disadvantages in lar
 As a memory-intensive approach, the model must store the entire dataset to facilitate predictions, which can result in substantial latency during the inference phase. \todo{inference phase? Defined it above if needed}
 Furthermore, the reliance on distance-based metrics makes the algorithm susceptible to noise, which can negatively impact accuracy. 
 Consequently, the selection of $k$ is critical to the model's performance, necessitating rigorous hyperparameter tuning to achieve an optimal balance between precision and robustness.
-
-\begin{figure}[h] 
-    \centering
-    \includegraphics[width=1\linewidth]{Images/kNN/k-NN.png}
-    \caption{grapfical depiction of $k$-NN algorithm}
-    \label{fig:my_example}
-\end{figure}
-\todo{different image}
 
 
 k-NN serves as a traditional machine learning algorithm often used as a benchmark for evaluating the performance of novel methods.
