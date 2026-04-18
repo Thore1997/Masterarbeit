@@ -1,5 +1,5 @@
 \subsection{Statistical Approaches for Outlier Detection}
-Statistical methodologies for anomaly detection operate on a different fundamental logic than the other approaches previously discussed. 
+Statistical methodologies for outlier detection operate on a different fundamental logic than the other approaches previously discussed. 
 These methods characterize the underlying distribution of the data to estimate population parameters, such as the mean and covariance. 
 This allows for statistical inference, wherein the model assigns a probability to each data point, quantifying the likelihood that it constitutes an outlier.
 
@@ -30,8 +30,8 @@ It is a parametric, affine-equivariant and robust method to detect outliers.
 
 \subsubsection*{Minimum Covariance Determinant (MCD)}
 The objective of the MCD is to identify a subset $H$ containing $h$ observations that yields the minimum possible and robust covariance matrix determinant.
-Geometrically, the MCD seeks the smallest possible ellipsoid that encapsulates $h$ numbers of observations a specific fraction of the data. 
-By drawing this ellipsoid around the region of highest local density rather than the entire dataset, the MCD effectively excludes outliers and eliminates the masking effect.
+Geometrically, the MCD seeks the smallest possible ellipsoid that encapsulates $h$ numbers of observations. 
+By drawing this ellipsoid around the region of highest local density rather than the entire dataset, the MCD effectively excludes global outliers and eliminates the masking effect.
 
 \begin{figure}[h] 
     \centering
@@ -45,7 +45,7 @@ Finding the optimal subset requires evaluating $\binom{n}{h}$ combinations, whic
 
 
 \subsubsection*{FAST-MCD}
-Therefore \citet{rousseeuw1999fast} introduced the FAST-MCD algorithm, which utilizes concentration steps (C-Steps) to iteratively improve the subset selection and pruning the process to mitigate the estimation of estimating $\binom{n}{h}$ combinations.
+Therefore \citet{rousseeuw1999fast} introduced the FAST-MCD algorithm, which utilizes concentration steps (C-Steps) to iteratively improve the subset selection and pruning the process to mitigate the estimation of $\binom{n}{h}$ combinations.
 The FAST-MCD algorithm is as follows:
 \begin{enumerate}[label=\arabic*.]
     \item   Determine the subset size $h$, using the formula $h = \frac{n + p + 1}{2}$.
@@ -72,11 +72,13 @@ The FAST-MCD algorithm is as follows:
 
 This selective iteration is efficient because the distinction between robust and non-robust solutions usually manifests within the first few steps. \todo{add:rousseeuw, Driessen (1999)p.216 pp...} 
 Usually the number of subsamples $J$ drawn is about 500 to 1000. 
-That maximizes the probability, that one subsample does not include an outlier.
+That maximizes the probability, that one subsample does not include outliers.
+
+MCD is affine equivariant, meaning the estimators remain consistent under affine transformation changes such as scaling, rotation, or translation that preserve the data's structural integrity \citet{hubert2018minimum}. 
+Unlike k-NN or deep learning models, which require careful normalization, MCD estimators are naturally robust to these kinds of transformations. \todo{add to k-nn}
 
 
-The primary hyperparameter for MCD is $h$, and defines the number of intances in the subset.
-It is constrained by the range:
+The primary hyperparameter is $h$, and it is constrained by the range:
 
 \begin{equation}
 \frac{n+p+1}{2} \le h \le n.
@@ -86,22 +88,22 @@ The lower bound is set, so the subsample contains at leats halve of the dataset 
 If the outlier ratio exceeds 50\%, these points can no longer be statistically defined as outliers, as they constitute the majority class (majority rule).
 
 
-Additionally if $h$ is smaller than the number of dimensions $p$, the covariance matrix becomes singular $det(S)=0$, rendering it non-invertible, hence $h > p$.
+Additionally if $h$ is smaller than the number of dimensions $p$, the covariance matrix becomes singular $det(S)=0$, rendering it non-invertible.
+Therefore $h > p$ has to be satisfied.
 To avoid excessive noise, it is recommended to maintain at least five observations per dimension \citep{hubert2018minimum}.
 
 
 The breakdown point determines the maximum proportion of arbitrarily large outliers that a dataset can contain before the estimator produces unreliable results.
-It is the complementary share of the subset $H$ of $S$.
-If $h = \alpha * n$, the breakdownpoint quals $1-\alpha$.
+It is defined as $1-\alpha$, where $\alpha$ is the share of observations in the subset $H$.
 
 
-There is a trade-of between robustness and statisticall efficiency.
-The higher the breakdownpoint is, the lower the statistical efficiency gets, resulting in a increased variance of the estimation. 
+There is a trade-off between robustness and statistical efficiency.
+The higher the breakdownpoint is, the lower the statistical efficiency gets, resulting in a increased variance. 
 If the outlier ratio is known to be below 25\%, choosing h=0.75n offers an optimal balance between robustness and statistical efficiency.
 If the outlier ratio is known, the number of $h$ can be set manually to $h = (1-outlier ratio) * n$.
 
 
-Once the estimators $\mu^{MCD}$ and $\Sigma^{MCD}$ are calculated, the Mahalanobis Distance is computed for each observation:
+Once the estimators $\mu^{MCD}$ and $\Sigma^{MCD}$ are calculated, the Mahalanobis distance $D_i$ is computed for each observation:
 
 \begin{equation}
 D_i^2 = (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})^T \hat{\Sigma}_{\text{MCD}}^{-1} (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})
@@ -111,7 +113,7 @@ D_i^2 = (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})^T \hat{\Sigma}_{\text{MCD}}^{-1}
 
 Assuming the clean data follows a multivariate normal distribution, $D_i^2$ follows a $\chi^2$ distribution.
 This allows for a formal discordancy test: if $D_i^2$ exceeds a critical threshold defined by a significance level $\alpha$, the point is flagged as an outlier. 
-Increasing $\alpha$ expands the decision ellipsoid, requiring outliers to be further from the center to be detected.
+Increasing $\alpha$ expands the ellipsoid, requiring outliers to be further from the center to be detected.
 
 For this thesis, a fixed threshold approach is used to ensure comparability with the other methods. 
 The MCD will rank all observations from largest to smallest by their distance, and the largest $n$ will be classified as outliers based on the known outlier ratio of the experiments.
@@ -119,7 +121,15 @@ The MCD will rank all observations from largest to smallest by their distance, a
 
 In summary, the MCD is defined by its high breakdown point and affine equivariance, which ensures reliability without the need for normalization. 
 It effectively solves the masking problem and provides transparent, quantifiable results through probability-based scoring. 
-However, it remains computationally demanding, assumes a Gaussian distribution, and is susceptible to the Curse of Dimensionality if n is not sufficiently larger than p \citep[p.5]{smiti2020critical}.
+However, it remains computationally demanding, assumes a Gaussian distribution, and is susceptible to the Curse of Dimensionality if $n$ is not sufficiently larger than $p$ \citep[p.5]{smiti2020critical}.
+
+
+The MCD estimator is primarily oriented toward the identification of global outliers, as it seeks a subset of observations that minimizes the determinant of the covariance matrix to define a robust location and shape of the data. 
+Consequently, the MCD is not inherently structured to identify contextual outliers, which represent instances that remain consistent with the global distribution but exhibit deviance within a local neighborhood. 
+This limitation can result in false negatives, as such instances may not deviate sufficiently from the global parameters to be flagged. 
+Furthermore, collective outliers pose a substantial challenge to the robustness of the MCD. 
+If a group of outlying observations is sufficiently large and dense, it can exert undue influence on the estimator, causing the resulting hyperellipsoid to dilate and accommodate the outlier cluster. 
+Such a distortion of the estimated distribution not only leads to false negatives by masking the actual outliers but also generates false positives by excluding legitimate inliers from the robustly defined region.
 
 
 MCD serves as a critical benchmark in this study. 
@@ -127,7 +137,6 @@ Its statistical nature provides a baseline to determine whether a dataset necess
 Furthermore, comparing the affine equivariant MCD against non-equivariant methods will yield insights into how InterCont captures the underlying geometry of the data. \todo{achtung mit dieser aussage}
 
 
-%Furthermore, the MCD is affine equivariant, meaning the estimators remain consistent under affine transformation changes such as scaling, rotation, or translation that preserve the data's structural integrity \citet{hubert2018minimum}. \todo{maybe put this into k-NN} 
-%Unlike k-NN or deep learning models, which require careful normalization, MCD estimators are naturally robust to these kinds of transformations. \todo{add to k-nn}
+
 
 

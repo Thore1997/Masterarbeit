@@ -14,6 +14,9 @@ The conclusion is the final chapter of my thesis.
 The Outlier Detection DataSets (ODDS) library, published by \citet{Rayana:2016}, serves as a widely utilized repository for benchmarking anomaly detection algorithms. \todo{source}
 For instance, \citet{shenkar2022anomaly} employ these datasets to evaluate the performance of various outlier detection methods, including the previously discussed InterCont approach. \todo{find different paper that use ODDS as well} 
 The repository comprises 32 \todo{right number?} distinct datasets characterized by varying dimensionalities and sample sizes. 
+\todo{put the adbench here from introduction}
+
+
 While utilizing a broad spectrum of datasets is advantageous for identifying the specific strengths and weaknesses of a method, analyzing all 32 datasets is beyond the scope of this thesis. 
 Consequently, this research focuses on a detailed evaluation of the Wine dataset to derive insights for the results section.
 
@@ -26,20 +29,20 @@ Finally, the analysis addresses the geometric properties of the data, specifical
 
 The Wine dataset was submitted by \citet{wine_109} on June 30, 1991, to the UC Irvine Machine Learning Repository.
 The original data consists of chemical analyses of wines derived from three distinct Italian cultivars. 
-While initially intended for multi-class classification based on the three producers, \citet{Rayana:2016} transformed the data into an imbalanced binary classification task for the ODDS repository 0to facilitate outlier detection research.  
+While initially intended for multi-class classification based on the three producers, \citet{Rayana:2016} transformed the data into an imbalanced binary classification task for the ODDS repository to facilitate outlier detection research.  
 The processed version contains 129 instances and 13 attributes.
 
 
 In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as anomalies.  
-This results in an outlier ratio of 7.7\%, which places the dataset \todo{filling the average outlier ratio of ODDS} in comparison to other benchmarks in the repository.
+This results in an outlier ratio of 7.7\%, which places the dataset \todo{filling the average outlier ratio of ODDS} in comparison to other benchmarks in the repository ($mean = 8,61\%$).
 
 
 \begin{figure}[htbp]
     \centering
     \begin{minipage}{0.5\textwidth}
         \onehalfspacing
-        In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as anomalies.  
-        This results in an outlier ratio of 7.7\%, which places the dataset %\todo{filling the average outlier ratio of ODDS}% 
+        In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as outliers.  
+        This results in an outlier ratio of 7.7\%.
         in comparison to other benchmarks in the repository.
         Furthermore, the version provided by \citet{Rayana:2016} contains no missing values and consists exclusively of continuous variables. %\todo{good point for limitations}
         To maintain visual clarity in the subsequent analysis, feature names are omitted from certain graphical representations; however, Figure 1 provides a corresponding reference for these variable names.
@@ -56,33 +59,36 @@ This results in an outlier ratio of 7.7\%, which places the dataset \todo{fillin
 
 \subsection{Analysis of the Wine Dataset}
 This section provides an analysis of the central tendencies of the Wine dataset, initiated through univariate examination. 
-Figure 3 illustrates the distribution of each feature using boxplots, which display the mean, median, interquartile range ($IQR$), and whiskers defined by 1.5*IQR \todo{use right command}. 
-In these visualizations, the red dotted line represents the arithmetic mean, while the grey line indicates the median. 
+Figure \ref{fig:boxplot} illustrates the distribution of each feature using boxplots, which display the mean, median, interquartile range ($IQR$), and whiskers defined by $1.5 \times IQR$ \todo{use right command}. 
+In these visualizations, the red dotted line represents the mean, while the grey line indicates the median. 
 
 
 Unlike the median, the mean is not robust against outliers.
 Consequently, the divergence between these two metrics serves as an indicator of distributional skewness. \todo{source}
 A mean exceeding the median suggests a right-skewed distribution, whereas a mean lower than the median indicates a left-skewed distribution. 
-This phenomenon is particularly evident in Malic Acid (Feature 2).
+This phenomenon is particularly evident in Feature 2.
 With the exceptions of Feature 8 and Feature 12, the variables in this dataset exhibit right-skewness, although the degree of asymmetry varies across the attributes. 
-These results indicate that the observations for most features tend to concentrate toward lower values with a trailing tail toward the higher end of the scale.
+These results indicate that the observations for most features tend to concentrate toward lower values with a trailing tail toward the higher end of the scale.\todo{review}
+For a visualization of the distributional characteristics of the dataset, a Q-Q plot for all features is provided in the Appendix.
+\todo{put Q-Q plot in the Appendix}
+To provide statistical verification of these distributional observations, the Shapiro-Wilk test for normality is applied to each feature. \todo{print result}
 
-The interquartile range ($IQR$) represents the central 50\% of the data distribution relative to the median.\todo{different wording?} 
+
+The $IQR$ represents the central 50\% of the data distribution relative to the median.\todo{different wording?} 
 A wider $IQR$ indicates greater variance within a specific feature, whereas a narrow $IQR$ suggests that the observations are more densely clustered. 
 The features within the dataset exhibit significantly different scales of dispersion. 
 While Features 3, 4, 5, and 6 are characterized by relatively narrow $IQR$s, Feature 12 displays a notably large $IQR$, reflecting a higher degree of variability in its distribution compared to the other attributes.
 
-
-In the absence of outliers, the whiskers represent the full range of the observed data. 
-Similar to the relationship between the mean and the median, the relative lengths of the whiskers provide further evidence of distributional skewness. 
+The wiskers extend to $Q_1 -1.5 \times IQR$ and $Q_3 + 1.5 \times IQR$ respectively, where $Q_1$ and $Q_3$ represent the first and third quartiles of the data distribution.
+The relative lengths of the whiskers provide further evidence of distributional skewness. 
 A top whisker that is longer than the bottom whisker indicates a right-skewed distribution, whereas the inverse suggests left-skewness. 
 This asymmetry is particularly pronounced in Features 2, 6, 7, 10, and 12, where the data distributions are notably skewed toward higher values. \todo{check if this comlies with the IQR}
 
 
-Specific features exhibit individual data points plotted beyond the whiskers, which represent potential global outliers within a univariate context.
-In the framework of a boxplot \todo{wording}, these points signify observations that deviate significantly from the established distribution, interpreted as an univariate global outliers due to their isolation from the primary cluster of values. 
+Specific features that exceed those thresholds represent potential global univariate outliers.
 Within this dataset, Features 3 and 4 contain three instances categorized as outliers due to their unusually low values.
 Conversely, all other identified outliers across the remaining features are characterized by values that exceed the upper extreme of the distribution.
+I chose to highlight the known outliers in the boxplot. 
 
 
 \begin{figure}[h] 
@@ -91,7 +97,7 @@ Conversely, all other identified outliers across the remaining features are char
     \caption{Boxplots per Dimension}
     \label{fig:boxplot}
 \end{figure}
-
+\todo{highlicht the labled outliers}
 
 While boxplots provide initial insights into distributional characteristics, they offer only limited information regarding the relationships between variables. 
 For instance, the boxplot analysis correctly identifies eight instances as outliers within the Proline dimension, suggesting that a significant majority of the anomaly class—which consists of ten outliers in total—possesses an unusually high concentration of this component. 
@@ -100,13 +106,19 @@ Conversely, several other dimensions contain boxplot outliers that do not corres
 Such observations suggest that these extreme values may not be inherently erroneous or abnormal when viewed in a multivariate context, as their positioning could be explained by their correlations with other dimensions. \todo{whats with the red dotts?}
 
 
+To further analyse the relationships in the dataset, a bivariate examination of the correlations between features is conducted.
+In figure \ref{fig:heatmap}, the Pearson correlation coefficients for all pairs of dimensions are visualized using a heatmap.
+The Pearson correlation was selected as the primary \todo{wording} metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
+Typically, the Spearman rank correlation is preferred for datasets characterized by non-linear relationships or when significant global outliers are present, as it operates on the rank-order of values rather than their raw magnitudes. \todo{source and true?} 
+However, the negligible difference between the two coefficients in this instance suggests that the relationships between the dimensions are predominantly linear. 
+Furthermore, the number of outliers is sufficiently small and the dataset imbalance sufficiently pronounced that these extreme values do not substantially distort the Pearson coefficient. 
+This metric quantifies the strength and direction of the linear relationship between two variables, assigning a numerical value within the range of -1 to 1.
+\todo{right definition of the two corr?}
+
+
 The correlation coefficients between the dimensions exhibit significant variation. 
 A positive coefficient indicates that the values of two features move in the same direction, whereas a negative coefficient implies an inverse relationship. 
 A coefficient of zero suggests that the variables are independent, meaning a shift in one feature does not correspond to a predictable change in the other. 
-The strongest positive correlation is observed between total phenols and flavonoids (Features 6 and 7), with a \todo{make it approximately} coefficient of 0.81. 
-Similarly, a high positive correlation of \todo{make it approximately} 0.77 exists between the OD280/OD350 of diluted wines and flavonoids (Features 12 and 7). 
-Regarding inverse relationships, Hue and color intensity exhibit a strong negative correlation of \todo{make it approximately} -0.64. 
-The second most pronounced negative correlation, valued at \todo{make it approximately} -0.59, occurs between the OD280/OD350 of diluted wines and color intensity (Features 12 and 10).
 
 
 \begin{figure}[h] 
@@ -117,29 +129,16 @@ The second most pronounced negative correlation, valued at \todo{make it approxi
 \end{figure}
 
 
-Figure 4 presents the Pearson correlation coefficients for all pairs of dimensions. 
-The Pearson correlation was selected as the primary \todo{wording} metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
-Typically, the Spearman rank correlation is preferred for datasets characterized by non-linear relationships or when significant global outliers are present, as it operates on the rank-order of values rather than their raw magnitudes. \todo{source and true?} 
-However, the negligible difference between the two coefficients in this instance suggests that the relationships between the dimensions are predominantly linear. 
-Furthermore, the number of outliers is sufficiently small and the dataset imbalance sufficiently pronounced that these extreme values do not substantially distort the Pearson coefficient. 
-This metric quantifies the strength and direction of the linear relationship between two variables, assigning a numerical value within the range of -1 to 1.
-\todo{right definition of the two corr?}
+The strongest positive correlation is observed between total Features 6 and 7, with a coefficient of $\approx 0.81$. 
+Similarly, a high positive correlation of $\approx 0.77$ exists between Features 12 and Features 7. 
+Regarding inverse relationships, feature 11 and feature 10 exhibit a strong negative correlation of $\approx -0.64$. 
+The second most pronounced negative correlation, valued at $\approx -0.59$, occurs between Features 12 and feature 10.
 
 
-As established previously, initial indicators suggest that the data distributions exhibit varying degrees of skewness. 
-To investigate this further, Figure 5 presents a Normal Q-Q (Quantile-Quantile) plot for each feature, facilitating a comparison between the empirical data distribution and a theoretical normal distribution. 
-The Normal Q-Q plot is a scatterplot that maps the quantiles of the dataset against the quantiles of a standard normal distribution. 
-Under the assumption of normality, the observations should align approximately along a straight diagonal line.
-\todo{put Q-Q plot in the Appendix}
-\todo{put the most interesint plots inside here}
-
-
-The analysis of Figure 5 reveals that no single feature adheres perfectly to a normal distribution, though the degree of deviation varies. 
-Features 3 and 4 demonstrate the closest approximation to normality, as their data points follow the reference line closely, with the exception of the extreme quantiles where individual instances begin to diverge. 
-When the ordered values form a convex or concave curve relative to the diagonal, it indicates the presence of heavy tails, signifying a higher frequency of extreme values than a normal distribution would predict. \todo{check}
-This characteristic is particularly evident in Feature 5, where instances in both the first and last quantiles deviate from the expected values. 
-Conversely, an S-shaped curve in the Q-Q plot indicates skewness; for example, Feature 7 displays such a pattern, confirming the previously noted left-skewed distribution where the empirical quantiles systematically exceed or fall below the theoretical normal line at different stages of the distribution.
-To provide statistical verification of these distributional observations, the Shapiro-Wilk test for normality is applied to each feature. \todo{print result}
+Analysing the corrlational structure of the dataset provides linear insights into the relationships between features, but it does not capture the potential non-linear interactions or the overall geometric structure of the data.
+By performing both spearman and pearson correlation, I assume that the relationships between feature are predominantly linear.
+To confirm this assumption and to gain a deeper understanding of the dataset's structure, a non-linear dimensionality reduction technique is applied to visualize the data in a lower-dimensional space.
+Additionall, I want to visualize how the data is distributed in the feature space, to see if the outliers are clustered together or if they are more dispersed.
 
 
 \todo{add transistion}
