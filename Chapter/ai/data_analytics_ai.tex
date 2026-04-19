@@ -140,29 +140,74 @@ The second most pronounced negative correlation, valued at $\approx -0.59$, occu
 Analysing the corrolational structure of the dataset provides bivariate insights into the dataset, but it does not capture the potential non-linear interactions or the overall geometric structure of the data.
 By performing both spearman and pearson correlation, I assume that the relationships between feature are predominantly linear, hence the data lays on a flat manifold structure. 
 To confirm this assumption and to gain a deeper understanding of the dataset's structure, UMAP as a non-linear dimensionality reduction technique is applied to visualize the data in a lower-dimensional space.
-Although the initial hypothesis, that the relationships between the dimension ist linear, I relinquished the usage of linear dimension reduction technique such as PCA, because UMAP can display lineare relationships as well as non-linear. 
-Furthermore, depending on hyperparameter selection the local and global structure can be preserved in UMAP, too.
+I will apply the Uniform Manifold Approximation and Projection (UMAP), eventhough the relationships seem to be linear, because UMAP can display lineare relationships as well as non-linear.
+I will concentrate on the mechanics of UMAP, that influences the visualization of outliers the most and will not go into the mathematical details of the algorithm, which can be found in the original paper by \citet{mcinnes2018umap}.
+Thereafter I will explain how the hyperparameters influence the visualization and how I choose the hyperparameters for my analysis.
+After that I will display the resulting visualization and interpret the results.
 
 
-To analyse the dataset's geometric structure, Uniform Manifold Approximation and Projection (UMAP) is employed to reduce the data to a lower-dimensional space.
 The geometric structure, also called manifold, in the $p$-dimensional space can be highly complex globally, but locally follow a simple euklidean structure.
 The goal of UMAP is to reduce the dimensional space and to display a visualization in 2D-space, while precerving the global and local geoetric structure.\citep{mcinnes2018umap}
 
 
-The algorithm functions by constructing a weighted $k$-nearest neighbor graph, where the parameter $k$ determines the extent of the local neighborhood considered. 
+UMAP needs the assumption that the data is uniformly distributed on the manifold structure, which allows it to estimate the local connectivity of the data points. 
 This step allows the algorithm to distinguish between regions of high density and more sparse areas of the feature space. 
-By defining a local radius around these nearest neighbors, UMAP approximates the underlying manifold and subsequently optimizes a low-dimensional representation that maintains these local connectivity patterns.
 
 
-The strength of the connection between a given instance and its neighbors is determined by their relative proximity.
-Closer neighbors result in stronger edges, while increased distance weakens the connection. 
-If instances fall outside of their respective local radii, the algorithm treats them as separated within the topological space. 
-These local neighborhood representations are then combined into a global structure using a fuzzy simplicial complex. \todo{what?} 
-To visualize this in a lower-dimensional space, a scatter plot is initialized with the same number of instances positioned randomly. 
-Through an optimization process, instances with strong connections in the high-dimensional graph are pulled together, while those with weak or non-existent connections are pushed apart. 
-This iterative refinement continues until the system reaches a low-energy state \todo{what?}, effectively capturing the global and local manifold structure of the dataset.
+UMAP constructs the low dimensional depiction in two steps:
+\begin{enumerate}
+    \item   Construction of the high-dimensional graph by determining the local connectivity of each instance: 
+    \begin{itemize}
+        \item   Estimation of distances between $x_i$ and its $k$ nearest neighbors.
+        \item   Calculation of $\rho$ as the distance to the nearest neighbor. 
+                By subtracting $\rho$ from all neighbor distances, UMAP ensures that every instance maintains at least one strong connection, preserving the topological connectivity.
+        \item   Adaptation to local density via $\sigma_i$, see equation \ref{eq:sigma}.
+                Resulting in a smaller $\sigma_i$ in the locally dense regions, while a larger $\sigma_i$ in sparse regions.
+        \item   Construction of a fuzzy simplicial set to merge these local views into a consistent global topological structure.
+    \end{itemize}
+    \item   Generating the low-dimensional representation:
+    \begin{itemize}
+        \item   Instead of random placement, UMAP uses spectral embedding to provide a stable initial layout. 
+                This captures the global topology early on and prevents the optimization from converging into poor local minima.
+        \item   The algorithm iteratively adjusts the 2D positions by minimizing the fuzzy set cross-entropy.
+        \item   Using Stochastic Gradient Descent, points with high connectivity are pulled together (attraction), while unconnected points are pushed apart (repulsion). 
+                This continues until convergence is achieved.
+    \end{itemize}
+\end{enumerate}
+
+The equation \ref{eq:sigma} describes how UMAP adapts the local connectivity and determines the parameter $\sigma_i$.
+
+\begin{equation}
+    \sum_{j=1}^{k} \exp \left( \frac{-\max(0, d(x_i, x_j) - \rho_i)}{\sigma_i} \right) = \log_2(k)
+     \label{eq:sigma}
+\end{equation}
+
+Where$d(x_i, x_j) - \rho_i$ represents the weight of the connection between instance $x_i$ and its neighbor $x_j$.
+By selecting the nearest neighbor and subtracting the same distance UMAP assigns the strongest connection to the nearest neighbor, hence $\exp(0) = 1$.
+By applying the exponential function, UMAP ensures that the influence of neighbors decreases with distance, creating a smooth decay in connectivity.
+$\sigma_i$ has to be set that the sum of the exponential function over all neighbors equals $\log_2(k)$.
+$\log_2(k)$ was chosen, because it ensures that the entropy of all neighbors are consistent.
+A nummerical optimzation process, known as binary search is applyied to find the appropriate $\sigma_i$ for each instance.
 
 
+To meet this requirement, UMAP assigns in locally dense regions a smaller $\sigma_i$, which effectively stretches the space.
+Conversely, in sparse regions, a larger $\sigma_i$ compresses the space.
+This ensures the assumption of uniform distribution is met.
+
+
+On the one hand, that depicts an outlier as an isolated instance apprart from the main cluster, which coincides with the global outlier definition. 
+On the other hand, the outliers is still binded to the manifold through the nearest neighbor.
+Therefore the absolut distance in the diagram looses its meaning. 
+
+
+When UMAP generates the low-dimensional representation, it uses attraction and repulsion to position the points in the 2D space.
+Attraction occurs between points that are strongly connected in high-dimensional space.
+If data points do not have a connection to another instance at all, repulsion forces them apart in the low-dimensional space.
+Those forces are adaptive to the weights $d(x_i, x_{i_j}) - \rho_i$
+This results in a layout where loose clusters of are grouped together, even if they are sparsely placed in the high-dimensional space.
+
+
+\subsubsection*{Hyperparameters}
 The configuration of UMAP requires the specification of two primary hyperparameters, which fundamentally govern the construction of the low-dimensional embedding. 
 Since these parameters dictate the balance between the preservation of local and global structures, there is no universally optimal setting.
 Rather, the choice depends on the specific analytical goals of the visualization.
