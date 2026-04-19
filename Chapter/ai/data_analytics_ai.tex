@@ -11,6 +11,7 @@ The results are interpreted in the discussion chapter.
 The conclusion is the final chapter of my thesis.
 
 
+\subsection{Analysis of the Wine Dataset}
 The Outlier Detection DataSets (ODDS) library, published by \citet{Rayana:2016}, serves as a widely utilized repository for benchmarking anomaly detection algorithms. \todo{source}
 For instance, \citet{shenkar2022anomaly} employ these datasets to evaluate the performance of various outlier detection methods, including the previously discussed InterCont approach. \todo{find different paper that use ODDS as well} 
 The repository comprises 32 \todo{right number?} distinct datasets characterized by varying dimensionalities and sample sizes. 
@@ -56,8 +57,7 @@ This results in an outlier ratio of 7.7\%, which places the dataset \todo{fillin
     \label{fig:names}
 \end{figure}
 
-
-\subsection{Analysis of the Wine Dataset}
+\subsubsection*{Univariate Analysis}
 This section provides an analysis of the central tendencies of the Wine dataset, initiated through univariate examination. 
 Figure \ref{fig:boxplot} illustrates the distribution of each feature using boxplots, which display the mean, median, interquartile range ($IQR$), and whiskers defined by $1.5 \times IQR$ \todo{use right command}. 
 In these visualizations, the red dotted line represents the mean, while the grey line indicates the median. 
@@ -106,6 +106,7 @@ Conversely, several other dimensions contain boxplot outliers that do not corres
 Such observations suggest that these extreme values may not be inherently erroneous or abnormal when viewed in a multivariate context, as their positioning could be explained by their correlations with other dimensions. \todo{whats with the red dotts?}
 
 
+\subsubsection*{Bivariate Analysis}
 To further analyse the relationships in the dataset, a bivariate examination of the correlations between features is conducted.
 In figure \ref{fig:heatmap}, the Pearson correlation coefficients for all pairs of dimensions are visualized using a heatmap.
 The Pearson correlation was selected as the primary \todo{wording} metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
@@ -135,22 +136,19 @@ Regarding inverse relationships, feature 11 and feature 10 exhibit a strong nega
 The second most pronounced negative correlation, valued at $\approx -0.59$, occurs between Features 12 and feature 10.
 
 
-Analysing the corrlational structure of the dataset provides linear insights into the relationships between features, but it does not capture the potential non-linear interactions or the overall geometric structure of the data.
-By performing both spearman and pearson correlation, I assume that the relationships between feature are predominantly linear.
-To confirm this assumption and to gain a deeper understanding of the dataset's structure, a non-linear dimensionality reduction technique is applied to visualize the data in a lower-dimensional space.
-Additionall, I want to visualize how the data is distributed in the feature space, to see if the outliers are clustered together or if they are more dispersed.
+\subsubsection*{Manifold Structure Analysis}
+Analysing the corrolational structure of the dataset provides bivariate insights into the dataset, but it does not capture the potential non-linear interactions or the overall geometric structure of the data.
+By performing both spearman and pearson correlation, I assume that the relationships between feature are predominantly linear, hence the data lays on a flat manifold structure. 
+To confirm this assumption and to gain a deeper understanding of the dataset's structure, UMAP as a non-linear dimensionality reduction technique is applied to visualize the data in a lower-dimensional space.
+Although the initial hypothesis, that the relationships between the dimension ist linear, I relinquished the usage of linear dimension reduction technique such as PCA, because UMAP can display lineare relationships as well as non-linear. 
+Furthermore, depending on hyperparameter selection the local and global structure can be preserved in UMAP, too.
 
 
-\todo{add transistion}
-\todo{whats a manifold?}
-\textcolor{red}{Priority}
-To extend the analysis of the dataset's geometric structure, Uniform Manifold Approximation and Projection (UMAP) is employed to reduce the data to a lower-dimensional space. 
-UMAP has become a prominent technique in scientific literature for visualizing manifold structures, allowing for the identification of clusters or data points residing on complex, curved surfaces. 
-As a non-linear dimensionality reduction method, UMAP is specifically engineered to preserve the local topological structure of the data, which is essential for interpreting high-dimensional relationships in a two-dimensional or three-dimensional projection.
-\todo{add papers whoch deploy UMAP too}
+To analyse the dataset's geometric structure, Uniform Manifold Approximation and Projection (UMAP) is employed to reduce the data to a lower-dimensional space.
+The geometric structure, also called manifold, in the $p$-dimensional space can be highly complex globally, but locally follow a simple euklidean structure.
+The goal of UMAP is to reduce the dimensional space and to display a visualization in 2D-space, while precerving the global and local geoetric structure.\citep{mcinnes2018umap}
 
 
-\todo{why is this a representation learning algo?}
 The algorithm functions by constructing a weighted $k$-nearest neighbor graph, where the parameter $k$ determines the extent of the local neighborhood considered. 
 This step allows the algorithm to distinguish between regions of high density and more sparse areas of the feature space. 
 By defining a local radius around these nearest neighbors, UMAP approximates the underlying manifold and subsequently optimizes a low-dimensional representation that maintains these local connectivity patterns.
@@ -170,18 +168,20 @@ Since these parameters dictate the balance between the preservation of local and
 Rather, the choice depends on the specific analytical goals of the visualization.
 
 
-The first hyperparameter, $n_neighbors$, determines the size of the local neighborhood UMAP considers when approximating the manifold structure. 
+The first hyperparameter, $n_ {neighbors}$, determines the size of the local neighborhood UMAP considers when approximating the manifold structure. 
 This parameter governs a trade-off between the preservation of local and global features in the resulting visualization. 
-A low value for $n_neighbors$ constrains the algorithm to focus on very local patterns and fine-grained structures, which can be useful for identifying small clusters or intricate manifold details. 
+A low value for $n_ {neighbors}$ constrains the algorithm to focus on very local patterns and fine-grained structures, which can be useful for identifying small clusters or intricate manifold details. 
 In contrast, a high value forces the algorithm to incorporate a larger number of neighboring points, thereby prioritizing the global structure and the broader relationships between distant regions of the data space. 
 Selecting an appropriate value is essential for accurately reflecting whether the data exists as a single continuous manifold or a series of discrete clusters.
-The second hyperparameter, $min\_dist$, dictates the minimum allowed distance between points in the low-dimensional embedding. 
+
+
+The second hyperparameter, $min_{dist}$, dictates the minimum allowed distance between points in the low-dimensional embedding. 
 This parameter effectively controls the density of the visualization by determining how tightly points are packed together. 
 A smaller minimum distance allows the algorithm to represent dense clusters more compactly, which is useful for identifying distinct groupings within the manifold. 
 Conversely, a larger minimum distance forces points to maintain a greater separation, resulting in a more dispersed visualization that prioritizes the broad topological layout over local density.
 
 
-To generate the visualization, the default hyperparameters were utilized, with the $n_neighbors = 15$ and $min\_dist = 0.1$. 
+To generate the visualization, the default hyperparameters were utilized, with the $n_{neighbors} = 15$ and $min_{dist} = 0.1$. 
 The primary objective of this projection was to determine whether the Wine dataset exhibits clearly defined, distinct clusters or if the classes are topologically integrated and blended together. 
 By maintaining these standard settings, the algorithm provides a balanced representation that preserves both the local connectivity necessary to identify groupings and the global manifold structure required to observe the transitions between different regions of the feature space. 
 This configuration allows for an objective assessment of the separability of the anomaly class from the inlier distribution in a reduced two-dimensional environment.
@@ -191,8 +191,9 @@ Supporting evidence for this stability is provided in the appendix. \todo{do thi
 
 
 To ensure that all attributes contribute proportionally to the manifold construction and to prevent features with larger absolute scales from dominating the projection, the data is normalized using the Z-score transformation. \todo{why this norm and not robust dist?} 
-This method scales each feature by subtracting the mean and dividing by the standard deviation. 
 While the mean and standard deviation can be influenced by extreme values, Z-score normalization is generally considered more robust in preserving the relative distribution of a dataset compared to Min-Max scaling, which is highly sensitive to the exact boundaries of global outliers. 
+
+
 It is important to note that the axes in the resulting UMAP plot are not directly interpretable.
 As a non-linear dimensionality reduction technique, UMAP projects high-dimensional data into an abstract manifold where the new coordinates do not correspond to specific physical units or original features. \todo{why is that?}
 However, the spatial proximity between points in the visualization serves as a valid proxy for the similarity of instances within the original high-dimensional feature space, where smaller distances indicate greater characteristic resemblance. \todo{right place?}
@@ -207,7 +208,7 @@ However, the spatial proximity between points in the visualization serves as a v
 
 
 The observations are color-coded according to their ground truth labels, with red indicating the outlier class and blue representing the inlier class. 
-The resulting visualization reveals two distinct topological formations. 
+The resulting visualization reveals two distinct topological formations and is displayed in figure \ref{fig:umap}. 
 The inlier class appears as a relatively cohesive but more dispersed distribution, whereas the outlier class forms a highly concentrated and isolated cluster. 
 Within the inlier class, the proximity of the observations suggests a lack of further distinct sub-clusters, indicating a homogeneous manifold for the normal data. 
 Conversely, the clear spatial separation and high density of the outlier cluster indicate that these instances are highly distinct from the majority of the data. 
