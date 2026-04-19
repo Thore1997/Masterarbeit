@@ -108,6 +108,11 @@ Such observations suggest that these extreme values may not be inherently errone
 
 \subsubsection*{Bivariate Analysis}
 To further analyse the relationships in the dataset, a bivariate examination of the correlations between features is conducted.
+The correlation coefficients between the dimensions exhibit significant variation. 
+A positive coefficient indicates that the values of two features move in the same direction, whereas a negative coefficient implies an inverse relationship. 
+A coefficient of zero suggests that the variables are independent, meaning a shift in one feature does not correspond to a predictable change in the other. 
+
+
 In figure \ref{fig:heatmap}, the Pearson correlation coefficients for all pairs of dimensions are visualized using a heatmap.
 The Pearson correlation was selected as the primary \todo{wording} metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
 Typically, the Spearman rank correlation is preferred for datasets characterized by non-linear relationships or when significant global outliers are present, as it operates on the rank-order of values rather than their raw magnitudes. \todo{source and true?} 
@@ -115,11 +120,6 @@ However, the negligible difference between the two coefficients in this instance
 Furthermore, the number of outliers is sufficiently small and the dataset imbalance sufficiently pronounced that these extreme values do not substantially distort the Pearson coefficient. 
 This metric quantifies the strength and direction of the linear relationship between two variables, assigning a numerical value within the range of -1 to 1.
 \todo{right definition of the two corr?}
-
-
-The correlation coefficients between the dimensions exhibit significant variation. 
-A positive coefficient indicates that the values of two features move in the same direction, whereas a negative coefficient implies an inverse relationship. 
-A coefficient of zero suggests that the variables are independent, meaning a shift in one feature does not correspond to a predictable change in the other. 
 
 
 \begin{figure}[h] 
