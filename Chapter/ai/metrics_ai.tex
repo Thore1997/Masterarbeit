@@ -1,4 +1,4 @@
-\subsection{Metrics Insert}
+\subsection{Metrics}
 Performance metrics are indispensable for evaluating the efficacy of outlier detection algorithms and facilitating rigorous comparative analyses between disparate methodologies.
 Selecting appropriate metrics is a complex yet critical endeavor to ensure that empirical findings remain robust and interpretable.
 This selection process necessitates a balance between two primary requirements: 
@@ -6,8 +6,8 @@ The utilization of metrics widely established within the scientific community to
 Failure to align metric selection with the specific \todo{dataset specific?} properties of the dataset and the research objectives may lead to misleading conclusions regarding a model's predictive performance. \todo{source}
 
 
+
 An analysis of 276 publications documenting model performance identifies the True Positive Rate ($TPR$), also referred to as sensitivity, recall, or the detection rate \todo{source},as the most frequently utilized metric. 
-The $TPR$ measures the proportion of actual anomalous instances that are correctly identified by the model. 
 This is frequently supplemented by the False Positive Rate ($FPR$), or false alarm rate, which was reported in 116 of the surveyed papers and quantifies the frequency with which benign instances are erroneously classified as anomalies. 
 A significant finding of this literature review is that 64 out of 290 papers relied exclusively on a single metric, typically Accuracy or the Area Under the Receiver Operating Characteristic Curve ($AUC$). 
 Such a reductive evaluation is often insufficient for a comprehensive assessment of qualitative performance, especially in datasets characterized by extreme class imbalance. \todo{even AUC?}
@@ -17,9 +17,12 @@ These findings corroborate the research by \citep[postfix]{nassif2021}, which hi
 
 
 The confusion matrix serves as the fundamental basis for deriving various scientifically accepted performance metrics. \todo{source}
-While certain basic metrics are less frequently applied in the specific context of outlier detection due to class imbalance, they remain widely recognized within the broader research community and provide the necessary context for more complex evaluations. 
-Consequently, this section first addresses fundamental metrics before proceeding to more sophisticated measures, including the $F1-score$, $Accuracy$, and $Precision$. 
-Finally, the discussion covers threshold-agnostic metrics, specifically the Area Under the Receiver Operating Characteristic Curve ($AUC-ROC$) \todo{right? If so change the other} and the Area Under the Precision-Recall Curve ($AUC-PRC$).
+While certain basic metrics are less frequently applied in the specific context of outlier detection due to class imbalance, they remain widely recognized within the broader research community and provide the necessary context for more complex evaluations.
+
+
+Consequently, this section first addresses fundamental metrics before proceeding to the $Accuracy$, $Precision$, $Specificity$ and $F1-score$,. 
+After that I will covers threshold-agnostic metrics, specifically the Area Under the Receiver Operating Characteristic Curve ($AUC-ROC$) and the Area Under the Precision-Recall Curve ($AUC-PRC$).
+Finally, I will argue, which metric I will use in my experiments.
 
 
 \subsubsection*{Confusion Matrix}
@@ -48,14 +51,20 @@ This standardization ensures a consistent framework for the comparative evaluati
 The most prevalent metrics derived from the confusion matrix include:
 
 
-Accuracy measures the overall effectiveness of a method by calculating the proportion of correctly classified instances relative to the total number of observations. \todo{source}  
+Accuracy is formally defined as:
+\begin{equation}
+        \text{Accuracy} = \frac{TP + TN}{TP + FN + FP + TN}.
+\end{equation}
+
+It measures the overall effectiveness of a method by calculating the proportion of correctly classified instances relative to the total number of observations. \todo{source}  
 A primary disadvantage of this metric is that it can be misleading in the presence of significant class imbalance, particularly when a method fails to identify any instances as outliers. 
 If the outlier ratio is very low, a model may achieve a high accuracy score simply by classifying all instances as inliers, thereby ignoring the minority class entirely. 
 This results in a performance measure that does not accurately reflect the model's ability to detect anomalies. \todo{add pros}
-Accuracy is formally defined as:
 
+
+Precision is formally defined as:
 \begin{equation}
-        \text{Accuracy} = \frac{TP + TN}{TP + FN + FP + TN}
+        \text{Precision} = \frac{TP}{TP + FP}
 \end{equation}
 
 Precision quantifies the proportion of correctly identified anomalies relative to the total number of instances classified as positive, encompassing both true positives and false positives. \todo{source}
@@ -64,35 +73,33 @@ A notable disadvantage of prioritizing precision is that it may encourage conser
 Any false positive increases the denominator of the precision formula, thereby reducing the overall score. 
 Furthermore, this metric fails to account for false negatives, which tend to increase when a model adopts a conservative threshold. 
 Such a limitation is particularly problematic in high-stakes scenarios, such as fraud detection or medical diagnosis, where the costs associated with failing to identify an anomaly are substantial. \todo{source or heuristic}
-Precision is formally defined as:
 
+
+Recall is formally defined as:
 \begin{equation}
-        \text{Precision} = \frac{TP}{TP + FP}
+        \text{Recall} = \frac{TP}{P} = \frac{TP}{TP + FN}
 \end{equation}
 
-The True Positive Rate ($TPR$), also referred to as recall or sensitivity, measures the proportion of correctly identified outliers relative to the total number of actual anomalies in the dataset. \todo{source}
+Recall, also referred to as True Positive Rate or sensitivity, measures the proportion of correctly identified outliers relative to the total number of actual anomalies in the dataset. \todo{source}
 This metric effectively evaluates the model's ability to capture the entire anomaly class. 
 A significant disadvantage of prioritizing recall is that it can incentivize a high number of false positives, as a model can maximize its score by indiscriminately classifying a large portion of the dataset as anomalous.
 While the denominator remains constant regardless of the number of false positives, the focus on maximizing the numerator (true positives) often leads to a lower classification threshold \todo{bt threshold is set by me}.
 This is particularly problematic in industrial contexts, such as manufacturing, where a detected outlier might trigger an emergency shutdown.
 In such cases, frequent false alarms result in substantial operational costs and unnecessary downtime. \todo{sournce or heuristic} 
-Consequently, there exists an inherent trade-off between precision and recall. \todo{right place?} 
-Balancing these two metrics is essential for an objective evaluation of outlier detection performance, especially within imbalanced data structures. 
-This interdependency forms the basis for more complex evaluations, such as the Area Under the Precision-Recall Curve (AUPRC), which provides a aggregate measure of performance across various classification thresholds. 
-The True Positive Rate is formally defined as:
 
-\begin{equation}
-        \text{TPR} = \frac{TP}{P} = \frac{TP}{TP + FN}
-\end{equation}
 
-Specificity, also known as the True Negative Rate ($TNR$), quantifies the proportion of correctly identified inliers relative to the total number of actual negative instances in the dataset. 
-This metric focuses exclusively on the negative class, serving to evaluate the effectiveness of a method in correctly rejecting non-anomalous observations. 
-In the context of outlier detection, high specificity indicates that the model is proficient at avoiding false alarms, thereby ensuring that normal instances are not misclassified as anomalies. \todo{pros and cons}
 Specificity is formally defined as:
-
 \begin{equation}
         \text{Specificity} = \frac{TN}{FP + TN}
 \end{equation}
+Specificity, also known as the True Negative Rate ($TNR$), quantifies the proportion of correctly identified inliers relative to the total number of actual negative instances in the dataset. 
+This metric focuses exclusively on the negative class, serving to evaluate the effectiveness of a method in correctly rejecting non-anomalous observations. 
+In the context of outlier detection, high specificity indicates that the model is proficient at avoiding false alarms, thereby ensuring that normal instances are not misclassified as anomalies. \todo{pros and cons}
+
+
+It exists an inherent trade-off between precision and recall. 
+Balancing these two metrics is essential for an objective evaluation of outlier detection performance, especially within imbalanced data structures. 
+This interdependency forms the basis for more complex evaluations, such as the Area Under the Precision-Recall Curve (AUPRC), which provides a aggregate measure of performance across various classification thresholds. 
 
 The $F1-score$ represents the harmonic mean of precision and recall, providing a unified metric that accounts for the inherent tension between these two measures. 
 Due to the mathematical properties of the harmonic mean, the score is significantly influenced by the lower of the two values.
