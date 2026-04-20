@@ -21,9 +21,8 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch_size', type=int, default=3000, help='batch size for training')
-    parser.add_argument('--dataset', type=str, nargs='+', default=['wine_robust'], help='names of datasets')
-    parser.add_argument('--faster_version', type=str, default='no',
-                        help='faster version with a lower number of repeats')
+    parser.add_argument('--dataset', type=str, nargs='+', default=['winori'], help='names of datasets')
+    parser.add_argument('--faster_version', type=str, default='no', help='faster version with a lower number of repeats')
     args = parser.parse_args()
 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -36,4 +35,3 @@ if __name__ == '__main__':
     print(f"F1 Macro (Balanced): {f1_macro:.4f}")  # This is your new output
     print(f"ROC-AUC:             {auc_score:.4f}")
     print(f"AUPRC:               {auprc_score:.4f}")
-

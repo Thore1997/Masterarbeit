@@ -171,11 +171,11 @@ class trainer():
         f1_bin = helper_functions.f1_calculator(categories, test_losses_contrastloss)
         f1_macro = helper_functions.f1_macro_calculator(categories, test_losses_contrastloss)
 
-        y_labels_boolean = np.array(categories) == 0  # True if Anomaly
+        y_labels_boolean = np.array(categories) == 1  # True if Anomaly
 
         # ROC and PR metrics use the raw scores (higher = more likely anomaly)
         auc_score = roc_auc_score(y_labels_boolean, final_scores_np)
         auprc_score = average_precision_score(y_labels_boolean, final_scores_np)
 
         # Returning 5 values: F1-Bin, F1-Macro, ROC-AUC, AUPRC, and the raw anomaly scores
-        return f1_bin, f1_macro, auc_score, auprc_score, final_scores_np
+        return f1_bin, f1_macro, auc_score, auprc_score
