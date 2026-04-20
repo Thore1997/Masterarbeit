@@ -16,7 +16,7 @@ These metrics are essential for evaluating the operational efficiency and scalab
 These findings corroborate the research by \citep[postfix]{nassif2021}, which highlights the ubiquity of TPR while noting that FPR was reported in only a minority of the surveyed studies, alongside a secondary focus on various measures of computational latency.
 
 
-The confusion matrix serves as the fundamental basis for deriving various scientifically accepted performance metrics. \todo{source}
+The confusion matrix serves as the fundamental basis for deriving various scientifically accepted performance metrics, see figure \ref{fig:confusionmatrix}. \todo{source}
 While certain basic metrics are less frequently applied in the specific context of outlier detection due to class imbalance, they remain widely recognized within the broader research community and provide the necessary context for more complex evaluations.
 
 
@@ -56,9 +56,10 @@ Accuracy is formally defined as:
         \text{Accuracy} = \frac{TP + TN}{TP + FN + FP + TN}.
 \end{equation}
 
-It measures the overall effectiveness of a method by calculating the proportion of correctly classified instances relative to the total number of observations. \todo{source}  
+It measures the overall effectiveness of a method by calculating the proportion of correctly classified instances relative to the total number of observations. \todo{source}
+Its main advantage is its intuitive interpretability and its inclusion of all classes.  
 A primary disadvantage of this metric is that it can be misleading in the presence of significant class imbalance, particularly when a method fails to identify any instances as outliers. 
-If the outlier ratio is very low, a model may achieve a high accuracy score simply by classifying all instances as inliers, thereby ignoring the minority class entirely. 
+The model may achieve a high accuracy score simply by classifying all instances as inliers, thereby ignoring the minority class entirely. 
 This results in a performance measure that does not accurately reflect the model's ability to detect anomalies. \todo{add pros}
 
 
@@ -77,7 +78,7 @@ Such a limitation is particularly problematic in high-stakes scenarios, such as 
 
 Recall is formally defined as:
 \begin{equation}
-        \text{Recall} = \frac{TP}{P} = \frac{TP}{TP + FN}
+        \text{Recall} = \frac{TP}{TP + FN}
 \end{equation}
 
 Recall, also referred to as True Positive Rate or sensitivity, measures the proportion of correctly identified outliers relative to the total number of actual anomalies in the dataset. \todo{source}
@@ -97,43 +98,52 @@ This metric focuses exclusively on the negative class, serving to evaluate the e
 In the context of outlier detection, high specificity indicates that the model is proficient at avoiding false alarms, thereby ensuring that normal instances are not misclassified as anomalies. \todo{pros and cons}
 
 
-It exists an inherent trade-off between precision and recall. 
+\todo{transition, write about metrics with an inverse relationship}
+It exists an inherent inverse relationsip between precision and recall. 
 Balancing these two metrics is essential for an objective evaluation of outlier detection performance, especially within imbalanced data structures. 
-This interdependency forms the basis for more complex evaluations, such as the Area Under the Precision-Recall Curve (AUPRC), which provides a aggregate measure of performance across various classification thresholds. 
+This interdependency forms the basis for more complex evaluations, such as $F1-Score$, Area under the Recever Operator Charakteristics ($AUC-ROC$) and Area Under the Precision-Recall Curve ($AUPRC$). 
 
-The $F1-score$ represents the harmonic mean of precision and recall, providing a unified metric that accounts for the inherent tension between these two measures. 
-Due to the mathematical properties of the harmonic mean, the score is significantly influenced by the lower of the two values.
-If either precision or recall is low, the F1-score will be lower than a simple arithmetic mean would suggest. 
-Consequently, a high $F1-score$ is only achievable when both precision and recall are simultaneously high. 
-As previously established, these two metrics exist in a trade-off relationship, where adjustments to the classification threshold that improve one typically result in the degradation of the other. 
-By optimizing the $F1-score$, the model effectively seeks a balance that minimizes both false positives and false negatives, making it a robust evaluation tool for imbalanced outlier detection tasks. 
-The $F1-score$ is formally defined as:
+
+The $F1-score$ represents the harmonic mean of precision and recall, providing a unified metric that accounts for the bevormentioned inverse relationship. 
+It is formally defined as the harmonic mean:
 
 \begin{equation}
     F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
 \end{equation}
 
-The $F1-score$ is threshold-dependent, as its constituent inputs, precision and recall, fluctuate according to the chosen classification boundary. 
-Consequently, any modification to this threshold directly influences the resulting $F1-score$. A primary critique of the $F1-score$ is its exclusion of correctly identified inliers, or true negatives. 
+The score is significantly influenced by the lower value of the two values.
+If either precision or recall is low, the F1-score will be lower than a simple arithmetic mean would suggest. 
+Consequently, a high $F1-score$ is only achievable when both precision and recall are simultaneously high. 
+Adjustments to the classification threshold increases typically one result and decreases the other. 
+By optimizing the $F1-score$, the model effectively seeks a balance that minimizes both false positives and false negatives, making it a robust evaluation tool for imbalanced outlier detection tasks. 
+The $F1-score$ is threshold-dependent. 
+Consequently, any modification to this threshold directly influences the resulting $F1-score$. 
+
+
+A primary critique of the $F1-score$ is its exclusion of correctly identified inliers, or true negatives. 
 In the field of outlier detection, where the inlier class constitutes the vast majority of the observations, a metric that disregards the model's proficiency in identifying the normal class provides a technically incomplete assessment of overall performance.
 Furthermore, the $F1-score$ assigns equal weight to precision and recall. 
 In many practical applications, an equal trade-off may not align with the specific cost-benefit requirements of the domain. 
 For instance, in a medical context, diagnosing a healthy patient with a condition may be considered less severe than failing to detect a life-threatening illness. 
 Similarly, in a legal or security context, misclassifying an individual as high-risk could lead to disproportionately severe consequences. 
-Depending on the specific requirements of the analysis, this can be addressed by reweighting the importance of recall or precision. 
+Depending on the specific domain of the analysis, this can be addressed by reweighting the importance of recall or precision. 
 This leads to the $F_\beta$ family of metrics, such as the $F2-score$, which prioritizes recall, or the $F0.5-score$, which places greater emphasis on precision. \todo{why dont I use these? I already performed data analysis} 
+\todo{conclusion why do I use F1 and not the others?}
 
 
 \subsubsection*{Agnostic Metrics}
-The previously discussed metrics share a common dependency on a specific threshold value, which determines the classification of instances. 
-To circumvent the necessity of threshold selection, threshold-agnostic metrics \todo{wording} such as the Area Under the Receiver Operating Characteristic Curve ($ROC AUC$) and the Area Under the Precision-Recall Curve ($AUPRC$) are frequently employed. 
+To solve the disadvantages of threshold-depended metrics, threshold-agnostic metrics are frequently employed in the scientific community. 
+$ROC AUC$ and $AUPRC$ are most prominent metrics frequently employed. 
 These metrics evaluate the performance of a model across all possible threshold values, providing a more comprehensive assessment of its discriminative capability.
+Due to its extensive application in cost-benefit decision analysis, both the $ROC AUC$ and the $AUPRC$ are highly suitable for learning tasks characterized by asymmetric cost functions and imbalanced datasets.
+For example, $ROC AUC$ is a metric used for effective assessment of intrusion detection systems \citep[postfix]{nassif2021}.
 
 \todo{formally define}
-The Area Under the Receiver Operating Characteristic Curve ($ROC AUC$) serves as an aggregate performance metric evaluating a model across all possible classification thresholds, with values constrained between 0 and 1. 
-This metric represents the probability that a randomly selected outlier receives a higher anomaly score than a randomly selected inlier.
+$ROC AUC$ serves as an aggregate performance metric evaluating a model with values constrained between 0 and 1. 
+Those values represents the probability that a randomly selected outlier receives a higher anomaly score than a randomly selected inlier.
 Consequently, higher values indicate a superior capability of the model to distinguish between these two classes. 
-As illustrated in the figure, the ROC curve plots the true positive rate (TPR) on the ordinate against the false positive rate (FPR) on the abscissa, and the area under this curve is mathematically defined by the integral.
+As illustrated in the figure, the ROC curve plots the $Recall$ on the ordinate against $1-Specificity$, also known as $FPR$, on the abscissa.
+The area under this curve is mathematically defined by the integral.
 
 
 Visually, a higher ROC AUC corresponds to a curve that bends toward the coordinate (0,1), where $AUC=1$ signifies a perfect classification with minimal $FPR$ and maximal $TPR$. 
@@ -142,28 +152,26 @@ Conversely, $AUC=0$ indicates that the model perfectly misclassifies outliers as
 
 \todo{insert image}
 
-The Receiver Operating Characteristic ($ROC AUC$) curve is a robust metric for the effective assessment of intrusion detection systems, serving as a graphical instrument that illustrates classification accuracy relative to false positive rates \citep[postfix]{nassif2021}.\todo{right place weirdly specific} 
-A comprehensive evaluation of classifier performance is facilitated by the $ROC AUC$, which is mathematically represented by the integral of the true positive rate as a function of the false positive rate, wherein the curve denotes the conditional probability that a data observation is assigned to class label C.\todo{wrong place} \todo{what?} 
-The curve effectively plots classification results across a spectrum from the most positive to the most negative classification thresholds. 
-Due to its extensive application in cost-benefit decision analysis, both the $ROC AUC$ and the $AUPRC$ are highly suitable for learning tasks characterized by asymmetric cost functions and imbalanced datasets.
-
 
 The $ROC AUC$ offers distinct advantages for imbalanced datasets, yet it also presents significant limitations. 
 In such contexts, $ROC AUC$ can yield overly optimistic assessments because its calculation incorporates the $FPR$. 
 Since the number of true negative instances typically far exceeds the number of true positives, the denominator of the $FPR$ becomes dominated by true negatives \citep{davis2006relationship}. 
 Consequently, the shift in the $FPR$ resulting from the misclassification of inliers remains marginal. 
 In imbalanced datasets, the $FPR$ tends to remain low, which biases the curve toward the upper-left coordinate and may obscure poor model performance. 
-Conversely, proponents of $ROC AUC$ \todo{insert paper} argue that the metric evaluates the fundamental discriminative power of a model, unlike precision-based metrics such as the F1-Score. \todo{thats not a real argument}
 A key strength of $ROC AUC$ is its consistency across varying outlier ratios, which facilitates reliable comparisons between different models.
-\todo{discuss if the argument is valid}
 
 
 The Area Under the Precision-Recall Curve (AUPRC) addresses the tendency of $ROC AUC$ to provide overly optimistic performance assessments by excluding true negatives from its calculation, thereby focusing on the primary objective of detecting true positive instances. 
 Precision and recall exhibit a non-monotonic trade-off relationship; as one metric increases, the other typically decreases. \todo{is that whats in the diagram?}
 This represents the inherent tension between identifying every outlier (recall) and ensuring those identified are correctly classified (precision). 
-Due to potential fluctuations in this relationship, average precision is frequently employed in scientific literature as a more stable alternative. 
+
+
 The $AUPRC$ is bounded between 0 and 1, where a value of 1 signifies a perfect model that correctly identifies all outliers without false positives. 
-As illustrated in the figure, the $AUPRC$ plots recall on the abscissa against precision on the ordinate, with superior model performance indicated by a curve that extends toward the upper-right coordinate. \todo{define it properly} 
+As illustrated in the figure, the $AUPRC$ plots recall on the abscissa against precision on the ordinate, with superior model performance indicated by a curve that extends toward the upper-right coordinate. 
+It is formally defined as the integral of the precision-recall curve, which is calculated by varying the classification threshold across its entire range.
+\todo{define it properly} 
+
+
 The curve generally declines as the classification threshold is lowered and outliers are ranked. 
 At strict thresholds, only the most definitive outliers are identified, resulting in high precision but low recall. 
 Conversely, lowering the threshold increases recall but also the likelihood of misclassification, which reduces precision and causes the curve to trend toward the lower-right region of the diagram.
@@ -175,50 +183,42 @@ Unlike the $ROC AUC$, the $AUPRC$ does not possess a fixed baseline.
 Instead, the baseline is determined by the specific dataset and corresponds to the outlier ratio. 
 In the case of a naive model with no discriminative power, the model effectively guesses the outlier status by varying its threshold.
 The probability of such a model identifying a true positive is equal to the prevalence of outliers within the dataset. 
-As the classification threshold becomes more lenient \todo{wording}, the model identifies a greater number of true positives, thereby increasing recall. 
+As the classification threshold becomes more lenient, the model identifies a greater number of true positives, thereby increasing recall. 
 
 
 However, precision remains constant because the proportion of outliers is fixed.
 The increase in true positives occurs proportionally to the increase in false positives. 
 Consequently, the baseline for a non-discriminative model is represented by a horizontal line at the level of the outlier ratio. 
-This framework allows for the performance comparison of different methods: if the curve of Model A consistently remains above that of Model B, Model A demonstrates superior performance. 
+This framework allows for the performance comparison of different methods in a given dataset: if the curve of Model A consistently remains above that of Model B, Model A demonstrates superior performance. 
 If the curves intersect, one model may be better suited for tasks requiring high precision, while the other excels in high-recall applications. \todo{good in the results or disc}
 If a model's curve coincides with the baseline, its performance is equivalent to random guessing. 
-This dependency on dataset prevalence implies that $AUPRC$ is not a suitable metric for comparing model performance across different datasets with varying outlier ratios.
 
 
 To summarize the advantages and disadvantages associated with the aforementioned metrics, preceding the selection and justification of the specific metric employed in this analysis. 
-While Accuracy, Precision, Recall, and Specificity are derived from the fundamental components of the confusion matrix, these values are intrinsically dependent on the selected classification threshold. 
+While Accuracy, Precision, Recall, and Specificity are derived from the fundamental components of the confusion matrix, these values are intrinsically dependent on the selected classification threshold.
+In real-world applications, the optimal threshold is often unknown and must be estimated, which introduces a degree of subjectivity and potential bias into the evaluation process.
+
+
 Accuracy remains a prevalent metric in the field, as discussed above.
 However, Accuracy is fundamentally inadequate for outlier detection due to the inherent class imbalance of such datasets. 
-Because the minority class of outliers is significantly smaller than the majority class of inliers, the mathematical influence of outliers on the total Accuracy score is disproportionately low. 
-In scenarios with a minimal percentage of outliers, a model can achieve a high Accuracy score by simply classifying all instances as inliers, thereby masking a total failure to detect anomalies. 
-Consequently, performance metrics for imbalanced datasets must account for the actual class distributions to ensure an objective evaluation \citep[p.8]{branco2016survey}.
-\todo{explain in general why the easy metrics are not suitable}
+The rest of the beforementioned metrics are class-specific metrics, resulting in an incomplete evaluation of model performance if a single one is chosen.
 
 
-Precision attempts to mitigate the issues inherent in Accuracy by excluding the distribution and count of true negatives; however, this approach introduces distinct limitations. 
-By disregarding true negatives, a model can be optimized for Precision through overly conservative classification, wherein it identifies only the most unequivocal outliers.
-Conversely, Recall is analytically trivial to maximize, as a model can achieve a perfect score of 1.0 by designating every data point as an outlier. 
-A model that flags all instances is technically perfect regarding Recall but lacks practical utility due to its complete inability to discriminate between classes. 
-Because the count of false positives is absent from the Recall equation, a high-recall model in contexts such as fraud detection may flag numerous legitimate transactions as fraudulent. 
-The operational cost of investigating these false alarms is significant, yet Recall fails to reflect this noise. 
-Consequently, it is difficult to determine the superiority of a method based solely on Recall without accounting for a concurrent increase in false positives. 
-Furthermore, \citet{chicco2020} argue that because Recall ignores two quadrants of the confusion matrix, it provides an incomplete and potentially biased summary of model quality. 
-This is particularly problematic for unsupervised outlier detection algorithms that generate continuous anomaly scores, as lowering the threshold can artificially inflate Recall, necessitating the use of threshold-independent metrics like ROC AUC or PR AUC for objective comparison.
-\todo{explain why the others are somewhat useful but not for every domain}
+%Consequently, performance metrics for imbalanced datasets must account for the actual class distributions to ensure an objective evaluation \citep[p.8]{branco2016survey}.
+The F1-score was selected as the primary evaluation metric because it harmonizes precision and recall, including information of all classes but the true negatives.
+It offers a balanced assessment of model efficacy within the domain of outlier detection. 
+While this metric does not account for true negatives, its application is justified by the characteristics of the Wine dataset, which represents a domain where the costs associated with false positives and false negatives are equivalent. 
+Consequently, the $F_\beta$ family of metrics was bypassed, as those measures are designed to prioritize either precision or recall based on specific weighting. 
+Furthermore, the inclusion of the F1-score is essential for the rigorous testing of the research hypothesis, as the previously documented performance of the k-nearest neighbors algorithm was established using this specific metric, necessitating a consistent basis for comparison.
 
 
-Specificity focuses exclusively on the negative class; however, in the context of outlier detection, the volume of true negatives is typically substantial. 
-Because the denominator is dominated by this high count of inliers, even a significant absolute number of false positives will not result in a perceptible shift in the metric \todo{right paper?} \citep{saito2015precision}. 
-Since Specificity provides no information regarding the ability of a model to identify actual outliers, a model that labels all instances as inliers will achieve a perfect score despite a complete failure to detect anomalies.
+The $AUC ROC$ and $AUPRC$ will be incorporated into the analysis to provide a comprehensive evaluation of model performance. 
+The $AUC ROC$ evaluates the efficacy of prediction ranking rather than absolute classification values, establishing a robust baseline against a random classifier that facilitates standardized comparisons. 
+In contrast, the $AUPRC$ provides a more nuanced interpretation of the outlier class by concentrating on the successful detection of anomalies while minimizing the incidence of false positives. 
+This metric is particularly informative in the context of imbalanced datasets, as it prioritizes the precision-recall trade-off inherent in identifying rare instances. 
+Collectively, these metrics ensure that both the general discriminative power and the specific accuracy regarding the minority class are rigorously quantified.
 
-\textcolor{red}{priority}
-\todo{add ROC AUC and AUPRC}
-\todo{Write this passage specifically for my dataset}
 
-For these reasons, I have chosen to use [Insert your chosen metric here] for my analysis, as it provides a more robust and honest evaluation of performance in the face of extreme class imbalance and varying thresholds.
-\todo{write this passage}
 
 
 
