@@ -1,34 +1,11 @@
 \section{Results}
 This section presents the results of the previously conducted experiments.
-The primary findings are summarized in Table \ref{tab:results_bench}, which details the $mean$ and $standard deviation$ (SD) of the $F1-Score$, $ROC AUC$, and $AUPRC$ for each evaluated method. 
-To ensure a rigorous assessment of these findings, a ANOVA and subsequently Welch's t-test are applied to the results. \todo{add more details}
+The primary findings are summarized in Table \ref{tab:results_bench}, which details the mean and standard deviation (SD) of the $F1-Score$, $ROC AUC$, and $AUPRC$ for each evaluated method. 
+To ensure a rigorous assessment of these findings, a Kruskal-Wallis test is applied for global comparison, followed by a pairwise Mann-Whitney U test.
+The results of the 500 runs for each method is supplied in the appendix.
 Following this evaluation, the confusion matrices for each method are displayed. 
 The analysis is further extended through the plotting of $AUPRC$ and $ROC AUC$ curves to facilitate a more detailed performance comparison across all methods.
 
-
-%\begin{table}[h]
-%\centering
-%\caption{Experimental Results - Oneshot classification}
-%\label{tab:results_os}
-%\begin{tabular}{lcccccc} % l=left aligned, r=right aligned
-%\toprule
-%\textbf{Method}         & \textbf{F1-Score} &  \textbf{ROC AUC}         & \textbf{AUPRC}                        &        \\
-%\midrule
-%MCD                     & 50.00             & \textbf{97.56}            & \textbf{71.04}                        &        \\
-%k-NN (unsupervised)     & 50.00             & 94.54                     & 50.51                                 &        \\
-%\bottomrule
-%\end{tabular}
-%\end{table}
-
-%The main finding is, that MCD performs better for this dataset that k-NN.
-%The F1-Score is the same for both methods.
-%The both deviate between the ROC AUC and the AUPRC. 
-%ROC AUC is 3.02 percentage points bigger for MCD than k-NN, which is a slight difference.
-
-
-%AUPRC is 20.53 percentage points bigger fpor MCD than k-NN which is a big difference and needs more investigation.
-%That indicates, that even with the multidimensional skewed dataset, MCD is capable of determinang an unbiased 
-\todo{where should this go? - maybe appendix?}
 
 
 \begin{table}[h]
@@ -41,151 +18,155 @@ The analysis is further extended through the plotting of $AUPRC$ and $ROC AUC$ c
 \midrule
 MCD  (semi-supervised)  & 64.14             & 9.41  &  95.94            & 3.59     & 77.82             & 16.43  \\
 k-NN (semi-supervised)  & 68.12             & 8.62  &  95.87            & 1.89     & 72.85             & 11.54  \\
-InterCont               & \textbf{77.44}    & 10.59 &  \textbf{96.70}   & 2.06     & \textbf{99.48}    & 3.2   \\
+InterCont               & \textbf{85.64}    & 8.77  &  \textbf{97.97}   & 2.13     & \textbf{92.93}    & 7.31   \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
 The performance utilizes F1-Score, ROC AUC, and AUPRC, accompanied by their respective standard deviations (SD). 
-In the F1-Score analysis, InterCont yields the highest mean at 77.44, followed by k-NN at 68.12 and MCD at 64.14. 
-The SD values indicate that k-NN maintains the lowest variability at 8.62, while MCD and InterCont show higher fluctuations at 9.41 and 10.59.
+In the F1-Score analysis, InterCont yields the highest mean at 78.13, followed by k-NN at 68.12 and MCD at 64.14. 
+The SD values indicate that k-NN maintains the lowest variability at 8.62, while MCD and InterCont show higher fluctuations at 9.41 and 10.50.
 
 
-The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 96.70, k-NN at 95.87, and MCD at 95.94. 
-The stability of these scores is evidenced by low SD values, with k-NN demonstrating the least variance at 1.89, compared to 2.06 for InterCont and 3.59 for MCD.
+The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 96.82, k-NN at 95.87, and MCD at 95.94. 
+The stability of these scores is evidenced by low SD values, with k-NN demonstrating the least variance at 1.89, compared to 2.08 for InterCont and 3.59 for MCD.
 
 
-For the AUPRC metric, InterCont achieves a mean of 99.48, significantly higher than MCD at 77.82 and k-NN at 72.85. 
-The InterCont method exhibits near-zero variance with an SD of 0.32. 
+For the AUPRC metric, InterCont achieves a mean of 78.23, significantly higher than MCD at 77.82 and k-NN at 72.85. 
+The InterCont method exhibits near-zero variance with an SD of 14.14. 
 Conversely, MCD shows the highest instability in this metric with an SD of 16.43, while k-NN records an SD of 11.54. 
-These figures reflect the comparative effectiveness and consistency of each method within the tested framework.
 
 
-The authors of InterCont utilized a Wilcoxon signed-rank test to evaluate their results, concluding that their model significantly outperforms alternative methods. 
-However, the Wilcoxon signed-rank test is not applicable to the present experimental results, as the evaluation is restricted to a single dataset. \todo{weak argument, why am I not deploying?}
+\begin{figure}[h] 
+    \centering
+        \includegraphics[width=0.6\linewidth]{Images/results_boxplot.pdf}
+    \caption{Boxplot of Experimental Results}
+    \label{fig:result_boxplot}
+\end{figure}
+
+
+The firgure \ref{fig:result_boxplot} displays boxplots for the resultig metrics for each method.
+In terms of the $F1-Score$, InterCont demonstrates the highest median performance, approximately at 0.80, though it exhibits a substantial spread with an interquartile range extending from 0.70 to 0.90 and a notable lower outlier at 0.20. 
+The k-NN algorithm follows with a median F1-Score of approximately 0.67 and a tighter distribution than InterCont, while MCD displays the lowest median performance at roughly 0.59. 
+
+
+The $ROC AUC$ metric reveals that all three methods maintain high discriminative ability, as all median values exceed 0.95. 
+InterCont achieves the highest median $ROC AUC$, nearing 0.97, followed closely by MCD and k-NN. 
+However, both InterCont and MCD show a high frequency of lower outliers in this metric, with MCD exhibiting a particularly extreme outlier below 0.75, whereas k-NN presents a more concentrated distribution with fewer extreme deviations. 
+
+
+Regarding the $AUPRC$, InterCont and MCD show comparable median performance levels around 0.78, and both maintains an upper quartile reaching 0.90. 
+The k-NN method demonstrates a lower median $AUPRC$ of approximately 0.72 and a narrower interquartile range, indicating more consistent but generally lower precision-recall trade-offs compared to the other two approaches. 
+Across all metrics, InterCont consistently yields the highest median scores if only slightly in $ROC AUC$ and $AUPRC$, whereas k-NN tends to show less variability.
+\todo{whats with MCD}
+
+The Analysis of Variance (ANOVA) is a parametric test often implemented in outlier detection research to determine if the differences between the means are statistically different.
+To apply this test, the data has to met two requirements: it must be normally distributed and have homogeneity of variances.
+The boxplots in Figure \ref{fig:result_boxplot} indicate that the data does not meet the normality assumption.
+Nevertheless, with 500 runs for each method, the central limit theorem applies, and the sampling distribution of the mean is approximately normal.
+
+To test for homogeneity of variances, Levene's test is applied, which assesses the equality of variances across groups.
+The Null of the Levene's test is as follow: 
+
+\begin{equation}
+    $H_0 = \sigma_1^2 = \sigma_2^2 = \sigma_3^2 $
+\end{equation}
+
+If the variances of the groups are not signicantly different, the Null is rejected and heterscedasticty is supposed.
+The results are displayed in table \todo{insert table}
+
+The results indicate, that the variances are heterscedastic, hence the pooled variance estimate becomes biased toward the groups with larger variances, which can lead to an inaccurate calculation of the p-value.
+That increases the probability of a Type I error and results in inaccurate interpretation.
+To further analyse the variances, the figure \ref{fig:ecdf} displays a ECDF (Empirical Cumulative Distribution Function) plot
+
+\begin{figure}[h] 
+    \centering
+        \includegraphics[width=0.6\linewidth]{Images/ECDF.pdf}
+    \caption{ECDF plot of Experimental Results}
+    \label{fig:ecdf}
+\end{figure}
+
+The ECDF plot visualizes the distribution of the datset.
+Therefore it plots the cumulative proportions of the data.
+At the ordinate are the percentiles displayed and on the abzyssa are the scores.
+If the slope is steep, it indicates a high concentration of data in that range.
+If the slope is flat, it indicates a low concentration of data in that range.
+
+
+
+
+
+To mitigate those problems I will deploy non-paramatric test.
+First I will implement the Friedmann test as a global test.
+After that I will apply the pairwise Wilcoxon-signed-rank test to further analyse the differences in performances.
+
+
+The Friedmann test can be used to analyse if statistical differences are between more than two groups.
+It does not need normally distributed data but heterscedastic variances have negative consequences as well.
+If the differences between the variances are substaintial, the results of the friedmann test suffer.
+In that situation, the test does compares the mean rank and not the median of the estimators. 
+
+
+It is a within-subject design, hence the observations have to be originated from the same dataset.
+Furthermore, the samples have to independend of each other.
+My experiments used the randperm function, hence for every run the results were estimated from a different dataset, ensureing independence.
+To be able to rank the observations, the results have to be at least ordinarily scaled. 
+This requirement is met, because the results are continously scaled. 
+
+The main idea is to assign a rank to every result of all runs made before.
+To do so, all results of one metric are put into one 
+The Null of this test is as follows:
+
+\begin{equation}
+    
+\end{equation}
+
+
+
+
+The authors of InterCont utilized a Wilcoxon test to evaluate their results, concluding that their model significantly outperforms alternative methods. 
+Nevertheless, the authors did not specify the exact test variant employed, because there are two Wilcoxon tests: the Wilcoxon signed-rank test and the Wilcoxon rank-sum test (also known as the Mann-Whitney U test).
+I will proceed with the Mann-Withney-U test, because the requieremtents are met.
+
+The Mann-Witheny-U test is a non-parametric statistical hypothesis test designed to compare more than two samples. the Wilcoxon signed-rank test is not applicable to the present experimental results, as the evaluation is restricted to a single dataset. \todo{weak argument, why am I not deploying?}
 The Wilcoxon signed-rank test is a non-parametric statistical hypothesis test designed to compare two related samples, matched samples, or repeated measurements on a single sample to assess whether their population mean ranks differ. 
 In the context of benchmarking machine learning models, this test typically requires performance metrics across multiple independent datasets to establish statistical significance. 
-Since this study evaluates performance on only one dataset, the requirement for a distribution of paired differences across multiple observations is not met, rendering the Wilcoxon signed-rank test unsuitable for this specific analysis.
 
 
-To address the research question and conduct a rigorous statistical analysis, a parametric approach is employed. 
-This decision is justified by the Central Limit Theorem (CLT), which posits that the sampling distribution of the mean tends toward a normal distribution as the sample size increases, regardless of the shape of the population distribution. 
-Given the substantial number of experimental runs (n=500), the distribution of the performance metrics will approximately follow a normal distribution, thereby satisfying the fundamental assumption for parametric testing. 
-Consequently, a One-Way Analysis of Variance (ANOVA) is deployed to determine whether statistically significant differences exist between the evaluated methods. 
-In instances where the ANOVA indicates a significant result, post-hoc analysis is conducted using Welch's t-test. 
-This specific test is selected to identify local superior performance between individual method pairs while accounting for potential inequalities in variance, ensuring a robust comparison of model efficacy.
 
 
-The One-Way Analysis of Variance (ANOVA) is employed to determine whether the means of the various methods are statistically distinct. 
-The null hypothesis ($H_0$) posits that the population means $\mu$ of all evaluated methods are equal:
-
-\begin{equation}
-H_0: \mu_1 = \mu_2 = \dots = \mu_k
-\end{equation}
-
-If the null hypothesis is rejected (p<0.05), it indicates that at least one method mean deviates significantly from the others, although it does not specify which specific pairs differ. 
-To calculate the F-statistic, it is necessary to determine the between-group variance and the within-group variance. 
-The between-group variance quantifies the dispersion between the global mean and the individual method means for a specific metric, representing the variation attributable to the choice of method. 
-Conversely, the within-group variance measures the dispersion of observations within each method, representing the inherent noise or random error in the experimental runs. 
-The F-statistic is then derived from the ratio of these two variance components to assess the significance of the observed differences.
 
 
-The within-group variance quantifies the dispersion of the metric within each specific method, utilizing the previously estimated standard deviations. 
-In the subsequent step, the mean squares for both the between-group and within-group variances are calculated by dividing the respective sum of squares by their corresponding degrees of freedom (df). 
-For the between-group variance, the degrees of freedom are defined as the number of methods minus one ($k-1$). 
-For the within-group variance, the degrees of freedom are calculated as the total number of experimental runs minus the number of methods ($N-k$). 
-Given the high number of runs ($n=500$ per method), the denominator for the within-group calculation is large, which results in a relatively small within-group mean square. 
-This reduction in the error variance component enhances the sensitivity of the F-test to detect significant differences between the method means.
-That means than even a small variance between the means will likely result in a high $F$ value and a low $p-value$ \todo{really}
-The reliability of the SS within will be precise as well. \todo{why?}
 
 
-The F-Value is calculated as follows:
 
-\begin{equation}
-    F = \frac{MS_between}{MS_within}
-\end{equation}
-
-
-This ratio effectively represents the signal-to-noise ratio of the experiment. 
-An F-value greater than 1 suggests that the variance observed between the methods exceeds the variance expected by random chance within the groups. 
-To determine statistical significance, this calculated F-value is compared against a critical value from the F-distribution, corresponding to the specified degrees of freedom and a significance level of $\alpha=0.05$. 
-If the F-statistic exceeds this threshold, the null hypothesis is rejected, indicating that the choice of outlier detection method has a statistically significant impact on the performance metrics. 
-The results of this analysis are detailed in Table \ref{tab:ANOVA}.
-
+I made a second experiment where I scripted one shot outlier detection with unsupervised approaches to mcd and knn.
+The goal is to compare the results of the unsueprvised approach to the semisupervised approach.
+The results are displayed in \ref{tab:results_us}
 
 \begin{table}[h]
-\centering
-\caption{Results of One-Way ANOVA}
-\label{tab:ANOVA}
-\begin{tabular}{lcccccc} 
-\toprule
-\textbf{Metric}         & F-Statistic       & P-Value   &   \\
-\midrule
-F1-Score                & 254.1747          & $9.12 \times 10^{-96}$     &   \\
-ROC AUC                 & 15.3523           & $2.51 \times 10^{-07}$     &   \\
-AUPRC                   & 727.5883          & $1.79 \times 10^{-221}$     &   \\
-\bottomrule
+\centering 
+\begin{tabular}{lcccccc} % l=left aligned, r=right aligned
+        \toprule
+        \textbf{Method}         & \textbf{F1-Score} &  \textbf{ROC AUC}         & \textbf{AUPRC}                        &        \\
+        \midrule
+                MCD                     & 50.00             & \textbf{97.56}            & \textbf{71.04}                        &        \\
+                k-NN (unsupervised)     & 50.00             & 94.54                     & 50.51                                 &        \\
+        \bottomrule
+        \caption{Experimental Results - Unsupervised approaches}
+    \label{tab:results_us}
 \end{tabular}
 \end{table}
 
+The F1-Score is the same for both methods.
+The remaining results indicate that MCD outperforms k-NN.
 
-To identify which specific methods exhibit superior performance for a given metric, an independent samples t-test, specifically Welch's t-test, is employed. 
-Welch's t-test is a parametric procedure designed to compare independent groups without the requirement of equal variances. 
-Given the evaluation of three distinct methods, the test is performed on three separate pairs. 
-This approach is favored over the standard Student's t-test, as the latter assumes homoscedasticity, or equal variances across groups, an assumption that may not hold in this experimental context. 
-The validity of Welch's t-test relies on the independence of experimental runs and the normal distribution of the sample means. 
-Both assumptions are satisfied in this study, the former by the experimental design and the latter by the application of the Central Limit Theorem to the 500 runs. 
-The test statistic is calculated as follows:
+The both deviate between the ROC AUC and the AUPRC. 
+ROC AUC is 3.02 percentage points bigger for MCD than k-NN, which is a slight difference.
 
-\begin{equation}
-    t = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}
-\end{equation}
+MCD performs 20.53 percentage points better in terms of $AUPRC$ than k-NN which is a big difference and needs more investigation.
+That indicates, that even with the multidimensional skewed dataset, MCD is capable of determinang an unbiased.
 
-The numerator of the test statistic represents the signal, defined as the observed difference between the sample means of the two methods. 
-The denominator represents the noise, quantified as the estimated standard error of the difference between the means. 
-To account for the potential inequality of variances between the two groups, the degrees of freedom (df) are not calculated by simple summation but are instead adjusted using the Welch-Satterthwaite equation. 
-This approximation ensures that the t-distribution accurately reflects the uncertainty inherent in comparing groups with unequal variances. 
-The Welch-Satterthwaite equation estimates the degrees of freedom as follows:
-
-\begin{equation}
-    \nu \approx \frac{\left( \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2} \right)^2}{\frac{(s_1^2 / n_1)^2}{n_1 - 1} + \frac{(s_2^2 / n_2)^2}{n_2 - 1}}
-\end{equation}
-
-
-Consequently, the degrees of freedom (df) resulting from this calculation can be a non-integer value. 
-This value represents the effective sample size available for estimating the standard error, reflecting the precision of the comparison between the two groups. 
-When the variances of the two estimators are equal, the df converges to the value utilized in the standard Student's t-test $(n_1+n_2-2)$. 
-As the disparity between the variances of the two groups increases, the effective degrees of freedom decrease. 
-This reduction leads to a more conservative test by widening the tails of the underlying distribution, which subsequently results in a higher p-value and a lower probability of committing a Type I error. 
-Given the large sample size of n=500, the t-distribution effectively approximates a standard normal distribution, facilitating the reliable determination of statistical significance.
-
-
-As the analysis involves multiple pairwise comparisons between the three methods, it is necessary to adjust the significance level to maintain the family-wise error rate. 
-Without such an adjustment, the probability of encountering at least one Type I error across the set of tests increases, potentially leading to false-positive conclusions. 
-To mitigate this, the Bonferroni correction is applied, which involves dividing the initial significance level ($\alpha=0.05$) by the number of comparisons being performed (m=3). 
-Consequently, for a result to be considered statistically significant and for the null hypothesis to be rejected, the calculated p-value must be lower than the adjusted threshold of 0.0167.
-
-\begin{table}[h]
-\centering
-\caption{p-values of Welch's test for ROC AUC}
-\label{tab:Welch1}
-\begin{tabular}{lcccccc} 
-\toprule
-\textbf{ROC AUC}    & MCD       & k-NN      & InterCont  &    \\
-\midrule
-MCD                 & -             &               &    &     \\
-k-NN                & 6.9975e-01    & -             &    &     \\
-InterCont           & 4.4455e-05    & 5.2073e-11    & -  &     \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-Table \ref{tab:Welch1} presents the results of the Welch's t-test conducted on the ROC AUC metric. 
-The data identifies the only combination of methods where the results are not statistically distinct; specifically, the ROC AUC means for MCD and k-NN are statistically indistinguishable at the adjusted significance level. 
-All other pairwise combinations exhibit p-values below the 0.0167 threshold, indicating that their performance differences are statistically significant. 
-The comparative analyses for the remaining metrics did not yield unexpected findings and are therefore documented in the appendix. 
-In summary, the performance metrics for InterCont were higher across all categories and are statistically superior to those of the other evaluated methods.
+The result deviate in comparison to the semi-supervised approaches. 
 

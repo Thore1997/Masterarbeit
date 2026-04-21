@@ -178,4 +178,4 @@ class trainer():
         auprc_score = average_precision_score(y_labels_boolean, final_scores_np)
 
         # Returning 5 values: F1-Bin, F1-Macro, ROC-AUC, AUPRC, and the raw anomaly scores
-        return f1_bin, f1_macro, auc_score, auprc_score
+        return f1_bin, f1_macro, auc_score, auprc_score, final_scores_np

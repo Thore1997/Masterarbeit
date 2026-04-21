@@ -1,6 +1,7 @@
 import scipy.io
 import os
 import numpy as np
+import pandas as pd  # Neu für den CSV-Export
 from sklearn.model_selection import KFold
 from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
 from sklearn.preprocessing import RobustScaler
@@ -8,14 +9,14 @@ from pyod.models.knn import KNN
 from data_loader import Data_Loader
 
 
-def start_semi_knn_benchmark(dataset_name='wine', num_splits=500):
+def start_semi_knn_benchmark(dataset_name='wine', num_splits=1):
     """
     Führt einen Semi-Supervised k-NN Benchmark durch.
     Trainiert auf sauberen Normaldaten, testet auf Mix aus Normalen & Anomalien.
     """
     dl = Data_Loader()
 
-    # Pfad-Logik (wie in deinem MCD Skript)
+    # Pfad-Logik
     current_dir = os.path.dirname(os.path.abspath(__file__))
     repo_root = os.path.abspath(os.path.join(current_dir, "../../"))
     file_path = os.path.join(repo_root, "Reproduction", "Data", f"{dataset_name}.mat")
@@ -33,7 +34,6 @@ def start_semi_knn_benchmark(dataset_name='wine', num_splits=500):
     for i in range(num_splits):
         try:
             # 1. Daten laden (50/50 Split)
-            # train: nur Normale | test: restliche Normale + alle Anomalien
             train_data, test_data, test_labels = dl.build_train_test_generic_matfile(file_path)
 
             # Konvertierung für PyOD
@@ -46,14 +46,21 @@ def start_semi_knn_benchmark(dataset_name='wine', num_splits=500):
             X_train_scaled = scaler.fit_transform(X_train_np)
             X_test_scaled = scaler.transform(X_test_np)
 
+            #actual_contamination = np.sum(y_test_np == 1) / len(y_test_np)
+
             # 3. Model Training (Semi-Supervised)
-            # Wir nehmen contamination=0.01, da das Training-Set nominell sauber ist
             clf = KNN(n_neighbors=5, method='largest', contamination=0.154)
             clf.fit(X_train_scaled)
 
             # 4. Scoring & Predictions
             test_scores = clf.decision_function(X_test_scaled)
             test_labels_pred = clf.predict(X_test_scaled)
+
+            # --- SCORES SPEICHERN FÜR PLOT ---
+            if not os.path.exists('Results'):
+                os.makedirs('Results')
+            np.savez('Results/scores_knn.npz', y_true=y_test_np, y_scores=test_scores)
+            print(f">>> k-NN Scores erfolgreich gespeichert.")
 
             # 5. Metriken speichern
             results['f1'].append(f1_score(y_test_np, test_labels_pred))
@@ -66,19 +73,33 @@ def start_semi_knn_benchmark(dataset_name='wine', num_splits=500):
         except Exception as e:
             print(f"Fehler in Split {i}: {e}")
 
-    # --- Finale Auswertung ---
+    # --- CSV EXPORT & Finale Auswertung ---
     if len(results['f1']) > 0:
+        # Erstelle DataFrame für den Export
+        df_results = pd.DataFrame({
+            'split': list(range(1, len(results['f1']) + 1)),
+            'f1_score': results['f1'],
+            'roc_auc': results['auc'],
+            'auprc': results['auprc']
+        })
+
+        # CSV speichern
+        csv_filename = f"knn_results_{dataset_name}.csv"
+        df_results.to_csv(csv_filename, index=False)
+        print(f"\n[DATEI GESPEICHERT] Einzelne Ergebnisse unter: {csv_filename}")
+
+        # Finale Statistik-Ausgabe
         print(f"\n" + "=" * 45)
         print(f"FINALE SEMI-SUPERVISED k-NN ERGEBNISSE ({dataset_name})")
         print("-" * 45)
-        print(f"F1-Score: {np.mean(results['f1']):.4f} ± {np.std(results['f1']):.4f}")
-        print(f"ROC-AUC:  {np.mean(results['auc']):.4f} ± {np.std(results['auc']):.4f}")
-        print(f"AUPRC:    {np.mean(results['auprc']):.4f} ± {np.std(results['auprc']):.4f}")
+        print(f"F1-Score: {df_results['f1_score'].mean():.4f} ± {df_results['f1_score'].std():.4f}")
+        print(f"ROC-AUC:  {df_results['roc_auc'].mean():.4f} ± {df_results['roc_auc'].std():.4f}")
+        print(f"AUPRC:    {df_results['auprc'].mean():.4f} ± {df_results['auprc'].std():.4f}")
         print("=" * 45)
     else:
         print("Keine erfolgreichen Durchläufe zu protokollieren.")
 
 
 if __name__ == "__main__":
-    # Aufruf der Funktion
+    # Konsistent 'wine' nutzen
     start_semi_knn_benchmark(dataset_name='wine', num_splits=500)

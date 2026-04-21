@@ -1,0 +1,90 @@
+- comparison of the result of shenkar and mine, why are they different F1 score?
+    explain the setup and the changes you made to the code so it does not originate from that.
+    Normalization and outlier ratio stays the same.
+    Training and testing is the same
+    batch was decreased to the number of instances.
+
+- Comparison of the results of the onshot and the semisupervised version I made
+    why is it more comparable than just one shot?
+what is the difference in numbers
+
+
+
+\subsection{InterCont}
+Intervont uses the sliding window and permutation, so intercont analyses the relationships between instances not only the distance between neighbors. 
+The extreme instances which were inliers were recognized as consistent with the internal chmical profile avoiding false postives.
+Intercont uses the than activation funnction which is critical than centers the data and bounds activation which helpd complex network to hanlde these lineareitaies, high variance features.
+The wine dataset was analysed by UMAP, which is a machine learning approach to dimensionality reduction. 
+You could argue, that InterCont uses a similiar approach to learn relationships between the instanses, that intercont does discriminate good too (causion)
+The data strucure was not complex, so the high ROC AUC values. 
+The biased ROC AUC coul be applied here because the wine dataset is highly unbalanced
+interCont performs the best. Representation learning is better then traditional methods even in small datasets like wine.
+InterCont learn through contrastive learning the complex relationships between the data points the best and flags misterious relationships even if they are in the expectable range.
+
+- Sliding window: 
+Tabluar data lacks the internal strucutre not like images or voice data. 
+The sliding window approach forces the model to learn dependencies between features.
+
+- Permutations:
+Enhance the method even further by mitigating the risk of missing a relationship just because two corroclated features were not next to each other.
+
+\subsection{k-NN}
+k-nn relies on distance to the k th neighbor. 
+As seen in the boxplots there are instances that deviate a lot univeritly, which is noise for k-nn generating false positives
+The benchmark methods detected the most obvious outliers.
+nevertheless the F1 score es lower then from intercont
+The data strucure was not complex, so the high ROC AUC values. 
+K-NN is distances based. It has probably no problem with the most obvious global outliers but when it comes to complex contextual outliers it fails.
+The Curse of dimensionality is effekting MCD and knn, with a different distance measure knn could probably give better results.
+
+\subsection{MCD}
+The benchmark methods detected the most obvious outliers.
+nevertheless the F1 score es lower then from intercont
+Althoug the semisupervised approach for mcd provided with better performance, the wide sd of AUPRC suggests that MCD is sensitive to the  500 runs. 
+When a sploit added included some noise the resulting ellipsoid shifted significantly. 
+Regarless of the run, interconts asymmetrical architecture and double normalization endure that its latent sance remained stable regardless of which 50\% of the data was 
+MCD ROC AUC is so high because the data lies on a relatively flat manifold the robust elipsiod can accuratly encaple the inlier distribution wirhout beeing distorted by non linear warps.
+The data strucure was not complex, so the high ROC AUC values. 
+MCD is highly instable in term of AUPRC, because the robust ellipsoid might occasionally struggle with the specific orientation of the wine manifold.
+MCD assumes a distribution, thats was not given see dataanalytics. Hence the QQplot displays, that not even one variable is normally distributed.
+The Curse of dimensionality is effekting MCD and knn, with a different distance measure knn could probably give better results.
+
+
+ 
+ 
+
+     
+        
+
+    
+
+
+    
+     
+    
+     
+
+
+    
+     
+    
+
+
+
+
+
+
+- Critique of Shenkar and Wolf
+    I could not reproduce the exceptional result of k-nn. I implemented knn such that it is a useful benchmark.
+    The specific implementation of shenkar and wolf could not be met. I Implemented it as unsupervised and semisupervised. 
+    I used gridsearch to tune k and I used different distances measurements, the proposed results could not be met.
+    So k-nn looses in even small dataset with a clear manifold structure.Maybe there is a way t get the original code of the authors.
+
+    Their reproduction package lacks a little bit of info and a loop. 
+    F1 is not a good choice for outlier detection because of its threshold dependence and lack of false negatives.
+    The high F1 score of the paper could mean that a lot of flase negatives were detected but we do not see it. 
+
+     
+
+
+

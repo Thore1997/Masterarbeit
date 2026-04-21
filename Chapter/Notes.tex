@@ -453,3 +453,131 @@ Wenn det(A) < 0 wird die Orientierung umgekehrt (z.B. eine Spiegelung)
 
 
 asymptotisch normalverteilt 
+
+
+\section{Results}
+
+To address the research question and conduct a rigorous statistical analysis, a parametric approach is employed. 
+This decision is justified by the Central Limit Theorem (CLT), which posits that the sampling distribution of the mean tends toward a normal distribution as the sample size increases, regardless of the shape of the population distribution. 
+Given the substantial number of experimental runs (n=500), the distribution of the performance metrics will approximately follow a normal distribution, thereby satisfying the fundamental assumption for parametric testing. 
+Consequently, a One-Way Analysis of Variance (ANOVA) is deployed to determine whether statistically significant differences exist between the evaluated methods. 
+In instances where the ANOVA indicates a significant result, post-hoc analysis is conducted using Welch's t-test. 
+This specific test is selected to identify local superior performance between individual method pairs while accounting for potential inequalities in variance, ensuring a robust comparison of model efficacy.
+
+
+The One-Way Analysis of Variance (ANOVA) is employed to determine whether the means of the various methods are statistically distinct. 
+The null hypothesis ($H_0$) posits that the population means $\mu$ of all evaluated methods are equal:
+
+\begin{equation}
+H_0: \mu_1 = \mu_2 = \dots = \mu_k
+\end{equation}
+
+If the null hypothesis is rejected (p<0.05), it indicates that at least one method mean deviates significantly from the others, although it does not specify which specific pairs differ. 
+To calculate the F-statistic, it is necessary to determine the between-group variance and the within-group variance. 
+The between-group variance quantifies the dispersion between the global mean and the individual method means for a specific metric, representing the variation attributable to the choice of method. 
+Conversely, the within-group variance measures the dispersion of observations within each method, representing the inherent noise or random error in the experimental runs. 
+The F-statistic is then derived from the ratio of these two variance components to assess the significance of the observed differences.
+
+
+The within-group variance quantifies the dispersion of the metric within each specific method, utilizing the previously estimated standard deviations. 
+In the subsequent step, the mean squares for both the between-group and within-group variances are calculated by dividing the respective sum of squares by their corresponding degrees of freedom (df). 
+For the between-group variance, the degrees of freedom are defined as the number of methods minus one ($k-1$). 
+For the within-group variance, the degrees of freedom are calculated as the total number of experimental runs minus the number of methods ($N-k$). 
+Given the high number of runs ($n=500$ per method), the denominator for the within-group calculation is large, which results in a relatively small within-group mean square. 
+This reduction in the error variance component enhances the sensitivity of the F-test to detect significant differences between the method means.
+That means than even a small variance between the means will likely result in a high $F$ value and a low $p-value$ \todo{really}
+The reliability of the SS within will be precise as well. \todo{why?}
+
+
+The F-Value is calculated as follows:
+
+\begin{equation}
+    F = \frac{MS_between}{MS_within}
+\end{equation}
+
+
+This ratio effectively represents the signal-to-noise ratio of the experiment. 
+An F-value greater than 1 suggests that the variance observed between the methods exceeds the variance expected by random chance within the groups. 
+To determine statistical significance, this calculated F-value is compared against a critical value from the F-distribution, corresponding to the specified degrees of freedom and a significance level of $\alpha=0.05$. 
+If the F-statistic exceeds this threshold, the null hypothesis is rejected, indicating that the choice of outlier detection method has a statistically significant impact on the performance metrics. 
+The results of this analysis are detailed in Table \ref{tab:ANOVA}.
+
+
+\begin{table}[h]
+\centering
+\caption{Results of One-Way ANOVA}
+\label{tab:ANOVA}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{Metric}         & F-Statistic       & P-Value   &   \\
+\midrule
+F1-Score                & 254.1747          & $9.12 \times 10^{-96}$     &   \\
+ROC AUC                 & 15.3523           & $2.51 \times 10^{-07}$     &   \\
+AUPRC                   & 727.5883          & $1.79 \times 10^{-221}$     &   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+To identify which specific methods exhibit superior performance for a given metric, an independent samples t-test, specifically Welch's t-test, is employed. 
+Welch's t-test is a parametric procedure designed to compare independent groups without the requirement of equal variances. 
+Given the evaluation of three distinct methods, the test is performed on three separate pairs. 
+This approach is favored over the standard Student's t-test, as the latter assumes homoscedasticity, or equal variances across groups, an assumption that may not hold in this experimental context. 
+The validity of Welch's t-test relies on the independence of experimental runs and the normal distribution of the sample means. 
+Both assumptions are satisfied in this study, the former by the experimental design and the latter by the application of the Central Limit Theorem to the 500 runs. 
+The test statistic is calculated as follows:
+
+\begin{equation}
+    t = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}
+\end{equation}
+
+The numerator of the test statistic represents the signal, defined as the observed difference between the sample means of the two methods. 
+The denominator represents the noise, quantified as the estimated standard error of the difference between the means. 
+To account for the potential inequality of variances between the two groups, the degrees of freedom (df) are not calculated by simple summation but are instead adjusted using the Welch-Satterthwaite equation. 
+This approximation ensures that the t-distribution accurately reflects the uncertainty inherent in comparing groups with unequal variances. 
+The Welch-Satterthwaite equation estimates the degrees of freedom as follows:
+
+\begin{equation}
+    \nu \approx \frac{\left( \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2} \right)^2}{\frac{(s_1^2 / n_1)^2}{n_1 - 1} + \frac{(s_2^2 / n_2)^2}{n_2 - 1}}
+\end{equation}
+
+
+Consequently, the degrees of freedom (df) resulting from this calculation can be a non-integer value. 
+This value represents the effective sample size available for estimating the standard error, reflecting the precision of the comparison between the two groups. 
+When the variances of the two estimators are equal, the df converges to the value utilized in the standard Student's t-test $(n_1+n_2-2)$. 
+As the disparity between the variances of the two groups increases, the effective degrees of freedom decrease. 
+This reduction leads to a more conservative test by widening the tails of the underlying distribution, which subsequently results in a higher p-value and a lower probability of committing a Type I error. 
+Given the large sample size of n=500, the t-distribution effectively approximates a standard normal distribution, facilitating the reliable determination of statistical significance.
+
+
+As the analysis involves multiple pairwise comparisons between the three methods, it is necessary to adjust the significance level to maintain the family-wise error rate. 
+Without such an adjustment, the probability of encountering at least one Type I error across the set of tests increases, potentially leading to false-positive conclusions. 
+To mitigate this, the Bonferroni correction is applied, which involves dividing the initial significance level ($\alpha=0.05$) by the number of comparisons being performed (m=3). 
+Consequently, for a result to be considered statistically significant and for the null hypothesis to be rejected, the calculated p-value must be lower than the adjusted threshold of 0.0167.
+
+\begin{table}[h]
+\centering
+\caption{p-values of Welch's test for ROC AUC}
+\label{tab:Welch1}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{ROC AUC}    & MCD       & k-NN      & InterCont  &    \\
+\midrule
+MCD                 & -             &               &    &     \\
+k-NN                & 6.9975e-01    & -             &    &     \\
+InterCont           & 4.4455e-05    & 5.2073e-11    & -  &     \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Table \ref{tab:Welch1} presents the results of the Welch's t-test conducted on the ROC AUC metric. 
+The data identifies the only combination of methods where the results are not statistically distinct; specifically, the ROC AUC means for MCD and k-NN are statistically indistinguishable at the adjusted significance level. 
+All other pairwise combinations exhibit p-values below the 0.0167 threshold, indicating that their performance differences are statistically significant. 
+The comparative analyses for the remaining metrics did not yield unexpected findings and are therefore documented in the appendix. 
+In summary, the performance metrics for InterCont were higher across all categories and are statistically superior to those of the other evaluated methods.
+
+
+
+
+
