@@ -40,7 +40,7 @@ Conversely, MCD shows the highest instability in this metric with an SD of 16.43
 
 \begin{figure}[h] 
     \centering
-        \includegraphics[width=0.6\linewidth]{Images/results_boxplot.pdf}
+        \includegraphics[width=1\linewidth]{Images/results_boxplot.pdf}
     \caption{Boxplot of Experimental Results}
     \label{fig:result_boxplot}
 \end{figure}
@@ -70,7 +70,7 @@ To test for homogeneity of variances, Levene's test is applied, which assesses t
 The Null of the Levene's test is as follow: 
 
 \begin{equation}
-    $H_0 = \sigma_1^2 = \sigma_2^2 = \sigma_3^2 $
+%    $H_0 = \sigma_1^2 = \sigma_2^2 = \sigma_3^2 $
 \end{equation}
 
 If the variances of the groups are not signicantly different, the Null is rejected and heterscedasticty is supposed.
@@ -82,7 +82,7 @@ To further analyse the variances, the figure \ref{fig:ecdf} displays a ECDF (Emp
 
 \begin{figure}[h] 
     \centering
-        \includegraphics[width=0.6\linewidth]{Images/ECDF.pdf}
+        \includegraphics[width=1\linewidth]{Images/ECDF.pdf}
     \caption{ECDF plot of Experimental Results}
     \label{fig:ecdf}
 \end{figure}
@@ -118,9 +118,6 @@ The main idea is to assign a rank to every result of all runs made before.
 To do so, all results of one metric are put into one 
 The Null of this test is as follows:
 
-\begin{equation}
-    
-\end{equation}
 
 
 
@@ -147,6 +144,7 @@ The results are displayed in \ref{tab:results_us}
 
 \begin{table}[h]
 \centering 
+\caption{Experimental Results - Unsupervised approaches}
 \begin{tabular}{lcccccc} % l=left aligned, r=right aligned
         \toprule
         \textbf{Method}         & \textbf{F1-Score} &  \textbf{ROC AUC}         & \textbf{AUPRC}                        &        \\
@@ -154,7 +152,7 @@ The results are displayed in \ref{tab:results_us}
                 MCD                     & 50.00             & \textbf{97.56}            & \textbf{71.04}                        &        \\
                 k-NN (unsupervised)     & 50.00             & 94.54                     & 50.51                                 &        \\
         \bottomrule
-        \caption{Experimental Results - Unsupervised approaches}
+        
     \label{tab:results_us}
 \end{tabular}
 \end{table}
