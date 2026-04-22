@@ -25,7 +25,7 @@ InterCont               & \textbf{85.64}    & 8.77  &  \textbf{97.97}   & 2.13  
 
 
 The performance utilizes F1-Score, ROC AUC, and AUPRC, accompanied by their respective standard deviations (SD). 
-In the F1-Score analysis, InterCont yields the highest mean at 78.13, followed by k-NN at 68.12 and MCD at 64.14. 
+In the F1-Score analysis, InterCont yields the highest mean at 85.64, followed by k-NN at 68.12 and MCD at 64.14. 
 The SD values indicate that k-NN maintains the lowest variability at 8.62, while MCD and InterCont show higher fluctuations at 9.41 and 10.50.
 
 
@@ -47,124 +47,252 @@ Conversely, MCD shows the highest instability in this metric with an SD of 16.43
 
 
 The firgure \ref{fig:result_boxplot} displays boxplots for the resultig metrics for each method.
-In terms of the $F1-Score$, InterCont demonstrates the highest median performance, approximately at 0.80, though it exhibits a substantial spread with an interquartile range extending from 0.70 to 0.90 and a notable lower outlier at 0.20. 
-The k-NN algorithm follows with a median F1-Score of approximately 0.67 and a tighter distribution than InterCont, while MCD displays the lowest median performance at roughly 0.59. 
+In terms of the F1-Score, InterCont demonstrates the highest median performance, approximately at 0.80, though it exhibits a substantial spread with an interquartile range extending from 0.70 to 0.90 and a notable lower outlier at 0.20. 
+The k-NN algorithm follows with a median F1-Score of approximately 0.67 and a tighter distribution than InterCont, while MCD displays the lowest median performance at roughly 0.59 with simililar IQR of k-nn. 
 
 
-The $ROC AUC$ metric reveals that all three methods maintain high discriminative ability, as all median values exceed 0.95. 
-InterCont achieves the highest median $ROC AUC$, nearing 0.97, followed closely by MCD and k-NN. 
+The ROC AUC metric reveals that all three methods maintain high discriminative ability, as all median values exceed 0.95. 
+InterCont achieves the highest median ROC AUC, nearing 0.97, followed closely by MCD and k-NN. 
 However, both InterCont and MCD show a high frequency of lower outliers in this metric, with MCD exhibiting a particularly extreme outlier below 0.75, whereas k-NN presents a more concentrated distribution with fewer extreme deviations. 
 
 
-Regarding the $AUPRC$, InterCont and MCD show comparable median performance levels around 0.78, and both maintains an upper quartile reaching 0.90. 
-The k-NN method demonstrates a lower median $AUPRC$ of approximately 0.72 and a narrower interquartile range, indicating more consistent but generally lower precision-recall trade-offs compared to the other two approaches. 
-Across all metrics, InterCont consistently yields the highest median scores if only slightly in $ROC AUC$ and $AUPRC$, whereas k-NN tends to show less variability.
-\todo{whats with MCD}
+Regarding the AUPRC, InterCont slighlich better performance than MCD.
+The median performance levels for InterCont is around 0.79 and slightly above.
+Both maintain an upper quartile reaching 0.90. 
+The k-NN method demonstrates a lower median AUPRC of approximately 0.72 and a narrower interquartile range, indicating more consistent but generally lower precision-recall trade-offs compared to the other two approaches. 
+MCD shows the widest IQR reaching from 0.3 to 1.
 
-The Analysis of Variance (ANOVA) is a parametric test often implemented in outlier detection research to determine if the differences between the means are statistically different.
-To apply this test, the data has to met two requirements: it must be normally distributed and have homogeneity of variances.
-The boxplots in Figure \ref{fig:result_boxplot} indicate that the data does not meet the normality assumption.
-Nevertheless, with 500 runs for each method, the central limit theorem applies, and the sampling distribution of the mean is approximately normal.
 
-To test for homogeneity of variances, Levene's test is applied, which assesses the equality of variances across groups.
-The Null of the Levene's test is as follow: 
+Across all metrics, InterCont consistently yields the highest median scores if only slightly in ROC AUC and AUPRC, whereas k-NN tends to show less variability.
+
+
+\subsubsection*{Statistical Inference}
+The validation of empirical results necessitates the application of rigorous statistical testing. 
+Parametric procedures generally provide superior statistical power and efficiency, provided that their underlying assumptions are satisfied. 
+A prominent example within outlier detection research is the Analysis of Variance (ANOVA), which is frequently utilized to evaluate whether observed differences between group means possess statistical significance. 
+The valid application of this test is contingent upon two primary prerequisites: the normality of the data distribution and the homogeneity of variances across groups. 
+Although the boxplots presented in Figure \ref{fig:result_boxplot} suggest a deviation from the normality assumption, the sample size of 500 iterations per method invokes the central limit theorem. 
+Consequently, the sampling distribution of the mean converges toward a normal distribution, thereby justifying the continued use of parametric testing despite the initial distributional characteristics of the raw data.
+
+
+Furthermore, the standard deviations reported in Table \ref{tab:results_bench} exhibit substantial variation, suggesting that the assumption of homoscedasticity may be violated. 
+To formally evaluate the homogeneity of variances, Levene's test is employed to determine whether the variances across the different groups are statistically equivalent. 
+The null hypothesis $H_0$ for Levene's test posits that the population variances are equal across all groups, which can be formally expressed as:
+
 
 \begin{equation}
-%    $H_0 = \sigma_1^2 = \sigma_2^2 = \sigma_3^2 $
+    H_0 = \sigma_1^2 = \sigma_2^2 = . . . \sigma_k^2 
 \end{equation}
 
-If the variances of the groups are not signicantly different, the Null is rejected and heterscedasticty is supposed.
-The results are displayed in table \todo{insert table}
 
-The results indicate, that the variances are heterscedastic, hence the pooled variance estimate becomes biased toward the groups with larger variances, which can lead to an inaccurate calculation of the p-value.
-That increases the probability of a Type I error and results in inaccurate interpretation.
-To further analyse the variances, the figure \ref{fig:ecdf} displays a ECDF (Empirical Cumulative Distribution Function) plot
-
-\begin{figure}[h] 
-    \centering
-        \includegraphics[width=1\linewidth]{Images/ECDF.pdf}
-    \caption{ECDF plot of Experimental Results}
-    \label{fig:ecdf}
-\end{figure}
-
-The ECDF plot visualizes the distribution of the datset.
-Therefore it plots the cumulative proportions of the data.
-At the ordinate are the percentiles displayed and on the abzyssa are the scores.
-If the slope is steep, it indicates a high concentration of data in that range.
-If the slope is flat, it indicates a low concentration of data in that range.
-
-
-
-
-
-To mitigate those problems I will deploy non-paramatric test.
-First I will implement the Friedmann test as a global test.
-After that I will apply the pairwise Wilcoxon-signed-rank test to further analyse the differences in performances.
-
-
-The Friedmann test can be used to analyse if statistical differences are between more than two groups.
-It does not need normally distributed data but heterscedastic variances have negative consequences as well.
-If the differences between the variances are substaintial, the results of the friedmann test suffer.
-In that situation, the test does compares the mean rank and not the median of the estimators. 
-
-
-It is a within-subject design, hence the observations have to be originated from the same dataset.
-Furthermore, the samples have to independend of each other.
-My experiments used the randperm function, hence for every run the results were estimated from a different dataset, ensureing independence.
-To be able to rank the observations, the results have to be at least ordinarily scaled. 
-This requirement is met, because the results are continously scaled. 
-
-The main idea is to assign a rank to every result of all runs made before.
-To do so, all results of one metric are put into one 
-The Null of this test is as follows:
-
-
-
-
-
-The authors of InterCont utilized a Wilcoxon test to evaluate their results, concluding that their model significantly outperforms alternative methods. 
-Nevertheless, the authors did not specify the exact test variant employed, because there are two Wilcoxon tests: the Wilcoxon signed-rank test and the Wilcoxon rank-sum test (also known as the Mann-Whitney U test).
-I will proceed with the Mann-Withney-U test, because the requieremtents are met.
-
-The Mann-Witheny-U test is a non-parametric statistical hypothesis test designed to compare more than two samples. the Wilcoxon signed-rank test is not applicable to the present experimental results, as the evaluation is restricted to a single dataset. \todo{weak argument, why am I not deploying?}
-The Wilcoxon signed-rank test is a non-parametric statistical hypothesis test designed to compare two related samples, matched samples, or repeated measurements on a single sample to assess whether their population mean ranks differ. 
-In the context of benchmarking machine learning models, this test typically requires performance metrics across multiple independent datasets to establish statistical significance. 
-
-
-
-
-
-
-
-
-
-I made a second experiment where I scripted one shot outlier detection with unsupervised approaches to mcd and knn.
-The goal is to compare the results of the unsueprvised approach to the semisupervised approach.
-The results are displayed in \ref{tab:results_us}
+In this equation, k represents the total number of groups or methods being compared. 
+If the resulting p-value is below the chosen significance level, the null hypothesis is rejected, indicating that the variances are significantly different and that the requirement for a standard ANOVA has not been satisfied.
+The results are displayed in table \ref{tab:levene}
 
 \begin{table}[h]
-\centering 
-\caption{Experimental Results - Unsupervised approaches}
-\begin{tabular}{lcccccc} % l=left aligned, r=right aligned
-        \toprule
-        \textbf{Method}         & \textbf{F1-Score} &  \textbf{ROC AUC}         & \textbf{AUPRC}                        &        \\
-        \midrule
-                MCD                     & 50.00             & \textbf{97.56}            & \textbf{71.04}                        &        \\
-                k-NN (unsupervised)     & 50.00             & 94.54                     & 50.51                                 &        \\
-        \bottomrule
-        
-    \label{tab:results_us}
+\centering
+\caption{Levene's test for homoscedasticity of variances}
+\label{tab:levene}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{Metric}         & \textbf{Statistic} & \textbf{p-value} &           \\
+\midrule
+F1-Score                & 6.19              & 0.00  &    \\
+ROC AUC                 & 71.45             & 0.00  &    \\
+AUPRC                   & 188.76            & 0.00  &    \\
+\bottomrule
 \end{tabular}
 \end{table}
 
-The F1-Score is the same for both methods.
-The remaining results indicate that MCD outperforms k-NN.
+The results across all evaluated metrics demonstrate a significance level of $p < 0.001$, confirming that the requirement for homoscedasticity of variances has not been satisfied. 
+If a standard ANOVA were to be applied in this scenario, the pooled variance estimate would be biased toward the groups characterized by larger variances. 
+Such a distortion increases the probability of a Type I error and leads to inaccurate interpretations of the experimental findings. 
+Consequently, the standard ANOVA is not a suitable method for ensuring valid statistical inference for this dataset.
 
-The both deviate between the ROC AUC and the AUPRC. 
-ROC AUC is 3.02 percentage points bigger for MCD than k-NN, which is a slight difference.
+To mitigate the distributional challenges identified, the non-parametric Friedman test is deployed. 
+This procedure serves as a global statistical test to determine whether significant differences exist across the various methods. 
+Rather than comparing absolute performance values, the Friedman test utilizes the ranks of the results within each individual run. 
+This approach is suitable for analyzing differences between more than two groups. The test assigns a rank of 1 to the best performing method within a run and the highest rank to the worst performer, thereby neutralizing the influence of absolute result magnitudes. 
+While this transformation eliminates the impact of outliers and varying scales, it also reduces the statistical power of the test compared to parametric alternatives. 
+A fundamental requirement of the Friedman test is the independence of the observations. 
+This condition is satisfied in the current study because the runs are shuffled and conducted independently of one another. 
+Subsequently, the mean rank $R_j$ for each method is calculated:
 
-MCD performs 20.53 percentage points better in terms of $AUPRC$ than k-NN which is a big difference and needs more investigation.
-That indicates, that even with the multidimensional skewed dataset, MCD is capable of determinang an unbiased.
 
-The result deviate in comparison to the semi-supervised approaches. 
+The Null hypothesis is defined as: 
+\begin{equation}
+    H_0 : R_1 = R_2 = R_3.
+\end{equation}
+
+
+The test statistics is formally defined as:
+
+\begin{equation}
+    \chi_F^2 = \frac{12n}{k(k+1)} \left[ \sum_{j=1}^{k} R_j^2 - \frac{k(k+1)^2}{4} \right],
+\end{equation}
+
+whereas, $n = 500$ is the number of runs, $k = 3$ the number of methods.  
+The result follows a $\chi^2$ distribution.
+The results are displayed in table \ref{tab:friedman}.
+
+\begin{table}[h]
+\centering
+\caption{Results of the Friedman Test}
+\label{tab:friedman}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{Metric}         & Statistic         & p-value   &    \\
+\midrule
+F1-Score                & 668.24            & 0.00      &    \\
+ROC AUC                 & 225.83            & 0.00      &    \\
+AUPRC                   & 452.15            & 0.00      &    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The application of the Friedman test across all metrics resulted in $p < 0.001$, which provides evidence that at least two methods exhibit statistically significant differences in every instance. 
+Nevertheless, because Levene's test and the boxplots in Figure \ref{fig:result_boxplot} confirm substantial heteroscedasticity, the assumption of identical distribution shapes is not satisfied. 
+Under these conditions, the Friedman test is interpreted as a measure of stochastic dominance rather than a direct comparison of medians. 
+This interpretation identifies which method consistently achieves superior rankings throughout the experimental runs, thereby accounting for the distributional variations present in the data.
+
+
+To further delineate specific performance differentials, a pairwise Wilcoxon signed-rank test is conducted. 
+This non-parametric procedure is frequently utilized within outlier detection literature, as exemplified by \citet{shenkar2022anomaly}. 
+The test is appropriate for paired observations, wherein each data point in one group corresponds directly to a specific observation in the comparison group. 
+Given that the evaluations are conducted on the same datasets, the observations are inherently linked across methods, satisfying the requirement for dependent samples despite the stochastic nature of individual runs. 
+The test evaluates the null hypothesis that the median of the differences between the paired observations is zero. 
+By ranking the absolute differences between the pairs and assigning the sign of the original difference to these ranks, the Wilcoxon signed-rank test provides a robust assessment of whether one method systematically outperforms another without requiring the assumption of normally distributed differences.
+
+\begin{table}[h]
+\centering
+\caption{Results of the Wilcoxon-Signed-Rank Test}
+\label{tab:wilcoxon}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{Metric}         & F1-Score                     & ROC AUC                        & AUPRC                         &    \\
+\midrule
+InterCont vs k-NN       & $p < 8.40 \times 10^{-81}$   & $p < 6.39 \times 10^{-31}$     & $p < 6.11 \times 10^{-57}$    &    \\
+InterCont vs MCD        & $p < 3.93 \times 10^{-72}$   & $p < 3.29 \times 10^{-46}$     & $p < 1.92 \times 10^{-76}$    &    \\
+k-NN vs MCD             & $p < 4.98 \times 10^{-31}$   & $p < 2.68 \times 10^{-1}$      & $p < 1.58 \times 10^{-06}$    &    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Wilcoxon signed-rank test involves a structured sequence of computational steps. 
+Initially, the difference $d_i$ is calculated for every paired observation between two methods. 
+Observations where $d_i = 0$ are excluded from the analysis. The remaining absolute differences $\mid d_i\mid$ are then ranked from smallest to largest, where the smallest non-zero difference is assigned rank 1. 
+In instances where multiple pairs exhibit identical absolute differences, a tie-breaking procedure is applied by assigning the mean of the ranks that would have otherwise been allocated to those positions. 
+Following the ranking process, the original signs of the differences are reapplied to the ranks, distinguishing between positive and negative deviations. 
+These signed ranks are then summed to determine the test statistic, which facilitates the assessment of whether the performance of one method significantly deviates from the other.
+
+
+The ranks are subsequently summed according to their respective signs, yielding $W^+$ for the sum of positive ranks and $W^-$ for the sum of negative ranks. 
+The test statistic $W$ is typically defined as the smaller of these two sums. 
+If the values of $W^+$ and $W^-$ are approximately equal, the resulting test statistic will fail to reach statistical significance, suggesting that there is no systematic difference between the methods. 
+Conversely, a substantial disparity between the two sums indicates that one method consistently outperforms the other, leading to a rejection of the null hypothesis. 
+This comparison effectively determines whether the direction of the differences between the paired runs is consistent enough to be considered statistically significant rather than the result of random variation.
+
+
+With $n = 500$, the Central Limit Theorem can be applied. 
+Consequently, instead of computing the exact distribution of the Wilcoxon statistic, a normal approximation is used to calculate a Z-score.
+Therefore the mean and standard deviations are calcultes as follows:
+
+\begin{equation}
+    \mu_W = \frac{n(n+1)}{4} , \sigma_W = \sqrt{\frac{n(n+1)(2n+1)}{24}}
+\end{equation}
+
+The parameters are used to calculate the Z-Score.
+The results are displayed in table \ref{tab:wilcoxon}
+To control the family-wise error rate due to multiple comparisons, we applied a Bonferroni correction. With three pairwise comparisons, the significance threshold was adjusted from $\alpha = 0.05$ to $\alpha = 0.0167$.
+
+
+Pairwise comparisons between InterCont and the baseline methods demonstrate that InterCont's performance is statistically superior across all evaluated metrics with $p < 0.001$, maintaining significance even after applying the Bonferroni correction. 
+The only non-significant difference was observed between MCD and k-NN regarding the ROC AUC with $p > 0.1$.
+
+
+\subsubsection{Differences in Performance of k-NN}
+This chapter will further analyse the results of k-NN because the results of this thesis deviate with the results of k-NN in the paper of \citet{shenkar2022anomaly}.
+Therefore the setup used for k-NN in this thesis will be changed to make robustnesschecks, which include different distance measurements, values of k and normalization.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%To further analyse the variances, the figure \ref{fig:ecdf} displays a ECDF (Empirical Cumulative Distribution Function) plot
+
+%\begin{figure}[h] 
+%    \centering
+%        \includegraphics[width=1\linewidth]{Images/ECDF.pdf}
+%    \caption{ECDF plot of Experimental Results}
+%    \label{fig:ecdf}
+%\end{figure}
+
+%The ECDF plot visualizes the distribution of the datset.
+%Therefore it plots the cumulative proportions of the data.
+%At the ordinate are the percentiles displayed and on the abzyssa are the scores.
+%If the slope is steep, it indicates a high concentration of data in that range.
+%If the slope is flat, it indicates a low concentration of data in that range.
+
+
+
+
+
+%I made a second experiment where I scripted one shot outlier detection with unsupervised approaches to mcd and knn.
+%The goal is to compare the results of the unsueprvised approach to the semisupervised approach.
+%The results are displayed in \ref{tab:results_us}
+
+%\begin{table}[h]
+%\centering 
+%\caption{Experimental Results - Unsupervised approaches}
+%\begin{tabular}{lcccccc} % l=left aligned, r=right aligned
+%        \toprule
+%        \textbf{Method}         & \textbf{F1-Score} &  \textbf{ROC AUC}         & \textbf{AUPRC}                        &        \\
+%        \midrule
+%                MCD                     & 50.00             & \textbf{97.56}            & \textbf{71.04}                        &        \\
+%                k-NN (unsupervised)     & 50.00             & 94.54                     & 50.51                                 &        \\
+%        \bottomrule
+%        
+%    \label{tab:results_us}
+%\end{tabular}
+%\end{table}
+
+%The F1-Score is the same for both methods.
+%The remaining results indicate that MCD outperforms k-NN.
+
+%The both deviate between the ROC AUC and the AUPRC. 
+%ROC AUC is 3.02 percentage points bigger for MCD than k-NN, which is a slight difference.
+
+%MCD performs 20.53 percentage points better in terms of $AUPRC$ than k-NN which is a big difference and needs more investigation.
+%That indicates, that even with the multidimensional skewed dataset, MCD is capable of determinang an unbiased.
+
+%The result deviate in comparison to the semi-supervised approaches. 
 

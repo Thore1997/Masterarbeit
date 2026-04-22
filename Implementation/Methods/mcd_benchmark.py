@@ -19,7 +19,7 @@ def run_single_mcd(train_data, test_data, test_labels, contamination=0.077):
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    clf = MCD(contamination=0.20, random_state=42)
+    clf = MCD(contamination=0.154, random_state=42)
     clf.fit(X_train_scaled)
 
     scores = clf.decision_function(X_test_scaled)
