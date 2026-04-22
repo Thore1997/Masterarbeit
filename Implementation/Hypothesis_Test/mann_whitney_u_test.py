@@ -1,9 +1,9 @@
 import pandas as pd
 from scipy.stats import mannwhitneyu
 
-df_intercont = pd.read_csv('Results/results_intercont.csv', decimal=',')
-df_mcd = pd.read_csv('Results/results_mcd.csv', decimal=',')
-df_knn = pd.read_csv('Results/results_knn.csv', decimal=',')
+df_intercont = pd.read_csv('Results/results_intercont.csv', decimal=',', sep=None, engine='python')
+df_mcd = pd.read_csv('Results/results_mcd.csv', decimal=',', sep=None, engine='python')
+df_knn = pd.read_csv('Results/results_knn.csv',  decimal=',',sep=None, engine='python')
 
 metrics = ['f1_score', 'roc_auc', 'auprc']
 

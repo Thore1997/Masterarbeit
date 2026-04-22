@@ -1,10 +1,10 @@
 import numpy as np
 
 # Load the file
-data = np.load('Results/scores_intercont.npz')
+data = np.load('Results/scores_mcd.npz')
 
-# See what's inside (the keys)
-print(data.files)
+# Print the names of the keys
+print("Keys in this file:", data.files)
 
-# Access a specific array using its key
-array1 = data['f_1']
+# It's good practice to close it afterward
+data.close()

@@ -28,6 +28,10 @@ def start_semi_knn_benchmark(dataset_name='wine', num_splits=1):
     # Speicher für die Metriken
     results = {'f1': [], 'auc': [], 'auprc': []}
 
+    # Listen zum Sammeln ALLER Vorhersagen für den globalen Plot
+    all_y_true = []
+    all_y_scores = []
+
     print(f"--- Starte Semi-Supervised k-NN Benchmark: {dataset_name} ---")
     print(f"Konfiguration: {num_splits} Splits, k=5, Scaling=RobustScaler")
 
@@ -46,8 +50,6 @@ def start_semi_knn_benchmark(dataset_name='wine', num_splits=1):
             X_train_scaled = scaler.fit_transform(X_train_np)
             X_test_scaled = scaler.transform(X_test_np)
 
-            #actual_contamination = np.sum(y_test_np == 1) / len(y_test_np)
-
             # 3. Model Training (Semi-Supervised)
             clf = KNN(n_neighbors=5, method='largest', contamination=0.154)
             clf.fit(X_train_scaled)
@@ -56,11 +58,9 @@ def start_semi_knn_benchmark(dataset_name='wine', num_splits=1):
             test_scores = clf.decision_function(X_test_scaled)
             test_labels_pred = clf.predict(X_test_scaled)
 
-            # --- SCORES SPEICHERN FÜR PLOT ---
-            if not os.path.exists('Results'):
-                os.makedirs('Results')
-            np.savez('Results/scores_knn.npz', y_true=y_test_np, y_scores=test_scores)
-            print(f">>> k-NN Scores erfolgreich gespeichert.")
+            # Sammle Scores und True Labels für den späteren Export
+            all_y_true.append(y_test_np)
+            all_y_scores.append(test_scores)
 
             # 5. Metriken speichern
             results['f1'].append(f1_score(y_test_np, test_labels_pred))
@@ -72,6 +72,18 @@ def start_semi_knn_benchmark(dataset_name='wine', num_splits=1):
 
         except Exception as e:
             print(f"Fehler in Split {i}: {e}")
+
+    # --- SCORES SPEICHERN FÜR PLOT (Alle 500 Durchläufe kombiniert) ---
+    if len(all_y_true) > 0:
+        if not os.path.exists('Results'):
+            os.makedirs('Results')
+
+        # Konkateniere alle Listen zu großen Arrays
+        final_y_true = np.concatenate(all_y_true)
+        final_y_scores = np.concatenate(all_y_scores)
+
+        np.savez('Results/scores_knn.npz', y_true=final_y_true, y_scores=final_y_scores)
+        print(f"\n>>> Global k-NN Scores ({len(final_y_true)} Samples) erfolgreich gespeichert.")
 
     # --- CSV EXPORT & Finale Auswertung ---
     if len(results['f1']) > 0:
