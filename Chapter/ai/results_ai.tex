@@ -17,7 +17,7 @@ The analysis is further extended through the plotting of $AUPRC$ and $ROC AUC$ c
 \textbf{Method}         & \textbf{F1-Score} & \textbf{SD} & \textbf{ROC AUC} & \textbf{SD} & \textbf{AUPRC} & \textbf{SD}          \\
 \midrule
 MCD  (semi-supervised)  & 64.14             & 9.41  &  95.94            & 3.59     & 77.82             & 16.43  \\
-k-NN (semi-supervised)  & 68.12             & 8.62  &  95.87            & 1.89     & 72.85             & 11.54  \\
+k-NN (semi-supervised)  & 72.18             & 10.62 &  96.17            & 2.09     & 77.82             & 11.96  \\
 InterCont               & \textbf{85.64}    & 8.77  &  \textbf{97.97}   & 2.13     & \textbf{92.93}    & 7.31   \\
 \bottomrule
 \end{tabular}
@@ -25,17 +25,17 @@ InterCont               & \textbf{85.64}    & 8.77  &  \textbf{97.97}   & 2.13  
 
 
 The performance utilizes F1-Score, ROC AUC, and AUPRC, accompanied by their respective standard deviations (SD). 
-In the F1-Score analysis, InterCont yields the highest mean at 85.64, followed by k-NN at 68.12 and MCD at 64.14. 
-The SD values indicate that k-NN maintains the lowest variability at 8.62, while MCD and InterCont show higher fluctuations at 9.41 and 10.50.
+In the F1-Score analysis, InterCont yields the highest mean at 85.64, followed by k-NN at 72.18 and MCD at 64.14. 
+The SD values indicate that InterCont maintains the lowest variability at 8.77, while MCD and k-NN show higher fluctuations at 9.41 and 10.62.
 
 
-The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 96.82, k-NN at 95.87, and MCD at 95.94. 
-The stability of these scores is evidenced by low SD values, with k-NN demonstrating the least variance at 1.89, compared to 2.08 for InterCont and 3.59 for MCD.
+The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 96.82, k-NN at 96.17, and MCD at 95.94. 
+The stability of these scores is evidenced by low SD values, with k-NN demonstrating the least variance at 2.09, compared to 2.13 for InterCont and 3.59 for MCD.
 
 
-For the AUPRC metric, InterCont achieves a mean of 78.23, significantly higher than MCD at 77.82 and k-NN at 72.85. 
-The InterCont method exhibits near-zero variance with an SD of 14.14. 
-Conversely, MCD shows the highest instability in this metric with an SD of 16.43, while k-NN records an SD of 11.54. 
+For the AUPRC metric, InterCont achieves a mean of 92.93, significantly higher than MCD and k-NN at 77.82. 
+The InterCont method exhibits the lowest variance with an SD of 7.31. 
+Conversely, MCD shows the highest instability in this metric with an SD of 16.43, while k-NN records an SD of 11.96. 
 
 
 \begin{figure}[h] 
@@ -47,23 +47,21 @@ Conversely, MCD shows the highest instability in this metric with an SD of 16.43
 
 
 The firgure \ref{fig:result_boxplot} displays boxplots for the resultig metrics for each method.
-In terms of the F1-Score, InterCont demonstrates the highest median performance, approximately at 0.80, though it exhibits a substantial spread with an interquartile range extending from 0.70 to 0.90 and a notable lower outlier at 0.20. 
-The k-NN algorithm follows with a median F1-Score of approximately 0.67 and a tighter distribution than InterCont, while MCD displays the lowest median performance at roughly 0.59 with simililar IQR of k-nn. 
+Regarding the ROC AUC metric, InterCont demonstrates the highest median performance, closely approaching a value of 1.0, while maintaining a relatively narrow interquartile range despite several lower-reaching outliers. 
+The MCD and k-NN methods exhibit lower median ROC AUC values, approximately 0.96, with MCD displaying notably higher variance and a wider distribution of scores in the lower deciles. 
 
 
-The ROC AUC metric reveals that all three methods maintain high discriminative ability, as all median values exceed 0.95. 
-InterCont achieves the highest median ROC AUC, nearing 0.97, followed closely by MCD and k-NN. 
-However, both InterCont and MCD show a high frequency of lower outliers in this metric, with MCD exhibiting a particularly extreme outlier below 0.75, whereas k-NN presents a more concentrated distribution with fewer extreme deviations. 
+In the AUPRC evaluation, InterCont again maintains a superior median position above 0.90, whereas the performance of MCD and k-NN declines significantly.
+MCD in particular shows a substantial spread, with its whiskers extending down to 0.3 and further outliers reaching near 0.2. 
 
 
-Regarding the AUPRC, InterCont slighlich better performance than MCD.
-The median performance levels for InterCont is around 0.79 and slightly above.
-Both maintain an upper quartile reaching 0.90. 
-The k-NN method demonstrates a lower median AUPRC of approximately 0.72 and a narrower interquartile range, indicating more consistent but generally lower precision-recall trade-offs compared to the other two approaches. 
-MCD shows the widest IQR reaching from 0.3 to 1.
+The F1 Score results further distinguish the algorithms, as InterCont achieves a higher and more consistent score than its counterparts. 
+K-NN shows a greater median F1 Score of 0.7 to approxamitley 0.58 of MCD.
+MCD shows in this regard a greatest volatility of all methods.
 
 
-Across all metrics, InterCont consistently yields the highest median scores if only slightly in ROC AUC and AUPRC, whereas k-NN tends to show less variability.
+Across all three metrics, InterCont consistently outperforms MCD and k-NN in terms of both central tendency and overall stability, despite the presence of isolated performance drops indicated by the outlier points. 
+These results suggest that InterCont provides the most robust classification performance for the underlying dataset, particularly when considering the precision-recall trade-off captured by the AUPRC.
 
 
 \subsubsection*{Statistical Inference}
@@ -97,9 +95,9 @@ The results are displayed in table \ref{tab:levene}
 \toprule
 \textbf{Metric}         & \textbf{Statistic} & \textbf{p-value} &           \\
 \midrule
-F1-Score                & 6.19              & 0.00  &    \\
-ROC AUC                 & 71.45             & 0.00  &    \\
-AUPRC                   & 188.76            & 0.00  &    \\
+F1-Score                & 17.30             & 0.00  &    \\
+ROC AUC                 & 61.12             & 0.00  &    \\
+AUPRC                   & 177.97            & 0.00  &    \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -143,9 +141,9 @@ The results are displayed in table \ref{tab:friedman}.
 \toprule
 \textbf{Metric}         & Statistic         & p-value   &    \\
 \midrule
-F1-Score                & 668.24            & 0.00      &    \\
-ROC AUC                 & 225.83            & 0.00      &    \\
-AUPRC                   & 452.15            & 0.00      &    \\
+F1-Score                & 648.59            & 0.00      &    \\
+ROC AUC                 & 180.54            & 0.00      &    \\
+AUPRC                   & 359.91            & 0.00      &    \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -172,8 +170,8 @@ By ranking the absolute differences between the pairs and assigning the sign of 
 \textbf{Metric}         & F1-Score                     & ROC AUC                        & AUPRC                         &    \\
 \midrule
 InterCont vs k-NN       & $p < 8.40 \times 10^{-81}$   & $p < 6.39 \times 10^{-31}$     & $p < 6.11 \times 10^{-57}$    &    \\
-InterCont vs MCD        & $p < 3.93 \times 10^{-72}$   & $p < 3.29 \times 10^{-46}$     & $p < 1.92 \times 10^{-76}$    &    \\
-k-NN vs MCD             & $p < 4.98 \times 10^{-31}$   & $p < 2.68 \times 10^{-1}$      & $p < 1.58 \times 10^{-06}$    &    \\
+InterCont vs MCD        & $p < 5.50 \times 10^{-51}$   & $p < 6.61 \times 10^{-34}$     & $p < 1.13 \times 10^{-63}$    &    \\
+k-NN vs MCD             & $p < 2.90 \times 10^{-54}$   & $p < 1.15 \times 10^{-1}$      & $p < 1.32 \times 10^{-01}$    &    \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -207,12 +205,36 @@ To control the family-wise error rate due to multiple comparisons, we applied a 
 
 
 Pairwise comparisons between InterCont and the baseline methods demonstrate that InterCont's performance is statistically superior across all evaluated metrics with $p < 0.001$, maintaining significance even after applying the Bonferroni correction. 
-The only non-significant difference was observed between MCD and k-NN regarding the ROC AUC with $p > 0.1$.
+MCD in comparison to k-NN shows no statisticall differences regarding the ROC AUC and AUPRC with $p > 0.1$.
 
 
-\subsubsection{Differences in Performance of k-NN}
-This chapter will further analyse the results of k-NN because the results of this thesis deviate with the results of k-NN in the paper of \citet{shenkar2022anomaly}.
-Therefore the setup used for k-NN in this thesis will be changed to make robustnesschecks, which include different distance measurements, values of k and normalization.
+As discussed before, the normalization method applied in the k-NN could not be determined. 
+Therefore a grid search will employed again to show if the result will reach the results of the paper of \citet{shenkar2022anomaly}
+For that the same setup was used as before in the k-nn benchmark. 
+The most commonly used normalization methods were applied: Min-Max-Normalization and Z-Score normalization (StandardScaler)
+The normalization settings where changed after performing k-NN in 500 runs for different values of $k$.
+
+\begin{table}[h]
+\centering
+\caption{Results of the Friedman Test}
+\label{tab:normalizations}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{Metric}         & Value $K$         & \textbf{F1-Score} & \textbf{SD}       &       \\
+\midrule
+Min-Max-Normalization   & 1                 & 78.06              & 8.95             &       \\
+Z-Score Normalization   & 1                 & 77.26              & 9.95             &       \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The different values for $k$ are: 1, 3, 5, 7, 9, 11, 15, 20. 
+Because thats a comparison of the paper, only the mean and SD of the F1 Score is displayed in the table \ref{tab:normalizations}.
+To test the statistical significance of the difference a friedman test was applied.
+There is a statistical significance between those result with $p < 0.001$, hence the depending on the normalization of the data the F1 Score differs.
+
+
+
 
 
 

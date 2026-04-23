@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # Daten laden
 df_intercont = pd.read_csv('Results/results_intercont.csv', decimal=',', sep=None, engine='python')
 df_mcd = pd.read_csv('Results/results_mcd.csv', decimal=',', sep=None, engine='python')
-df_knn = pd.read_csv('Results/results_knn.csv', decimal=',', sep=None, engine='python')
+df_knn = pd.read_csv('Results/results_knn_legacy.csv', decimal=',', sep=None, engine='python')
 
 metriken = ['f1_score', 'roc_auc', 'auprc']
 colors = {"InterCont": "#AEC6CF", "MCD": "#FFB347", "k-NN": "#77DD77"}

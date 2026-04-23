@@ -4,7 +4,7 @@ from scipy.stats import kruskal
 
 df_intercont = pd.read_csv('Results/results_intercont.csv', decimal=',')
 df_mcd = pd.read_csv('Results/results_mcd.csv', decimal=',')
-df_knn = pd.read_csv('Results/results_knn.csv', decimal=',')
+df_knn = pd.read_csv('Results/results_knn_legacy.csv', decimal=',')
 
 metrics = ['f1_score', 'roc_auc', 'auprc']
 

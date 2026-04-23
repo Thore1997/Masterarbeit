@@ -2,8 +2,8 @@ import scipy.io
 import os
 import numpy as np
 import pandas as pd
-from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
-from sklearn.preprocessing import RobustScaler
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import StandardScaler
 from pyod.models.knn import KNN
 from data_loader import Data_Loader
 
@@ -19,7 +19,7 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
         print(f"FEHLER: Datei {file_path} nicht gefunden.")
         return
 
-    results = {'f1': [], 'auc': [], 'auprc': []}
+    results = {'f1': []}
     all_y_true = []
     all_y_scores = []
 
@@ -36,7 +36,7 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
             y_test_np = test_labels.numpy().ravel()
 
             # 2. Scaling
-            scaler = RobustScaler()
+            scaler = StandardScaler()
             X_train_scaled = scaler.fit_transform(X_train_np)
             X_test_scaled = scaler.transform(X_test_np)
 
@@ -67,8 +67,6 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
 
             # 5. Metriken speichern
             results['f1'].append(f1_score(y_test_np, test_labels_pred))
-            results['auc'].append(roc_auc_score(y_test_np, test_scores))
-            results['auprc'].append(average_precision_score(y_test_np, test_scores))
 
             if (i + 1) % 50 == 0:
                 print(f"Split {i + 1}/{num_splits} fertig...")
@@ -77,26 +75,18 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
             print(f"Fehler in Split {i}: {e}")
 
     # --- Speicher- und Export-Logik (unverändert) ---
-    if len(all_y_true) > 0:
-        if not os.path.exists('Results'): os.makedirs('Results')
-        final_y_true = np.concatenate(all_y_true)
-        final_y_scores = np.concatenate(all_y_scores)
-        np.savez('Results/scores_knn.npz', y_true=final_y_true, y_scores=final_y_scores)
 
     if len(results['f1']) > 0:
         df_results = pd.DataFrame({
             'split': list(range(1, len(results['f1']) + 1)),
             'f1_score': results['f1'],
-            'roc_auc': results['auc'],
-            'auprc': results['auprc']
+
         })
-        df_results.to_csv(f"knn_results_{dataset_name}.csv", index=False, sep=';')
+        df_results.to_csv(f"knn_results_stan.csv", index=False, sep=';')
         print(f"\n" + "=" * 45)
         print(f"ERGEBNISSE MIT TOP-N THRESHOLD ({dataset_name})")
         print("-" * 45)
         print(f"F1-Score: {df_results['f1_score'].mean():.4f} ± {df_results['f1_score'].std():.4f}")
-        print(f"ROC-AUC:  {df_results['roc_auc'].mean():.4f} ± {df_results['roc_auc'].std():.4f}")
-        print(f"AUPRC:    {df_results['auprc'].mean():.4f} ± {df_results['auprc'].std():.4f}")
         print("=" * 45)
 
 
