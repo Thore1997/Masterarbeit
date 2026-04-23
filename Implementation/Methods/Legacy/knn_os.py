@@ -7,7 +7,7 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
 
 # 1. Load Data
-file_path = os.path.join('Reproduction', 'Data', 'wine.mat')
+file_path = os.path.join('Reproduction', 'Data', '../wine.mat')
 mat_data = scipy.io.loadmat(file_path)
 X = mat_data['X']
 y = mat_data['y'].ravel()

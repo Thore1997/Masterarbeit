@@ -1,117 +1,103 @@
-import scipy.io
 import os
 import numpy as np
-import pandas as pd  # Neu für den CSV-Export
-from sklearn.model_selection import KFold
-from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
+import pandas as pd
+from itertools import product
+from sklearn.metrics import f1_score
 from sklearn.preprocessing import RobustScaler, StandardScaler, MinMaxScaler
 from pyod.models.knn import KNN
 from data_loader import Data_Loader
 
 
-def start_semi_knn_benchmark(dataset_name='wine', num_splits=1):
-    """
-    Führt einen Semi-Supervised k-NN Benchmark durch.
-    Trainiert auf sauberen Normaldaten, testet auf Mix aus Normalen & Anomalien.
-    """
+def run_extended_grid_search(dataset_name='wine', num_splits=50):
     dl = Data_Loader()
 
-    # Pfad-Logik
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.abspath(os.path.join(current_dir, "../../"))
+    param_grid = {
+        'n_neighbors': [5, 7, 9, 10, 11, 13, 15, 17, 19, 20],
+        'scaler': ['robust', 'standard', 'minmax']
+    }
+
+    keys, values = zip(*param_grid.items())
+    combinations = [dict(zip(keys, v)) for v in product(*values)]
+
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
     file_path = os.path.join(repo_root, "Reproduction", "Data", f"{dataset_name}.mat")
 
     if not os.path.exists(file_path):
         print(f"FEHLER: Datei {file_path} nicht gefunden.")
         return
 
-    # Speicher für die Metriken
-    results = {'f1': [], 'auc': [], 'auprc': []}
+    grid_results = []
 
-    # Listen zum Sammeln ALLER Vorhersagen für den globalen Plot
-    all_y_true = []
-    all_y_scores = []
+    for params in combinations:
+        k = params['n_neighbors']
+        s_name = params['scaler']
 
-    print(f"--- Starte Semi-Supervised k-NN Benchmark: {dataset_name} ---")
-    print(f"Konfiguration: {num_splits} Splits, k=5, Scaling=RobustScaler")
+        print(f"Testing: Scaler={s_name}, k={k}")
+        results = {'f1': []}
 
-    for i in range(num_splits):
-        try:
-            # 1. Daten laden (50/50 Split)
-            train_data, test_data, test_labels = dl.build_train_test_generic_matfile(file_path)
+        for i in range(num_splits):
+            try:
+                # 1. Fresh Data for every split
+                train_data, test_data, test_labels = dl.build_train_test_generic_matfile(file_path)
 
-            # Konvertierung für PyOD
-            X_train_np = train_data.numpy()
-            X_test_np = test_data.numpy()
-            y_test_np = test_labels.numpy().ravel()
+                # 2. FIX: Create a FRESH scaler instance here to prevent any state leakage
+                if s_name == 'robust':
+                    scaler = RobustScaler()
+                elif s_name == 'standard':
+                    scaler = StandardScaler()
+                else:
+                    scaler = MinMaxScaler()
 
-            # 2. Scaling (Fit nur auf Train!)
-            scaler = StandardScaler()
-            X_train_scaled = scaler.fit_transform(X_train_np)
-            X_test_scaled = scaler.transform(X_test_np)
+                # 3. Fit on Train, Transform Test (Proper logic)
+                X_train = scaler.fit_transform(train_data.numpy())
+                X_test = scaler.transform(test_data.numpy())
+                y_test = test_labels.numpy().ravel()
 
-            # 3. Model Training (Semi-Supervised)
-            clf = KNN(n_neighbors=5, method='largest', contamination=0.154)
-            clf.fit(X_train_scaled)
+                # Model
+                clf = KNN(n_neighbors=k)
+                clf.fit(X_train)
 
-            # 4. Scoring & Predictions
-            test_scores = clf.decision_function(X_test_scaled)
-            test_labels_pred = clf.predict(X_test_scaled)
+                test_scores = clf.decision_function(X_test)
+                n_anomalies = int(np.sum(y_test))
+                top_indices = np.argsort(test_scores)[-n_anomalies:]
 
-            # Sammle Scores und True Labels für den späteren Export
-            all_y_true.append(y_test_np)
-            all_y_scores.append(test_scores)
+                y_pred = np.zeros_like(y_test)
+                y_pred[top_indices] = 1
 
-            # 5. Metriken speichern
-            results['f1'].append(f1_score(y_test_np, test_labels_pred))
-            results['auc'].append(roc_auc_score(y_test_np, test_scores))
-            results['auprc'].append(average_precision_score(y_test_np, test_scores))
+                results['f1'].append(f1_score(y_test, y_pred))
 
-            if (i + 1) % 50 == 0:
-                print(f"Split {i + 1}/{num_splits} fertig...")
+            except Exception as e:
+                print(f"Error: {e}")
+                continue
 
-        except Exception as e:
-            print(f"Fehler in Split {i}: {e}")
-
-    # --- SCORES SPEICHERN FÜR PLOT (Alle 500 Durchläufe kombiniert) ---
-    if len(all_y_true) > 0:
-        if not os.path.exists('Results'):
-            os.makedirs('Results')
-
-        # Konkateniere alle Listen zu großen Arrays
-        final_y_true = np.concatenate(all_y_true)
-        final_y_scores = np.concatenate(all_y_scores)
-
-        np.savez('Results/scores_knn.npz', y_true=final_y_true, y_scores=final_y_scores)
-        print(f"\n>>> Global k-NN Scores ({len(final_y_true)} Samples) erfolgreich gespeichert.")
-
-    # --- CSV EXPORT & Finale Auswertung ---
-    if len(results['f1']) > 0:
-        # Erstelle DataFrame für den Export
-        df_results = pd.DataFrame({
-            'split': list(range(1, len(results['f1']) + 1)),
-            'f1_score': results['f1'],
-            'roc_auc': results['auc'],
-            'auprc': results['auprc']
+        # Aggregate metrics
+        grid_results.append({
+            'scaler': s_name,
+            'k': k,
+            'f1_mean': np.mean(results['f1']),
+            'f1_std': np.std(results['f1'])  # Added this so the print works
         })
 
-        # CSV speichern
-        csv_filename = f"knn_results_{dataset_name}.csv"
-        df_results.to_csv(csv_filename, index=False)
-        print(f"\n[DATEI GESPEICHERT] Einzelne Ergebnisse unter: {csv_filename}")
+    # --- Reporting ---
+    df_grid = pd.DataFrame(grid_results)
 
-        # Finale Statistik-Ausgabe
-        print(f"\n" + "=" * 45)
-        print(f"FINALE SEMI-SUPERVISED k-NN ERGEBNISSE ({dataset_name})")
-        print("-" * 45)
-        print(f"F1-Score: {df_results['f1_score'].mean():.4f} ± {df_results['f1_score'].std():.4f}")
-        print(f"ROC-AUC:  {df_results['roc_auc'].mean():.4f} ± {df_results['roc_auc'].std():.4f}")
-        print(f"AUPRC:    {df_results['auprc'].mean():.4f} ± {df_results['auprc'].std():.4f}")
-        print("=" * 45)
-    else:
-        print("Keine erfolgreichen Durchläufe zu protokollieren.")
+    print("\n" + "★" * 50)
+    print(f" TOP 5 CONFIGURATIONS FOR {dataset_name.upper()} ".center(50, " "))
+    print("★" * 50)
+
+    top_5 = df_grid.sort_values(by='f1_mean', ascending=False).head(5).reset_index(drop=True)
+
+    print(top_5.to_string(index=True, formatters={
+        'f1_mean': '{:.4f}'.format,
+        'f1_std': '{:.4f}'.format
+    }))
+
+    print("-" * 50)
+    if not top_5.empty:
+        best = top_5.iloc[0]
+        print(f"WINNER: Scaler={best['scaler']}, k={int(best['k'])} | F1: {best['f1_mean']:.4f}")
+    print("=" * 50)
 
 
 if __name__ == "__main__":
-    # Konsistent 'wine' nutzen
-    start_semi_knn_benchmark(dataset_name='wine', num_splits=500)
+    run_extended_grid_search(dataset_name='wine', num_splits=50)
