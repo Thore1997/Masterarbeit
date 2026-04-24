@@ -5,6 +5,37 @@ What do the benchmark mean? Why are some low and so higher?
 
 \section{Theoretical Interpretation}
 
+The empirical findings of this study demonstrate that the Internal Contrastive Learning (InterCont) method achieves superior performance across all evaluated metrics compared to the established benchmarks of k-Nearest Neighbors (k-NN) and Minimum Covariance Determinant (MCD). 
+This performance advantage stems from the architectural capacity of InterCont to move beyond simple distance metrics by learning the complex, non-linear relationships inherent between data dimensions. 
+By utilizing a sliding window approach for data augmentation, the algorithm effectively captures local feature dependencies. 
+The integration of an ensemble strategy involving the permutation of dimensions ensures that the model systematically evaluates various feature orderings, thereby preventing critical relationships from being omitted due to arbitrary data structuring. 
+Furthermore, the implementation of a double normalization process—applying both row-wise and column-wise L2 normalization—ensures that observations are projected onto a unit hypersphere. 
+This mechanism, in conjunction with the Tanh activation function in the first layer of Network F which centers input data, prevents individual data points from being erroneously classified as outliers based solely on the absolute magnitude of extreme values, focusing instead on the orientation and alignment of feature representations.
+
+
+The UMAP visualization reveals that the outliers in the Wine dataset form a highly concentrated and isolated cluster, spatially distinct from the cohesive yet more dispersed inlier distribution. 
+This topological formation suggests that the dataset primarily contains global and cluster outliers rather than contextual outliers, which are typically defined by deviance within a local neighborhood rather than global parameters. 
+hile such a clear geometric separation generally favors distance-based approaches like k-NN and MCD, this dataset characteristic also facilitated a highly effective distinction for the InterCont algorithm, as the chemical profiles of the anomalies are significantly and consistently different from those of the inliers. 
+However, the fact that InterCont derives its negative samples internally from within the same data instance allows it to define the normal manifold with greater granularity than global statistical models.
+The superiority of InterCont is particularly evident in the Area Under the Precision-Recall Curve (AUPRC), where it reached a mean of 92.93, while k-NN and MCD remained at 77.82. 
+This discrepancy highlights that while the ROC AUC yields optimistic assessments for all methods by incorporating true negatives, the AUPRC reveals that the benchmarks are significantly less effective at identifying the specific minority class
+
+
+Despite this favorable structure, the k-NN algorithm yielded the second-highest predictive performance and remains secondary to the contrastive learning approach. 
+Achieving these results required the parameter k to be set to a strict value of 1, effectively basing the classification of an anomaly on the distance to only a single nearest neighbor. 
+This extreme sensitivity to local proximity suggests a lack of the model-based generalization that InterCont provides through its 200-neuron hidden layer capacity. 
+The significantly lower F1-score of k-NN relative to InterCont indicates a lack of balance between precision and recall, suggesting that even with robust scaling, the Euclidean distance metric—which lacks affine equivariance—fails to capture the full extent of the anomaly class or generates an excessive number of false positives.
+The significantly lower F1-score of k-NN relative to InterCont (72.18 vs. 85.64) suggests that even with robust scaling, the Euclidean distance metric—which lacks affine equivariance—fails to balance precision and recall effectively.
+
+
+The MCD estimator demonstrated the lowest performance among the candidate methods. 
+Notably, the inherent affine equivariance of MCD, which theoretically eliminates the necessity for data normalization, provided no measurable advantage in this context. 
+The superior performance of non-equivariant methods like InterCont and k-NN suggests that their specific mechanics for handling feature interactions are more critical for detection efficacy than the geometric stability offered by robust statistics. 
+Furthermore, the poor results of MCD imply that the underlying data distribution likely deviates from the Gaussian normal distribution assumed by the model. 
+Consequently, the estimated hyper-ellipsoid fails to achieve a clean separation between the inlier distribution and the anomalous observations, as evidenced by the high standard deviation and instability in MCD's AUPRC results.
+This instability is further evidenced by the high standard deviation in MCD’s AUPRC results (SD=16.43), indicating that the robust covariance estimator was highly sensitive to the specific data splits.
+
+
 \section{Geometric Insights}
 \section{Critical Assessment and Statistical Rigor}
 \section{Limitations}
