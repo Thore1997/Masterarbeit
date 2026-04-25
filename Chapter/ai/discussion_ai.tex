@@ -43,6 +43,7 @@ As dimensionality increases, the contrast between distances diminishes. When k>1
 
 
 The MCD estimator demonstrated the lowest performance among the candidate methods. 
+Even though the MCD estimation was done at the training dataset, the model fails 
 Notably, the inherent affine equivariance of MCD, which theoretically eliminates the necessity for data normalization, provided no measurable advantage here. 
 The superior performance of non-equivariant methods like InterCont and k-NN suggests that specific mechanics for handling feature interactions are more critical for detection efficacy than geometric stability. 
 Furthermore, as evidenced by the QQ-Plot (Figure X), the data is not Gaussian distributed, violating the fundamental distributional assumptions of the MCD estimator. 
@@ -90,7 +91,17 @@ In comparison the robust scaler could push instances outside the IQR further awa
 
 
 Nevertheless this results are still not reaching the results of Shenkar and Wolf.
-unfortunately the 
+Maybe the differences accur because of the experiment's setup.
+I implemeted the experiments accordingly to the evualtions protocol of the paper.
+To make the methods comparable, I implemented a semi-supervised approach for all methods.
+Hence the InterCont first sees the normal data, it can abstract the characteristics from it and then apply it to the abnormal dataset.
+In k-NN the same approach was implemented, first the distances between the normal data is estimated and the findings are applied to the abnormal dataset.
+Resulting in an improved performance.
+MCD is inherently unsupervised because it is a statistical method it does not learn something.
+But to make it comparable, the main  parameters, mean and covariance matrix, are estimated from the normal data, hence the the complete dataset could be used for estimation.
+Those parameters were applied to the abnormal dataset.
+This setup could not be found in any other implemetation of MCD. 
+
 
 \section{Critical Assessment and Statistical Rigor}
 \section{Limitations}
