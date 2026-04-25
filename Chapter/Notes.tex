@@ -581,3 +581,25 @@ In summary, the performance metrics for InterCont were higher across all categor
 
 
 
+The hypotheses formulated for this thesis are defined as follows:
+\begin{itemize}
+    \item H1: k-NN will achieve the highest predictive performance in terms of F1 Score.
+    \item H2: InterCont will demonstrate superior performance relative to k-NN and MCD in terms of ROC AUC and AUPRC.
+\end{itemize}
+
+Based on the results presented in \ref{tab:results_bench}, k-NN yields a mean F1 Score of 72.18, whereas InterCont achieves a mean of 85.64. 
+Statistical inference confirms that the difference between k-NN and InterCont is significant at $p < 0.001$, necessitating the rejection of H1.
+
+
+As displayed in table \ref{tab:results_bench}, the ROC AUC results exhibit less variance across metrics.
+Nevertheless, InterCont achieves a mean ROC AUC of 97.97, compared to 96.17 for k-NN and 95.94 for MCD. 
+Statistical analysis further confirms that the performance gaps between InterCont and k-NN, as well as InterCont and MCD, are statistically significant with p<0.001.
+
+
+Similarly, the AUPRC results in table \ref{tab:results_bench} indicate that InterCont attains the highest mean value of 92.93, while k-NN and MCD both reach a mean AUPRC of 77.82. 
+The differences between InterCont and the benchmark methods are statistically significant at $p < 0.001$. 
+Consequently, H2 cannot be rejected, as InterCont consistently outperforms the established benchmark methods across the evaluated metrics.
+
+
+To conlcude, H2 can not be rejected. 
+InterCont consistently outperforms the benchmark methods. 
