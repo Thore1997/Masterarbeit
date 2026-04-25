@@ -1,20 +1,19 @@
-\subsection{Contrastive Learning}
-The method proposed by \citet{shenkar2022anomaly} utilizes an internal contrastive learning algorithm, termed InterCont, for tabular data. 
-This represents a novel application of contrastive learning, a field that has primarily received attention within the domains of computer vision and natural language processing. 
-The fundamental objective of such a network is to differentiate between distinct instances, such as distinguishing an image of an ape from images of other animals, without human intervention.
-To achieve this, the network must extract discriminative features from the input data. 
-\todo{explain why this is representation learning, citing the chapter befor}
+\subsection{Contrastive Learning} 
+
+Contrastive learning represents a paradigm that has gained significant prominence within the fields of computer vision and natural language processing. 
+The framework introduced by \citet{shenkar2022anomaly} adapts these principles for tabular data through an internal contrastive learning algorithm designated as InterCont, marking a distinct advancement in outlier detection methodology. 
+The primary objective of such a network is to differentiate between individual instances by learning discriminative features without the necessity of manual labeling. 
+This process is fundamentally supported by data augmentation, which allows the model to generate multiple perspectives of the same instance. 
+The architectural design of this method facilitates the extraction of complex relationships while distilling the data into its most salient components. 
+Central to this approach is a contrastive loss function, which is mathematically formulated to minimize the distance between an anchor and its positive perturbations in the feature space while simultaneously maximizing the distance from dissimilar negative samples. 
+This section initially delineates the data augmentation techniques prevalent in computer vision to illustrate the conceptual foundation of the approach. 
+Subsequently, the discussion transitions to the specific architectural components of the InterCont method to examine its functional characteristics. 
+Finally, the analysis addresses the general mechanics of the contrastive loss function as implemented within this specific framework.
 
 
-This chapter establishes a framework for analyzing contrastive learning algorithms by detailing their core components. 
-Although various approaches to constructing contrastive learning networks exist, the primary architecture has converged toward a stable structural standard \citep[6]{hu2024comprehensive}. 
-The subsequent sections outline this framework, beginning with data augmentation strategies, using computer vision as a primary example. 
-This is followed by an explanation of the conventional network structure, which typically comprises an encoder network, a projection head, and occasionally a prediction head. 
-The chapter concludes with an examination of the most prominent contrastive loss functions.
-
-
-\subsection*{Data Augmentation}
-To distinguish images from apes from images of other animals without human intervention, the model needs to learn main caracteristics of an ape.
+\subsubsection*{Data Augmentation} 
+Data augmentation plays a critical part for the network to gain discrimminative power.
+For example to differentiate images from apes from images of other animals, the model needs to learn main caracteristics of an ape.
 The model is provided with an anchor (here ape), which represents a specific data instance, such as an image, that serves as the reference point for differentiation. 
 
 \begin{figure}[H]
@@ -35,31 +34,26 @@ The model is provided with an anchor (here ape), which represents a specific dat
     \label{fig:contrastive_intuition}
 \end{figure}
 Various methodologies exist for data augmentation.
-For an extensive overview of these techniques within contrastive learning, see \todo{source}.
 Conversely, a negative sample is a distinct data instance.
 The optimization goal is to maximize the distance between the anchor and negative samples in the feature space relative to the distance between the anchor and positive samples. 
 
 
 Selecting appropriate negative samples remains a significant challenge, as they must be sufficiently informative to provide the necessary signal for the network to learn diverse and robust representations. 
-Hard negatives, which are semantically similar and lie close to the anchor in the feature space, are particularly valuable for this process %\citep{jang2021adversarial}. 
+Hard negatives, which are semantically similar and lie close to the anchor in the feature space, are particularly valuable for this process. %\citep{jang2021adversarial}. 
 By training on a diverse set of such samples, the model enhances its ability to identify the subtle features that distinguish different objects. 
 This mechanism mitigates the risk of overfitting and reduces the impact of data biases, thereby improving the generalization performance of the model.\todo{why?} 
 
-\todo{add: Methods of sampling negatives} 
-\todo{add: Sliding window other papers that use that}
-\todo{add: Sliding Window: critizms: geometric Concentration, syntax vs semantics trade off, selection bias and false negatives}
-\todo{insert solution for sample selection to critize InterCont}
 
-
-\subsubsection*{Network Structure}
-There are plenty of different contrastive learning architectures. 
-
-Nevertheless in this section will concentrate on the Siamese network structure employes in the InterCont method.
-An encoder network is a unit within a neural network architecture that transforms raw input data into a specialized feature space and embedding space.
-The feature space refers to a hidden layer in the network, that expands the dimensionality of the input data to make room for complex relationsships between the data points.
-The embeddig space is an additional smaller layer, that compresses the output of the feature space. 
-This bottelneck design ensures that the remaining noise is discarded and only the discrimminative information is left.
-The network is trained to minimize the reconstruction error, ensuring the encoder retains only the most critical information.
+\subsubsection*{Architecture}
+An autoencoder network comprises a neural network architecture designed to transform raw input data into a specialized feature space and latent embeddings, thereby capturing the most significant characteristics of a given dataset. 
+This architecture typically incorporates multiple hidden layers with varying dimensionalities. 
+The initial hidden layer projects the input vector onto a higher-dimensional space by increasing the number of nodes, which enhances the capacity of the model to represent complex relationships within the data. 
+Subsequently, a second hidden layer compresses this representation into a vector with fewer nodes than the preceding layer. 
+Due to this reduced dimensionality, the network is unable to retain all incoming information and is forced to discard redundant variables. 
+This process facilitates noise reduction and ensures the preservation of the most salient patterns. 
+Finally, an output layer aims to reconstruct the original input dimensions from the compressed representation. 
+The network is trained by minimizing the reconstruction error, a process that ensures the encoder retains only the most critical information necessary to approximate the original signal.
+\citet{hu2024comprehensive} published a well organised survey in which among other described the main architecture applied in contrastive learning.
 
 
 \begin{figure}[htbp]   
@@ -70,26 +64,17 @@ The network is trained to minimize the reconstruction error, ensuring the encode
 \end{figure}
 
 
-This component is a non-linear neural network layer, often implemented as a multi-layer perceptron (MLP) \todo{what?}, which further refines the learned representations by mapping them to a space where the contrastive loss is applied.\todo{whats the reason to put it in? how does it work? - ICL is missing this!} 
-This refinement is a standard practice in modern contrastive learning frameworks to improve the quality of the downstream features. 
-Furthermore, certain architectures, such as Bootstrap Your Own Latent (BYOL) \todo{right name?} \citep{grill2020bootstrap}, incorporate an additional non-linear prediction head. 
-This extra layer is used to predict the representation of one view from another, further enhancing the robustness and discriminative power of the algorithm. \todo{explain in more detail}
-Some frameworks \todo{example} also implement a momentum encoder, which maintains a slowly evolving version of the network weights to ensure consistency in the representation space across training iterations.
-
-
 \subsubsection*{Contrastive loss function}
 The contrastive loss function pursues an objective distinct from the loss functions discussed in Chapter two. 
 Its primary purpose is to minimize the distance between the anchor and positive samples in the feature space while simultaneously maximizing the distance between the anchor and negative samples. 
-The selection of a specific loss function is contingent upon the network architecture and the inherent characteristics of the dataset. 
-The most widely adopted contrastive loss function is Information Noise-Contrastive Estimation (InfoNCE). 
-In practical applications, modified versions of this objective are frequently implemented to suit specific requirements. 
-For a comprehensive overview of various contrastive loss functions, see \citet{le2020contrastive}. This thesis focuses specifically on InfoNCE, as it is the loss function utilized in the methodology proposed by \citet{shenkar2022anomaly}.
+For a comprehensive overview of various contrastive loss functions, see \citet{le2020contrastive}. 
+This thesis focuses specifically on InfoNCE, as it is the loss function utilized in the methodology proposed by \citet{shenkar2022anomaly}.
 
 
-\textbf{Info noise-contrastive estimation (InfoNCE)} represents an optimized iteration of the Noise-Contrastive Estimation (NCE) originally proposed by \citet{gutmann2010noise}. Formulated by \citet{oord2018representation}, the function incorporates principles of mutual information \todo{define in a own passage} to enhance representation learning. 
+Info noise-contrastive estimation (InfoNCE) formulated by \citet{oord2018representation}, the function incorporates principles of mutual information \todo{define in a own passage} to enhance representation learning. 
 The objective of InfoNCE is to maximize the lower bound of the mutual information between positive pairs while minimizing the mutual information between negative pairs. 
-By treating the contrastive task as a multi-class classification problem where the model must identify the single positive sample among a set of noise samples, the function effectively guides the encoder to learn high-dimensional features. \todo{what?}
-It is defined as:
+By treating the contrastive task as a multi-class classification problem where the model must identify the single positive sample among a set of noise samples, the function effectively guides the network to learn high-dimensional features. \todo{what?}
+It is formally defined as:
 
 \begin{equation}
     \mathcal{L}_{N} = -\mathbb{E}_{X} \left[ \log \frac{f_k(x_{t+k}, c_t)}{\sum_{x_j \in X} f_k(x_j, c_t)} \right] .
@@ -107,15 +92,11 @@ The loss function facilitates the maximization of mutual information, which quan
 Specifically, mutual information measures the reduction in uncertainty regarding one variable given knowledge of another. 
 By minimizing the InfoNCE loss, it is mathematically demonstrated that the lower bound of the mutual information between the original data and its latent representation is maximized. 
 Consequently, the learned representation captures the most significant features of the input data, effectively preserving its essential characteristics. \todo{more details}
-For a rigorous mathematical proof of this relationship, see \citet{oord2018representation}. This derivation further indicates that the lower bound of the mutual information is constrained by the number of negative samples utilized during training. 
+For a rigorous mathematical proof of this relationship, see \citet{oord2018representation}. 
+This derivation further indicates that the lower bound of the mutual information is constrained by the number of negative samples utilized during training. 
 Specifically, the capacity of the model to capture information increases as a function of the number of negative samples, as a larger set of negatives provides a more challenging and precise contrast for the anchor. 
 This relationship suggests that increasing the quantity of negative samples directly enhances the information density of the resulting representations.\todo{source}
 
 
-\subsubsection*{Alternative Contrastive Loss functions}
-Cross-entropy loss quantifies the divergence between the predicted probability distribution and the actual distribution of a variable, a metric frequently utilized in classification tasks. 
-Within the framework of contrastive learning, the training data is typically partitioned into batches to facilitate the calculation of this loss. 
-In this context, the task is reframed as a multi-class classification problem where, for a given anchor, the model must correctly identify its corresponding positive sample from a set of candidates within the batch. 
-The cross-entropy loss is defined as follows: \todo{is that passage needed?}
 
 

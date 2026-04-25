@@ -1,18 +1,22 @@
 \subsection{Internal Contrastive Learning (InterCont)}
 This chapter examines the internal contrastive learning algorithm proposed by \citet{shenkar2022anomaly}. 
 The primary objective is to derive an outlier score $y(x)$, which assigns low values to samples consistent with the underlying distribution and higher values to potential outliers. 
-The following discussion details the architectural configuration of the method, beginning with the network construction and the selection of activation functions. 
+The following chapter details the architectural configuration of the method, beginning with the network construction and the selection of activation functions. 
 Subsequently, the analysis addresses the specific loss function and the normalization techniques implemented to calculate cosine similarity. 
 The operational procedure of a single epoch is then described, followed by an evaluation of the relevant hyperparameters. 
 Finally, the architecture of this method is compared to the contrastive learning framework delineated in the preceding section.
 
-The network architecture consists of two asymmetrical, fully connected neural networks, denoted as $F$ and $G$. 
+
+The network architecture consists of two asymmetrical, fully connected neural networks, denoted as $F$ and $G$.
+The authors constructed an autoencoder network as described in the chapter before. 
 This structural asymmetry is required to accommodate the differing dimensions of the input vectors, where $b$ serves as the anchor and a represents the positive sample. 
 The authors determine the dimensions of the hidden layers relative to the embedding size $u$. 
 Network $F$, designed to process the larger anchor vector $b$, utilizes two hidden layers containing $u$ and $2u$ nodes, respectively. 
 Network $G$ maintains a similar structure with two hidden layers.
 However, because it processes the smaller complementary positive sample $a$, the node counts are reduced. 
 Specifically, the first hidden layer of $G$ comprises $\frac{u}{4}$ nodes, while the second hidden layer comprises $\frac{u}{2}$ nodes. 
+
+
 
 
 The architecture utilizes the LeakyReLU activation function across its layers, with the sole exception of the first hidden layer in Network $F$, which employs a Tanh activation. 
@@ -117,11 +121,6 @@ This condition is frequently unmet in tabular data, where the window size may be
 To address this, the authors implement an ensemble learning approach by permuting the dimensions of S. 
 Consequently, the method constructs r distinct versions of S, and the training process proceeds independently for each version of the table. 
 The final loss is determined by calculating the mean of the individual loss values across all permutations:
-
-\begin{equation}
-    y(x_i) = \frac{1}{r} \sum_{i=1}^{r} y_i(x)
-\end{equation}
-
 This ensemble strategy ensures that the model captures a broader range of dependencies across the feature space, mitigating the risk of omitting critical relationships due to arbitrary feature ordering.
 
 The model is characterized by three primary hyperparameters:
