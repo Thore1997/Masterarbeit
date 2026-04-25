@@ -38,13 +38,13 @@ Various methodologies exist for data augmentation.
 For an extensive overview of these techniques within contrastive learning, see \todo{source}.
 Conversely, a negative sample is a distinct data instance.
 The optimization goal is to maximize the distance between the anchor and negative samples in the feature space relative to the distance between the anchor and positive samples. 
+
+
 Selecting appropriate negative samples remains a significant challenge, as they must be sufficiently informative to provide the necessary signal for the network to learn diverse and robust representations. 
 Hard negatives, which are semantically similar and lie close to the anchor in the feature space, are particularly valuable for this process %\citep{jang2021adversarial}. 
 By training on a diverse set of such samples, the model enhances its ability to identify the subtle features that distinguish different objects. 
 This mechanism mitigates the risk of overfitting and reduces the impact of data biases, thereby improving the generalization performance of the model.\todo{why?} 
-However, simply incorporating an arbitrary number of random instances often fails to provide the required hard negatives. 
-It is therefore essential to consider the specific characteristics of the task and the dataset when curating negative samples to minimize the influence of misleading or uninformative data.
-\todo{most important bc ICL does this with internal data - but subject to next chapter}
+
 \todo{add: Methods of sampling negatives} 
 \todo{add: Sliding window other papers that use that}
 \todo{add: Sliding Window: critizms: geometric Concentration, syntax vs semantics trade off, selection bias and false negatives}
@@ -52,10 +52,13 @@ It is therefore essential to consider the specific characteristics of the task a
 
 
 \subsubsection*{Network Structure}
-An encoder network is a unit within a neural network architecture that transforms raw input data into a specialized feature space or embedding.
-This latent space represents an abstract, compressed, and low-dimensional vector space where essential patterns of the input data are encoded while filtering out noise and redundant information. 
-The architecture typically utilizes a bottleneck design, characterized by hidden layers with fewer nodes than the preceding layers, which enforces the necessary data compression.
-In the context of autoencoders, the system consists of two primary components: the encoder, which maps high-dimensional input to a reduced vector, and the decoder, which attempts to reconstruct the original input from this compressed representation. 
+There are plenty of different contrastive learning architectures. 
+
+Nevertheless in this section will concentrate on the Siamese network structure employes in the InterCont method.
+An encoder network is a unit within a neural network architecture that transforms raw input data into a specialized feature space and embedding space.
+The feature space refers to a hidden layer in the network, that expands the dimensionality of the input data to make room for complex relationsships between the data points.
+The embeddig space is an additional smaller layer, that compresses the output of the feature space. 
+This bottelneck design ensures that the remaining noise is discarded and only the discrimminative information is left.
 The network is trained to minimize the reconstruction error, ensuring the encoder retains only the most critical information.
 
 
@@ -67,7 +70,6 @@ The network is trained to minimize the reconstruction error, ensuring the encode
 \end{figure}
 
 
-Following the encoding process, the resulting representation is passed to a projection head. \todo{insert image}
 This component is a non-linear neural network layer, often implemented as a multi-layer perceptron (MLP) \todo{what?}, which further refines the learned representations by mapping them to a space where the contrastive loss is applied.\todo{whats the reason to put it in? how does it work? - ICL is missing this!} 
 This refinement is a standard practice in modern contrastive learning frameworks to improve the quality of the downstream features. 
 Furthermore, certain architectures, such as Bootstrap Your Own Latent (BYOL) \todo{right name?} \citep{grill2020bootstrap}, incorporate an additional non-linear prediction head. 

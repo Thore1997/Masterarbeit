@@ -1,32 +1,30 @@
 \section{Representation Learning for Outlier Detection}
 A modern approach to outlier detection is representation learing.
-Representation learning facilitates outlier detection by transforming high-dimensional raw data into a lower-dimensional latent space where essential features are preserved while noise and redundancies are discarded. 
-In the context of anomaly detection, the underlying assumption is that normal data instances adhere to specific structural patterns or manifolds that the model can learn to represent efficiently. \todo{source}
-\todo{examples of representation learning algorithms}
+Representation learning facilitates outlier detection by transforming data via a neural network architecure, to extract the most important patterns and features. 
+In the context of anomaly detection, the underlying assumption is that normal data instances adhere to specific structural patterns that the model can learn to represent efficiently. \todo{source}
 To lay the theoreticall foundations, I will first explain the main paradigms of machine learning and after that I will explain the basic building block, the neural network.
 After explaining the main components of a neural network I will proceed with contrastive learning.
 
 Machine learning paradigms serve as overarching frameworks for interpreting data, providing the foundational logic for how algorithms process information. 
 While individual algorithms act as specific components, the paradigm defines the broader strategy for learning. 
-Consequently, many methods can be adapted across different paradigms depending on the data structure and the intended objective. \todo{why is that important for benchmarking methods} 
+Consequently, many methods can be adapted across different paradigms depending on the data structure and the intended objective. 
 Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning and smi-supervised learning . 
 However, numerous specialized subtypes exist, such as reinforcement learning, multi-label, and transfer learning \citep{sarker2021machine}.
 To establish the necessary technical background, it is essential to categorize the traditional learning frameworks and identify the specific paradigm utilized by this method. 
 
 
 Supervised learning is the most widely utilized paradigm, primarily employed for classification and regression tasks. 
-Supervised learning relies on labeled datasets, where a model learns a mapping from inputs to specific targets \citep{lecun2015deep}. 
+It relies on labeled datasets, where a model learns a mapping from inputs to specific targets \citep{lecun2015deep}. 
 In this task-driven approach, the model is trained on labeled data, where each input is paired with the ground truth \citep[p.3]{sarker2021machine}. 
 The model's objective is to learn a mapping function that can accurately predict labels for new, unseen data. 
-While this paradigm achieves high accuracy for defined tasks, it is constrained by the high cost of manual data labeling and a tendency to struggle with out-of-distribution data. 
+While this paradigm achieves high performance for defined tasks, it is constrained by the high cost of manual data labeling and a tendency to struggle with out-of-distribution data. 
 Furthermore, these models often struggle with scenarios or data distributions not represented during training.
-\todo{is supervised learning applied to outlier detection? examples}
 
 
 In contrast, unsupervised learning is a data-driven approach that utilizes unlabeled data by identifying underlying patterns in data without explicit labels, making it highly scalable but often less precise for specific classification tasks.
 Without predefined output labels or external supervision, the model must explore the data to discover hidden patterns, underlying structures, or natural groupings \citep[p.4]{sarker2021machine}. 
 This paradigm is highly scalable and effective for identifying complex relationships within large volumes of data without the need for expensive human annotation. 
-However, because there is no objective "truth" to measure against, these models can be less accurate than supervised versions, and their results are often more difficult to interpret and computationally intensive.
+However, because there are no ground truth labels to measure against, these models can be less accurate than supervised versions, and their results are often more difficult to interpret and computationally intensive.
 \todo{are there supervised and unsupverised methods in OD}
 
 
@@ -40,8 +38,6 @@ The authors of InterCont claim that it operates within the self-supervised learn
 This approach generates its own supervisory signals from the data structure itself \citep{jaiswal2020survey}. 
 Therefore self-supervised is often defined as a sub-paradigm of unsupervised learning, because no lables are needed.
 
-
-\todo{make sure it is about the ICL}
 Nevertheless, the network is trained on labled normal data and tested on data that includes abnormal data.
 This approach resembles a semi-supervised paradm more than an unsupervised approach.
 By doing so, it captures rich representations without the need for human-annotated labels, bridging the gap between the scalability of unsupervised methods and the performance of supervised systems. 
@@ -53,14 +49,14 @@ By employing metric learning \todo{wording?}, the model transforms input data—
 
 
 \subsection{Neural Networks}
-Artificial neural networks (NN) are computational models inspired by the biological structure of the human brain \todo{source}, designed to handle tasks such as classification, pattern recognition, and predictive modeling. 
-A core objective in developing these networks is to achieve high generalization, ensuring that the model performs accurately on unseen test data, nearly as well as it does on the training set.
+Artificial neural networks (NN) are computational models, designed to handle tasks such as classification, pattern recognition, and predictive modeling. 
+A core objective in developing these networks is to achieve high generalization, ensuring that the model performs accurately on unseen test data.
 
 
-The architecture of a neural network is composed of hierarchical \todo{really?} layers. 
-The input layer receives raw data, where each node typically corresponds to a specific feature of the dataset. 
-he data then progresses through one or more hidden layers
-Networks with a single hidden layer are considered "shallow," while those with multiple layers are termed deep networks. 
+The architecture of a neural network is composed of layers. 
+The input layer receives raw data, where each node corresponds to a specific feature of the dataset. 
+The data then progresses through one or more hidden layers.
+Networks with a single hidden layer are considered shallow, while those with multiple layers are termed deep networks. 
 Deep learning allows for the extraction of complex patterns from high-dimensional data. 
 Within these layers, connections between nodes are governed by weights and biases. 
 Weights signify the relative importance of a connection, while the bias is an adjustable parameter that allows the activation function to shift, helping the model better fit the data. \todo{source}
@@ -68,9 +64,9 @@ Weights signify the relative importance of a connection, while the bias is an ad
 
 During training, the network's output is evaluated against the ground truth using a loss function. 
 To minimize this loss, the model employs backpropagation. 
-By applying the chain rule of calculus, the model calculates the gradient—the partial derivative of the loss function with respect to each weight and bias. 
+By applying the chain rule, the model calculates the gradient, hence the partial derivative of the loss function with respect to each weight and bias. 
 An optimizer then uses these gradients to update the parameters in the direction that reduces error. 
-A single pass through the entire training dataset is referred to as an epoch. \todo{maybe }
+A single pass through the entire training dataset is referred to as an epoch. 
 
 
 Activation functions are essential for introducing non-linearity into the model, allowing it to approximate complex functions. \todo{why?}
@@ -105,7 +101,7 @@ Common functions include:
         \onehalfspacing
         \textbf{Hyperbolic Tangent (tanh)}, defined as 
         \begin{equation}
-            z = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}.
+            z = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}}.
         \end{equation} 
         This function is zero-centered with an output range of -1 to 1. 
         While it often converges faster than sigmoid, it is still susceptible to vanishing gradients.
@@ -129,7 +125,8 @@ Common functions include:
             z = \max(0, x).
         \end{equation} 
         ReLU addresses the vanishing gradient problem by maintaining a constant gradient of 1 for all positive inputs. 
-        To prevent "dying ReLU"—where nodes become permanently inactive due to negative inputs—variants like LeakyReLU are used, which allow a small, non-zero gradient for negative values.
+        To prevent dying ReLU, where nodes become permanently inactive due to negative inputs.
+        Variants like LeakyReLU are used, which allow a small, non-zero gradient for negative values.
     \end{minipage}
     \hfill 
     \begin{minipage}{0.45\textwidth}
@@ -143,8 +140,9 @@ Common functions include:
 
 The selection of a loss function, such as Mean Squared Error (MSE) or Mean Absolute Error (MAE), depends on the specific task. 
 For contrastive learning methods like InterCont, specialized contrastive loss functions are employed to manage the distances between data points in the embedding space \citep{terven2025comprehensive}. 
-The optimizer, such as Adam Optimizer, manages the step size of updates via the learning rate. \todo{source}
-A learning rate that is too high may cause the model to diverge, while one that is too low significantly increases training time.\todo{more information}
+The optimizer manages the step size of updates via the learning rate. 
+A learning rate that is too high may cause the model to diverge, while one that is too low significantly increases training time.
+This is called the Goldilocks problem.
 
 
 

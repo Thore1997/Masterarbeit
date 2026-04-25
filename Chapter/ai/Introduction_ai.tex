@@ -54,24 +54,7 @@ By applying algorithms to a comprehensive collection of datasets with varying pr
 In this thesis, the "Wine" dataset from the ODDS Repository is utilized, which implies that the findings are specifically constrained to the characteristics of this data. 
 
 
-Criticism regarding the ODDS repository has emerged alongside the development of representation learning, primarily because these datasets frequently contain easily identifiable global outliers rather than complex semantic anomalies. 
-Furthermore, authors such as \citet{han2022adbench} have criticized the construction of the ODDS datasets.
-For instance, the "Wine" dataset was created by downsampling and repurposing existing classes to mimic anomalous behavior. 
-Such artificial construction may not accurately reflect the challenges associated with detecting real-world outliers.
 
-
-To standardize outlier detection procedures, \citet{han2022adbench} developed the ADBench framework. 
-The authors evaluated 30 popular algorithms across 57 distinct datasets to test the models. 
-By varying the learning paradigm, they investigated how the level of supervision affects the results, incorporating supervised, semi-supervised, and unsupervised approaches.\todo{numbers source}
-
-
-The authors categorized the data into local, global, and cluster anomalies to determine which methods perform optimally for each specific outlier type. 
-To assess model robustness, the researchers implemented outlier injection to systematically increase the noise within a dataset, thereby facilitating a comprehensive robustness check.\todo{citizism}
-
-
-The researchers observed that foundational algorithms frequently outperform complex representation learning methods, suggesting that the primary findings of their study support the hypothesis presented in this work. 
-Although the comprehensive application of this framework remains outside the scope of this thesis, its underlying arguments will be addressed when delineating the limitations of the current research.
-\todo{concrete numbers}
 
 The exceptional performance of the $k$-nearest neighbors algorithm in the analysis of \citet{shenkar2022anomaly}, which surpasses the more complex architecture of InterCont and F1-score, serves as a primary catalyst for this research. 
 The fact that a traditional, distance-based approach can yield superior results compared to sophisticated representation learning methods like InterCont raises critical questions about the necessity of algorithmic complexity in outlier detection. 
@@ -84,7 +67,7 @@ This empirical discrepancy between theoretical sophistication and practical effi
 \end{enumerate}
 
 
-This thesis is structured to evaluate the proposed hypothesis. 
+This thesis will proceed with the following: 
 The first chapter establishes the theoretical foundations of machine learning, beginning with a brief description of neural network architecture before transitioning to the advanced topic of contrastive learning. 
 This section outlines the primary framework of contrastive learning through a computer vision example. 
 The second chapter details the central methodology: Internal Contrastive Learning. 
@@ -96,7 +79,7 @@ The discussion details how this method detects outliers and provides the rationa
 
 
 In the data analysis chapter, the dataset is initially examined by describing its primary characteristics, which serve as the basis for interpreting and explaining the results. 
-The analysis begins with a univariate approach, utilizing boxplots and Q-Q plots to describe parameters such as the mean and distribution. 
+The analysis begins with a univariate approach, utilizing boxplots to describe parameters such as the mean and distribution. 
 Subsequently, the analysis proceeds to a bivariate approach, where the data is described using a correlation heatmap. 
 The final stage of the analysis involves characterizing the geometry of the dataset through UMAP, a dimension reduction technique. 
 In the metrics chapter, the most significant metrics used in outlier detection research—facilitated by the confusion matrix—are described alongside a discussion of their respective advantages and disadvantages. 

@@ -28,38 +28,8 @@ To conlcude, H2 can not be rejected.
 InterCont consistently outperforms the benchmark methods. 
 
 
-\subsubsection{Theoretical Interpretation}
-The differences in metrics could be explained by looking at the methods mechanics. 
-While InterCont uses representation learning to learn complex interactions between the instaces, do k-NN and MCD are based soley on the distance estimation.
-InterCont facilitates this approach by applying a sliding window approach. 
-Therefore it learns relationships between neighboring dimensions, hence depending von the hyperparameter $k$.
-Tabular data does not neccessarly contain an internal structure.
-By performing random permutations, it is ensured, that the algorithms can learn relationships between different dimensions. 
-Additionally it ensures that the mothods consitently lears all relationsships.
-
-The architecture is constructed with different activation functions to ensure, the model is not simply comparing dimensions, mitigatting learnign relationships
-
-The tabular data is double normalized so it can not discrimminated between outlier and inlier simply by detecting extreme values.
-Furthermore the architecture of InterCont contained different activation functions
-The original paper released robustnesschecks for differen 
 
 
-
-
-%\section*{Geometric Insights}
-%\section*{Critical Assessment and Statistical Rigor}
-%\section*{Limitations}
-
-\subsection*{InterCont}
-Intervont uses the sliding window and permutation, so intercont analyses the relationships between instances not only the distance between neighbors. 
-The extreme instances which were inliers were recognized as consistent with the internal chmical profile avoiding false postives.
-Intercont uses the than activation funnction which is critical than centers the data and bounds activation which helpd complex network to hanlde these lineareitaies, high variance features.
-The wine dataset was analysed by UMAP, which is a machine learning approach to dimensionality reduction. 
-You could argue, that InterCont uses a similiar approach to learn relationships between the instanses, that intercont does discriminate good too (causion)
-The data strucure was not complex, so the high ROC AUC values. 
-The biased ROC AUC coul be applied here because the wine dataset is highly unbalanced
-interCont performs the best. Representation learning is better then traditional methods even in small datasets like wine.
-InterCont learn through contrastive learning the complex relationships between the data points the best and flags misterious relationships even if they are in the expectable range.
 \section{Theoretical Interpretation}
 The UMAP visualization in Figure \ref{fig:umap} reveals that the outliers in the Wine dataset form a highly concentrated and isolated cluster, spatially distinct from the cohesive yet more dispersed inlier distribution. 
 This topological formation suggests that the dataset primarily contains global outliers rather than contextual or collective outliers. 
@@ -162,8 +132,23 @@ This setup could not be found in any other implemetation of MCD.
 
 \section{Critical Assessment and Statistical Rigor}
 \section{Limitations}
+Criticism regarding the ODDS repository has emerged alongside the development of representation learning, primarily because these datasets frequently contain easily identifiable global outliers rather than complex semantic anomalies. 
+Furthermore, authors such as \citet{han2022adbench} have criticized the construction of the ODDS datasets.
+For instance, the "Wine" dataset was created by downsampling and repurposing existing classes to mimic anomalous behavior. 
+Such artificial construction may not accurately reflect the challenges associated with detecting real-world outliers.
+
+To standardize outlier detection procedures, \citet{han2022adbench} developed the ADBench framework. 
+The authors evaluated 30 popular algorithms across 57 distinct datasets to test the models. 
+By varying the learning paradigm, they investigated how the level of supervision affects the results, incorporating supervised, semi-supervised, and unsupervised approaches.\todo{numbers source}
 
 
+The authors categorized the data into local, global, and cluster anomalies to determine which methods perform optimally for each specific outlier type. 
+To assess model robustness, the researchers implemented outlier injection to systematically increase the noise within a dataset, thereby facilitating a comprehensive robustness check.\todo{citizism}
+
+
+The researchers observed that foundational algorithms frequently outperform complex representation learning methods, suggesting that the primary findings of their study support the hypothesis presented in this work. 
+Although the comprehensive application of this framework remains outside the scope of this thesis, its underlying arguments will be addressed when delineating the limitations of the current research.
+\todo{concrete numbers}
 
 
 
