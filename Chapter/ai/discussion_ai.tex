@@ -1,15 +1,56 @@
-\section{Summary of Findings}
-The H1 is rejected die to the s´very good results of InterCont.
-The highlight is the very good results of InterCont. 
-What do the benchmark mean? Why are some low and so higher?
+\subsection{Discussion}
+This chapter provides a comparative discussion of the empirical results in relation to the theoretical foundations established in chapter \ref{}. 
+The following sections summarize the primary findings and evaluate the validity of the research hypotheses. 
+This evaluation integrates the results of the data analysis with the preceding theoretical framework, followed by a critical assessment of statistical rigor and a discussion of the study's limitations.
 
-\section{Theoretical Interpretation}
 
-\section{Geometric Insights}
-\section{Critical Assessment and Statistical Rigor}
-\section{Limitations}
+The hypotheses formulated for this thesis are defined as follows:
+\begin{itemize}
+    \item H1: k-NN will achieve the highest predictive performance in terms of F1 Score.
+    \item H2: InterCont will demonstrate superior performance relative to k-NN and MCD in terms of ROC AUC and AUPRC.
+\end{itemize}
 
-\subsection{InterCont}
+Based on the results presented in \ref{tab:results_bench}, k-NN yields a mean F1 Score of 72.18, whereas InterCont achieves a mean of 85.64. 
+Statistical inference confirms that the difference between k-NN and InterCont is significant at $p < 0.001$, necessitating the rejection of H1.
+
+
+As displayed in table \ref{tab:results_bench}, the ROC AUC results exhibit less variance across metrics.
+Nevertheless, InterCont achieves a mean ROC AUC of 97.97, compared to 96.17 for k-NN and 95.94 for MCD. 
+Statistical analysis further confirms that the performance gaps between InterCont and k-NN, as well as InterCont and MCD, are statistically significant with p<0.001.
+
+
+Similarly, the AUPRC results in table \ref{tab:results_bench} indicate that InterCont attains the highest mean value of 92.93, while k-NN and MCD both reach a mean AUPRC of 77.82. 
+The differences between InterCont and the benchmark methods are statistically significant at $p < 0.001$. 
+Consequently, H2 cannot be rejected, as InterCont consistently outperforms the established benchmark methods across the evaluated metrics.
+
+
+To conlcude, H2 can not be rejected. 
+InterCont consistently outperforms the benchmark methods. 
+
+
+\subsubsection{Theoretical Interpretation}
+The differences in metrics could be explained by looking at the methods mechanics. 
+While InterCont uses representation learning to learn complex interactions between the instaces, do k-NN and MCD are based soley on the distance estimation.
+InterCont facilitates this approach by applying a sliding window approach. 
+Therefore it learns relationships between neighboring dimensions, hence depending von the hyperparameter $k$.
+Tabular data does not neccessarly contain an internal structure.
+By performing random permutations, it is ensured, that the algorithms can learn relationships between different dimensions. 
+Additionally it ensures that the mothods consitently lears all relationsships.
+
+The architecture is constructed with different activation functions to ensure, the model is not simply comparing dimensions, mitigatting learnign relationships
+
+The tabular data is double normalized so it can not discrimminated between outlier and inlier simply by detecting extreme values.
+Furthermore the architecture of InterCont contained different activation functions
+The original paper released robustnesschecks for differen 
+
+
+
+
+%\section*{Geometric Insights}
+%\section*{Critical Assessment and Statistical Rigor}
+%\section*{Limitations}
+
+\subsection*{InterCont}
 Intervont uses the sliding window and permutation, so intercont analyses the relationships between instances not only the distance between neighbors. 
 The extreme instances which were inliers were recognized as consistent with the internal chmical profile avoiding false postives.
 Intercont uses the than activation funnction which is critical than centers the data and bounds activation which helpd complex network to hanlde these lineareitaies, high variance features.
@@ -27,7 +68,7 @@ The sliding window approach forces the model to learn dependencies between featu
 - Permutations:
 Enhance the method even further by mitigating the risk of missing a relationship just because two corroclated features were not next to each other.
 
-\subsection{k-NN}
+\subsection*{k-NN}
 k-nn relies on distance to the k th neighbor. 
 As seen in the boxplots there are instances that deviate a lot univeritly, which is noise for k-nn generating false positives
 The benchmark methods detected the most obvious outliers.
@@ -36,7 +77,7 @@ The data strucure was not complex, so the high ROC AUC values.
 K-NN is distances based. It has probably no problem with the most obvious global outliers but when it comes to complex contextual outliers it fails.
 The Curse of dimensionality is effekting MCD and knn, with a different distance measure knn could probably give better results.
 
-\subsection{MCD}
+\subsection*{MCD}
 The benchmark methods detected the most obvious outliers.
 nevertheless the F1 score es lower then from intercont
 Althoug the semisupervised approach for mcd provided with better performance, the wide sd of AUPRC suggests that MCD is sensitive to the  500 runs. 
@@ -86,4 +127,18 @@ The Curse of dimensionality is effekting MCD and knn, with a different distance 
      
 
 
+\subsection{conclusion}
+This thesis conducted a comparative performance analysis of three distinct outlier detection methodologies: the robust statistical MCD using the FAST-MCD algorithm, the distance-based k-NN approach, and the representation learning-based InterCont method. 
+The primary objective was to evaluate whether the increased algorithmic complexity of modern machine learning techniques translates into superior predictive efficacy compared to foundational statistical and distance-based benchmarks.
 
+The empirical investigation utilized the Wine dataset from the ODDS repository, which was characterized by a distinct manifold structure and a significant class imbalance. 
+Quantitative evaluation through 500 stochastic experimental runs demonstrated that InterCont achieved the highest predictive performance across all primary metrics, yielding a mean F1-score of 85.64, a ROC AUC of 97.97, and an AUPRC of 92.93. 
+Statistical inference using the Friedman test and pairwise Wilcoxon signed-rank tests confirmed that these performance gains were statistically significant ($p<0.001$). 
+Consequently, the research hypothesis H1, which posited that k-NN would yield the highest performance, was rejected, while H2, asserting the superiority of InterCont over both benchmarks, was supported.
+
+The results suggest that representation learning, specifically through the mechanisms of internal contrastive learning, sliding window data augmentation, and feature permutation, effectively captures complex dependencies within tabular data that traditional distance-based or distribution-assumed methods may overlook. 
+While the MCD demonstrated high discriminative power as evidenced by its ROC AUC, its instability in AUPRC highlighted a sensitivity to specific data subsets and a reliance on Gaussian assumptions that are often violated in real-world datasets. 
+Similarly, while k-NN provided an intuitive baseline, it proved susceptible to local noise and lacked the robust generalization capabilities offered by the asymmetrical neural network architecture of InterCont.
+
+Despite the superior performance of InterCont, this study identified critical challenges regarding the reproducibility of results from high-complexity models and the inherent limitations of threshold-dependent metrics like the F1-score in imbalanced domains. Future research should aim to extend this unified benchmarking framework to a broader spectrum of high-dimensional datasets and explore the integration of explainable AI components to further demystify the internal representations learned by contrastive models. 
+In conclusion, this investigation affirms that for the specific task of identifying anomalies in multidimensional tabular structures, algorithmic sophistication in the form of representation learning provides a significant and measurable advantage over traditional robust statistics and distance-based heuristics.
