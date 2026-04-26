@@ -1,21 +1,20 @@
 \section{Experiments}
-This section will be about the practial implementation of my experiments.
-Therefore I first need to analyse the dataset.
-The analysis will be gradually inhance the view to the dataset, first univariatly, then bivariatly and in the end I will analyse the structure by applying uniform manifod approximation and prediction (UMAP).
-After analysing the data, I will desctibe and argue about possible metrics.
-In the end I will conclude and explain my choice of merics.
-In the chapter thereafter, I will explain the experimental setup, to make sure the benchmarks are comparable with InterCont.
-In the results chapter I will present the results.
-To be statistically sure, I will deploy an rigorous ANOVA test.
-The results are interpreted in the discussion chapter.
-The conclusion is the final chapter of my thesis.
+The subsequent section details the practical implementation of the conducted experiments, beginning with a comprehensive analysis of the dataset. 
+This examination facilitates a progressive understanding of the data, transitioning from univariate and bivariate perspectives to a structural evaluation using Uniform Manifold Approximation and Projection (UMAP). 
+Following this empirical investigation, the discourse shifts to a critical assessment of potential evaluation metrics. 
+These metrics are argued and justified, culminating in a definitive selection based on the previously identified data characteristics. 
+The experimental framework is defined to ensure that all benchmarks maintain rigorous comparability with the InterCont methodology. 
+Upon establishing this foundation, the empirical results are presented. 
+To ensure statistical significance and validity, a Friedman test is employed during the evaluation process. 
+Subsequently a post-hoc wilcoxon signed rank test is applied to rank the method's performance.
+These findings are subsequently interpreted within the discussion chapter, while the final conclusions and implications of the research are synthesized in the terminal chapter of the thesis.
 
 
 \subsection{Analysis of the Wine Dataset}\label{sec:data_analytics}
 The Outlier Detection DataSets (ODDS) library, published by \citet{Rayana:2016}, serves as a widely utilized repository for benchmarking anomaly detection algorithms. \todo{source}
 For instance, \citet{shenkar2022anomaly} employ these datasets to evaluate the performance of various outlier detection methods, including the previously discussed InterCont approach. \todo{find different paper that use ODDS as well} 
 The repository comprises 32 \todo{right number?} distinct datasets characterized by varying dimensionalities and sample sizes. 
-\todo{put the adbench here from introduction}
+
 
 
 While utilizing a broad spectrum of datasets is advantageous for identifying the specific strengths and weaknesses of a method, analyzing all 32 datasets is beyond the scope of this thesis. 
@@ -23,7 +22,7 @@ Consequently, this research focuses on a detailed evaluation of the Wine dataset
 
 
 The primary objective of the following analysis is to characterize the dataset's properties comprehensively. \todo{explain why this is important - to analyse the type of outlier that i can use in the discussion} 
-This process begins with a statistical summary encompassing central tendencies, distributional shape, cardinality, and sparsity \todo{tested for cardinality and sparsity?}. 
+This process begins with a statistical summary encompassing central tendencies and distributional shape. 
 This is followed by an examination of bivariate relationships between variables. 
 Finally, the analysis addresses the geometric properties of the data, specifically focusing on its intrinsic dimensionality and manifold structure.
 
@@ -34,19 +33,15 @@ While initially intended for multi-class classification based on the three produ
 The processed version contains 129 instances and 13 attributes.
 
 
-In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as anomalies.  
-This results in an outlier ratio of 7.7\%, which places the dataset \todo{filling the average outlier ratio of ODDS} in comparison to other benchmarks in the repository ($mean = 8,61\%$).
-
-
 \begin{figure}[htbp]
     \centering
     \begin{minipage}{0.5\textwidth}
         \onehalfspacing
-        In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as outliers.  
-        This results in an outlier ratio of 7.7\%.
-        in comparison to other benchmarks in the repository.
+        In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as anomalies.  
+        This results in an outlier ratio of 7.7\%, which places the dataset in comparison to other benchmarks in the repository ($mean = 8,61\%$).
         Furthermore, the version provided by \citet{Rayana:2016} contains no missing values and consists exclusively of continuous variables. %\todo{good point for limitations}
-        To maintain visual clarity in the subsequent analysis, feature names are omitted from certain graphical representations; however, Figure 1 provides a corresponding reference for these variable names.
+        To maintain visual clarity in the subsequent analysis, feature names are omitted from certain graphical representations.
+        However, Figure \ref{fig:names} provides a corresponding reference for these variable names.
     \end{minipage}
     \hfill 
     \begin{minipage}{0.45\textwidth}
@@ -69,15 +64,18 @@ A mean exceeding the median suggests a right-skewed distribution, whereas a mean
 This phenomenon is particularly evident in Feature 2.
 With the exceptions of Feature 8 and Feature 12, the variables in this dataset exhibit right-skewness, although the degree of asymmetry varies across the attributes. 
 These results indicate that the observations for most features tend to concentrate toward lower values with a trailing tail toward the higher end of the scale.\todo{review}
+
+
 For a visualization of the distributional characteristics of the dataset, a Q-Q plot for all features is provided in the Appendix.
-\todo{put Q-Q plot in the Appendix}
-To provide statistical verification of these distributional observations, the Shapiro-Wilk test for normality is applied to each feature. \todo{print result}
+To provide statistical verification of these distributional observations, the Shapiro-Wilk test for normality is applied to each feature. 
+Of 13 dimensions feature 2 and 3 were normally distributed with $p > 0.05$ and $p > 0.1$ respectivly.
+The results are displayed in the appendix. 
 
 
 The $IQR$ represents the central 50\% of the data distribution relative to the median.\todo{different wording?} 
 A wider $IQR$ indicates greater variance within a specific feature, whereas a narrow $IQR$ suggests that the observations are more densely clustered. 
 The features within the dataset exhibit significantly different scales of dispersion. 
-While Features 3, 4, 5, and 6 are characterized by relatively narrow $IQR$s, Feature 12 displays a notably large $IQR$, reflecting a higher degree of variability in its distribution compared to the other attributes.
+While Features 3, 4, 5, and 6 are characterized by relatively narrow $IQR$, Feature 12 displays a notably large $IQR$, reflecting a higher degree of variability in its distribution compared to the other attributes.
 
 The wiskers extend to $Q_1 -1.5 \times IQR$ and $Q_3 + 1.5 \times IQR$ respectively, where $Q_1$ and $Q_3$ represent the first and third quartiles of the data distribution.
 The relative lengths of the whiskers provide further evidence of distributional skewness. 
@@ -88,7 +86,7 @@ This asymmetry is particularly pronounced in Features 2, 6, 7, 10, and 12, where
 Specific features that exceed those thresholds represent potential global univariate outliers.
 Within this dataset, Features 3 and 4 contain three instances categorized as outliers due to their unusually low values.
 Conversely, all other identified outliers across the remaining features are characterized by values that exceed the upper extreme of the distribution.
-I chose to highlight the known outliers in the boxplot. 
+The ground truth labels are highlighted in \ref{fig:boxplot}.
 
 
 \begin{figure}[h] 
@@ -100,10 +98,10 @@ I chose to highlight the known outliers in the boxplot.
 \todo{highlicht the labled outliers}
 
 While boxplots provide initial insights into distributional characteristics, they offer only limited information regarding the relationships between variables. 
-For instance, the boxplot analysis correctly identifies eight instances as outliers within the Proline dimension, suggesting that a significant majority of the anomaly class—which consists of ten outliers in total—possesses an unusually high concentration of this component. 
-This indicates the existence of a collective cluster \todo{why?} specifically within this feature, implying that wines from the first grower are largely distinguishable by their Proline levels. 
-Conversely, several other dimensions contain boxplot outliers that do not correspond to the ground truth anomalies. 
-Such observations suggest that these extreme values may not be inherently erroneous or abnormal when viewed in a multivariate context, as their positioning could be explained by their correlations with other dimensions. \todo{whats with the red dotts?}
+For instance, the boxplot analysis correctly identifies eight instances as outliers within the Proline dimension, suggesting that a significant majority of the anomaly class, which consists of ten outliers in total, possesses an unusually high concentration of this component. 
+This indicates that wines from the first cultivar are largely distinguishable by their Proline levels. 
+Conversely, several other dimensions contain boxplot outliers that do not correspond to the ground truth outliers. 
+Such observations suggest that these extreme values may not be inherently erroneous or abnormal when viewed in a multivariate context, as their positioning could be explained by their correlations with other dimensions. 
 
 
 \subsubsection*{Bivariate Analysis}
@@ -130,13 +128,15 @@ This metric quantifies the strength and direction of the linear relationship bet
 \end{figure}
 
 
-The strongest positive correlation is observed between total Features 6 and 7, with a coefficient of $\approx 0.81$. 
+The strongest positive correlation is observed between Features 6 and 7, with a coefficient of $\approx 0.81$. 
 Similarly, a high positive correlation of $\approx 0.77$ exists between Features 12 and Features 7. 
 Regarding inverse relationships, feature 11 and feature 10 exhibit a strong negative correlation of $\approx -0.64$. 
 The second most pronounced negative correlation, valued at $\approx -0.59$, occurs between Features 12 and feature 10.
 
 
 \subsubsection*{Manifold Structure Analysis}
+The Shapiro-Wilk test unfolded that 2 out of 13 dimensions are not normally distributed. 
+That proves that the multivariate distribution cant be gaussian distributed as well. 
 Analysing the corrolational structure of the dataset provides bivariate insights into the dataset, but it does not capture the potential non-linear interactions or the overall geometric structure of the data.
 By performing both spearman and pearson correlation, I assume that the relationships between feature are predominantly linear, hence the data lays on a flat manifold structure. 
 To confirm this assumption and to gain a deeper understanding of the dataset's structure, UMAP as a non-linear dimensionality reduction technique is applied to visualize the data in a lower-dimensional space.
