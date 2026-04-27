@@ -1,14 +1,16 @@
 import scipy.io
 import matplotlib.pyplot as plt
 import umap
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import RobustScaler
+
+
 
 
 mat = scipy.io.loadmat('Reproduction/Data/wineori.mat')
 data = mat['X']
 y = mat['y'].ravel()
 
-scaler = StandardScaler()
+scaler = RobustScaler()
 data_scaled = scaler.fit_transform(data)
 
 reducer = umap.UMAP(n_neighbors=15,

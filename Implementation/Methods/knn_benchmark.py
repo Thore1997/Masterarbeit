@@ -42,7 +42,7 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
 
             # 3. Model Training
             # Contamination ist hier egal, da wir sie später manuell überschreiben
-            clf = KNN(n_neighbors=1, method='largest')
+            clf = KNN(n_neighbors=5, method='largest')
             clf.fit(X_train_scaled)
 
             # 4. DYNAMISCHER THRESHOLD (Paper-Logik)

@@ -112,11 +112,11 @@ A coefficient of zero suggests that the variables are independent, meaning a shi
 
 
 In figure \ref{fig:heatmap}, the Pearson correlation coefficients for all pairs of dimensions are visualized using a heatmap.
-The Pearson correlation was selected as the primary \todo{wording} metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
+The Pearson correlation was selected as the primary metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
 Typically, the Spearman rank correlation is preferred for datasets characterized by non-linear relationships or when significant global outliers are present, as it operates on the rank-order of values rather than their raw magnitudes. \todo{source and true?} 
-However, the negligible difference between the two coefficients in this instance suggests that the relationships between the dimensions are predominantly linear. 
+However, the negligible difference between the two coefficients in this instance suggests that the relationships between the dimensions are predominantly monotonous. 
 Furthermore, the number of outliers is sufficiently small and the dataset imbalance sufficiently pronounced that these extreme values do not substantially distort the Pearson coefficient. 
-This metric quantifies the strength and direction of the linear relationship between two variables, assigning a numerical value within the range of -1 to 1.
+This metric quantifies the strength and direction of the monotonous relationship between two variables, assigning a numerical value within the range of -1 to 1.
 \todo{right definition of the two corr?}
 
 
@@ -232,16 +232,15 @@ By maintaining these standard settings, the algorithm provides a balanced repres
 This configuration allows for an objective assessment of the separability of the anomaly class from the inlier distribution in a reduced two-dimensional environment.b
 It is important to note that UMAP utilizes a stochastic optimization process, which implies that the specific coordinates of the resulting visualization may vary across different runs. 
 However, through iterative adjustments of the hyperparameters, it was observed that the underlying cluster formations remain largely consistent. 
-Supporting evidence for this stability is provided in the appendix. \todo{do this}
-
-
-To ensure that all attributes contribute proportionally to the manifold construction and to prevent features with larger absolute scales from dominating the projection, the data is normalized using the Z-score transformation. \todo{why this norm and not robust dist?} 
-While the mean and standard deviation can be influenced by extreme values, Z-score normalization is generally considered more robust in preserving the relative distribution of a dataset compared to Min-Max scaling, which is highly sensitive to the exact boundaries of global outliers. 
-
+Supporting evidence for this stability is provided in the appendix by running the alglorithmy with $n_{neighbors} = 10, 20$ and $min_{dist} = 0.5$. 
+To ensure that all attributes contribute proportionally to the manifold construction, the data is normalized using the Robust transformation for reasons discussed in section \ref{sec: benchmark_methods}.  
+ 
 
 It is important to note that the axes in the resulting UMAP plot are not directly interpretable.
 As a non-linear dimensionality reduction technique, UMAP projects high-dimensional data into an abstract manifold where the new coordinates do not correspond to specific physical units or original features. \todo{why is that?}
 However, the spatial proximity between points in the visualization serves as a valid proxy for the similarity of instances within the original high-dimensional feature space, where smaller distances indicate greater characteristic resemblance. \todo{right place?}
+In contrast to alternative dimensionality reduction techniques, UMAP is specifically designed to preserve a greater degree of global structure. 
+Nevertheless, any quantitative measurement of the exact distances between clusters should be interpreted with caution, as the transformation into a lower-dimensional space does not maintain absolute linear distances from the original manifold. 
 
 
 \begin{figure}[h] 
@@ -252,17 +251,20 @@ However, the spatial proximity between points in the visualization serves as a v
 \end{figure}
 
 
-The observations are color-coded according to their ground truth labels, with red indicating the outlier class and blue representing the inlier class. 
-The resulting visualization reveals two distinct topological formations and is displayed in figure \ref{fig:umap}. 
-The inlier class appears as a relatively cohesive but more dispersed distribution, whereas the outlier class forms a highly concentrated and isolated cluster. 
-Within the inlier class, the proximity of the observations suggests a lack of further distinct sub-clusters, indicating a homogeneous manifold for the normal data. 
-Conversely, the clear spatial separation and high density of the outlier cluster indicate that these instances are highly distinct from the majority of the data. 
-This geometric isolation suggests that the chemical profiles of the anomalies are significantly and consistently different from those of the inliers, which typically facilitates more effective detection by manifold-based and distance-based algorithms.
+The observations are color-coded according to their ground truth labels, with red indicating the outlier class and blue representing the inlier class.
+The resulting visualization reveals three distinct topological formations and is displayed in figure \ref{fig:umap}. 
 
+
+The inlier class appears as a relatively cohesive yet dispersed distribution partitioned into two primary aggregates, whereas the outlier class forms a highly concentrated and isolated cluster. 
+Within the inlier class, the proximity of the observations suggests further distinct sub-clusters, including an elongated manifold and a dense upper-center grouping, which indicates a heterogeneous manifold for the normal data. 
+Conversely, the clear spatial separation and high density of the outlier cluster, situated at the extreme right of the projection, indicate that these instances are distinct from the majority of the data. 
+A single inlier observation is positioned in relative proximity to the outlier cluster, suggesting a potential boundary case or a marginal increase in similarity between the classes at that specific coordinate. 
+This geometric isolation suggests that the profiles of the anomalies are significantly and consistently different from those of the inliers, which facilitates more effective detection by manifold-based and distance-based algorithms.
  
-In contrast to alternative dimensionality reduction techniques, UMAP is specifically designed to preserve a greater degree of global structure. 
-Nevertheless, any quantitative measurement of the exact distances between clusters should be interpreted with caution, as the transformation into a lower-dimensional space does not maintain absolute linear distances from the original manifold. 
-The final visualization is presented in Figure 6. \todo{wrong place}
+To conclude the Wine dataset contains 13 dimensions from which 11 are univariatly not nornally distributed, hence the multivariate distribtion isnt normally distributed as well.
+This vialiated the assumption of MCD which was discussed in chapter \ref{sec:mcd}.
+The correlations of the dataset show a varity of different directions but nevertheless seems to be of linear nature.
+The UMAP showed 3 distinct clusters one off which is the outlier class.
+Nevertheless there are boundary cases of instances of the normal class to the outlier class.
+For distance-based and statisticall methods like k-NN and MCD may present this a serious challenge to differentiate.
 
-\todo{write summary of the analysis}
-\todo{write transition}

@@ -37,6 +37,7 @@ all_y_scores = []
 
 # Anzahl der erfolgreichen Runs
 target_successful_runs = 500
+target_successful_runs = 500
 attempted_runs = 0
 
 print(f"Starting experiment. Targeting {target_successful_runs} runs for ROC/PR data...")
