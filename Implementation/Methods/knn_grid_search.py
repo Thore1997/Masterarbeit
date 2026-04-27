@@ -9,11 +9,11 @@ from pyod.models.knn import KNN
 from data_loader import Data_Loader
 
 
-def start_knn_grid_search(dataset_name='wine', num_splits=100):
+def start_knn_grid_search(dataset_name='wine', num_splits=500):
     dl = Data_Loader()
 
     # Define the range of k values to test
-    k_values = [1, 3, 5, 7, 9, 11, 15, 20]
+    k_values = [5]
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     repo_root = os.path.abspath(os.path.join(current_dir, "../../"))
@@ -82,7 +82,7 @@ def start_knn_grid_search(dataset_name='wine', num_splits=100):
 
     # --- Export and Summary ---
     df_grid = pd.DataFrame(grid_summary)
-    output_csv = f"knn_grid_search_{dataset_name}.csv"
+    output_csv = f"knn_grid_search.csv"
     df_grid.to_csv(output_csv, index=False)
 
     print("\n" + "-" * 65)
@@ -109,4 +109,4 @@ def start_knn_grid_search(dataset_name='wine', num_splits=100):
 
 if __name__ == "__main__":
     # Reduced num_splits to 100 for grid search to keep execution time reasonable
-    start_knn_grid_search(dataset_name='wine', num_splits=100)
+    start_knn_grid_search(dataset_name='wine', num_splits=500)

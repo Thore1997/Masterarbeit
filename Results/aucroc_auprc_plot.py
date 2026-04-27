@@ -29,13 +29,13 @@ for name, path in methods.items():
     # --- 1. ROC-Kurve ---
     fpr, tpr, _ = roc_curve(y_true, y_scores)
     roc_auc = auc(fpr, tpr)
-    ax1.plot(fpr, tpr, color=colors[name], lw=2.5, label=f'{name} (AUC = {roc_auc:.3f})')
+    ax1.plot(fpr, tpr, color=colors[name], lw=2.5, label=f'{name}')
 
 
     ## --- 2. PR-Kurve ---
     precision, recall, _ = precision_recall_curve(y_true, y_scores)
     avg_prec = average_precision_score(y_true, y_scores)
-    ax2.plot(recall, precision, color=colors[name], lw=2.5, label=f'{name} (AP = {avg_prec:.3f})')
+    ax2.plot(recall, precision, color=colors[name], lw=2.5, label=f'{name}')
 
 
 # Styling ROC

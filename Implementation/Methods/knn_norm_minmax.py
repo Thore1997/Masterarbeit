@@ -42,7 +42,7 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
 
             # 3. Model Training
             # Contamination ist hier egal, da wir sie später manuell überschreiben
-            clf = KNN(n_neighbors=1, method='largest')
+            clf = KNN(n_neighbors=5, method='largest')
             clf.fit(X_train_scaled)
 
             # 4. DYNAMISCHER THRESHOLD (Paper-Logik)
@@ -82,7 +82,7 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
             'f1_score': results['f1'],
 
         })
-        df_results.to_csv(f"knn_results_minmax{dataset_name}.csv", index=False, sep=';')
+        df_results.to_csv(f"knn_results_minmax.csv", index=False, sep=';')
         print(f"\n" + "=" * 45)
         print(f"ERGEBNISSE MIT TOP-N THRESHOLD ({dataset_name})")
         print("-" * 45)
