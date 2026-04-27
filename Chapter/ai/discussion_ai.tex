@@ -1,65 +1,59 @@
 \section{Discussion}\label{sec:discussion}
-This chapter provides a comparative discussion of the empirical results in relation to the theoretical foundations established in chapter 2 and 3. 
+This chapter provides a comparative discussion of the empirical results in relation to the theoretical foundations established in chapter \ref{sec:representation_learning} and \ref{sec: benchmark_methods}. 
 The following sections summarize the primary findings and evaluate the validity of the research hypotheses. 
 This evaluation integrates the results of the data analysis with the preceding theoretical framework, followed by a critical assessment of statistical rigor and a discussion of the study's limitations.
 
 
 The hypotheses formulated for this thesis are defined as follows:
 \begin{itemize}
-    \item H1: k-NN will achieve the highest predictive performance in terms of F1 Score.
-    \item H2: InterCont will demonstrate superior performance relative to k-NN and MCD in terms of ROC AUC and AUPRC.
+    \item H1: k-NN will achieve the highest predictive performance across both ROC AUC and AUPRC.
+    \item H2: While InterCont will outperform MCD, its predictive performance will remain secondary to k-NN.
 \end{itemize}
 
-Based on the results presented in \ref{tab:results_bench}, k-NN yields a mean F1 Score of 72.18, whereas InterCont achieves a mean of 85.64. 
-Statistical inference confirms that the difference between k-NN and InterCont is significant at $p < 0.001$, necessitating the rejection of H1.
-
-
-As displayed in table \ref{tab:results_bench}, the ROC AUC results exhibit less variance across metrics.
-Nevertheless, InterCont achieves a mean ROC AUC of 97.97, compared to 96.17 for k-NN and 95.94 for MCD. 
-Statistical analysis further confirms that the performance gaps between InterCont and k-NN, as well as InterCont and MCD, are statistically significant with p<0.001.
-
-
-Similarly, the AUPRC results in table \ref{tab:results_bench} indicate that InterCont attains the highest mean value of 92.93, while k-NN and MCD both reach a mean AUPRC of 77.82. 
+Based on the results presented in table \ref{tab:results_bench}, InterCont attains the highest mean AUPRC of 92.93, while MCD reaches a mean AUPRC of 77.82, k-NN reaches the lowest mean AUPRC of 73.06. 
 The differences between InterCont and the benchmark methods are statistically significant at $p < 0.001$. 
-Consequently, H2 cannot be rejected, as InterCont consistently outperforms the established benchmark methods across the evaluated metrics.
 
 
-To conlcude, H2 can not be rejected. 
-InterCont consistently outperforms the benchmark methods. 
+Similarly, InterCont achieves a mean ROC AUC of 97.97, compared to 95.94 for k-NN and  MCD respectively. 
+Statistical analysis further confirms that the performance gaps between InterCont and k-NN, as well as InterCont and MCD, are statistically significant with $p<0.001$.
+Hence both hypothesis have to be rejected. 
 
 
+The UMAP visualization in Figure \ref{fig:umap} reveals that the outliers in the Wine dataset form a concentrated and isolated cluster, with few exceptions the outlier class is distinct from the cohesive yet more dispersed inlier distribution. 
+This topological formation suggests that the dataset primarily contains global and contextual instead of a single collective outliers. 
+While a clear geometric separation generally favors distance-based approaches like k-NN and MCD, this dataset characteristics could lead to more effective distinction for the InterCont algorithm.
 
 
-\section{Theoretical Interpretation}
-The UMAP visualization in Figure \ref{fig:umap} reveals that the outliers in the Wine dataset form a highly concentrated and isolated cluster, spatially distinct from the cohesive yet more dispersed inlier distribution. 
-This topological formation suggests that the dataset primarily contains global outliers rather than contextual or collective outliers. 
-While such clear geometric separation generally favors distance-based approaches like k-NN and MCD, this dataset characteristic also facilitated a highly effective distinction for the InterCont algorithm.
-
-
-By utilizing a sliding window approach for data augmentation, InterCont effectively captures local feature dependencies—a contrast to the global perspective taken by the benchmarks. 
-Although the Wine dataset is characterized predominantly by linear relationships, this localized approach significantly improves the discriminatory power of the method. 
+By utilizing a sliding window approach for data augmentation, InterCont effectively captures local feature dependencies in contrast to the global and distance-based perspectives of the benchmarks. 
+Although the Wine dataset is characterized predominantly by monotonous relationships, this localized approach significantly improves the discriminatory power of the method. 
 This is achieved through the InterCont architecture, which maps these local dependencies onto a larger feature space. 
-Consistent with Cover's Theorem, this projection into a higher-dimensional space enables the method to distinguish even subtle irregularities that are non-separable in the original input space.
+This projection into a higher-dimensional space enables the method to distinguish even subtle irregularities that are non-separable in the original input space.
 
 
-In combination with the semi-supervised paradigm, InterCont defines the "normal" manifold with greater granularity than global statistical models. 
-The superiority of InterCont is particularly evident in the Area Under the Precision-Recall Curve (AUPRC), where it achieved a mean of 92.93, while k-NN and MCD stalled at 77.82. 
+In combination with the semi-supervised paradigm, InterCont defines the trainingdatasets structure with greater granularity than the benchmark models. 
+The superiority of InterCont is particularly evident in AUPRC, where it achieved a mean of 92.93, while MCD and k-NN stalled at 77.82 and 73.06 respectively. 
 This discrepancy highlights a critical diagnostic reality: while the ROC AUC yields optimistic assessments by incorporating true negatives, the AUPRC reveals that the benchmarks are significantly less effective at identifying the specific minority class.
 
-The integration of an ensemble strategy involving the permutation of dimensions ensures that the model systematically evaluates various feature orderings. 
+
+The integration of an ensemble strategy involving the permutation of instances ensures that the model systematically evaluates various feature orderings. 
 This prevents critical relationships from being omitted due to arbitrary data structuring, ensuring the method captures the "whole picture" of feature interactions. 
 Furthermore, the implementation of a double normalization process—applying both row-wise and column-wise L2 normalization—projects observations onto a unit hypersphere. 
 This ensures that classification is based solely on the cosine similarity of the anchor with its positive and negative counterparts. 
+The loss function maximizes the mutual information between positive pairs and minimizes it between negative pairs. \todo{mutual information maximization leads to better results}
 
 
-In conjunction with the Tanh activation function in the first layer of Network F (which centers the input data), this mechanism prevents data points from being erroneously classified as outliers based on the absolute magnitude of extreme values, focusing instead on the orientation and alignment of feature representations.
-Because UMAP is a machine learning method as well and UMAP achieves high distincition between the outliers and inliers, you could argue, that generally the use of machine learning approaches could lead to better performance in outlier detection.
+The k-NN algorithm yielded the lowest predictive performance in terms of AUPRC and yield the same performance than MCD in terms of ROC AUC. 
+The figure \ref{fig:aucprccurve} displays sharpe decrease for a strict thresholg.
+After that the Precision increases, until it stabilized above Precision = 0.6.
+That behavior indicates, that some outliers detected, are infact inliers and hard to classify as outliers.
+If the threshold ist lowered to such an extent, that the global outliers can be detec
+Because the Recall is low, the impact on it is severe, hence the sharpe decline. 
+That indicates, that the outliers in the dataset lay near the inliers. 
 
 
-Despite the favorable data structure, the k-NN algorithm yielded the second-highest predictive performance but remained secondary to InterCont. 
-Achieving these results required a hyperparameter of k=1, effectively basing classification on the distance to only a single nearest neighbor. 
-This finding indicates that the data structure is dominated by global outliers that are sparsely distributed across the feature space, while the inlier class is relatively equally distributed
-
+This finding indicates that the outlier class could be closer to the inlier class, which makes it difficult to distinguish them by simply measureing the distance between the neighbors. 
+The Curse of Dimensionality could have impacted k-NN negatively. 
+With increasing dimensionality, the space between the nieghbors tend to align, that could lead to increased classification of false positives and subsequenlty reduing the AUPRC. 
 
 If the dataset contained cluster outliers, the internal distances within those clusters would likely mask the anomalies, leading to an increased number of false negatives and a decreased F1-Score. 
 The necessity of a low k value also suggests that the dataset contains minimal noise; in a noisier environment, k=1 would lead to overfitting and a high false-negative rate. 
@@ -129,9 +123,7 @@ But to make it comparable, the main  parameters, mean and covariance matrix, are
 Those parameters were applied to the abnormal dataset.
 This setup could not be found in any other implemetation of MCD. 
 
-
-\section{Critical Assessment and Statistical Rigor}
-\section{Limitations}
+\subsubsection*{Limitations}
 Criticism regarding the ODDS repository has emerged alongside the development of representation learning, primarily because these datasets frequently contain easily identifiable global outliers rather than complex semantic anomalies. 
 Furthermore, authors such as \citet{han2022adbench} have criticized the construction of the ODDS datasets.
 For instance, the "Wine" dataset was created by downsampling and repurposing existing classes to mimic anomalous behavior. 
@@ -151,46 +143,7 @@ Although the comprehensive application of this framework remains outside the sco
 \todo{concrete numbers}
 
 
-
-
- 
- 
-
-     
-        
-
-    
-
-
-    
-     
-    
-     
-
-
-    
-     
-    
-
-
-
-
-
-
-- Critique of Shenkar and Wolf
-    I could not reproduce the exceptional result of k-nn. I implemented knn such that it is a useful benchmark.
-    The specific implementation of shenkar and wolf could not be met. I Implemented it as unsupervised and semisupervised. 
-    I used gridsearch to tune k and I used different distances measurements, the proposed results could not be met.
-    So k-nn looses in even small dataset with a clear manifold structure.Maybe there is a way t get the original code of the authors.
-
-    Their reproduction package lacks a little bit of info and a loop. 
-    F1 is not a good choice for outlier detection because of its threshold dependence and lack of false negatives.
-    The high F1 score of the paper could mean that a lot of flase negatives were detected but we do not see it. 
-
-     
-
-
-\subsection{conclusion}
+\section{Conclusion}
 This thesis conducted a comparative performance analysis of three distinct outlier detection methodologies: the robust statistical MCD using the FAST-MCD algorithm, the distance-based k-NN approach, and the representation learning-based InterCont method. 
 The primary objective was to evaluate whether the increased algorithmic complexity of modern machine learning techniques translates into superior predictive efficacy compared to foundational statistical and distance-based benchmarks.
 

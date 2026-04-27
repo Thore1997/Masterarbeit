@@ -43,28 +43,35 @@ As dimensionality ($p$) increases, the volume of the space grows exponentially, 
 This sparsity increases the mean distance between points, making the Euclidean distance—a common measure of similarity—less reliable. 
 Furthermore, in cases where $p > n$, perfect multicollinearity may occur, where variables become linear combinations of others, leading to redundancy. 
 High dimensionality also increases the risk of overfitting, where models capture stochastic noise rather than a generalizable signal \citet{altman2018curse}.
-\todo{concept drift?}
-\todo{scarcity of lables?}
 
 
 A major challenge in outlier detection research involves establishing comparability between diverse methods, which necessitates the implementation of a unified framework. 
 Such a framework ensures that the same datasets, paradigms, and evaluation metrics are consistently applied.
 Utilizing benchmark datasets recognized by the scientific community, such as those provided by \citet{Rayana:2016}, facilitates this comparability across different methodologies. 
 By applying algorithms to a comprehensive collection of datasets with varying properties, the resulting performance metrics reveal the specific advantages and disadvantages of each approach. 
-In this thesis, the "Wine" dataset from the ODDS Repository is utilized, which implies that the findings are specifically constrained to the characteristics of this data. 
+In this thesis, the Wine dataset from the ODDS Repository is utilized, which implies that the findings are specifically constrained to the characteristics of this data. 
 
 
-
-
-The exceptional performance of the $k$-nearest neighbors algorithm in the analysis of \citet{shenkar2022anomaly}, which surpasses the more complex architecture of InterCont and F1-score, serves as a primary catalyst for this research. 
-The fact that a traditional, distance-based approach can yield superior results compared to sophisticated representation learning methods like InterCont raises critical questions about the necessity of algorithmic complexity in outlier detection. 
-This empirical discrepancy between theoretical sophistication and practical efficacy directly inspired the formulation of the following hypotheses:
+The exceptional performance of the k-nearest neighbors (k-NN) algorithm in the analysis by \citet{shenkar2022anomaly}, where it surpassed the more complex architecture of InterCont in terms of F1-Score, serves as the primary catalyst for this research. 
+While F1-Score provided the initial insight, this thesis employs ROC AUC and AUPRC as the primary metrics to ensure a more transparent and threshold-independent valuation of the methods (see Section \ref{sec:metrics}).
+The fact that a distance-based approach can yield superior results compared to sophisticated representation learning methods raises critical questions regarding the necessity of algorithmic complexity in outlier detection. 
+This discrepancy between theoretical sophistication and practical efficacy directly inspires the following hypotheses:
 
 
 \begin{enumerate}
-    \item H1: k-NN will achieve the highest predictive performance across the selected metrics.
-    \item H2: InterCont will demonstrate superior performance relative to the statistical benchmark (MCD) but remain secondary to k-NN.
+    \item H1: k-NN will achieve the highest predictive performance across both ROC AUC and AUPRC.
+    \item H2: While InterCont will outperform the Minimum Covariance Determinant, its predictive performance will remain secondary to k-NN.
 \end{enumerate}
+
+
+While \citet{shenkar2022anomaly} demonstrated k-NN's superiority via the F1-Score at a specific operating point, this thesis investigates whether this advantage persists globally across the AUPRC and ROC AUC. 
+By shifting the focus to ROC AUC and AUPRC, it will be tested if k-NN's distance-based logic inherently provides a more robust ranking of outliers than the representations learned by InterCont.
+
+
+To further evaluate the necessity of modern machine learning architectures, this research incorporates the Minimum Covariance Determinant (MCD) as a traditional statistical benchmark. 
+MCD serves as a lower bound of algorithmic complexity, representing a robust approach to multivariate outlier detection that accounts for the masking effect, where outliers distort classical estimators. 
+By establishing this baseline, the study can discern whether the performance gains of k-NN or InterCont are substantial enough to justify their increased computational overhead. 
+Furthermore, MCD provides a global distributional perspective, offering a vital contrast to the local neighborhood analysis of k-NN and the high-dimensional feature extraction of InterCont.
 
 
 This thesis will proceed with the following: 
