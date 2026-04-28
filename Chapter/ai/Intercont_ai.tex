@@ -79,6 +79,7 @@ Following these operations, the network outputs are subjected to a double normal
 This procedure involves two distinct $L2$ normalization stages for both networks, resulting in unit vectors with differing orientations. 
 The initial row-wise normalization standardizes scales across features, preventing outliers from being identified solely by the magnitude of specific features and ensuring an L2 norm of 1 for each sample. 
 Subsequently, a second column-wise normalization is applied to ensure that each vector is projected onto the surface of a unit hypersphere.
+For contrastive learning methods like InterCont, specialized contrastive loss functions are employed to manage the distances between data points in the embedding space \citep{terven2025comprehensive}. 
 
 
 The the loss function,

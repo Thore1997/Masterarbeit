@@ -1,9 +1,9 @@
 \section{Representation Learning for Outlier Detection}\label{sec:representation_learning}
-A modern approach to outlier detection is representation learing.
-Representation learning facilitates outlier detection by transforming data via a neural network architecure, to extract the most important patterns and features. 
-In the context of anomaly detection, the underlying assumption is that normal data instances adhere to specific structural patterns that the model can learn to represent efficiently. \todo{source}
-To lay the theoreticall foundations, I will first explain the main paradigms of machine learning and after that I will explain the basic building block, the neural network.
-After explaining the main components of a neural network I will proceed with contrastive learning.
+Shenkar and Wolf propose a contemporary framework for outlier detection that integrates representation learning with contrastive objectives. 
+Within an autoencoder architecture, the method transforms input data to extract influential features for outlier detection. 
+To establish the theoretical foundation for the experimental design detailed in Chapter \ref{sec:setup}, the primary paradigms of machine learning are first presented. 
+Subsequently, the conceptual basis for InterCont is established through a concise explanation of the core components of contrastive learning.
+
 
 Machine learning paradigms serve as overarching frameworks for interpreting data, providing the foundational logic for how algorithms process information. 
 While individual algorithms act as specific components, the paradigm defines the broader strategy for learning. 
@@ -34,9 +34,11 @@ This approach is particularly valuable in scientific research where acquiring la
 By assuming that data points in close proximity or on the same manifold share the same label, semi-supervised algorithms can propagate information from the labeled subset to the unlabeled majority, thereby refining the decision boundaries of the model.
 \todo{why can't I compare different paradigms with each other in my paper?}
 
+
 The authors of InterCont claim that it operates within the self-supervised learning paradigm, specifically leveraging contrastive learning. 
 This approach generates its own supervisory signals from the data structure itself \citep{jaiswal2020survey}. 
 Therefore self-supervised is often defined as a sub-paradigm of unsupervised learning, because no lables are needed.
+
 
 Nevertheless, the network is trained on labled normal data and tested on data that includes abnormal data.
 This approach resembles a semi-supervised paradm more than an unsupervised approach.
@@ -58,41 +60,21 @@ The input layer receives raw data, where each node corresponds to a specific fea
 The data then progresses through one or more hidden layers.
 Networks with a single hidden layer are considered shallow, while those with multiple layers are termed deep networks. 
 Deep learning allows for the extraction of complex patterns from high-dimensional data. 
-Within these layers, connections between nodes are governed by weights and biases. 
-Weights signify the relative importance of a connection, while the bias is an adjustable parameter that allows the activation function to shift, helping the model better fit the data. \todo{source}
+Within these layers, connections between nodes are governed by weights, which signify the relative importance of a connection.
 
 
 During training, the network's output is evaluated against the ground truth using a loss function. 
+Common loss function include Mean Squared Error (MSE), Mean Absolute Error (MAE) or Huber Loss. 
 To minimize this loss, the model employs backpropagation. 
-By applying the chain rule, the model calculates the gradient, hence the partial derivative of the loss function with respect to each weight and bias. 
+By applying the chain rule, the model calculates the gradient, hence the partial derivative of the loss function with respect to each weight. 
 An optimizer then uses these gradients to update the parameters in the direction that reduces error. 
 A single pass through the entire training dataset is referred to as an epoch. 
 
 
-Activation functions are essential for introducing non-linearity into the model, allowing it to approximate complex functions. \todo{why?}
+Activation functions are essential for introducing non-linearity into the model, allowing it to approximate complex functions. 
 For a network to learn through backpropagation, these functions must be differentiable. 
-Common functions include:
-
-
-\begin{figure}[htbp]
-    \centering
-    \begin{minipage}{0.5\textwidth}
-        \onehalfspacing
-        \textbf{Sigmoid function}, defined as 
-        \begin{equation}
-            z = \frac{1}{1 + e^{-x}}.
-        \end{equation} 
-        It maps inputs to a range between 0 and 1, making it useful for probability-based outputs. 
-        However, it suffers from the vanishing gradient problem, where gradients become extremely small for high or low input values, halting the learning process.
-    \end{minipage}
-    \hfill 
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{Images/Sigmoid}
-        \caption{Sigmoid Activation Function}
-    \end{minipage}
-    \label{fig:sigmoid}
-\end{figure}
+The architecture of the InterCont method uses Tanh and LeakyReLU activation functions.
+They are defined as follows:
 
 
 \begin{figure}[htbp]
@@ -115,7 +97,7 @@ Common functions include:
     \label{fig:tanh}
 \end{figure}
 
-\newpage
+
 \begin{figure}[htbp]
     \centering
     \begin{minipage}{0.5\textwidth}
@@ -138,13 +120,6 @@ Common functions include:
     \label{fig:relu}
 \end{figure}
 
-The selection of a loss function, such as Mean Squared Error (MSE) or Mean Absolute Error (MAE), depends on the specific task. 
-For contrastive learning methods like InterCont, specialized contrastive loss functions are employed to manage the distances between data points in the embedding space \citep{terven2025comprehensive}. 
-The optimizer manages the step size of updates via the learning rate. 
-A learning rate that is too high may cause the model to diverge, while one that is too low significantly increases training time.
-This is called the Goldilocks problem.
-
-
 
 \begin{figure}[htbp]
     \centering
@@ -163,4 +138,3 @@ This is called the Goldilocks problem.
     \end{minipage}
     \label{fig:bias_variance}
 \end{figure}
-\todo{whats with hyperparameter tuning?}
