@@ -52,26 +52,26 @@ By employing metric learning \todo{wording?}, the model transforms input data—
 
 \subsection{Neural Networks}
 Artificial neural networks (NN) are computational models, designed to handle tasks such as classification, pattern recognition, and predictive modeling. 
-A core objective in developing these networks is to achieve high generalization, ensuring that the model performs accurately on unseen test data.
+A core objective in developing these networks is to achieve high generalization \citep[p. 1]{zhang2021understanding}, ensuring that the model performs accurately on unseen test data.
 
 
 The architecture of a neural network is composed of layers. 
 The input layer receives raw data, where each node corresponds to a specific feature of the dataset. 
 The data then progresses through one or more hidden layers.
 Networks with a single hidden layer are considered shallow, while those with multiple layers are termed deep networks. 
-Deep learning allows for the extraction of complex patterns from high-dimensional data. 
+Deep learning \cite[p. 2]{lecun2015deep} allows for the extraction of complex patterns from high-dimensional data. 
 Within these layers, connections between nodes are governed by weights, which signify the relative importance of a connection.
 
 
 During training, the network's output is evaluated against the ground truth using a loss function. 
-Common loss function include Mean Squared Error (MSE), Mean Absolute Error (MAE) or Huber Loss. 
-To minimize this loss, the model employs backpropagation. 
+Common loss function include Mean Squared Error (MSE), Mean Absolute Error (MAE) or  Mean Absolute Percentage Error (MAPE)\cite[p. 6]{hassanat2024novel}. 
+To minimize this loss, the model employs backpropagation\cite[p. 1]{rumelhart1986learning}. 
 By applying the chain rule, the model calculates the gradient, hence the partial derivative of the loss function with respect to each weight. 
 An optimizer then uses these gradients to update the parameters in the direction that reduces error. 
 A single pass through the entire training dataset is referred to as an epoch. 
 
 
-Activation functions are essential for introducing non-linearity into the model, allowing it to approximate complex functions. 
+Activation functions \citep[p. 311]{sharma2017activation} are essential for introducing non-linearity into the model, allowing it to approximate complex functions. 
 For a network to learn through backpropagation, these functions must be differentiable. 
 The architecture of the InterCont method uses Tanh and LeakyReLU activation functions.
 They are defined as follows:
@@ -125,7 +125,7 @@ They are defined as follows:
     \centering
     \begin{minipage}{0.5\textwidth}
         \onehalfspacing
-        A primary challenge in training is the bias-variance tradeoff. 
+        A primary challenge in training is the bias-variance tradeoff \citep[p. 14]{geman1992neural}. 
         Underfitting (high bias) occurs when a model is too simple to capture the underlying data patterns. 
         Overfitting (high variance) occurs when a model is overly complex and learns the stochastic noise of the training data rather than the generalizable signal. %\todo{more information}
         Techniques to mitigate these issues include increasing data volume, implementing dropout layers, or using early stopping to maintain the optimal balance between bias and variance.
