@@ -11,9 +11,9 @@ These findings are subsequently interpreted within the discussion chapter, while
 
 
 \subsection{Analysis of the Wine Dataset}\label{sec:data_analytics}
-The Outlier Detection DataSets (ODDS) library, published by \citet{Rayana:2016}, serves as a widely utilized repository for benchmarking anomaly detection algorithms. \todo{source}
-For instance, \citet{shenkar2022anomaly} employ these datasets to evaluate the performance of various outlier detection methods, including the previously discussed InterCont approach. \todo{find different paper that use ODDS as well} 
-The repository comprises 32 \todo{right number?} distinct datasets characterized by varying dimensionalities and sample sizes. 
+The Outlier Detection DataSets (ODDS) library serves as a widely utilized repository for benchmarking anomaly detection algorithms \citep{Rayana:2016}.
+For instance, \citet{shenkar2022anomaly} employ these datasets to evaluate the performance of various outlier detection methods, including the previously discussed InterCont approach \citep[p. 5]{shenkar2022anomaly}. 
+The repository comprises 31 distinct datasets characterized by varying dimensionalities and sample sizes. 
 
 
 
@@ -29,7 +29,7 @@ Finally, the analysis addresses the geometric properties of the data, specifical
 
 The Wine dataset was submitted by \citet{wine_109} on June 30, 1991, to the UC Irvine Machine Learning Repository.
 The original data consists of chemical analyses of wines derived from three distinct Italian cultivars. 
-While initially intended for multi-class classification based on the three producers, \citet{Rayana:2016} transformed the data into an imbalanced binary classification task for the ODDS repository to facilitate outlier detection research.  
+While initially intended for multi-class classification based on the three producers, the data was transformed into an imbalanced binary classification task for the ODDS repository to facilitate outlier detection research.  
 The processed version contains 129 instances and 13 attributes.
 
 
@@ -39,7 +39,7 @@ The processed version contains 129 instances and 13 attributes.
         \onehalfspacing
         In this configuration, instances from the second and third cultivars are aggregated to form the inlier class (119 instances), while 10 instances from the first cultivar are defined as anomalies.  
         This results in an outlier ratio of 7.7\%, which places the dataset in comparison to other benchmarks in the repository ($mean = 8,61\%$).
-        Furthermore, the version provided by \citet{Rayana:2016} contains no missing values and consists exclusively of continuous variables. %\todo{good point for limitations}
+        Furthermore, the version provided by the ODDS repository contains no missing values and consists exclusively of continuous variables. %\todo{good point for limitations}
         To maintain visual clarity in the subsequent analysis, feature names are omitted from certain graphical representations.
         However, Figure \ref{fig:names} provides a corresponding reference for these variable names.
     \end{minipage}
@@ -54,25 +54,19 @@ The processed version contains 129 instances and 13 attributes.
 
 \subsubsection*{Univariate Analysis}
 This section provides an analysis of the central tendencies of the Wine dataset, initiated through univariate examination. 
-Figure \ref{fig:boxplot} illustrates the distribution of each feature using boxplots, which display the mean, median, interquartile range ($IQR$), and whiskers defined by $1.5 \times IQR$ \todo{use right command}. 
+Figure \ref{fig:boxplot} illustrates the distribution of each feature using boxplots \citep[p. 39]{tukey1977exploratory}, which display the mean, median, interquartile range ($IQR$), and whiskers defined by $1.5 \times IQR$. 
 In these visualizations, the red dotted line represents the mean, while the grey line indicates the median. 
 
 
-Unlike the median, the mean is not robust against outliers.
-Consequently, the divergence between these two metrics serves as an indicator of distributional skewness. \todo{source}
-A mean exceeding the median suggests a right-skewed distribution, whereas a mean lower than the median indicates a left-skewed distribution. 
-This phenomenon is particularly evident in Feature 2.
-With the exceptions of Feature 8 and Feature 12, the variables in this dataset exhibit right-skewness, although the degree of asymmetry varies across the attributes. 
-These results indicate that the observations for most features tend to concentrate toward lower values with a trailing tail toward the higher end of the scale.\todo{review}
+\todo{Boxplots beschreiben! nocht auf die Verteilung gehen}
 
-
-For a visualization of the distributional characteristics of the dataset, a Q-Q plot for all features is provided in the Appendix.
-To provide statistical verification of these distributional observations, the Shapiro-Wilk test for normality is applied to each feature. 
+For a visualization of the distributional characteristics of the dataset, a Q-Q plot \citep[p. 5]{wilk1968probability} for all features is provided in the Appendix.
+To provide statistical verification of these distributional observations, the Shapiro-Wilk test \citep[p. 592]{shapiro1965analysis}  for normality is applied to each feature. 
 Of 13 dimensions feature 2 and 3 were normally distributed with $p > 0.05$ and $p > 0.1$ respectivly.
 The results are displayed in the appendix. 
 
 
-The $IQR$ represents the central 50\% of the data distribution relative to the median.\todo{different wording?} 
+The $IQR$ represents the central 50\% of the data distribution relative to the median.
 A wider $IQR$ indicates greater variance within a specific feature, whereas a narrow $IQR$ suggests that the observations are more densely clustered. 
 The features within the dataset exhibit significantly different scales of dispersion. 
 While Features 3, 4, 5, and 6 are characterized by relatively narrow $IQR$, Feature 12 displays a notably large $IQR$, reflecting a higher degree of variability in its distribution compared to the other attributes.
@@ -111,9 +105,9 @@ A positive coefficient indicates that the values of two features move in the sam
 A coefficient of zero suggests that the variables are independent, meaning a shift in one feature does not correspond to a predictable change in the other. 
 
 
-In figure \ref{fig:heatmap}, the Pearson correlation coefficients for all pairs of dimensions are visualized using a heatmap.
+In figure \ref{fig:heatmap}, the Pearson correlation coefficients \citep[p. 256]{Pearson1896}for all pairs of dimensions are visualized using a heatmap.
 The Pearson correlation was selected as the primary metric because comparative analysis revealed no significant deviations when compared to the Spearman correlation. 
-Typically, the Spearman rank correlation is preferred for datasets characterized by non-linear relationships or when significant global outliers are present, as it operates on the rank-order of values rather than their raw magnitudes. \todo{source and true?} 
+Typically, the Spearman rank correlation \citep[p. 80]{Spearman1904} is preferred for datasets characterized by non-linear relationships or when significant global outliers are present, as it operates on the rank-order of values rather than their raw magnitudes. \todo{source and true?} 
 However, the negligible difference between the two coefficients in this instance suggests that the relationships between the dimensions are predominantly monotonous. 
 Furthermore, the number of outliers is sufficiently small and the dataset imbalance sufficiently pronounced that these extreme values do not substantially distort the Pearson coefficient. 
 This metric quantifies the strength and direction of the monotonous relationship between two variables, assigning a numerical value within the range of -1 to 1.
@@ -136,9 +130,11 @@ The second most pronounced negative correlation, valued at $\approx -0.59$, occu
 
 \subsubsection*{Manifold Structure Analysis}
 The Shapiro-Wilk test unfolded that 2 out of 13 dimensions are not normally distributed. 
-That proves that the multivariate distribution cant be gaussian distributed as well. 
+That proves that the multivariate distribution cant be gaussian distributed as well \citep[p. 156]{korkmaz2014mvn}. 
 Analysing the corrolational structure of the dataset provides bivariate insights into the dataset, but it does not capture the potential non-linear interactions or the overall geometric structure of the data.
-By performing both spearman and pearson correlation, I assume that the relationships between feature are predominantly linear, hence the data lays on a flat manifold structure. 
+
+
+By performing both spearman and pearson correlation, I assume that the relationships between feature are predominantly homogenous, hence the data lays on a flat manifold structure. 
 To confirm this assumption and to gain a deeper understanding of the dataset's structure, UMAP as a non-linear dimensionality reduction technique is applied to visualize the data in a lower-dimensional space.
 I will apply the Uniform Manifold Approximation and Projection (UMAP), eventhough the relationships seem to be linear, because UMAP can display lineare relationships as well as non-linear.
 I will concentrate on the mechanics of UMAP, that influences the visualization of outliers the most and will not go into the mathematical details of the algorithm, which can be found in the original paper by \citet{mcinnes2018umap}.
@@ -261,6 +257,7 @@ Conversely, the clear spatial separation and high density of the outlier cluster
 A single inlier observation is positioned in relative proximity to the outlier cluster, suggesting a potential boundary case or a marginal increase in similarity between the classes at that specific coordinate. 
 This geometric isolation suggests that the profiles of the anomalies are significantly and consistently different from those of the inliers, which facilitates more effective detection by manifold-based and distance-based algorithms.
  
+
 To conclude the Wine dataset contains 13 dimensions from which 11 are univariatly not nornally distributed, hence the multivariate distribtion isnt normally distributed as well.
 This vialiated the assumption of MCD which was discussed in chapter \ref{sec:mcd}.
 The correlations of the dataset show a varity of different directions but nevertheless seems to be of linear nature.
