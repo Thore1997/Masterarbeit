@@ -43,7 +43,7 @@ K-NN is typically follows an unsupervised learning pradigm.
 Nevertheless, the experimental setup I chose differs from this paradigm to make the benchmark comparable to InterCont.
 There are different variants of k-NN, mitigating disadvantages of the original algorithm.
 For example by utilizing the average distance across the neighborhood enhances the robustness and stability of detected outliers \citep{angiulli2002fast}. 
-Because  this methods is constructed as a benchmark, the traditional version of k-NN wil be implemented, which is based on euklidiean distance to the specific $k$-th nearest neighbor.
+Because  this methods is constructed as a benchmark, the traditional version of k-NN wil be implemented, which is based on Euklidiean distance to the specific $k$-th nearest neighbor.
 The setup is discribed in chapter \ref{sec:setup}.
 
 
@@ -55,13 +55,13 @@ The algorithm executes the following procedure:
     \item The number of instaces $n$ with the highest distances are defined as outliers.
 \end{enumerate}
 
-k-NN is characterized as a lazy learning algorithm, meaning it does not construct an explicit generalization or internal model during a training phase. 
+k-NN is characterized as a lazy learning algorithm \citep[p.273]{wettschereck1997review}, meaning it does not construct an explicit generalization or internal model during a training phase. 
 Consequently, the entire dataset must be retained. 
 If a new instance is introduced, the algorithm must re-evaluate the proximity metrics across the dataset to determine its status.
 
 
 To determine the $k$-nearest neighbors, the algorithm must quantify the proximity between an instance and its neighboring data points. 
-In traditional $k$-NN implementations, Euclidean distance is the standard metric.
+In traditional $k$-NN implementations, Euclidean distance \citep[p. 226]{abu2019effects} is the standard metric.
 
 
 It is defined as follows:
@@ -74,14 +74,14 @@ Where $p$ and $q$ represent two data points in an $n$-dimensional space.
 The squared differences between corresponding coordinates are summed, and the square root of this sum yields the Euclidean distance, which quantifies the straight-line distance between the two points in the feature space.
 
 
-However, the use of Euclidean distance renders $k$-NN non-affine equivariant. 
+However, the use of Euclidean distance renders $k$-NN non-affine equivariant \citep[p. 24]{biau2012affine}. 
 That means that the results do not remain consistent under affine transformation of the data.
 Those transformations include scaling, rotation, or translation. 
 Because this metric treats all dimensions equally, variables with larger numerical ranges will dominate the distance calculation, potentially masking outliers that exist within the distribution of smaller-scaled variables. 
 Consequently, the relative scaling of variables directly influences the identification of potential outliers.
 
 \subsubsection*{Normalization}
-To mitigate the effects of variable scaling, the dataset must be normalized. 
+To mitigate the effects of variable scaling, the dataset must be normalized \citep[p. 3]{performance2021effect}. 
 Min-Max Normalization is frequently employed to rescale all features to a fixed range of [0,1]. 
 
 
@@ -119,7 +119,7 @@ It is defined as follows:
 \end{equation}
 
 
-This method scales the data based on its internal distribution. 
+This method scales the data based on its internal distribution\citep[p. 4]{izonin2022two}. 
 By subtracting the median in the numerator, the data is centered such that the median corresponds to 0. 
 Observations exceeding the median result in positive values, whereas those below it become negative.
 

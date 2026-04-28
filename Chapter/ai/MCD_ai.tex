@@ -17,19 +17,15 @@ Following the detailed description of the algorithmic procedures, the relative a
 
 
 A naive approach to outlier detection would involve estimating the sample mean and covariance matrix for the entire dataset and labeling the $n$ observations with the largest distances as outliers.
-It this scenario utilizing the Mahalanobis distance, is highly advantageous because it incorporates the covariance matrix, resulting in a relative greater difference for contextual as well as global outliers. 
-It is disadventageous in datasets with cluster outliers, because the covariance matrix will be biased, if the cluster is sufficiently big.
+By utilizing the Mahalanobis distance \citep[Chapter 1]{mahalanobis2018generalized}, the analysis accounts for the underlying covariance structure of the data. 
+This standardizes the multidimensional space, effectively magnifying the relative distance of outliers that might otherwise remain hidden in a standard Euclidean framework \citep[Chapter 2]{leys2018detecting}. 
 
 
-The covariance matrix is a critical parameter as it defines the geometric shape and orientation of the data within a $p$-dimensional space. 
-The determinant of the covariance matrix is directly proportional to the square of the volume of the corresponding hyper-ellipsoid.
-
-
-However, this standard procedure is often compromised by the masking effect. 
-Because classical estimators for the mean and covariance are highly sensitive to extreme values, even a single outlier can shift the mean toward itself and artificially inflate the covariance. 
+However, this standard procedure is often compromised by the masking effect \citep[Chapter 1]{hardin2005distribution}. 
+Because Mahalanobis distances are sensitive to extreme values, even a single outlier can shift the mean toward itself and artificially inflate the covariance. 
 This effectively masks the outlier's presence, leading to false negatives. 
 To address this, the Minimum Covariance Determinant (MCD) was proposed by \citet{rousseeuw1984least} and theoretically formalized in \citet{rousseeuw1985multivariate} to provide robust estimators that remain unaffected by data contamination.
-It is a parametric and affine-equivariant estimator for the mean and covariance matrix of a dataset.
+It is a parametric and affine-equivariant estimator for the mean and covariance matrix of a dataset \citep[Chapter 3]{rousseeuw1985multivariate}.
 
 
 \subsubsection*{Minimum Covariance Determinant (MCD)}
@@ -40,12 +36,12 @@ By drawing this ellipsoid around the region of highest local density rather than
 \begin{figure}[h] 
     \centering
     \includegraphics[width=0.6\linewidth]{Images/MCD.pdf}
-   \caption{Minimum Covariance Determinant}
+    \caption{Minimum Covariance Determinant (Source: \cite{hubert2018minimum})}
     \label{fig:mcd}
 \end{figure}
 
-A significant limitation of the original MCD algorithm is its computational complexity. 
-Finding the optimal subset requires evaluating $\binom{n}{h}$ combinations, which is infeasible for large datasets. 
+A significant limitation of the original MCD algorithm is its computational complexity \citep[Chapter 0]{rousseeuw1999fast}. 
+Finding the optimal subset requires evaluating $\binom{n}{h}$ combinations, which is infeasible for large datasets \citep[Chapter 4]{rousseeuw1985multivariate}. 
 
 
 \subsubsection*{FAST-MCD}
@@ -71,15 +67,10 @@ The FAST-MCD algorithm is as follows:
     \end{enumerate}
     \item Report the mean $\mu^{MCD}$ and covariance $\Sigma^{MCD}$ from the subset with the overall lowest determinant.
 \end{enumerate}
-\citep[p.214]{rousseeuw1999fast}
+\citep[Chapter 3]{rousseeuw1999fast}
 
 
-This selective iteration is efficient because the distinction between robust and non-robust solutions usually manifests within the first few steps. \todo{add:rousseeuw, Driessen (1999)p.216 pp...} 
-Usually the number of subsamples $J$ drawn is about 500 to 1000. 
-That maximizes the probability, that one subsample does not include outliers.
-MCD is affine equivariant, hence it is robust against affine transformation and does not need data normalization \citet{hubert2018minimum}. 
-
-
+This selective iteration is efficient because the distinction between robust and non-robust solutions usually manifests within the first few steps \citep[Chapter 3.2.]{rousseeuw1999fast}. 
 The primary hyperparameter is $h$, and it is constrained by the range:
 
 \begin{equation}
@@ -87,11 +78,11 @@ The primary hyperparameter is $h$, and it is constrained by the range:
 \end{equation}
 
 The lower bound is set, so the subsample contains at leats halve of the dataset $\frac{n}{2}$.
-If the outlier ratio exceeds 50\%, these points can no longer be statistically defined as outliers, as they constitute the majority class.
+By definition, an outlier is an observation that deviates from the majority of the data. 
+If the contamination ratio exceeds 50\%, the anomalous points constitute the majority class, meaning the original data distribution is no longer statistically identifiable as the normal state.
 
 
-Additionally if $h$ is smaller than the number of dimensions $p$, the covariance matrix becomes singular $det(S)=0$, rendering it non-invertible.
-Therefore $h > p$ has to be satisfied.
+Additionally $h > p$ has to be satisfied, because the covariance matrix becomes singular $det(S)=0$, rendering it non-invertible. \todo{search paper}
 To avoid excessive noise, it is recommended to maintain at least five observations per dimension \citep{hubert2018minimum}.
 
 
@@ -99,7 +90,7 @@ The breakdown point determines the maximum proportion of arbitrarily large outli
 It is defined as $1-\alpha$, where $\alpha$ is the share of observations in the subset $H$.
 
 
-There is a trade-off between robustness and statistical efficiency.
+There is a trade-off between robustness and statistical efficiency \citep[Chapter 4]{rousseeuw1999fast}.
 The higher the breakdownpoint is, the lower the statistical efficiency gets, resulting in a increased variance. 
 If the outlier ratio is known, the number of $h$ can be set manually to $h = (1-outlier ratio) * n$.
 
