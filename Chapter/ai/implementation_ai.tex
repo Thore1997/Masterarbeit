@@ -11,7 +11,7 @@ The software environment was managed under the Windows 11 Enterprise operating s
 
 
 For the implementation of the algorithms and the execution of the experimental pipeline, the PyCharm 2025.3.3 IDE was employed. 
-Although more recent versions of the Python interpreter exist, Python 3.12 was selected as the foundational language to ensure full compatibility with the required library ecosystem, as several critical packages had not yet been updated for newer releases. 
+Although more recent versions of the Python interpreter exist, Python 3.12 \citep{pythonpsf} was selected as the foundational language to ensure full compatibility with the required library ecosystem, as several critical packages had not yet been updated for newer releases. 
 To maintain strict control over software dependencies and ensure environment stability, a virtual environment was utilized. 
 All specific library versions and dependencies are documented within a provided requirements.txt file.
 
@@ -44,7 +44,7 @@ This architectural choice ensures that the machine learning algorithm can accura
 
 
 The implementation utilizes a permutation-based approach to derive anomaly scores. 
-To introduce stochasticity into the permutation process, the authors utilized the PyTorch function torch.randperm().
+To introduce stochasticity into the permutation process, the authors utilized the PyTorch \citep{paszke2019pytorch} function torch.randperm().
 This function divides the normal data into halves and permutes the compositions and grading those halves into testing and training dataset.
 The testing dataset always includes all outliers.  
 To ensure the stability and reliability of the results, a shuffling procedure is integrated into the pipeline. 
@@ -74,15 +74,15 @@ Minor adjustments were made to the source code to facilitate this additional met
 
 
 \subsubsection*{k-NN}
-The k-NN algorithm was implemented in knn\_benchmark.py by using the PyOD library. 
-To facilitate the experimental procedure and derive relevant performance metrics, components from the scikit-learn library were also employed. 
-Especially the F1-Score provided by SciKitLearn was used to estimate this metric. 
+The k-NN algorithm was implemented in knn\_benchmark.py by using the PyOD library \citep{zhao2019pyod}. 
+To facilitate the experimental procedure and derive relevant performance metrics, components from the Scikit-learn library \citep{pedregosa2011scikit} were also employed. 
+Especially the F1-Score provided by Scikit-learn was used to estimate this metric. 
 As beforementioned the F1-Score in InterCont was estimated by a self-programmed function. 
 Nevertheless, by using the known outlier score, the use of both methods yield to the same result.
 
 
 A five-fold cross-validation procedure was implemented in knn\_cv.py.
-This was facilitated by the KFold function from the scikit-learn library. 
+This was facilitated by the KFold function from the Scikit-learn library. 
 $K = 5$ is the optimal value for $k$, which corrosponds with the choice in the paper of the authors. 
 Given the limited number of observations in the dataset, a five-fold approach was selected to maintain a sufficient volume of data in both the training and testing subsets for each iteration. 
 The shuffle parameter $random\_state$ was enabled to ensure that the observations were randomized prior to partitioning and was set to the default 42. 
@@ -97,7 +97,7 @@ To align the model with the specific characteristics of the testdataset, the num
 
 The k-NN implementation utilizes the default configuration for distance metrics, specifically selecting the largest distance to the $k$-nearest neighbors. 
 This calculation employs the Minkowski distance with the parameter $p=2$, which is mathematically equivalent to the Euclidean distance.
-The RobustScaler from SciKit Learn was implemented.
+The RobustScaler from Scikit-learn was implemented.
 
 \subsubsection*{FAST-MCD}
 The FAST-MCD algorithm was implemented in mcd\_benchmark.py by using the PyOD library. 

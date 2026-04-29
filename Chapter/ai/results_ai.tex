@@ -1,7 +1,7 @@
 \section{Results}\label{sec:results}
 This section presents the results of the previously conducted experiments.
 The primary findings are summarized in Table \ref{tab:results_bench}, which details the mean and standard deviation (SD) of the F1-Score, ROC AUC, and AUPRC for each evaluated method. 
-To ensure a rigorous assessment of these findings, a Friedman test is applied for global comparison, followed by a pairwise Wilcoxon signed-rank test.
+To ensure a rigorous assessment of these findings, a Friedman test \citep{friedman1937use} is applied for global comparison, followed by a pairwise Wilcoxon signed-rank test \cite{wilcoxon1945individual}.
 The analysis is further extended through the plotting of AUPRC and ROC AUC curves to facilitate a more detailed performance comparison across all methods.
 
 
@@ -83,6 +83,7 @@ Eventually, both baseline models reach a plateau where precision stabilizes.
 The initial decrease in precision is more pronounced for k-NN than for MCD.
 However, k-NN remains stable for a longer duration and surpasses the performance of MCD at a recall of approximately 0.6. 
 Although MCD stabilizes at a higher initial precision level, its performance subsequently degrades at a faster rate compared to k-NN.
+
 
 \subsubsection*{Statistical Inference}
 The validation of empirical results necessitates the application of rigorous statistical testing. 
@@ -176,7 +177,7 @@ This interpretation identifies which method consistently achieves superior ranki
 
 To further delineate specific performance differentials, a pairwise Wilcoxon signed-rank test is conducted. 
 This non-parametric procedure is frequently utilized within outlier detection literature, as exemplified by \citet{shenkar2022anomaly}. 
-The test is appropriate for paired observations, wherein each data point in one group corresponds directly to a specific observation in the comparison group. 
+The test is appropriate for paired observations \citep[p. 80]{wilcoxon1945individual}, wherein each data point in one group corresponds directly to a specific observation in the comparison group. 
 Given that the evaluations are conducted on the same datasets, the observations are inherently linked across methods, satisfying the requirement for dependent samples despite the stochastic nature of individual runs. 
 The test evaluates the null hypothesis that the median of the differences between the paired observations is zero. 
 By ranking the absolute differences between the pairs and assigning the sign of the original difference to these ranks, the Wilcoxon signed-rank test provides a robust assessment of whether one method systematically outperforms another without requiring the assumption of normally distributed differences.
@@ -221,7 +222,7 @@ Therefore the mean and standard deviations are calcultes as follows:
 
 The parameters are used to calculate the Z-Score.
 The results are displayed in table \ref{tab:wilcoxon}.
-To control the family-wise error rate due to multiple comparisons, we applied a Bonferroni correction. 
+To control the family-wise error rate due to multiple comparisons, we applied a Bonferroni correction \citep[p. 52]{dunn1961multiple}. 
 With three pairwise comparisons, the significance threshold was adjusted from $\alpha = 0.05$ to $\alpha = 0.0167$.
 Pairwise comparisons between InterCont and the baseline methods demonstrate that InterCont's performance is statistically superior across all evaluated metrics with $p < 0.001$, maintaining significance even after applying the Bonferroni correction. 
 MCD in comparison to k-NN shows no statisticall differences regarding the ROC AUC with $p > 0.5$.
