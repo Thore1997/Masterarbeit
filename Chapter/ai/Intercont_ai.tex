@@ -1,56 +1,41 @@
 \subsection{Internal Contrastive Learning (InterCont)}\label{sec:intercont}
 This chapter examines the internal contrastive learning algorithm proposed by \citet{shenkar2022anomaly}. 
-The primary objective is to derive an outlier score $y(x)$, which assigns low values to samples consistent with the underlying distribution and higher values to potential outliers. 
+The primary objective is to derive an outlier score $y(x)$, which assigns low values to samples consistent with the underlying distribution and higher values to potential outliers \citep[p. 1]{shenkar2022anomaly}. 
 The following chapter details the architectural configuration of the method, beginning with the network construction and the selection of activation functions. 
 Subsequently, the analysis addresses the specific loss function and the normalization techniques implemented to calculate cosine similarity. 
 The operational procedure of a single epoch is then described, followed by an evaluation of the relevant hyperparameters. 
 Finally, the architecture of this method is compared to the contrastive learning framework delineated in the preceding section.
 
 
-The network architecture consists of two asymmetrical, fully connected neural networks, denoted as $F$ and $G$.
+The network architecture consists of two asymmetrical, fully connected neural networks, denoted as $F$ and $G$ \citep[p. 5]{shenkar2022anomaly}.
 The authors constructed an autoencoder network as described in the chapter before. 
-This structural asymmetry is required to accommodate the differing dimensions of the input vectors, where $b$ serves as the anchor and a represents the positive sample. 
+This structural asymmetry is required to accommodate the differing dimensions of the input vectors, where $b$ serves as the anchor and $a$ represents the positive sample. 
 The authors determine the dimensions of the hidden layers relative to the embedding size $u$. 
 Network $F$, designed to process the larger anchor vector $b$, utilizes two hidden layers containing $u$ and $2u$ nodes, respectively. 
 Network $G$ maintains a similar structure with two hidden layers.
 However, because it processes the smaller complementary positive sample $a$, the node counts are reduced. 
-Specifically, the first hidden layer of $G$ comprises $\frac{u}{4}$ nodes, while the second hidden layer comprises $\frac{u}{2}$ nodes. 
+Specifically, the first hidden layer of $G$ comprises $\frac{u}{2}$ nodes, while the second hidden layer comprises $\frac{u}{4}$ nodes. 
 
 
 
-The architecture utilizes the LeakyReLU activation function across its layers, with the sole exception of the first hidden layer in Network $F$, which employs a Tanh activation. 
-The inclusion of Tanh in the initial layer of the anchor network serves to center the input data and bound activations within the range of -1 to 1, facilitating stability during the early stages of feature extraction for the larger input vector.
-
-
-LeakyReLU diverges from the standard Rectified Linear Unit by incorporating a small non-zero slope coefficient for negative input values. 
-Specifically, the authors defined this slope coefficient as 0.2. \todo{what does this mean?}
-This modification prevents neurons from becoming inactive by ensuring that every unit remains capable of contributing to the learning process. 
-Furthermore, this design ensures that gradients propagate through the network during negative activations, thereby mitigating the risk of vanishing gradients and allowing for more consistent optimization across the entire network depth. 
-The authors implemented distinct activation functions to prevent the network from merely comparing vectors of similar data points. 
-Without this differentiation, the network might produce class-independent results lacking discriminative power. 
+The architecture utilizes the LeakyReLU activation function with a slop coefficient of 0.2 across its layers, with the sole exception of the first hidden layer in Network $F$, which employs a Tanh activation. 
+The inclusion of Tanh in the initial layer of the anchor network serves to center the input data and bound activations within the range of -1 to 1, facilitating stability during the early stages of feature extraction for the larger input vector. 
+Furthermore, without this differentiation, the network might produce class-independent results lacking discriminative power. 
 Consequently, $a$ and $b$ are mapped into distinct mathematical spaces.
 
 
-The authors utilize the previously discussed InfoNCE loss function, which serves to maximize the mutual information gain during the training process. 
-This function generates a score that is inversely proportional to the similarity of data pairs. 
-Consequently, samples that deviate from the underlying distribution receive higher scores, indicating an increased probability of being categorized as an outlier. 
+The authors utilize the previously discussed InfoNCE loss function.  
+This loss is taken as the outlier score, because samples that deviate from the underlying distribution receive higher scores, indicating an increased probability of being categorized as an outlier.  \todo{nachschauen}
 
-
-%The numerator of the equation represents the pull between the anchor and the positive sample. \todo{diff place?}
-%It is calculated as the product of the anchor and the positive sample, forming the positive pair, which is then divided by the temperature hyperparameter $\tau$. 
-%The denominator constitutes the push, represented by the product of the anchor and the negative samples divided by $\tau$. \todo{different wording, push?}
-%This product is summed across the total number of negative pairs. 
-%Both the numerator and the denominator are processed through a natural exponential function. 
-%Consequently, the exponential nature of the scores ensures that higher values exert a disproportionately larger influence on the resulting loss, effectively penalizing the model more severely when the anchor is not sufficiently separated from negative samples or closely aligned with the positive sample.
 
 \subsubsection*{Epoch}
-The authors proposed a sliding window approach for data augmentation to facilitate internal contrastive learning. 
+The authors proposed a sliding window approach for data augmentation to facilitate internal contrastive learning \citep[p. 3]{shenkar2022anomaly}. 
 
 \begin{figure}[htbp]
     \centering
     \begin{minipage}{0.5\textwidth}
         \onehalfspacing
-        The model initialization involves treating the columns of the dataset $S$ as a vector $x_i$ with a total length of $d$. 
+        The model initialization involves treating the rows of the dataset $S$ as a vector $x_i$ with a total length of $d$. 
         The number of pairs $\phi(x_i)={(a_i,b_i)}$ for one instance $x_i$ is determined by the formula $m=d+1-k$, where $k$ represents the defined length of the positive sample $a_i$. 
         The anchor $b_i$ is composed of the residual features $d-k$, functioning as the complementary vector to the positive sample.               
     \end{minipage}
@@ -58,31 +43,27 @@ The authors proposed a sliding window approach for data augmentation to facilita
     \begin{minipage}{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Images/Shenkar_Wolf.pdf}
-        \caption{Sliding Window Approach}
+        \caption{Sliding Window Approach Source:\citep[p. 5]{shenkar2022anomaly}}
+        \label{fig:slidingwindow}
     \end{minipage}
-    \label{fig:slidingwindow}
 \end{figure}
 
 
 A distinguishing feature of this method is that the negative samples are derived from the positive samples of other constructed pairs within the same data instance, which characterizes the internal nature of the contrastive learning process. 
-For a visual representation of this mechanism, see Figure \ref{fig:slidinwindow}
-
-The anchor $b_i$ is processed by network $F$, while the positive pair a is processed by network $G$, thereby necessitating the asymmetrical network structure.
-Through the specified embedding size, the vectors are projected into a higher-dimensional embedding space. 
-This represents an autoencoder architecture describted in chapter \ref{sec:contrastive_learning}.
-Rather than identifying the most salient features through dimensionality reduction, the network aims to learn complex relationships within the data. 
-This approach is particularly relevant for tabular data, which often lacks the inherent internal structure found in image data. 
-If a bottleneck architecture were utilized, the networks would be forced to discard information to satisfy the dimensionality constraints, potentially losing critical indicators of outlying observations.
+For a visual representation of this mechanism, see Figure \ref{fig:slidingwindow}.
+After this iterative procedure the resulting vectores of $b$ and $a$ are combined into matrices $F$ and $G$.
 
 
-Following these operations, the network outputs are subjected to a double normalization process and denoted as $F_N$ and $G_N$. 
-This procedure involves two distinct $L2$ normalization stages for both networks, resulting in unit vectors with differing orientations. 
+The matrices are subjected to a double L2 normalization process and denoted as $F^N$ and $G^N$ \citep[p. 4]{shenkar2022anomaly}. 
 The initial row-wise normalization standardizes scales across features, preventing outliers from being identified solely by the magnitude of specific features and ensuring an L2 norm of 1 for each sample. 
 Subsequently, a second column-wise normalization is applied to ensure that each vector is projected onto the surface of a unit hypersphere.
 For contrastive learning methods like InterCont, specialized contrastive loss functions are employed to manage the distances between data points in the embedding space \citep{terven2025comprehensive}. 
+After the normalization process, the individual vectors are entered into their network.
 
 
-The the loss function,
+Through the specified embedding sizes, the vectors are projected into a higher-dimensional space and reconstructed thereafter. 
+The network aims to learn the most relevent relationships and discards noise within the data. 
+The the Info-NCE loss function is implemented as follows:
 
 \begin{equation}
    \ell(F, G, \Phi(x_i), j) = -\ln \frac{\exp(F^N(b_i^j) \cdot G^N(a_i^j) / \tau)}{\sum_{j'=1}^{m} \exp(F^N(b_i^j) \cdot G^N(a_i^{j'}) / \tau)}
@@ -90,40 +71,37 @@ The the loss function,
 \end{equation}
 
 
-estimates the loss for every data pair within the batch.
-The numerator quantifies the similarity between the $F^N(b)$ and $G^N(a)$ vectors by calculating their dot product. 
-A higher product indicates a greater degree of alignment and similarity between the projected vectors in the embedding space. 
-Since the vectors are previously normalized to lie on a unit hypersphere, this dot product is equivalent to the cosine similarity.
-Given that the training objective is to minimize the negative log-likelihood, the network is incentivized to maximize this dot product for positive pairs, thereby clustering related representations while distancing them from the negative samples represented in the denominator.
+The numerator of the equation quantifies the cosine similarity between the $F^N(b)$ and $G^N(a)$ vectors by calculating their dot product. 
+A higher product indicates a greater degree of similarity between the projected vectors. 
 
 
-The denominator quantifies the similarity between the anchor $b_i$ and all other positive samples $a_j$ within the batch, which serve as negative pairs in this contrastive context. 
+The denominator quantifies the similarity between the anchor $b_i$ and all other positive samples $a_j$, which serve as negative pairs. 
 By summing the exponentiated dot products of the anchor with these negative samples, the denominator remains positive. 
-The application of the negative natural logarithm ensures that an ideal model, which perfectly aligns the anchor with its corresponding positive sample relative to all others, approaches an outlier score of 0. 
+To minimize this loss, the negative natural logarithm is applied, ensuring the result is small when the similarity term is large. 
 Conversely, as the similarity between the anchor and the correct positive sample decreases relative to the negative samples, the loss increases.
 
 
 If $F^N(b_i)\cdot{G^N(a_i)=1}$, the two vectors point in an identical direction within the feature space. 
-Conversely, a lower value signifies a lack of similarity, reaching a minimum of -1 when the vectors are diametrically opposed. 
-Because $G^N(a_i)$ is distinct from $G^N(a_j)$, the cosine similarity $F^N(b_i)\cdot{G^N(a_i)}$ is expected to be greater than $F^N(b_i)\cdot{G^N(a_j)}$
-Otherwise, the loss function value increases. 
-To minimize this loss, the negative natural logarithm is applied, ensuring the result is small when the similarity term is large. 
+A lower value signifies a lack of similarity, reaching 0 when the vectors are orthogonally placed.
+Conversely, the vectors are diametrically opposed reaching a minimum of -1 signifiying dissimilarity.
+Because $G^N(a_i)$ is distinct from $G^N(a_j)$, the cosine similarity $F^N(b_i)\cdot{G^N(a_i)}$ is expected to be greater than $F^N(b_i)\cdot{G^N(a_j)}$ 
 The relationships of all negative pairs are aggregated to compute the total loss, and this procedure is performed iteratively for all instances within the dataset.
 
 
 Through backpropagation, the gradients are calculated and the network weights are updated iteratively. 
-To minimize the loss, the method must increase the distance between negative pairs, thereby decreasing the sum of the dot products in the denominator while maximizing or maintaining the dot product in the numerator. 
+To minimize the loss, the method must increase the angle between negative samples and the anchor, thereby decreasing the sum of the dot products in the denominator while maximizing or maintaining the dot product in the numerator. 
 This optimization forces the representations of unrelated samples apart in the embedding space. 
-The training process terminates when the loss falls below a threshold of $10^-3$, signaling that the model has reached the desired level of convergence.
+The training process terminates when the loss falls below a threshold of $10^-3$, signaling that the model has reached the desired level of convergence \citep[p. 5]{shenkar2022anomaly}.
 
 
 The sliding window approach possesses a significant limitation, as it requires dimensions with high mutual information to be positioned in close proximity to one another. 
 This condition is frequently unmet in tabular data, where the window size may be insufficient to encompass these related dimensions. 
-To address this, the authors implement an ensemble learning approach by permuting the dimensions of $S$. 
+To address this, the authors implement a permutation strategy to change the order of dimensions, facilitating a bagging effect. 
 Consequently, the method constructs $r$ distinct versions of $S$, and the training process proceeds independently for each version of the table. 
-This ensemble strategy ensures that the model captures a broader range of dependencies across the feature space, mitigating the risk of omitting critical relationships due to arbitrary feature ordering.
+This strategy ensures that the model captures a broader range of dependencies across the feature space, mitigating the risk of omitting critical relationships due to arbitrary feature ordering.
 
-The model is characterized by three primary hyperparameters:
+
+The model is characterized by three primary hyperparameters \citep[p. 3]{shenkar2022anomaly}:
 \begin{enumerate}
     \item $k$ determines the number of consecutive number of the features to form the positive sample $a$.
     \item $u$ determines the embedding size.
@@ -132,7 +110,7 @@ The model is characterized by three primary hyperparameters:
 
 If $k$ is assigned a high value, the model risks losing its local focus and neglecting critical outlier information. 
 Conversely, if $k$ is excessively small, the model may fail to capture global relationships by concentrating solely on local dependencies, which can degrade overall performance. 
-For the dataset utilized in this research, where $d=129$, the authors determined the optimal window size to be $k=2$. 
+For the dataset utilized in this research, where $d=129$, the authors determined the optimal window size to be $k=10$ \citep[p. 5]{shenkar2022anomaly}. 
 This parameter selection serves to balance the granularity of feature interactions with the computational efficiency of the contrastive task.
 
 
@@ -150,9 +128,6 @@ For their implementation, the authors fixed u=200, providing a balanced capacity
 
 The authors conducted robustness checks to evaluate the sensitivity of the model to various parameter configurations. 
 Regarding $\tau$ and $u$, the analysis revealed no significant volatility in the results, suggesting that the model maintains stability across a range of values for the temperature constant and the embedding dimensionality. 
-For the specific dataset utilized in this study, the optimal performance was observed with a window size of $k=2$. 
+For the specific dataset utilized in this study, the optimal performance was observed with a window size of $k=10$. 
 This indicates that a narrower local focus was most effective for capturing the underlying feature dependencies within this particular data distribution.
 
-
-\todo{add pros and cons}
-\todo{define cosine similarity in previous chapter} 
