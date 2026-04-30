@@ -18,21 +18,18 @@ It relies on labeled datasets, where a model learns a mapping from inputs to spe
 In this task-driven approach, the model is trained on labeled data, where each input is paired with the ground truth \citep[p.3]{sarker2021machine}. 
 The model's objective is to learn a mapping function that can accurately predict labels for new, unseen data. 
 While this paradigm achieves high performance for defined tasks, it is constrained by the high cost of manual data labeling and a tendency to struggle with out-of-distribution data. 
-Furthermore, these models often struggle with scenarios or data distributions not represented during training.
 
 
 In contrast, unsupervised learning is a data-driven approach that utilizes unlabeled data by identifying underlying patterns in data without explicit labels, making it highly scalable but often less precise for specific classification tasks.
 Without predefined output labels or external supervision, the model must explore the data to discover hidden patterns, underlying structures, or natural groupings \citep[p.4]{sarker2021machine}. 
 This paradigm is highly scalable and effective for identifying complex relationships within large volumes of data without the need for expensive human annotation. 
 However, because there are no ground truth labels to measure against, these models can be less accurate than supervised versions, and their results are often more difficult to interpret and computationally intensive.
-\todo{are there supervised and unsupverised methods in OD}
 
 
 Semi-supervised learning, utilizes labled data in conjunction unlabled data.
 The primary objective is to leverage the structural information inherent in the unlabeled samples to improve the model's generalization performance beyond what could be achieved using the labeled data alone.
 This approach is particularly valuable in scientific research where acquiring labeled instances is costly, while unlabeled data is readily available. 
-By assuming that data points in close proximity or on the same manifold share the same label, semi-supervised algorithms can propagate information from the labeled subset to the unlabeled majority, thereby refining the decision boundaries of the model.
-\todo{why can't I compare different paradigms with each other in my paper?}
+By assuming that data points in close proximity share the same label, semi-supervised algorithms can propagate information from the labeled subset to the unlabeled majority, thereby refining the decision boundaries of the model.
 
 
 The authors of InterCont claim that it operates within the self-supervised learning paradigm, specifically leveraging contrastive learning. 
@@ -41,13 +38,8 @@ Therefore self-supervised is often defined as a sub-paradigm of unsupervised lea
 
 
 Nevertheless, the network is trained on labled normal data and tested on data that includes abnormal data.
-This approach resembles a semi-supervised paradm more than an unsupervised approach.
 By doing so, it captures rich representations without the need for human-annotated labels, bridging the gap between the scalability of unsupervised methods and the performance of supervised systems. 
 This approach is particularly effective in fields like computer vision, where the potential number of classes is vast. 
-By employing metric learning \todo{wording?}, the model transforms input data—such as an image—into a numerical representation called an anchor within an embedding space. 
-%The network learns to position similar images closer together and dissimilar images further apart in this space. 
-%This process reduces dimensionality and complexity, allowing the model to recognize core features even when presented with slight variations of the original data.
-\todo{use semisupervise to discuss differences between sel and semi}
 
 
 \subsection{Neural Networks}
@@ -86,7 +78,7 @@ They are defined as follows:
             z = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}}.
         \end{equation} 
         This function is zero-centered with an output range of -1 to 1. 
-        While it often converges faster than sigmoid, it is still susceptible to vanishing gradients.
+        It is susceptible to vanishing gradients.
     \end{minipage}
     \hfill 
     \begin{minipage}{0.45\textwidth}

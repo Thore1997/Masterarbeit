@@ -3,11 +3,11 @@
 Contrastive learning represents a paradigm that has gained significant prominence within the fields of computer vision and natural language processing. 
 The primary objective of such a network is to differentiate between individual instances by learning discriminative features without the necessity of manual labeling. 
 This process is fundamentally supported by data augmentation, which allows the model to generate multiple perspectives of the same instance. 
-The framework introduced by \citet{shenkar2022anomaly} adapts these principles for tabular data through an internal contrastive learning algorithm. 
+The framework introduced by Shenkar and Wolf adapts these principles for tabular data through an internal contrastive learning algorithm. 
 The architectural design of this method facilitates the extraction of complex relationships while distilling the data into its most salient components. 
 
 
-Central to this approach is a contrastive loss function, which is mathematically formulated to minimize the distance between an anchor and its positive perturbations in the feature space while simultaneously maximizing the distance from dissimilar negative samples. 
+Central to this approach is a contrastive loss function, which is mathematically formulated to minimize the distance between an anchor and a positive sample in the feature space while simultaneously maximizing the distance from dissimilar negative samples. 
 This section initially delineates the data augmentation techniques prevalent in computer vision to illustrate the conceptual foundation. 
 Subsequently, the discussion transitions to the specific architectural components of the InterCont method to examine its functional characteristics. 
 Finally, the analysis addresses the general mechanics of the contrastive loss function as implemented within this specific framework.
@@ -69,7 +69,7 @@ This thesis focuses specifically on InfoNCE, as it is the loss function utilized
 For a comprehensive overview of various contrastive loss functions, see \citet{le2020contrastive}. 
 
 
-The Information Noise-Contrastive Estimation (InfoNCE) objective utilizes a density ratio to maximize the mutual information between the samples and the anchor \citep[postfix]{oord2018representation}. 
+The Information Noise-Contrastive Estimation (InfoNCE) objective utilizes a density ratio to maximize the mutual information between the samples and the anchor \citep{oord2018representation}. 
 Mutual information quantifies the reduction in uncertainty regarding one random variable obtained through the observation of another \citep[p. 407]{Shannon48}.  
 By framing the contrastive task as a multi-class classification problem, the model is tasked with identifying a single positive sample from a distribution containing negative samples. 
 This mechanism encourages the encoder to extract high-dimensional features that are most salient for distinguishing related data pairs.
