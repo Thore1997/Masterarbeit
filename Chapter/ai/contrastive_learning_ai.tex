@@ -30,7 +30,10 @@ The model is provided with an anchor (here ape), which represents a specific dat
     \begin{minipage}{0.6\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Images/Contrastive_learning_intuition}
-        \caption{Intuition behind Contrastive Learning}
+        \vspace{0.1cm} 
+        {\color{gray}\fontsize{7pt}{8pt}\selectfont Source: \citep[Fig.~1]{jaiswal2020survey}}
+        \vspace{0.2cm}
+        \caption{Intuition behind Contrastive Learning.}
     \end{minipage}
     \label{fig:contrastive_intuition}
 \end{figure}
@@ -56,12 +59,16 @@ The network is trained by minimizing the reconstruction error, a process that en
 \citet{hu2024comprehensive} published a well organised survey in which among other described the main architecture applied in contrastive learning.
 
 
-\begin{figure}[htbp]   
+\begin{figure}[htbp] 
     \centering
-    \includegraphics[width=0.6\textwidth]{Images/contrastive_learning_pipeline.pdf}
-    \caption{Contrastive Learning pipeline}
+    \includegraphics[width=0.8\textwidth, interpolate=false]{Images/contrastive_learning_pipeline.pdf}
+ 
+    {\color{gray}\fontsize{7pt}{8pt}\selectfont Source: \citep[Fig.~2]{jaiswal2020survey}}
+    \vspace{0.2cm}
+    \caption{Contrastive Learning pipeline.}
     \label{fig:pipeline}
 \end{figure}
+
 
 
 \subsubsection*{Contrastive loss function}
