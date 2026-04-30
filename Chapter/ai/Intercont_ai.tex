@@ -33,14 +33,14 @@ The authors proposed a sliding window approach for data augmentation to facilita
 
 \begin{figure}[htbp]
     \centering
-    \begin{minipage}{0.5\textwidth}
+    \begin{minipage}{0.35\textwidth}
         \onehalfspacing
         The model initialization involves treating the rows of the dataset $S$ as a vector $x_i$ with a total length of $d$. 
         The number of pairs $\phi(x_i)={(a_i,b_i)}$ for one instance $x_i$ is determined by the formula $m=d+1-k$, where $k$ represents the defined length of the positive sample $a_i$. 
         The anchor $b_i$ is composed of the residual features $d-k$, functioning as the complementary vector to the positive sample.               
     \end{minipage}
     \hfill 
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}{0.6\textwidth}
     \centering
     \includegraphics[width=\textwidth]{Images/Shenkar_Wolf.pdf}
     \vspace{0.1cm} 

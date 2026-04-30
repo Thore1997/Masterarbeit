@@ -23,10 +23,40 @@ This standardizes the multidimensional space, effectively magnifying the relativ
 
 However, this standard procedure is often compromised by the masking effect \citep[Chapter 1]{hardin2005distribution}. 
 Because Mahalanobis distances are sensitive to extreme values, even a single outlier can shift the mean toward itself and artificially inflate the covariance. 
-This effectively masks the outlier's presence, leading to false negatives. 
-To address this, the Minimum Covariance Determinant (MCD) was proposed by \citet{rousseeuw1984least} and theoretically formalized in \citet{rousseeuw1985multivariate} to provide robust estimators that remain unaffected by data contamination.
-It is a parametric and affine-equivariant estimator for the mean and covariance matrix of a dataset \citep[Chapter 3]{rousseeuw1985multivariate}.
 
+
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.35\textwidth}
+        \onehalfspacing
+        This effectively masks the outlier's presence, leading to false negatives. 
+        To address this, the Minimum Covariance Determinant (MCD) was proposed by \citet{rousseeuw1984least} and theoretically formalized in \citet{rousseeuw1985multivariate} to provide robust estimators that remain unaffected by data contamination.
+        It is a parametric and affine-equivariant estimator for the mean and covariance matrix of a dataset \citep[Chapter 3]{rousseeuw1985multivariate}.
+    \end{minipage}%
+    \hfill 
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Images/MCD.pdf}
+        \vspace{0.1cm} 
+        {\color{gray}\fontsize{7pt}{8pt}\selectfont Source: \citep[Fig.~1]{hubert2018minimum}}
+        \vspace{0.2cm}
+        \caption{Minimum Covariance Determinant.}
+        \label{fig:mcd}
+    \end{minipage}  
+\end{figure}
+
+
+%\begin{figure}[h] 
+%    \centering
+%    \includegraphics[width=0.45\textwidth]{Images/MCD.pdf}
+%    \vspace{0.1cm} 
+
+%    
+%    \vspace{0.2cm}
+%    
+%    \label{fig:mcd}
+%\end{figure}
 
 \subsubsection*{Minimum Covariance Determinant (MCD)}
 The objective of the MCD is to identify a subset $H$ containing $h$ observations that yields the minimum possible and robust covariance matrix determinant.
@@ -34,16 +64,6 @@ Geometrically, the MCD seeks the smallest possible ellipsoid that encapsulates $
 By drawing this ellipsoid around the region of highest local density rather than the entire dataset, the MCD effectively excludes global and contextual outliers and eliminates the masking effect.
 For a graphical depiction, see figure \ref{fig:mcd}.
 
-
-\begin{figure}[h] 
-    \centering
-    \includegraphics[width=\textwidth]{Images/MCD.pdf}
-    \vspace{0.1cm} 
-    {\color{gray}\fontsize{7pt}{8pt}\selectfont Source: \citep[Fig.~1]{hubert2018minimum}}
-    \vspace{0.2cm}
-    \caption{Minimum Covariance Determinant.}
-    \label{fig:mcd}
-\end{figure}
 
 A significant limitation of the original MCD algorithm is its computational complexity \citep{rousseeuw1999fast}. 
 Finding the optimal subset requires evaluating $\binom{n}{h}$ combinations, which is infeasible for large datasets \citep[Chapter 4]{rousseeuw1985multivariate}. 
