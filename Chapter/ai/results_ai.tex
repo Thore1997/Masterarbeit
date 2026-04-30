@@ -23,33 +23,33 @@ InterCont               & \textbf{85.64}    & 8.77  &  \textbf{97.97}   & 2.13  
 
 
 The performance utilizes F1-Score, ROC AUC, and AUPRC, accompanied by their respective standard deviations (SD). 
-In the F1-Score analysis, InterCont yields the highest mean at 85.64, followed by k-NN at 70.34 and MCD at 64.14. 
-The SD values indicate that InterCont maintains the lowest variability at 8.77, while MCD and k-NN show higher fluctuations at 9.41 and 9.81.
+In the F1-Score analysis, InterCont yields the highest mean at 85.64, followed by $k$-NN at 70.34 and MCD at 64.14. 
+The SD values indicate that InterCont maintains the lowest variability at 8.77, while MCD and $k$-NN show higher fluctuations at 9.41 and 9.81.
 
 
-The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 97.97, k-NN and MCD at 95.94. 
-The stability of these scores is evidenced by low SD values, with k-NN demonstrating the least variance at 1.85, compared to 2.13 for InterCont and 3.59 for MCD.
+The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 97.97, $k$-NN and MCD at 95.94. 
+The stability of these scores is evidenced by low SD values, with $k$-NN demonstrating the least variance at 1.85, compared to 2.13 for InterCont and 3.59 for MCD.
 
 
-For the AUPRC metric, InterCont achieves a mean of 92.93, significantly higher than MCD and k-NN at 77.82 and 73.06 respectively. 
+For the AUPRC metric, InterCont achieves a mean of 92.93, significantly higher than MCD and $k$-NN at 77.82 and 73.06 respectively. 
 The InterCont method exhibits the lowest variance with an SD of 7.31. 
-Conversely, MCD shows the highest SD in this metric with an SD of 16.43, while k-NN records an SD of 11.72. 
+Conversely, MCD shows the highest SD in this metric with an SD of 16.43, while $k$-NN records an SD of 11.72. 
 
 
-%\begin{figure}[h] 
-%    \centering
-%        \includegraphics[width=1\linewidth]{Images/results_boxplot.pdf}
-%    \caption{Boxplot of Experimental Results}
-%    \label{fig:result_boxplot}
-%\end{figure}
+\begin{figure}[h] 
+    \centering
+        \includegraphics[width=1\linewidth]{Images/results_boxplot.pdf}
+    \caption{Boxplot of Experimental Results}
+    \label{fig:result_boxplot}
+\end{figure}
 
 
 The firgure \ref{fig:result_boxplot} displays boxplots for the resultig metrics for each method.
 Regarding the ROC AUC metric, InterCont demonstrates the highest median performance, closely approaching a value of 1.0, while maintaining a relatively narrow interquartile range despite several lower-reaching outliers. 
-The MCD and k-NN methods exhibit lower median ROC AUC values, approximately 0.96, with MCD displaying notably higher variance and a wider distribution of scores in the lower deciles. 
+The MCD and $k$-NN methods exhibit lower median ROC AUC values, approximately 0.96, with MCD displaying notably higher variance and a wider distribution of scores in the lower deciles. 
 
 
-In the AUPRC evaluation, InterCont again maintains a superior median position above 0.90, whereas the performance of MCD and k-NN declines significantly.
+In the AUPRC evaluation, InterCont again maintains a superior median position above 0.90, whereas the performance of MCD and $k$-NN declines significantly.
 MCD in particular shows a substantial spread, with its whiskers extending down to 0.3 and further outliers reaching near 0.2. 
 
 
@@ -58,31 +58,31 @@ K-NN shows a greater median F1 Score of 0.7 to approxamitley 0.58 of MCD.
 MCD shows in this regard a greatest volatility of all methods.
 
 
-Across all three metrics, InterCont consistently outperforms MCD and k-NN in terms of both central tendency and overall stability, despite the presence of isolated performance drops indicated by the outlier points. 
+Across all three metrics, InterCont consistently outperforms MCD and $k$-NN in terms of both central tendency and overall stability, despite the presence of isolated performance drops indicated by the outlier points. 
 These results suggest that InterCont provides the most robust classification performance for the underlying dataset, particularly when considering the precision-recall trade-off captured by the AUPRC.
 
 To further analyse the figure \ref{fig:aucprccurve} displayd the ROC AUC and AUPRC curves of the three methods.
 
-%\begin{figure}[h] 
-%    \centering
-%        \includegraphics[width=1\linewidth]{Images/aucprccurves.pdf}
-%    \caption{ROC AUC and AUPRC Curves}
-%    \label{fig:aucprccurve}
-%\end{figure}
+\begin{figure}[h] 
+    \centering
+        \includegraphics[width=1\linewidth]{Images/aucprccurves.pdf}
+    \caption{ROC AUC and AUPRC Curves.}
+    \label{fig:aucprccurve}
+\end{figure}
 
 The ROC AUC curves for all evaluated methods exhibit a rapid initial increase. 
-The InterCont method maintains a steep ascent until TPR reaches 0.8. 
-While the growth rate for k-NN is initially less pronounced, it surpasses InterCont at approximately 0.1 FPR and remains superior thereafter. 
-MCD initially demonstrates a faster increase than k-NN, yet the two methods intersect at a TPR of 0.6, where k-NN begins to outperform MCD. 
-Furthermore, the MCD curve intersects with InterCont at an FPR of approximately 0.75.
+The InterCont method maintains a steep ascent until Recall reaches 0.8. 
+While the growth rate for $k$-NN is initially less pronounced, it surpasses InterCont at approximately 0.1 False Positive Tate (1-Specificity) and remains superior thereafter. 
+MCD initially demonstrates a faster increase than $k$-NN, yet the two methods intersect at a Recall of 0.6, where $k$-NN begins to outperform MCD. 
+Furthermore, the MCD curve intersects with InterCont at a False Positive Tate (1-Specificity) of approximately 0.75.
 
 
 AUPRC demonstrates significant variance across the evaluated models. 
-While InterCont maintains a consistently high performance over an extended range, both k-NN and MCD exhibit a rapid decline in precision following minor increases in recall. 
+While InterCont maintains a consistently high performance over an extended range, both $k$-NN and MCD exhibit a rapid decline in precision following minor increases in recall. 
 Eventually, both baseline models reach a plateau where precision stabilizes. 
-The initial decrease in precision is more pronounced for k-NN than for MCD.
-However, k-NN remains stable for a longer duration and surpasses the performance of MCD at a recall of approximately 0.6. 
-Although MCD stabilizes at a higher initial precision level, its performance subsequently degrades at a faster rate compared to k-NN.
+The initial decrease in precision is more pronounced for $k$-NN than for MCD.
+However, $k$-NN remains stable for a longer duration and surpasses the performance of MCD at a recall of approximately 0.6. 
+Although MCD stabilizes at a higher initial precision level, its performance subsequently degrades at a faster rate compared to $k$-NN.
 
 
 \subsubsection*{Statistical Inference}
@@ -131,6 +131,8 @@ Consequently, the standard ANOVA is not a suitable method for ensuring valid sta
 To mitigate the distributional challenges identified, the non-parametric Friedman test is deployed. 
 This procedure serves as a global statistical test to determine whether significant differences exist across the various methods. 
 Rather than comparing absolute performance values, the Friedman test utilizes the ranks of the results within each individual run. 
+
+
 This approach is suitable for analyzing differences between more than two groups. The test assigns a rank of 1 to the best performing method within a run and the highest rank to the worst performer, thereby neutralizing the influence of absolute result magnitudes. 
 While this transformation eliminates the impact of outliers and varying scales, it also reduces the statistical power of the test compared to parametric alternatives. 
 A fundamental requirement of the Friedman test is the independence of the observations. 
@@ -160,11 +162,11 @@ The results are displayed in table \ref{tab:friedman}.
 \label{tab:friedman}
 \begin{tabular}{lcccccc} 
 \toprule
-\textbf{Metric}         & Statistic         & p-value   &    \\
+\textbf{Metric}         & \textbf{Statistic}    & \textbf{p-value}  &    \\
 \midrule
-F1-Score                & 664.60            & 0.00      &    \\
-ROC AUC                 & 235.07            & 0.00      &    \\
-AUPRC                   & 421.12            & 0.00      &    \\
+F1-Score                & 664.60                & 0.00              &    \\
+ROC AUC                 & 235.07                & 0.00              &    \\
+AUPRC                   & 421.12                & 0.00              &    \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -178,7 +180,9 @@ This interpretation identifies which method consistently achieves superior ranki
 To further delineate specific performance differentials, a pairwise Wilcoxon signed-rank test is conducted. 
 This non-parametric procedure is frequently utilized within outlier detection literature, as exemplified by \citet{shenkar2022anomaly}. 
 The test is appropriate for paired observations \citep[p. 80]{wilcoxon1945individual}, wherein each data point in one group corresponds directly to a specific observation in the comparison group. 
-Given that the evaluations are conducted on the same datasets, the observations are inherently linked across methods, satisfying the requirement for dependent samples despite the stochastic nature of individual runs. 
+Given that the evaluations are conducted on the same datasets, the observations are inherently linked across methods, satisfying the requirement for dependent samples despite the stochastic nature of individual runs.
+
+
 The test evaluates the null hypothesis that the median of the differences between the paired observations is zero. 
 By ranking the absolute differences between the pairs and assigning the sign of the original difference to these ranks, the Wilcoxon signed-rank test provides a robust assessment of whether one method systematically outperforms another without requiring the assumption of normally distributed differences.
 
@@ -188,11 +192,11 @@ By ranking the absolute differences between the pairs and assigning the sign of 
 \label{tab:wilcoxon}
 \begin{tabular}{lcccccc} 
 \toprule
-\textbf{Metric}         & F1-Score                     & ROC AUC                        & AUPRC                         &    \\
+\textbf{Metric}         & \textbf{F1-Score}            & \textbf{ROC AUC}                       & \textbf{AUPRC}                &    \\
 \midrule
-InterCont vs k-NN       & $p < 8.40 \times 10^{-81}$   & $p < 6.39 \times 10^{-31}$     & $p < 6.11 \times 10^{-57}$    &    \\
-InterCont vs MCD        & $p < 1.86 \times 10^{-62}$   & $p < 2.36 \times 10^{-44}$     & $p < 6.65 \times 10^{-73}$    &    \\
-k-NN vs MCD             & $p < 1.81 \times 10^{-45}$   & $p < 6.63 \times 10^{-1}$      & $p < 1.25 \times 10^{-4}$     &    \\
+InterCont vs k-NN       & $p < 8.40 \times 10^{-81}$   & $p < 6.39 \times 10^{-31}$             & $p < 6.11 \times 10^{-57}$    &    \\
+InterCont vs MCD        & $p < 1.86 \times 10^{-62}$   & $p < 2.36 \times 10^{-44}$             & $p < 6.65 \times 10^{-73}$    &    \\
+k-NN vs MCD             & $p < 1.81 \times 10^{-45}$   &  \textbf{$p < 6.63 \times 10^{-1}$}    & $p < 1.25 \times 10^{-4}$     &    \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -240,9 +244,9 @@ The normalization settings where changed after performing k-NN in 500 runs for d
 \label{tab:normalizations}
 \begin{tabular}{lcccccc} 
 \toprule
-\textbf{Metric}         & \textbf{F1-Score} & \textbf{SD}       &       \\
+\textbf{Metric}         & \textbf{F1-Score}  & \textbf{SD}      &       \\
 \midrule
-Min-Max-Normalization   & 76.36              & 8.20             &       \\
+Min-Max-Normalization   & \textbf{76.36}     & 8.20             &       \\
 Z-Score Normalization   & 75.86              & 9.82             &       \\
 \bottomrule
 \end{tabular}

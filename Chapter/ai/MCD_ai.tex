@@ -5,7 +5,7 @@ This allows for statistical inference, wherein the model assigns a probability t
 
 
 The following section outlines the structural framework of this analysis. 
-The discussion begins with an explanation of the objectives and underlying mechanics of the Minimum Covariance Determinant (MCD) estimator, including an assessment of its inherent limitations. 
+First the framework of the Minimum Covariance Determinant (MCD) estimator will be described, including an assessment of its inherent limitations. 
 To address these computational challenges, the FAST-MCD algorithm is introduced, which serves as the primary implementation for the subsequent experiments. 
 FAST-MCD represents a significant refinement of the original MCD approach, providing the computational efficiency necessary for practical outlier detection.
 Consequently, it is utilized as a foundational benchmark, whereas the original MCD is seldom employed in modern applications. 
@@ -32,6 +32,8 @@ It is a parametric and affine-equivariant estimator for the mean and covariance 
 The objective of the MCD is to identify a subset $H$ containing $h$ observations that yields the minimum possible and robust covariance matrix determinant.
 Geometrically, the MCD seeks the smallest possible ellipsoid that encapsulates $h$ numbers of observations. 
 By drawing this ellipsoid around the region of highest local density rather than the entire dataset, the MCD effectively excludes global and contextual outliers and eliminates the masking effect.
+For a graphical depiction, see figure \ref{fig:mcd}.
+
 
 \begin{figure}[h] 
     \centering
@@ -40,7 +42,7 @@ By drawing this ellipsoid around the region of highest local density rather than
     \label{fig:mcd}
 \end{figure}
 
-A significant limitation of the original MCD algorithm is its computational complexity \citep[Chapter 0]{rousseeuw1999fast}. 
+A significant limitation of the original MCD algorithm is its computational complexity \citep{rousseeuw1999fast}. 
 Finding the optimal subset requires evaluating $\binom{n}{h}$ combinations, which is infeasible for large datasets \citep[Chapter 4]{rousseeuw1985multivariate}. 
 
 
@@ -70,7 +72,7 @@ The FAST-MCD algorithm is as follows:
 \citep[Chapter 3]{rousseeuw1999fast}
 
 
-This selective iteration is efficient because the distinction between robust and non-robust solutions usually manifests within the first few steps \citep[Chapter 3.2.]{rousseeuw1999fast}. 
+This selective iteration is efficient because the distinction between robust and non-robust solutions usually manifests within the first few steps. 
 The primary hyperparameter is $h$, and it is constrained by the range:
 
 \begin{equation}

@@ -69,7 +69,7 @@ While the original codebase was designed to accommodate a vast array of datasets
 This code was retained to preserve the integrity of the reproduction package, as redundant logic does not influence the experimental outcomes. 
 Notably, several hyperparameters within the original implementation were optimized for larger, higher-dimensional datasets. 
 With exception of the bath size, none of the hyperparameters were changed.
-Furthermore, while the original authors restricted their evaluation to F1-score and AUC metrics, this study extends the analysis to include AUPRC. 
+Furthermore, while the original authors restricted their evaluation to F1-Score and ROC AUC metrics, this study extends the analysis to include AUPRC. 
 Minor adjustments were made to the source code to facilitate this additional metric.
 
 
@@ -88,20 +88,20 @@ Given the limited number of observations in the dataset, a five-fold approach wa
 The shuffle parameter $random\_state$ was enabled to ensure that the observations were randomized prior to partitioning and was set to the default 42. 
 
 
-To ensure a rigorous and consistent evaluation, the same semi-supervised learning framework utilizing the torch.randperm () function, was integrated into the k-NN implementation. 
-In this semi-supervised configuration, the k-NN algorithm establishes a representation based on the normal observations within the training set. 
+To ensure a rigorous and consistent evaluation, the same framework utilizing the torch.randperm () function, was integrated into the $k$-NN implementation. 
+In this configuration, the $k$-NN algorithm establishes a representation based on the normal observations within the training set. 
 Subsequently, the method calculates the distances between each test observation and its $k$ nearest neighbors from the training data. 
 The anomaly score for each test point is derived from the maximum distance among these $k$ nearest neighbors. 
 The dataset includes 119 normal datapoints, which can not be seperated equally into training and testing.
 To align the model with the specific characteristics of the testdataset, the number of outliers are hardcoded into the script.
 
-The k-NN implementation utilizes the default configuration for distance metrics, specifically selecting the largest distance to the $k$-nearest neighbors. 
+
+The $k$-NN implementation utilizes the default configuration for distance metrics, specifically selecting the largest distance to the $k$-nearest neighbors. 
 This calculation employs the Minkowski distance with the parameter $p=2$, which is mathematically equivalent to the Euclidean distance.
 The RobustScaler from Scikit-learn was implemented.
 
 \subsubsection*{FAST-MCD}
-The FAST-MCD algorithm was implemented in mcd\_benchmark.py by using the PyOD library. 
-Unlike the previous methods, the algorithm's architecture does not natively support a semi-supervised configuration. 
+The FAST-MCD algorithm was implemented in mcd\_benchmark.py by using the PyOD library.  
 To maintain experimental comparability, a training and testing phase was simulated. 
 During the training phase, the algorithm estimates the covariance matrix and the mean based on the training dataset. 
 This study utilizes the same resampling methodology as the InterCont authors, applying the resulting covariance matrix and mean to the testing dataset. 

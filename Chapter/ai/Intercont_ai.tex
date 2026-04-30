@@ -57,7 +57,6 @@ After this iterative procedure the resulting vectores of $b$ and $a$ are combine
 The matrices are subjected to a double L2 normalization process and denoted as $F^N$ and $G^N$ \citep[p. 4]{shenkar2022anomaly}. 
 The initial row-wise normalization standardizes scales across features, preventing outliers from being identified solely by the magnitude of specific features and ensuring an L2 norm of 1 for each sample. 
 Subsequently, a second column-wise normalization is applied to ensure that each vector is projected onto the surface of a unit hypersphere.
-For contrastive learning methods like InterCont, specialized contrastive loss functions are employed to manage the distances between data points in the embedding space \citep{terven2025comprehensive}. 
 After the normalization process, the individual vectors are entered into their network.
 
 
@@ -101,23 +100,16 @@ Consequently, the method constructs $r$ distinct versions of $S$, and the traini
 This strategy ensures that the model captures a broader range of dependencies across the feature space, mitigating the risk of omitting critical relationships due to arbitrary feature ordering.
 
 
-The model is characterized by three primary hyperparameters \citep[p. 3]{shenkar2022anomaly}:
+The model is characterized by two primary hyperparameters \citep[p. 3]{shenkar2022anomaly}:
 \begin{enumerate}
     \item $k$ determines the number of consecutive number of the features to form the positive sample $a$.
     \item $u$ determines the embedding size.
-    \item $\tau$ is a temperature constant in the contrastive loss function.
 \end{enumerate}
 
 If $k$ is assigned a high value, the model risks losing its local focus and neglecting critical outlier information. 
 Conversely, if $k$ is excessively small, the model may fail to capture global relationships by concentrating solely on local dependencies, which can degrade overall performance. 
-For the dataset utilized in this research, where $d=129$, the authors determined the optimal window size to be $k=10$ \citep[p. 5]{shenkar2022anomaly}. 
+For the dataset utilized in this research, where $d=129$, the authors determined the optimal window size to be $k=2$ \citep[p. 5]{shenkar2022anomaly}. 
 This parameter selection serves to balance the granularity of feature interactions with the computational efficiency of the contrastive task.
-
-
-The temperature constant $\tau$ serves to scale the dot products, thereby modulating the sharpness of the probability distribution. 
-When $\tau$ is small, the resulting values of the similarity scores are magnified. 
-In combination with the exponential function, even marginal differences between the numerator and the denominator are accelerated, forcing the model to be more certain in its alignment of positive pairs. 
-The authors fixed $\tau = 0.01$ to ensure that the contrastive loss remains highly sensitive to these feature representations, encouraging the network to develop a more discriminative embedding space.
 
 
 The embedding size $u$ determines the dimensionality of the space available for the method to estimate relationships between data points. 
@@ -126,8 +118,12 @@ Conversely, an excessively large u may lead to overfitting, where the network ca
 For their implementation, the authors fixed u=200, providing a balanced capacity for feature representation without compromising model stability.
 
 
+The temperature constant $\tau$ serves to scale the dot products, thereby modulating the sharpness of the probability distribution. 
+When $\tau$ is small, the resulting values of the similarity scores are magnified. 
+In combination with the exponential function, even marginal differences between the numerator and the denominator are accelerated, forcing the model to be more certain in its alignment of positive pairs. 
+The authors fixed $\tau = 0.01$ to ensure that the contrastive loss remains highly sensitive to these feature representations, encouraging the network to develop a more discriminative embedding space.
+
+
 The authors conducted robustness checks to evaluate the sensitivity of the model to various parameter configurations. 
 Regarding $\tau$ and $u$, the analysis revealed no significant volatility in the results, suggesting that the model maintains stability across a range of values for the temperature constant and the embedding dimensionality. 
-For the specific dataset utilized in this study, the optimal performance was observed with a window size of $k=10$. 
-This indicates that a narrower local focus was most effective for capturing the underlying feature dependencies within this particular data distribution.
 
