@@ -90,7 +90,7 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
             'roc_auc': results['auc'],
             'auprc': results['auprc']
         })
-        df_results.to_csv(f"knn_results.csv", index=False, sep=';')
+        #df_results.to_csv(f"knn_results.csv", index=False, sep=';')
         print(f"\n" + "=" * 45)
         print(f"ERGEBNISSE MIT TOP-N THRESHOLD ({dataset_name})")
         print("-" * 45)

@@ -40,10 +40,11 @@ The fact that a distance-based approach can yield superior results compared to s
 This discrepancy between theoretical sophistication and practical efficacy directly inspires the following hypotheses:
 
 
-\begin{enumerate}
-    \item H1: k-NN will achieve the highest predictive performance across both ROC AUC and AUPRC.
-    \item H2: While InterCont will outperform the Minimum Covariance Determinant, its predictive performance will remain secondary to k-NN.
-\end{enumerate}
+\begin{itemize}
+    \item H1: k-NN will achieve the highest predictive performance across AUPRC.
+    \item H2: While InterCont will outperform MCD, its AUPRC will remain secondary to $k$-NN.
+\end{itemize}
+
 
 
 While \citet{shenkar2022anomaly} demonstrated k-NN's superiority via the F1-Score at a specific operating point, this thesis investigates whether this advantage persists globally across the AUPRC and ROC AUC. 

@@ -14,8 +14,8 @@ The analysis is further extended through the plotting of AUPRC and ROC AUC curve
 \toprule
 \textbf{Method}         & \textbf{F1-Score} & \textbf{SD} & \textbf{ROC AUC} & \textbf{SD} & \textbf{AUPRC} & \textbf{SD}          \\
 \midrule
-MCD                     & 64.14             & 9.41  &  95.94            & 3.59     & 77.82             & 16.43  \\
-k-NN                    & 70.34             & 9.81  &  95.94            & 1.85     & 73.06             & 11.72  \\
+MCD                     & 64.14             & 9.41  &  95.03            & 4.54     & 77.82             & 16.43  \\
+k-NN                    & 70.34             & 9.81  &  95.80            & 1.81     & 73.06             & 11.72  \\
 InterCont               & \textbf{85.64}    & 8.77  &  \textbf{97.97}   & 2.13     & \textbf{92.93}    & 7.31   \\
 \bottomrule
 \end{tabular}
@@ -27,8 +27,8 @@ In the F1-Score analysis, InterCont yields the highest mean at 85.64, followed b
 The SD values indicate that InterCont maintains the lowest variability at 8.77, while MCD and $k$-NN show higher fluctuations at 9.41 and 9.81.
 
 
-The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 97.97, $k$-NN and MCD at 95.94. 
-The stability of these scores is evidenced by low SD values, with $k$-NN demonstrating the least variance at 1.85, compared to 2.13 for InterCont and 3.59 for MCD.
+The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 97.97, $k$-NN 95.80 and MCD at 95.03. 
+The stability of these scores is evidenced by low SD values, with $k$-NN demonstrating the least variance at 1.81, compared to 2.13 for InterCont and 4.54 for MCD.
 
 
 For the AUPRC metric, InterCont achieves a mean of 92.93, significantly higher than MCD and $k$-NN at 77.82 and 73.06 respectively. 
@@ -44,7 +44,7 @@ Conversely, MCD shows the highest SD in this metric with an SD of 16.43, while $
 \end{figure}
 
 
-The firgure \ref{fig:result_boxplot} displays boxplots for the resultig metrics for each method.
+The figure \ref{fig:result_boxplot} displays boxplots for the resulting metrics for each method.
 Regarding the ROC AUC metric, InterCont demonstrates the highest median performance, closely approaching a value of 1.0, while maintaining a relatively narrow interquartile range despite several lower-reaching outliers. 
 The MCD and $k$-NN methods exhibit lower median ROC AUC values, approximately 0.96, with MCD displaying notably higher variance and a wider distribution of scores in the lower deciles. 
 
@@ -54,7 +54,7 @@ MCD in particular shows a substantial spread, with its whiskers extending down t
 
 
 The F1 Score results further distinguish the algorithms, as InterCont achieves a higher and more consistent score than its counterparts. 
-K-NN shows a greater median F1 Score of 0.7 to approxamitley 0.58 of MCD.
+K-NN shows a greater median F1 Score of 0.7 to approximately 0.58 of MCD.
 MCD shows in this regard a greatest volatility of all methods.
 
 
@@ -72,9 +72,9 @@ To further analyse the figure \ref{fig:aucprccurve} displayd the ROC AUC and AUP
 
 The ROC AUC curves for all evaluated methods exhibit a rapid initial increase. 
 The InterCont method maintains a steep ascent until Recall reaches 0.8. 
-While the growth rate for $k$-NN is initially less pronounced, it surpasses InterCont at approximately 0.1 False Positive Tate (1-Specificity) and remains superior thereafter. 
+While the growth rate for $k$-NN is initially less pronounced, it surpasses InterCont at approximately 0.1 False Positive Rate (1-Specificity) and remains superior thereafter. 
 MCD initially demonstrates a faster increase than $k$-NN, yet the two methods intersect at a Recall of 0.6, where $k$-NN begins to outperform MCD. 
-Furthermore, the MCD curve intersects with InterCont at a False Positive Tate (1-Specificity) of approximately 0.75.
+Furthermore, the MCD curve intersects with InterCont at a False Positive Rate (1-Specificity) of approximately 0.75.
 
 
 AUPRC demonstrates significant variance across the evaluated models. 
@@ -87,74 +87,35 @@ Although MCD stabilizes at a higher initial precision level, its performance sub
 
 \subsubsection*{Statistical Inference}
 The validation of empirical results necessitates the application of rigorous statistical testing. 
-Parametric procedures generally provide superior statistical power and efficiency, provided that their underlying assumptions are satisfied. 
-A prominent example within outlier detection research is the Analysis of Variance (ANOVA), which is frequently utilized to evaluate whether observed differences between group means possess statistical significance. 
-The valid application of this test is contingent upon two primary prerequisites: the normality of the data distribution and the homogeneity of variances across groups. 
-Although the boxplots presented in Figure \ref{fig:result_boxplot} suggest a deviation from the normality assumption, the sample size of 500 iterations per method invokes the central limit theorem. 
-Consequently, the sampling distribution of the mean converges toward a normal distribution, thereby justifying the continued use of parametric testing despite the initial distributional characteristics of the raw data.
-
-
-Furthermore, the standard deviations reported in Table \ref{tab:results_bench} exhibit substantial variation, suggesting that the assumption of homoscedasticity may be violated. 
-To formally evaluate the homogeneity of variances, Levene's test is employed to determine whether the variances across the different groups are statistically equivalent. 
-The null hypothesis $H_0$ for Levene's test posits that the population variances are equal across all groups, which can be formally expressed as:
-
-
-\begin{equation}
-    H_0 = \sigma_1^2 = \sigma_2^2 = . . . \sigma_k^2 
-\end{equation}
-
-
-In this equation, k represents the total number of groups or methods being compared. 
-If the resulting p-value is below the chosen significance level, the null hypothesis is rejected, indicating that the variances are significantly different and that the requirement for a standard ANOVA has not been satisfied.
-The results are displayed in table \ref{tab:levene}
-
-\begin{table}[h]
-\centering
-\caption{Levene's Test for Homoscedasticity of Variances}
-\label{tab:levene}
-\begin{tabular}{lcccccc} 
-\toprule
-\textbf{Metric}         & \textbf{Statistic} & \textbf{p-value} &           \\
-\midrule
-F1-Score                & 5.04             & 0.00  &    \\
-ROC AUC                 & 69.44            & 0.00  &    \\
-AUPRC                   & 180.82           & 0.00  &    \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The results across all evaluated metrics demonstrate a significance level of $p < 0.001$, confirming that the requirement for homoscedasticity of variances has not been satisfied. 
-If a standard ANOVA were to be applied in this scenario, the pooled variance estimate would be biased toward the groups characterized by larger variances. 
-Such a distortion increases the probability of a Type I error and leads to inaccurate interpretations of the experimental findings. 
-Consequently, the standard ANOVA is not a suitable method for ensuring valid statistical inference for this dataset.
-
-To mitigate the distributional challenges identified, the non-parametric Friedman test is deployed. 
-This procedure serves as a global statistical test to determine whether significant differences exist across the various methods. 
+To mitigate the distributional challenges identified, the non-parametric Friedman test will be deployed. 
+This procedure serves as a global statistical test to determine whether significant differences exist across the three methods. 
 Rather than comparing absolute performance values, the Friedman test utilizes the ranks of the results within each individual run. 
-
-
-This approach is suitable for analyzing differences between more than two groups. The test assigns a rank of 1 to the best performing method within a run and the highest rank to the worst performer, thereby neutralizing the influence of absolute result magnitudes. 
-While this transformation eliminates the impact of outliers and varying scales, it also reduces the statistical power of the test compared to parametric alternatives. 
-A fundamental requirement of the Friedman test is the independence of the observations. 
-This condition is satisfied in the current study because the runs are shuffled and conducted independently of one another. 
-Subsequently, the mean rank $R_j$ for each method is calculated:
-
 
 The Null hypothesis is defined as: 
 \begin{equation}
     H_0 : R_1 = R_2 = R_3.
 \end{equation}
 
+This approach is suitable for analyzing differences between more than two groups. 
+The test assigns a rank of 1 to the best performing method within a run and the highest rank to the worst performer, thereby neutralizing the influence of absolute result magnitudes. 
+This transformation eliminates the impact of outliers. 
+
+
+A fundamental requirement of the Friedman test is the independence of the observations. 
+This condition is satisfied in the current study because the runs are shuffled and conducted independently of one another. 
+Subsequently, the mean rank $R_j$ for each method is calculated.
+
 
 The test statistics is formally defined as:
-
 \begin{equation}
     \chi_F^2 = \frac{12n}{k(k+1)} \left[ \sum_{j=1}^{k} R_j^2 - \frac{k(k+1)^2}{4} \right],
 \end{equation}
 
-whereas, $n = 500$ is the number of runs, $k = 3$ the number of methods.  
-The result follows a $\chi^2$ distribution.
-The results are displayed in table \ref{tab:friedman}.
+whereas, $n = 500$ is the number of runs, $k = 3$ the number of methods. 
+
+
+The result follows a $\chi^2$ distribution and are displayed in table \ref{tab:friedman}.
+The application of the Friedman test across all metrics resulted in $p < 0.001$, which provides evidence that at least two methods exhibit statistically significant differences in every instance. 
 
 \begin{table}[h]
 \centering
@@ -171,14 +132,44 @@ AUPRC                   & 421.12                & 0.00              &    \\
 \end{tabular}
 \end{table}
 
-The application of the Friedman test across all metrics resulted in $p < 0.001$, which provides evidence that at least two methods exhibit statistically significant differences in every instance. 
-Nevertheless, because Levene's test and the boxplots in Figure \ref{fig:result_boxplot} confirm substantial heteroscedasticity, the assumption of identical distribution shapes is not satisfied. 
+Furthermore, the standard deviations reported in Table \ref{tab:results_bench} exhibit substantial variation, suggesting that the assumption of homoscedasticity may be violated. 
+To formally evaluate the homogeneity of variances, Levene's test is employed to determine whether the variances across the different groups are statistically equivalent. 
+The null hypothesis $H_0$ for Levene's test posits that the population variances are equal across all groups, which can be formally expressed as:
+
+
+\begin{equation}
+    H_0 = \sigma_1^2 = \sigma_2^2 =  \sigma_3^2. 
+\end{equation}
+
+
+If the resulting p-value is below the chosen significance level, the null hypothesis is rejected, indicating that the variances are significantly different.
+The results are displayed in table \ref{tab:levene}.
+The results across all evaluated metrics demonstrate a significance level of $p < 0.001$, confirming that the requirement for homoscedasticity of variances has not been satisfied. 
+
+
+Levene's test and the boxplots in Figure \ref{fig:result_boxplot} confirm substantial heteroscedasticity, the assumption of identical distribution shapes is not satisfied. 
 Under these conditions, the Friedman test is interpreted as a measure of stochastic dominance rather than a direct comparison of medians. 
+The results are displayed in table \ref{tab:levene}.
+\begin{table}[h]
+\centering
+\caption{Levene's Test for Homoscedasticity of Variances}
+\label{tab:levene}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{Metric}         & \textbf{Statistic} & \textbf{p-value} &           \\
+\midrule
+F1-Score                & 5.04             & 0.00  &    \\
+ROC AUC                 & 69.44            & 0.00  &    \\
+AUPRC                   & 180.82           & 0.00  &    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 This interpretation identifies which method consistently achieves superior rankings throughout the experimental runs, thereby accounting for the distributional variations present in the data.
 
 
 To further delineate specific performance differentials, a pairwise Wilcoxon signed-rank test is conducted. 
-This non-parametric procedure is frequently utilized within outlier detection literature, as exemplified by \citet{shenkar2022anomaly}. 
+This non-parametric procedure is utilized within the paper of \citet{shenkar2022anomaly}. 
 The test is appropriate for paired observations \citep[p. 80]{wilcoxon1945individual}, wherein each data point in one group corresponds directly to a specific observation in the comparison group. 
 Given that the evaluations are conducted on the same datasets, the observations are inherently linked across methods, satisfying the requirement for dependent samples despite the stochastic nature of individual runs.
 
@@ -216,9 +207,9 @@ Conversely, a substantial disparity between the two sums indicates that one meth
 This comparison effectively determines whether the direction of the differences between the paired runs is consistent enough to be considered statistically significant rather than the result of random variation.
 
 
-With $n = 500$, the Central Limit Theorem can be applied. 
-Consequently, instead of computing the exact distribution of the Wilcoxon statistic, a normal approximation is used to calculate a Z-score.
-Therefore the mean and standard deviations are calcultes as follows:
+Given the large sample size of n=500, the Central Limit Theorem justifies a normal approximation of the Wilcoxon signed-rank statistic \citep{wilcoxon1945individual}. 
+Consequently, rather than determining the exact distribution, a Z-score is calculated. 
+The mean $\mu_w$ and standard deviation $\sigma_w$ of the null distribution are defined as follows:
 
 \begin{equation}
     \mu_W = \frac{n(n+1)}{4} , \sigma_W = \sqrt{\frac{n(n+1)(2n+1)}{24}}
@@ -232,15 +223,18 @@ Pairwise comparisons between InterCont and the baseline methods demonstrate that
 MCD in comparison to k-NN shows no statisticall differences regarding the ROC AUC with $p > 0.5$.
 
 
-As discussed before, the normalization method applied in the k-NN could not be determined. 
-Therefore a grid search will employed again to show if the result will reach the results of the paper of \citet{shenkar2022anomaly}
-For that the same setup was used as before in the k-nn benchmark. 
+As discussed before, the normalization method applied in the $k$-NN could not be determined. 
+Therefore second experiment with two different normalization methods will be employed to show if the result will reach the results of the paper of \citet{shenkar2022anomaly}
+For that the same setup was used as before in the $k$-nn benchmark. 
 The most commonly used normalization methods were applied: Min-Max-Normalization and Z-Score normalization (StandardScaler)
-The normalization settings where changed after performing k-NN in 500 runs for different values of $k$.
+The normalization settings where changed after performing $k$-NN in 500 runs for different values of $k$.
+Because thats a comparison of the paper, only the mean and SD of the F1 Score is displayed in the table \ref{tab:normalizations}.
+To test the statistical significance of the difference a friedman test was applied.
+There is a statistical significance between the result with $p < 0.001$ and a Friedman Statistics of 118.20, hence the depending on the normalization of the data the F1 Score differs.
 
 \begin{table}[h]
 \centering
-\caption{Results of the Friedman Test}
+\caption{Results of the second Experiments}
 \label{tab:normalizations}
 \begin{tabular}{lcccccc} 
 \toprule
@@ -252,9 +246,6 @@ Z-Score Normalization   & 75.86              & 9.82             &       \\
 \end{tabular}
 \end{table}
 
-Because thats a comparison of the paper, only the mean and SD of the F1 Score is displayed in the table \ref{tab:normalizations}.
-To test the statistical significance of the difference a friedman test was applied.
-There is a statistical significance between the result with $p < 0.001$ and a Friedman Statistics of 118.20, hence the depending on the normalization of the data the F1 Score differs.
 
 
 
@@ -288,56 +279,4 @@ There is a statistical significance between the result with $p < 0.001$ and a Fr
 
 
 
-
-
-
-
-%To further analyse the variances, the figure \ref{fig:ecdf} displays a ECDF (Empirical Cumulative Distribution Function) plot
-
-%\begin{figure}[h] 
-%    \centering
-%        \includegraphics[width=1\linewidth]{Images/ECDF.pdf}
-%    \caption{ECDF plot of Experimental Results}
-%    \label{fig:ecdf}
-%\end{figure}
-
-%The ECDF plot visualizes the distribution of the datset.
-%Therefore it plots the cumulative proportions of the data.
-%At the ordinate are the percentiles displayed and on the abzyssa are the scores.
-%If the slope is steep, it indicates a high concentration of data in that range.
-%If the slope is flat, it indicates a low concentration of data in that range.
-
-
-
-
-
-%I made a second experiment where I scripted one shot outlier detection with unsupervised approaches to mcd and knn.
-%The goal is to compare the results of the unsueprvised approach to the semisupervised approach.
-%The results are displayed in \ref{tab:results_us}
-
-%\begin{table}[h]
-%\centering 
-%\caption{Experimental Results - Unsupervised approaches}
-%\begin{tabular}{lcccccc} % l=left aligned, r=right aligned
-%        \toprule
-%        \textbf{Method}         & \textbf{F1-Score} &  \textbf{ROC AUC}         & \textbf{AUPRC}                        &        \\
-%        \midrule
-%                MCD                     & 50.00             & \textbf{97.56}            & \textbf{71.04}                        &        \\
-%                k-NN (unsupervised)     & 50.00             & 94.54                     & 50.51                                 &        \\
-%        \bottomrule
-%        
-%    \label{tab:results_us}
-%\end{tabular}
-%\end{table}
-
-%The F1-Score is the same for both methods.
-%The remaining results indicate that MCD outperforms k-NN.
-
-%The both deviate between the ROC AUC and the AUPRC. 
-%ROC AUC is 3.02 percentage points bigger for MCD than k-NN, which is a slight difference.
-
-%MCD performs 20.53 percentage points better in terms of $AUPRC$ than k-NN which is a big difference and needs more investigation.
-%That indicates, that even with the multidimensional skewed dataset, MCD is capable of determinang an unbiased.
-
-%The result deviate in comparison to the semi-supervised approaches. 
 
