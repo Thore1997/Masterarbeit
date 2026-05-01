@@ -2,7 +2,7 @@
 To analyze the performance of the InterCont method, it is essential to establish a baseline using recognized benchmark methods. 
 Comparing a new proposal against established algorithms allows the scientific community to identify the specific conditions under which a method excels or fails. 
 Contemporary research evaluates a vast array of techniques.
-For instance, Shenkar and Wolf compared InterCont against 30 datasets of the ODDS repository \citep[p. 7]{shenkar2022anomaly}
+For instance, \citet{shenkar2022anomaly} compared InterCont against 31 datasets of the ODDS repository \citep[p. 7]{shenkar2022anomaly}
 Such an extensive comparison is beyond the scope of this thesis. 
 Instead, two representative methods have been selected: one based on a statistical approach and the other on a distance-based approach.
 
@@ -10,7 +10,7 @@ Instead, two representative methods have been selected: one based on a statistic
 This chapter is organized as follows:
 
 \begin{itemize}
-    \item k-Nearest Neighbor (k-NN): Introduced as a traditional distance-based approach for outlier detection.
+    \item k-Nearest Neighbor ($k$-NN): Introduced as a traditional distance-based approach for outlier detection.
     \item Minimum Covariance Determinant (MCD): Introduced as a traditional statistical method for robust estimation.
 \end{itemize}
 
@@ -31,33 +31,34 @@ Under this framework, the $n$ points exhibiting the highest scores are classifie
 
 \begin{figure}[h] 
     \centering
-    \includegraphics[width=1\linewidth]{Images/kNN/k-NN.png}
+    \includegraphics[width=1\linewidth]{Images/k-NN.pdf}
     \caption{Grapfical Depiction of $k$-NN Algorithm.}
     \label{fig:my_example}
 \end{figure}
-\todo{different image}
+
 
 
 While the original InterCont publication does not explicitly specify the $k$-NN variant employed, the authors utilize the PyOD library \citep{zhao2019pyod}.
 Given that PyOD implements the version proposed by \citet{ramaswamy2000efficient}, this specific iteration is utilized as the benchmark for this thesis.
-K-NN is typically follows an unsupervised learning pradigm. 
+$K$-NN is typically follows an unsupervised learning pradigm. 
 Nevertheless, the experimental setup differs from this paradigm to make the benchmark comparable to InterCont.
 
 
-There are different variants of k-NN, mitigating disadvantages of the original algorithm.
+There are different variants of $k$-NN, mitigating disadvantages of the original algorithm.
 For example by utilizing the average distance across the neighborhood enhances the robustness and stability of detected outliers \citep{angiulli2002fast}. 
-Because  this methods is constructed as a benchmark, the traditional version of k-NN wil be implemented, which is based on Euclidean distance to the specific $k$-th nearest neighbor.
+Because  this methods is constructed as a benchmark, the traditional version of $k$-NN wil be implemented, which is based on Euclidean distance to the specific $k$-th nearest neighbor.
 The setup is discribed in chapter \ref{sec:setup}.
 
 
 The algorithm executes the following procedure:
 
 \begin{enumerate}
-    \item The distances between $kth$ datapoints are calculated.
+    \item The distances between $k$th datapoints are calculated.
     \item The distances are ranked from highest to lowest.
     \item The number of instaces $n$ with the highest distances are defined as outliers.
 \end{enumerate}
 
+\citep[p. 429]{ramaswamy2000efficient}
 k-NN is characterized as a lazy learning algorithm \citep[p.273]{wettschereck1997review}, meaning it does not construct an explicit generalization or internal model during a training phase. 
 Consequently, the entire dataset must be retained. 
 If a new instance is introduced, the algorithm must re-evaluate the proximity metrics across the dataset to determine its status.
@@ -118,11 +119,11 @@ By centering and scaling based on percentiles, the influence of outliers on the 
 
 It is defined as follows:
 \begin{equation}
-    x_{robust} = \frac{x_i - \text{median}(X)}{\text{IQR}(X)}.
+    x_{robust} = \frac{x_i - \text\tilde{x}}{\text{IQR}}.
 \end{equation}
 
 
-This method scales the data based on its internal distribution\citep[p. 4]{izonin2022two}. 
+This method scales the data based on its internal distribution \citep[p. 4]{izonin2022two}. 
 By subtracting the median in the numerator, the data is centered such that the median corresponds to 0. 
 Observations exceeding the median result in positive values, whereas those below it become negative.
 
@@ -130,7 +131,7 @@ Observations exceeding the median result in positive values, whereas those below
 The denominator facilitates the scaling process. 
 By utilizing the $IQR$, the scaling factor is derived from a parameter that is inherently resistant to outliers. 
 Consequently, the scaling maintains the relative distances between normal observations without the distortion typically introduced by outliers in the dataset, preserving the sensitivity of the k-NN algorithm in distinguishing outliers from the regular data structure.
-Therefore, the Robust Scaler will be implemented into the experimental setup, see \ref{sec:setup }.
+Therefore, the Robust Scaler will be implemented into the experimental setup, see \ref{sec:setup}.
 
 
 \subsubsection*{Hyperparameter}

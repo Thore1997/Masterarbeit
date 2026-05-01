@@ -22,17 +22,17 @@ Taxonomically, outliers are categorized into three primary types \citep[Chapter 
 
 Distinct from outlier detection are related tasks such as Noisy Data Identification, which addresses incorrect or missing values.
 Novelty Detection, which seeks previously unobserved but potentially valid patterns \citet{domingues2019probabilistic}.
-Out-of-Distribution Detection (OOD), which identifies data points that do not belong to any of the known training classes \citep[Chapter 2.4.]{yang2024generalized}. 
+Out-of-Distribution Detection (OOD), which identifies data points that do not belong to any of the known training classes \citep{yang2024generalized}. 
 
 
-High-dimensional datasets introduce the Curse of Dimensionality (CoD)\citep[p. 220]{scott2015multivariate}, which is a significant challenge to the detection tasks. 
+High-dimensional datasets introduce the Curse of Dimensionality \citep[p. 220]{scott2015multivariate}, which is a significant challenge to the detection tasks. 
 As dimensionality ($p$) increases, the volume of the space grows exponentially, causing data points ($n$) to become sparsely distributed. 
 This sparsity increases the mean distance between points, making the Euclidean distance unreliable. 
 Furthermore, in cases where $p > n$, perfect multicollinearity may occur, where variables become linear combinations of others, leading to redundancy. 
-High dimensionality also increases the risk of overfitting, where models capture stochastic noise rather than a generalizable signal \citep[postfix]{altman2018curse}.
+High dimensionality also increases the risk of overfitting, where models capture stochastic noise rather than a generalizable signal \citep{altman2018curse}.
 
 
-The exceptional performance of the k-nearest neighbors (k-NN) algorithm in the analysis by \citet{shenkar2022anomaly}, where it surpassed the more complex architecture of InterCont in terms of F1-Score, serves as the primary catalyst for this research. 
+The exceptional performance of the k-nearest neighbors (k-NN) algorithm in the analysis by \citet{shenkar2022anomaly}, where it surpassed the more complex architecture of InterCont in terms of F1 Score, serves as the primary catalyst for this research. 
 While F1-Score provided the initial insight, this thesis employs ROC AUC and AUPRC as the primary metrics to ensure a more transparent and threshold-independent valuation of the methods (see Section \ref{sec:metrics}).
 
 

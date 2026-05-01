@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-df = pd.read_csv('weight-height.csv')
+df = pd.read_csv('Images/kNN/weight-height.csv')
 # Changing the units in cm and kg
 df['Height_cm'] = df['Height'] * 2.54
 df['Weight_kg'] = df['Weight'] * 0.453592

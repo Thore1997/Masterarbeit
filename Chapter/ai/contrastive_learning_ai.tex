@@ -1,6 +1,6 @@
 \subsection{Contrastive Learning}\label{sec:contrastive_learning}
 
-Contrastive learning represents a paradigm that has gained significant prominence within the fields of computer vision and natural language processing. 
+Contrastive learning represents a paradigm that has gained significant prominence within the fields of computer vision and natural language processing \citep{hu2024comprehensive}. 
 The primary objective of such a network is to differentiate between individual instances by learning discriminative features without the necessity of manual labeling. 
 This process is fundamentally supported by data augmentation, which allows the model to generate multiple perspectives of the same instance. 
 The framework introduced by Shenkar and Wolf adapts these principles for tabular data through an internal contrastive learning algorithm. 
@@ -14,7 +14,7 @@ Subsequently, the discussion transitions to the specific architectural component
 
 
 \subsubsection*{Data Augmentation} 
-Data augmentation plays a critical part for the network to gain discrimminative power.
+Data augmentation plays a critical part for the network to gain discrimminative power \citep[Chapter 3.1]{hu2024comprehensive}.
 For example to differentiate images from apes from images of other animals, the model needs to learn main caracteristics of an ape.
 The model is provided with an anchor (here ape), which represents a specific data instance, such as an image, that serves as the reference point for differentiation. 
 
@@ -48,7 +48,7 @@ This mechanism mitigates the risk of overfitting and reduces the impact of data 
 
 
 \subsubsection*{Architecture}
-An autoencoder network comprises a neural network architecture designed to transform raw input data into a specialized feature space and latent embeddings. 
+An autoencoder network comprises a neural network architecture designed to transform raw input data into a specialized feature space and latent embeddings \citep{mienye2025deep}.  
 This architecture typically incorporates multiple hidden layers with varying dimensionalities. 
 The initial hidden layer projects the input vector onto a higher-dimensional space by increasing the number of nodes, which enhances the capacity of the model to represent complex relationships within the data. 
 Subsequently, a second hidden layer compresses this representation into a vector with fewer nodes than the preceding layer. 
@@ -56,7 +56,7 @@ Due to this reduced dimensionality, the network is unable to retain all incoming
 This process facilitates noise reduction and ensures the preservation of the most salient patterns. 
 Finally, an output layer aims to reconstruct the original input dimensions from the compressed representation. 
 The network is trained by minimizing the reconstruction error, a process that ensures the encoder retains only the most critical information necessary to approximate the original signal.
-\citet{hu2024comprehensive} published a well organised survey in which among other described the main architecture applied in contrastive learning.
+
 
 
 \begin{figure}[htbp] 
@@ -73,9 +73,6 @@ The network is trained by minimizing the reconstruction error, a process that en
 
 \subsubsection*{Contrastive loss function}
 This thesis focuses specifically on InfoNCE, as it is the loss function utilized in the methodology proposed by \citet{shenkar2022anomaly}.
-For a comprehensive overview of various contrastive loss functions, see \citet{le2020contrastive}. 
-
-
 The Information Noise-Contrastive Estimation (InfoNCE) objective utilizes a density ratio to maximize the mutual information between the samples and the anchor \citep{oord2018representation}. 
 Mutual information quantifies the reduction in uncertainty regarding one random variable obtained through the observation of another \citep[p. 407]{Shannon48}.  
 By framing the contrastive task as a multi-class classification problem, the model is tasked with identifying a single positive sample from a distribution containing negative samples. 

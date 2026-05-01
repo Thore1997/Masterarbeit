@@ -5,11 +5,11 @@ To establish the theoretical foundation for the experimental design detailed in 
 Subsequently, the conceptual basis for InterCont is established through a concise explanation of the core components of contrastive learning.
 
 
-Machine learning paradigms serve as overarching frameworks for interpreting data, providing the foundational logic for how algorithms process information. 
+Machine learning paradigms serve as overarching frameworks for interpreting data \citep[p. 4]{sarker2021machine}, providing the foundational logic for how algorithms process information. 
 While individual algorithms act as specific components, the paradigm defines the broader strategy for learning. 
 Consequently, many methods can be adapted across different paradigms depending on the data structure and the intended objective. 
-Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning and smi-supervised learning . 
-However, numerous specialized subtypes exist, such as reinforcement learning, multi-label, and transfer learning \citep{sarker2021machine}.
+Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning and semi-supervised learning . 
+However, numerous specialized subtypes exist, such as reinforcement learning, multi-label, and transfer learning.
 To establish the necessary technical background, it is essential to categorize the traditional learning frameworks and identify the specific paradigm utilized by this method. 
 
 
@@ -26,20 +26,17 @@ This paradigm is highly scalable and effective for identifying complex relations
 However, because there are no ground truth labels to measure against, these models can be less accurate than supervised versions, and their results are often more difficult to interpret and computationally intensive.
 
 
-Semi-supervised learning, utilizes labled data in conjunction unlabled data.
+Semi-supervised learning, utilizes labeled data in conjunction with unlabeled data.
 The primary objective is to leverage the structural information inherent in the unlabeled samples to improve the model's generalization performance beyond what could be achieved using the labeled data alone.
 This approach is particularly valuable in scientific research where acquiring labeled instances is costly, while unlabeled data is readily available. 
 By assuming that data points in close proximity share the same label, semi-supervised algorithms can propagate information from the labeled subset to the unlabeled majority, thereby refining the decision boundaries of the model.
 
 
-The authors of InterCont claim that it operates within the self-supervised learning paradigm, specifically leveraging contrastive learning. 
+The authors of InterCont characterize their method within the self-supervised learning paradigm \citep[p. 3]{shenkar2022anomaly}. 
 This approach generates its own supervisory signals from the data structure itself \citep{jaiswal2020survey}. 
-Therefore self-supervised is often defined as a sub-paradigm of unsupervised learning, because no lables are needed.
-
-
-Nevertheless, the network is trained on labled normal data and tested on data that includes abnormal data.
-By doing so, it captures rich representations without the need for human-annotated labels, bridging the gap between the scalability of unsupervised methods and the performance of supervised systems. 
-This approach is particularly effective in fields like computer vision, where the potential number of classes is vast. 
+Nevertheless, the network is trained on 50\% labled normal data and tested on the other 50\% of data that includes all labeled outliers.
+For this study, the same epxerimental setup will be implemented for the benchmark methods.
+In the proceeding thesis, this will be named semi-supervised.   
 
 
 \subsection{Neural Networks}
@@ -56,8 +53,8 @@ Within these layers, connections between nodes are governed by weights, which si
 
 
 During training, the network's output is evaluated against the ground truth using a loss function \citep{terven2025comprehensive}. 
-Common loss function include Mean Squared Error (MSE), Mean Absolute Error (MAE) or  Mean Absolute Percentage Error (MAPE)\cite[p. 6]{hassanat2024novel}. 
-To minimize this loss, the model employs backpropagation\cite[p. 1]{rumelhart1986learning}. 
+Common loss function include Mean Squared Error (MSE), Mean Absolute Error (MAE) or  Mean Absolute Percentage Error (MAPE) \cite[p. 6]{hassanat2024novel}. 
+To minimize this loss, the model employs backpropagation \cite[p. 1]{rumelhart1986learning}. 
 By applying the chain rule, the model calculates the gradient, hence the partial derivative of the loss function with respect to each weight. 
 An optimizer then uses these gradients to update the parameters in the direction that reduces error. 
 A single pass through the entire training dataset is referred to as an epoch. 

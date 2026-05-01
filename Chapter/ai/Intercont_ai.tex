@@ -25,7 +25,7 @@ Consequently, $a$ and $b$ are mapped into distinct mathematical spaces.
 
 
 The authors utilize the previously discussed InfoNCE loss function.  
-This loss is taken as the outlier score, because samples that deviate from the underlying distribution receive higher scores, indicating an increased probability of being categorized as an outlier.  \todo{nachschauen}
+This loss is taken as the outlier score, because samples that deviate from the underlying distribution receive higher scores, indicating an increased probability of being categorized as an outlier.
 
 
 \subsubsection*{Epoch}
@@ -54,21 +54,22 @@ The authors proposed a sliding window approach for data augmentation to facilita
 
 A distinguishing feature of this method is that the negative samples are derived from the positive samples of other constructed pairs within the same data instance, which characterizes the internal nature of the contrastive learning process. 
 For a visual representation, see Figure \ref{fig:slidingwindow}.
-After this iterative procedure the resulting vectores of $b$ and $a$ are combined into matrices $F$ and $G$.
+After this iterative procedure the resulting vectores of $b$ and $a$ are combined into network $F$ and $G$.
 
 
-The matrices are subjected to a double L2 normalization process and denoted as $F^N$ and $G^N$ \citep[p. 4]{shenkar2022anomaly}. 
-The initial row-wise normalization standardizes scales across features, preventing outliers from being identified solely by the magnitude of specific features and ensuring an L2 norm of 1 for each sample. 
-Subsequently, a second column-wise normalization is applied to ensure that each vector is projected onto the surface of a unit hypersphere.
-After the normalization process, the individual vectors are entered into their network.
+The networks, denoted as $F^N$ and $G^N$, incorporate a double $L2$ normalization process. 
+The initial row-wise normalization standardizes the scale of each sample, ensuring that outliers are not identified solely by the magnitude of specific features and projecting each sample onto a unit hypersphere. 
+Subsequently, a column-wise normalization is applied to standardize the distribution of individual features across the batch. 
 
 
 Through the specified embedding sizes, the vectors are projected into a higher-dimensional space and reconstructed thereafter. 
-The network aims to learn the most relevent relationships and discards noise within the data. 
+The network aims to learn the most relevent relationships and discards noise within the data.
+
+
 The the Info-NCE loss function is implemented as follows:
 
 \begin{equation}
-   \ell(F, G, \Phi(x_i), j) = -\ln \frac{\exp(F^N(b_i^j) \cdot G^N(a_i^j) / \tau)}{\sum_{j'=1}^{m} \exp(F^N(b_i^j) \cdot G^N(a_i^{j'}) / \tau)}
+   \ell(F, G, \Phi(x_i), j) = -\ln \frac{\exp(F^N(b_i^j) \cdot G^N(a_i^j) / \tau)}{\sum_{j'=1}^{m} \exp(F^N(b_i^j) \cdot G^N(a_i^{j'}) / \tau)}.
    \label{INFONCE}
 \end{equation}
 
@@ -117,7 +118,7 @@ This parameter selection serves to balance the granularity of feature interactio
 
 The embedding size $u$ determines the dimensionality of the space available for the method to estimate relationships between data points. 
 If $u$ is insufficient, the model is forced to discard information, potentially resulting in the loss of critical indicators relevant to outlier detection. 
-Conversely, an excessively large u may lead to overfitting, where the network captures noise rather than generalizable patterns. 
+Conversely, an excessively large $u$ may lead to overfitting, where the network captures noise rather than generalizable patterns. 
 For their implementation, the authors fixed u=200, providing a balanced capacity for feature representation without compromising model stability.
 
 
@@ -128,5 +129,5 @@ The authors fixed $\tau = 0.01$ to ensure that the contrastive loss remains high
 
 
 The authors conducted robustness checks to evaluate the sensitivity of the model to various parameter configurations. 
-Regarding $\tau$ and $u$, the analysis revealed no significant volatility in the results, suggesting that the model maintains stability across a range of values for the temperature constant and the embedding dimensionality. 
+Regarding $\tau$ and $u$, the analysis revealed no significant volatility in the results, suggesting that the model maintains stability across a range of values for the temperature constant and the embedding dimensionality \citep[p. 7]{shenkar2022anomaly}. 
 
