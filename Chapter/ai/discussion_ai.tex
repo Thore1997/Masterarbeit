@@ -17,53 +17,71 @@ The differences between InterCont and the benchmark methods are statistically si
 Similarly, InterCont achieves a mean ROC AUC of 97.97, compared to 95.94 for k-NN and  MCD respectively. 
 Statistical analysis further confirms that the performance gaps between InterCont and k-NN, as well as InterCont and MCD, are statistically significant with $p<0.001$.
 Hence both hypothesis have to be rejected. 
+For this setup and the given dataset, the implementation of InterCont does provide a more granular classification of outliers.
 
 
-The UMAP visualization in Figure \ref{fig:umap} reveals that the outliers in the Wine dataset form a concentrated and isolated cluster, with few exceptions the outlier class is distinct from the cohesive yet more dispersed inlier distribution. 
-This topological formation suggests that the dataset primarily contains global and contextual instead of a single collective outliers. 
-While a clear geometric separation generally favors distance-based approaches like k-NN and MCD, this dataset characteristics could lead to more effective distinction for the InterCont algorithm.
+Figure \ref{fig:aucprccurve} illustrates the ROC AUC curves for the three evaluated methods. 
+Each curve converges toward the upper-right quadrant of the coordinate system, indicating that the models effectively distinguish between the respective classes. 
+Furthermore, all methods demonstrate a high true positive rate while simultaneously maintaining a low false positive rate.
+
+
+Initially, InterCont maintains a significantly higher precision than the other methods, which demonstrates its robustness in identifying outliers under strict threshold conditions. 
+In the ROC AUC plot, the curves of k-NN and MCD eventually cross and surpass InterCont. 
+This indicates that k-NN and MCD achieve a higher True Positive Rate more quickly. 
+However, the corresponding Precision-Recall curve reveals that this is achieved at the cost of a lower precision due to increased false positives.
+
+
+While k-NN appears superior in the ROC AUC metric, this result is somewhat misleading as the large number of normal instances masks the impact of false positives. 
+The AUPRC confirms that InterCont is the more reliable model for precise anomaly detection, whereas k-NN is more effective at capturing a larger volume of anomalies if a lower precision is acceptable.
+
+
+The UMAP visualization in Figure \ref{fig:umap} illustrates that the outliers in the Wine dataset form a concentrated and isolated cluster. 
+With few exceptions, the outlier class remains distinct from the cohesive yet more dispersed inlier distribution. 
+This topological formation suggests that the dataset primarily contains global and contextual anomalies rather than collective outliers. 
+While a clear geometric separation generally favors distance-based approaches such as k-NN, these dataset characteristics may facilitate a more effective distinction for the InterCont algorithm. 
+The application of MCD requires the assumption of normally distributed data, which was not satisfied, as depicted in Figure \ref{fig:qqpot}.
 
 
 By utilizing a sliding window approach for data augmentation, InterCont effectively captures local feature dependencies in contrast to the global and distance-based perspectives of the benchmarks. 
-Although the Wine dataset is characterized predominantly by monotonous relationships, this localized approach significantly improves the discriminatory power of the method. 
+Although the Wine dataset is characterized predominantly by monotonic relationships, this localized approach significantly improves the discriminatory power of the method. 
 This is achieved through the InterCont architecture, which maps these local dependencies onto a larger feature space. 
 This projection into a higher-dimensional space enables the method to distinguish even subtle irregularities that are non-separable in the original input space.
 
 
-In combination with the semi-supervised paradigm, InterCont defines the trainingdatasets structure with greater granularity than the benchmark models. 
+InterCont defines the trainingdataset' structure with greater granularity than the benchmark models. 
 The superiority of InterCont is particularly evident in AUPRC, where it achieved a mean of 92.93, while MCD and k-NN stalled at 77.82 and 73.06 respectively. 
 This discrepancy highlights a critical diagnostic reality: while the ROC AUC yields optimistic assessments by incorporating true negatives, the AUPRC reveals that the benchmarks are significantly less effective at identifying the specific minority class.
 
 
 The integration of an ensemble strategy involving the permutation of instances ensures that the model systematically evaluates various feature orderings. 
-This prevents critical relationships from being omitted due to arbitrary data structuring, ensuring the method captures the "whole picture" of feature interactions. 
+This prevents critical relationships from being omitted due to arbitrary data structuring, ensuring the method captures all of feature interactions. 
 Furthermore, the implementation of a double normalization process—applying both row-wise and column-wise L2 normalization—projects observations onto a unit hypersphere. 
 This ensures that classification is based solely on the cosine similarity of the anchor with its positive and negative counterparts. 
 The loss function maximizes the mutual information between positive pairs and minimizes it between negative pairs. \todo{mutual information maximization leads to better results}
 
 
-The k-NN algorithm yielded the lowest predictive performance in terms of AUPRC and yield the same performance than MCD in terms of ROC AUC. 
-The figure \ref{fig:aucprccurve} displays sharpe decrease for a strict thresholg.
-After that the Precision increases, until it stabilized above Precision = 0.6.
-That behavior indicates, that some outliers detected, are infact inliers and hard to classify as outliers.
-If the threshold ist lowered to such an extent, that the global outliers can be detec
-Because the Recall is low, the impact on it is severe, hence the sharpe decline. 
-That indicates, that the outliers in the dataset lay near the inliers. 
+The $k$-NN algorithm yielded the lowest AUPRC of 73.06\% and demonstrated performance equivalent to MCD in terms of ROC AUC. 
+Figure \ref{fig:aucprccurve} displays a sharp decrease in precision at strict thresholds. 
+This indicates that $k$-NN identified false positives among the instances with the greatest distances, suggesting that true negatives are also scattered within low-density regions of the dataset.
+Following this, precision increases, which indicates that a significant portion of the true positives is concentrated at lower score values. 
+The $k$-NN algorithm successfully identifies more true positives than false positives in this range, resulting in an upward trend in the precision-recall curve.
 
 
-This finding indicates that the outlier class could be closer to the inlier class, which makes it difficult to distinguish them by simply measureing the distance between the neighbors. 
-The Curse of Dimensionality could have impacted k-NN negatively. 
-With increasing dimensionality, the space between the nieghbors tend to align, that could lead to increased classification of false positives and subsequenlty reduing the AUPRC. 
-
-If the dataset contained cluster outliers, the internal distances within those clusters would likely mask the anomalies, leading to an increased number of false negatives and a decreased F1-Score. 
-The necessity of a low k value also suggests that the dataset contains minimal noise; in a noisier environment, k=1 would lead to overfitting and a high false-negative rate. 
-The fact that the semi-supervised approach improves k-NN's performance further proves the clear separation of classes. 
-By incorporating the characteristics of the "normal" training data to enhance the decision boundary, k-NN achieves better discriminatory performance. 
-However, the reliance on k=1 highlights how k-NN suffers from the Curse of Dimensionality. 
-As dimensionality increases, the contrast between distances diminishes. When k>1, the resulting mean distance further reduces the mathematical gap between points, blurring the distinction between inliers and outliers.
+Subsequently, the curve stabilizes above a Precision of 0.6, which indicates that true positives and false positives are detected in equal proportions. 
+To achieve any further increase in precision, the $k$-NN algorithm identifies an increased number of false positives.
+Consequently, the precision-recall curve decreases as it proceeds further toward the left.
+The curse of dimensionality may have negatively impacted the performance of the k-NN algorithm. 
+As dimensionality increases, the distances between neighbors tend to converge, which can lead to an increased misclassification of false positives and a subsequent reduction in the AUPRC.
 
 
-The MCD estimator demonstrated the lowest performance among the candidate methods. 
+This observation remains consistent across all 500 iterations of the normal data. 
+Datasets possessing this specific structure prove disadvantageous for k-NN due to the underlying local density characteristics. 
+Furthermore, the dataset contains noise, which includes significant feature overlap. 
+Because $k$-NN relies solely on the local distances of its neighbors, critical information such as feature correlations is not incorporated into the model. 
+Consequently, this approach exhibits less granularity in comparison to the InterCont algorithm.
+
+
+The MCD estimator demonstrated the second highest performance among the methods. 
 Even though the MCD estimation was done at the training dataset, the model fails 
 Notably, the inherent affine equivariance of MCD, which theoretically eliminates the necessity for data normalization, provided no measurable advantage here. 
 The superior performance of non-equivariant methods like InterCont and k-NN suggests that specific mechanics for handling feature interactions are more critical for detection efficacy than geometric stability. 
