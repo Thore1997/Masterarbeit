@@ -142,27 +142,20 @@ It defines the number of proximal observations utilized to compute the distance 
 An excessively low value for $k$ typically leads to overfitting, as the model becomes sensitive to local noise. 
 This sensitivity often results in the identification of false positives and the generation of complex, fragmented decision boundaries. 
 While a larger $k$ provides a smoother decision surface and increased robustness to stochastic fluctuations, a value that is too high may lead to underfitting, where the model fails to detect local outliers because they are overshadowed by the broader neighborhood.
-
-
-Conversely, if $k$ is too large, the model becomes prone to underfitting. 
-In this scenario, if an outlier cluster contains fewer than $k$ observations, the algorithm incorporates points from more distant distributions into the distance calculation. 
-This expansion skews the outlier scores and increases the likelihood of false negatives.
 Consequently, the resulting decision boundaries become overly generalized, failing to capture critical local patterns within the data.
 
 
-A statistically rigorous method to determine $k$ involves utilizing $k$-fold cross-validation to optimize the trade-off between bias and variance. 
+A statistically rigorous method to determine $k$ involves utilizing $k$-fold cross-validation \citep[p. 1586]{wong2019reliable} to optimize the trade-off between bias and variance. 
 This ensures that $k$ is tuned to the underlying data structure rather than selected arbitrarily.
 In $k$ fold cross validation the dataset is split into $k$ same sized subsets.
 The model is trained on $k-1$ of these subsets while the remaining subset is used for testing.
 This process is repeated $k$ times, with each subset serving as the test set once.
 The average performance across all $k$ iterations is then used to evaluate the model's generalization.
 K-fold cross validation ensures that all data will be used for hyperparameter tuning.
-For instance, \citet{shenkar2022anomaly} employed grid search to determine the optimal hyperparameter $k = 5$.
-This thesis will apply 5-fold cross validation, which will be described in detail in chapter \ref{sec:setup}.
 
 
-The $k$-NN algorithm offers several distinct advantages. 
-Its outputs are inherently intuitive, facilitating straightforward interpretation of the detected outliers.
+The $k$-NN algorithm offers several distinct advantages \citep[p. 1258]{taunk2019brief}. 
+The algorithm intuitive, facilitating straightforward interpretation of the detected outliers.
 While susceptible to the curse of dimensionality, the algorithm remains computationally efficient with large training sets.
 Its reliance on distance metrics rather than complex optimization routines ensures a user-friendly implementation. 
 As a non-parametric model, $k$-NN requires no prior assumptions regarding the underlying distribution of the dataset, providing the necessary flexibility to analyze complex data structures effectively.
@@ -171,13 +164,12 @@ As a non-parametric model, $k$-NN requires no prior assumptions regarding the un
 The computational complexity of $k$-NN presents significant disadvantages in large-scale applications. 
 As a memory-intensive approach, the model must store the entire dataset to facilitate predictions, which can result in substantial latency.
 Furthermore, the reliance on distance-based metrics makes the algorithm susceptible to noise, which can negatively impact performance. 
-Consequently, the selection of $k$ is critical to the model's performance, necessitating rigorous hyperparameter tuning to achieve an optimal balance between precision and robustness.
+Consequently, the selection of $k$ is critical to the model's performance, necessitating rigorous hyperparameter tuning.
 
 
-$k$-NN serves as a traditional machine learning algorithm.
-For example in the paper of \citet{shenkar2022anomaly} $k$-NN achieves a better performance in terms of F1 Score than InterCont. 
-Additionally uses a distance based approach to detect outliers and it does not need assumptions about the underlying distribution of the data.  
-If the results of k-nn does not exceed the performance of InterCont, it could indicate that InterCont camptures the internal structure more granular.
+$k$-NN serves as a traditional machine learning algorithm. 
+Additionally it uses a distance based approach to detect outliers and it does not need assumptions about the underlying distribution of the data.  
+If the results of $k$-nn does not exceed the performance of InterCont, it could indicate that InterCont camptures the internal structure more granular.
 
 
 

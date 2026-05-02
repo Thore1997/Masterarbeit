@@ -1,28 +1,26 @@
 \subsection{Statistical Approaches for Outlier Detection}\label{sec:mcd}
 Statistical methodologies for outlier detection operate on a different fundamental logic than the other approaches previously discussed. 
-These methods characterize the underlying distribution of the data to estimate population parameters, such as the mean and covariance. 
+Parametric methods assume the underlying distribution of the data and estimate population parameters, such as the mean and covariance \cite{smiti2020critical}. 
 This allows for statistical inference, wherein the model assigns a probability to each data point, quantifying the likelihood that it constitutes an outlier.
 
 
 The following section outlines the structural framework of this analysis. 
-First the framework of the Minimum Covariance Determinant (MCD) estimator will be described, including an assessment of its inherent limitations. 
+First the framework of the Minimum Covariance Determinant (MCD) \cite{rousseeuw1985multivariate} estimator will be described, including an assessment of its inherent limitations. 
 To address these computational challenges, the FAST-MCD algorithm is introduced, which serves as the primary implementation for the subsequent experiments. 
-FAST-MCD represents a significant refinement of the original MCD approach, providing the computational efficiency necessary for practical outlier detection.
-Consequently, it is utilized as a foundational benchmark, whereas the original MCD is seldom employed in modern applications. 
-While further variants such as DetMCD exist, they are excluded from this implementation to maintain a focus on a well-established and widely recognized statistical framework for outlier detection. 
-For a comprehensive overview of the deterministic variant, reference is made to \citep{hubert2012deterministic}. 
+FAST-MCD \cite{rousseeuw1999fast} represents a significant refinement of the original MCD approach, providing the computational efficiency necessary for practical outlier detection.
+While further variants such as DetMCD \citep{hubert2012deterministic} exist, they are excluded from this implementation to maintain a focus on a well-established and widely recognized statistical framework for outlier detection. 
 
 
 Following the detailed description of the algorithmic procedures, the relative advantages and disadvantages of this method are evaluated to justify its selection as a benchmark within the experimental design of this thesis.
 
 
-A naive approach to outlier detection would involve estimating the sample mean and covariance matrix for the entire dataset and labeling the $n$ observations with the largest distances as outliers.
-By utilizing the Mahalanobis distance \citep[Chapter 1]{mahalanobis2018generalized}, the analysis accounts for the underlying covariance structure of the data. 
+A naive approach to outlier detection could involve estimating the sample mean and covariance matrix for the entire dataset and labeling the $n$ observations with the largest distances as outliers.
+By utilizing the Mahalanobis distance \citep{mahalanobis2018generalized}, the analysis accounts for the underlying covariance structure of the data. 
 This standardizes the multidimensional space, effectively magnifying the relative distance of outliers that might otherwise remain hidden in a standard Euclidean framework \citep[Chapter 2]{leys2018detecting}. 
 
 
 However, this standard procedure is often compromised by the masking effect \citep[Chapter 1]{hardin2005distribution}. 
-Because Mahalanobis distances are sensitive to extreme values, even a single outlier can shift the mean toward itself and artificially inflate the covariance. 
+Because Mahalanobis distances are sensitive to outliers, even a single outlier can shift the mean toward itself and artificially inflate the covariance. 
 
 
 
@@ -30,7 +28,7 @@ Because Mahalanobis distances are sensitive to extreme values, even a single out
     \centering
     \begin{minipage}{0.35\textwidth}
         \onehalfspacing
-        This effectively masks the outlier's presence, leading to false negatives. 
+        This effectively masks the outlier's presence, leading to false classifications. 
         To address this, the Minimum Covariance Determinant (MCD) was proposed by \citet{rousseeuw1984least} and theoretically formalized in \citet{rousseeuw1985multivariate} to provide robust estimators that remain unaffected by data contamination.
         It is a parametric and affine-equivariant estimator for the mean and covariance matrix of a dataset \citep[Chapter 3]{rousseeuw1985multivariate}.
     \end{minipage}%
@@ -47,29 +45,17 @@ Because Mahalanobis distances are sensitive to extreme values, even a single out
 \end{figure}
 
 
-%\begin{figure}[h] 
-%    \centering
-%    \includegraphics[width=0.45\textwidth]{Images/MCD.pdf}
-%    \vspace{0.1cm} 
-
-%    
-%    \vspace{0.2cm}
-%    
-%    \label{fig:mcd}
-%\end{figure}
-
 \subsubsection*{Minimum Covariance Determinant (MCD)}
 The objective of the MCD is to identify a subset $H$ containing $h$ observations that yields the minimum possible and robust covariance matrix determinant.
 Geometrically, the MCD seeks the smallest possible ellipsoid that encapsulates $h$ numbers of observations. 
-By drawing this ellipsoid around the region of highest local density rather than the entire dataset, the MCD effectively excludes global and contextual outliers and eliminates the masking effect.
+By estimating the covariance ellipsoid based on the region of highest local density, the MCD robustly identifies a representative subset of the data. 
+This approach effectively isolates global and contextual outliers, thereby mitigating the masking effect.
 For a graphical depiction, see figure \ref{fig:mcd}.
 
 
+\subsubsection*{FAST-MCD}
 A significant limitation of the original MCD algorithm is its computational complexity \citep{rousseeuw1999fast}. 
 Finding the optimal subset requires evaluating $\binom{n}{h}$ combinations, which is infeasible for large datasets \citep[Chapter 4]{rousseeuw1985multivariate}. 
-
-
-\subsubsection*{FAST-MCD}
 Therefore \citet{rousseeuw1999fast} introduced the FAST-MCD algorithm, which utilizes concentration steps (C-Steps) to iteratively improve the subset selection and pruning the process to mitigate the estimation of $\binom{n}{h}$ combinations.
 The FAST-MCD algorithm is as follows:
 \begin{enumerate}[label=\arabic*.]
@@ -95,7 +81,7 @@ The FAST-MCD algorithm is as follows:
 \citep[Chapter 3]{rousseeuw1999fast}
 
 
-This selective iteration is efficient because the distinction between robust and non-robust solutions usually manifests within the first few steps. 
+This selective iteration is efficient because the distinction between robust and non-robust solutions usually manifests within the first two steps. 
 The primary hyperparameter is $h$, and it is constrained by the range:
 
 \begin{equation}
@@ -107,23 +93,20 @@ By definition, an outlier is an observation that deviates from the majority of t
 If the contamination ratio exceeds 50\%, the anomalous points constitute the majority class, meaning the original data distribution is no longer statistically identifiable as the normal state.
 
 
-Additionally $h > p$ has to be satisfied, because the covariance matrix becomes singular $det(S)=0$, rendering it non-invertible. \todo{search paper}
+Additionally $h > p$ has to be satisfied, because the covariance matrix becomes singular $det(S)=0$, rendering it non-invertible. 
 To avoid excessive noise, it is recommended to maintain at least five observations per dimension \citep{hubert2018minimum}.
 
 
-The breakdown point determines the maximum proportion of arbitrarily large outliers that a dataset can contain before the estimator produces unreliable results \citep[Chapter 6]{hampel1971general}.
-It is defined as $1-\alpha$, where $\alpha$ is the share of observations in the subset $H$.
-
-
+The breakdown point determines the maximum proportion of arbitrarily large outliers that a dataset can contain before the estimator produces unreliable results \citep[p. 1894]{hampel1971general}.
 There is a trade-off between robustness and statistical efficiency \citep[Chapter 4]{rousseeuw1999fast}.
 The higher the breakdownpoint is, the lower the statistical efficiency gets, resulting in a increased variance. 
-If the outlier ratio is known, the number of $h$ can be set manually to $h = (1-outlier ratio) * n$.
+If the dataset contains less then 25\% of outliers, the subset can be set to $h = (0.75n)$
 
 
 Once the estimators $\mu^{MCD}$ and $\Sigma^{MCD}$ are calculated, the Mahalanobis distance $D_i$ is computed for each observation:
 
 \begin{equation}
-D_i^2 = (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})^T \hat{\Sigma}_{\text{MCD}}^{-1} (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})
+D_i^2 = (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})^T \hat{\Sigma}_{\text{MCD}}^{-1} (\mathbf{x}_i - \hat{\mu}_{\text{MCD}}).
 \label{eq:robust_mahalanobis}
 \end{equation}
 

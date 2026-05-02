@@ -54,7 +54,7 @@ ax2.set_ylim([-0.02, 1.05])
 ax2.set_xlabel('Recall', fontsize=12)
 ax2.set_ylabel('Precision', fontsize=12)
 ax2.set_title('Precision-Recall', fontsize=14, fontweight='bold')
-ax2.legend(loc="lower left")
+#ax2.legend(loc="lower left")
 ax2.grid(True, linestyle=':', alpha=0.6)
 
 plt.tight_layout()

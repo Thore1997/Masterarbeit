@@ -16,7 +16,7 @@ for df in [df_intercont, df_mcd, df_knn]:
 # Define the colors for the three methods
 colors = ['#AEC6CF', '#FFB347', '#77DD77']
 
-fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+fig, axes = plt.subplots(1, 3, figsize=(18, 9))
 
 for i, m in enumerate(metrics):
     data_to_plot = [

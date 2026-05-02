@@ -1,13 +1,14 @@
 import torch
 import numpy as np
 import os
+import pandas as pd
 from sklearn.metrics import f1_score, roc_auc_score, average_precision_score
 from pyod.models.mcd import MCD
 from sklearn.preprocessing import RobustScaler
 from data_loader import Data_Loader
 
 
-def run_mcd_top10_benchmark(dataset_name, num_splits=500, top_k=10):
+def run_mcd_unsupervised_topk_benchmark(dataset_name, num_splits=500, top_k=10):
     dl = Data_Loader()
 
     # Pfad-Setup
@@ -19,42 +20,53 @@ def run_mcd_top10_benchmark(dataset_name, num_splits=500, top_k=10):
         print(f"FEHLER: Datei nicht gefunden: {mat_file_path}")
         return
 
-    all_f1, all_auc, all_prc = [], [], []
-    print(f"--- MCD Benchmark ({dataset_name}) | Top-{top_k} als Anomalien ---")
+    run_results = []
+    all_scores_list = []
+    all_labels_list = []
+
+    print(f"--- MCD Unsupervised Benchmark ({dataset_name}) | Top-{top_k} Ansatz ---")
 
     for i in range(num_splits):
         try:
-            # 1. Daten laden (Semi-supervised: train_data enthält meist nur Normale)
-            train_data, test_data, test_labels = dl.build_train_test_generic_matfile(mat_file_path)
+            # 1. Daten laden
+            _, test_data, test_labels = dl.build_train_test_generic_matfile(mat_file_path)
 
-            # Konvertierung zu NumPy
-            X_train = train_data.detach().cpu().numpy() if torch.is_tensor(train_data) else train_data
             X_test = test_data.detach().cpu().numpy() if torch.is_tensor(test_data) else test_data
             y_test = test_labels.detach().cpu().numpy().ravel() if torch.is_tensor(test_labels) else np.array(
                 test_labels).ravel()
 
             # 2. Skalierung
             scaler = RobustScaler()
-            X_train_scaled = scaler.fit_transform(X_train)
-            X_test_scaled = scaler.transform(X_test)
+            X_test_scaled = scaler.fit_transform(X_test)
 
-            # 3. MCD Training (berechnet Mean und Covariance der sauberen Daten)
-            # Contamination klein halten, da wir davon ausgehen, dass Train sauber ist
-            clf = MCD(contamination=0.0001, random_state=42)
-            clf.fit(X_train_scaled)
+            # 3. MCD Training
+            clf = MCD(contamination=0.17, random_state=42)
+            clf.fit(X_test_scaled)
 
-            # 4. Scoring (Mahalanobis-Distanz auf Testdaten anwenden)
-            scores = clf.decision_function(X_test_scaled)
+            # 4. Scoring
+            scores = clf.decision_scores_
 
-            # 5. Top-K Logik: Die 10 weitesten Entfernungen markieren
-            pred_labels = np.zeros(len(scores))
-            top_k_indices = np.argsort(scores)[-top_k:]  # Holt die Indizes der höchsten Scores
-            pred_labels[top_k_indices] = 1
+            # 5. Top-K Logik
+            pred_labels_topk = np.zeros(len(scores))
+            top_k_indices = np.argsort(scores)[-top_k:]
+            pred_labels_topk[top_k_indices] = 1
 
-            # 6. Metriken speichern
-            all_f1.append(f1_score(y_test, pred_labels))
-            all_auc.append(roc_auc_score(y_test, scores))
-            all_prc.append(average_precision_score(y_test, scores))
+            # 6. Metriken berechnen
+            f1 = f1_score(y_test, pred_labels_topk)
+            auc = roc_auc_score(y_test, scores)
+            prc = average_precision_score(y_test, scores)
+
+            # Speichern für CSV
+            run_results.append({
+                "run": i + 1,
+                "f1_score": f1,
+                "roc_auc": auc,
+                "auprc": prc
+            })
+
+            # Speichern für NPZ
+            all_scores_list.append(scores)
+            all_labels_list.append(y_test)
 
             if (i + 1) % 50 == 0:
                 print(f"Fortschritt: {i + 1}/{num_splits} Splits berechnet...")
@@ -62,19 +74,36 @@ def run_mcd_top10_benchmark(dataset_name, num_splits=500, top_k=10):
         except Exception as e:
             print(f"Fehler in Split {i}: {e}")
 
-    # Finale Statistik
-    if all_f1:
+    # --- EXPORT LOGIK ---
+    if run_results:
+        # 1. CSV Export (Metriken pro Split)
+        df = pd.DataFrame(run_results)
+        csv_path = os.path.join(current_dir, f"mcd_top{top_k}_{dataset_name}_metrics.csv")
+        df.to_csv(csv_path, index=False)
+
+        # 2. NPZ Export (Konsistent zu k-NN für Vergleich)
+        if not os.path.exists('Results'):
+            os.makedirs('Results')
+
+        final_y_true = np.concatenate(all_labels_list)
+        final_y_scores = np.concatenate(all_scores_list)
+
+        npz_path = 'Implementation/scores_mcd.npz'
+        np.savez(npz_path, y_true=final_y_true, y_scores=final_y_scores)
+
+        print(f"\nDATEIEN GESPEICHERT:")
+        print(f"1. CSV: {csv_path}")
+        print(f"2. NPZ: {npz_path}")
+
+        # Finale Statistik
         print(f"\n" + "=" * 45)
-        print(f"ERGEBNISSE FÜR {dataset_name.upper()} (Top-{top_k} Ansatz)")
+        print(f"ZUSAMMENFASSUNG: {dataset_name.upper()} (Top-{top_k})")
         print("-" * 45)
-        print(f"F1-Score:  {np.mean(all_f1):.4f} ± {np.std(all_f1):.4f}")
-        print(f"ROC-AUC:   {np.mean(all_auc):.4f} ± {np.std(all_auc):.4f}")
-        print(f"AUPRC:     {np.mean(all_prc):.4f} ± {np.std(all_prc):.4f}")
+        print(f"F1-Score:  {df['f1_score'].mean():.4f} ± {df['f1_score'].std():.4f}")
+        print(f"ROC-AUC:   {df['roc_auc'].mean():.4f} ± {df['roc_auc'].std():.4f}")
+        print(f"AUPRC:     {df['auprc'].mean():.4f} ± {df['auprc'].std():.4f}")
         print("=" * 45)
 
 
 if __name__ == "__main__":
-    # Hier kannst du den Namen und die Anzahl der Top-Anomalien anpassen
-    run_mcd_top10_benchmark('wine', num_splits=500, top_k=10)
-
-    #TODO:  csv und npz  export noch einfügen
+    run_mcd_unsupervised_topk_benchmark('wine', num_splits=500, top_k=10)

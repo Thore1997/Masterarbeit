@@ -14,7 +14,7 @@ The analysis is further extended through the plotting of AUPRC and ROC AUC curve
 \toprule
 \textbf{Method}         & \textbf{F1-Score} & \textbf{SD} & \textbf{ROC AUC} & \textbf{SD} & \textbf{AUPRC} & \textbf{SD}          \\
 \midrule
-MCD                     & 64.14             & 9.41  &  95.03            & 4.54     & 77.82             & 16.43  \\
+MCD                     & 2.8               & 4.14  &  17.15            & 6.54     & 9.72              & 4.53   \\
 k-NN                    & 70.34             & 9.81  &  95.80            & 1.81     & 73.06             & 11.72  \\
 InterCont               & \textbf{85.64}    & 8.77  &  \textbf{97.97}   & 2.13     & \textbf{92.93}    & 7.31   \\
 \bottomrule
@@ -22,18 +22,18 @@ InterCont               & \textbf{85.64}    & 8.77  &  \textbf{97.97}   & 2.13  
 \end{table}
 
 
-The performance utilizes F1-Score, ROC AUC, and AUPRC, accompanied by their respective standard deviations (SD). 
-In the F1-Score analysis, InterCont yields the highest mean at 85.64, followed by $k$-NN at 70.34 and MCD at 64.14. 
-The SD values indicate that InterCont maintains the lowest variability at 8.77, while MCD and $k$-NN show higher fluctuations at 9.41 and 9.81.
+In the F1-Score analysis, InterCont yields the highest mean at 85.64, followed by $k$-NN at 70.34 and MCD at 2.8. 
+The SD values indicate that MCD maintains the lowest variability at 4.14, while InterCont and $k$-NN show higher fluctuations at 8.77 and 9.81.
 
 
-The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 97.97, $k$-NN 95.80 and MCD at 95.03. 
-The stability of these scores is evidenced by low SD values, with $k$-NN demonstrating the least variance at 1.81, compared to 2.13 for InterCont and 4.54 for MCD.
+The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 97.97, $k$-NN 95.80 and MCD at 17.15. 
+The stability of these scores is evidenced by low SD values, with $k$-NN demonstrating the least variance at 1.81, compared to 2.13 for InterCont and 6.54 for MCD.
 
 
-For the AUPRC metric, InterCont achieves a mean of 92.93, significantly higher than MCD and $k$-NN at 77.82 and 73.06 respectively. 
-The InterCont method exhibits the lowest variance with an SD of 7.31. 
-Conversely, MCD shows the highest SD in this metric with an SD of 16.43, while $k$-NN records an SD of 11.72. 
+For the AUPRC metric, InterCont achieves a mean of 92.93, significantly higher than $k$-NN at 73.06.
+MCD yields the lowest AUPRC at 9.72 and the lowest SD at 4.53. 
+The InterCont method exhibits a SD with an SD of 7.31. 
+Conversely, $k$-NN records a SD of 11.72. 
 
 
 \begin{figure}[h] 
@@ -46,20 +46,26 @@ Conversely, MCD shows the highest SD in this metric with an SD of 16.43, while $
 
 The figure \ref{fig:result_boxplot} displays boxplots for the resulting metrics for each method.
 Regarding the ROC AUC metric, InterCont demonstrates the highest median performance, closely approaching a value of 1.0, while maintaining a relatively narrow interquartile range despite several lower-reaching outliers. 
-The MCD and $k$-NN methods exhibit lower median ROC AUC values, approximately 0.96, with MCD displaying notably higher variance and a wider distribution of scores in the lower deciles. 
+$K$-NN exhibits a lower median ROC AUC value at $\approx 0.75$.
+MCD displaying notable lower median ROC AUC above 0.2 and higher variance.
+Notably one single outlier reaches a value above 0.9. 
 
 
-In the AUPRC evaluation, InterCont again maintains a superior median position above 0.90, whereas the performance of MCD and $k$-NN declines significantly.
-MCD in particular shows a substantial spread, with its whiskers extending down to 0.3 and further outliers reaching near 0.2. 
+In the AUPRC evaluation, InterCont consistently maintains a superior median position above 0.90, whereas the performance of k-NN declines significantly. 
+The InterCont boxplot is the most compact, despite a high number of outliers extending below the lower whisker. 
+$K$-NN exhibits a wider interquartile range, with its whiskers extending from 1.0 at the maximum to $\approx 0.5$. 
+MCD demonstrates a substantially lower median AUPRC.
+The entire boxplot for this method does not exceed 0.1, with the exception of two outliers reaching values above  $\approx 0.7$.
 
-
+ 
 The F1 Score results further distinguish the algorithms, as InterCont achieves a higher and more consistent score than its counterparts. 
-K-NN shows a greater median F1 Score of 0.7 to approximately 0.58 of MCD.
-MCD shows in this regard a greatest volatility of all methods.
-
+The median F1 Score for InterCont is  $\approx 0.9$, characterized by a relatively small interquartile range compared to $k$-NN. 
+The median F1 Score of $k$-NN represents the second highest value at  $\approx 0.7$, with whiskers extending from 1.0 down to  $\approx 0.5$. 
+The performance of MCD is visually indistinguishable from zero. 
+However, three outliers are displayed above the interquartile range, the highest of which reaches  $\approx 0.7$.
 
 Across all three metrics, InterCont consistently outperforms MCD and $k$-NN in terms of both central tendency and overall stability, despite the presence of isolated performance drops indicated by the outlier points. 
-These results suggest that InterCont provides the most robust classification performance for the underlying dataset, particularly when considering the precision-recall trade-off captured by the AUPRC.
+These results suggest that InterCont provides the most robust classification performance for the underlying dataset, particularly when considering the Precision-Recall trade-off captured by the AUPRC.
 
 To further analyse the figure \ref{fig:aucprccurve} displayd the ROC AUC and AUPRC curves of the three methods.
 
