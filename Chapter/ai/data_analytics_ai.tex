@@ -1,15 +1,20 @@
 \section{Experiments} \label{sec:Experiments}
-A major challenge in outlier detection research involves establishing comparability between the methods, which necessitates the implementation of a unified framework. 
-Such a framework ensures that the same datasets, paradigms, and evaluation metrics are consistently applied.
+A major challenge in outlier detection research involves establishing comparability between the methods, which necessitates the implementation of a unified framework.
+Such a framework ensures that the same dataset and evaluation metrics are consistently applied.
+Consequently, the methods need to be implemented in such a way that a fair comparison is facilitated.
+
+
 The subsequent section details the practical implementation of the conducted experiments, beginning with a comprehensive analysis of the dataset. 
 This examination facilitates a progressive understanding of the data, transitioning from univariate and bivariate perspectives to a structural evaluation using Uniform Manifold Approximation and Projection (UMAP). 
 Following this empirical investigation, the discourse shifts to a critical assessment of potential evaluation metrics. 
 These metrics are argued and justified, culminating in a definitive selection based on the previously identified data characteristics. 
 The experimental framework is defined to ensure that all benchmarks maintain rigorous comparability with the InterCont methodology. 
 Upon establishing this foundation, the empirical results are presented. 
+
+
 To ensure statistical significance and validity, a Friedman test is employed during the evaluation process. 
 Subsequently a post-hoc Wilcoxon signed-rank test is applied to rank the method' performance.
-These findings are subsequently interpreted within the discussion chapter, while the final conclusions and implications of the research are synthesized in the terminal chapter of the thesis.
+These findings are subsequently interpreted within chapter \ref{sec:discussion}, while the final conclusions and implications of the research are synthesized in the terminal chapter of the thesis.
 
 
 \subsection{Analysis of the Wine Dataset}\label{sec:data_analytics}
@@ -59,17 +64,16 @@ Figure \ref{fig:boxplot} illustrates the distribution of each feature using boxp
 In these visualizations, the red dotted line represents the mean, while the grey line indicates the median. 
 
 
-The IQR represents the central 50\% of the data points located between the $Q_1$ and $Q_3$.
-A wider IQR indicates greater variability within a specific feature, whereas a narrow IQR suggests that the observations are more densely clustered. 
+The $IQR$ represents the central 50\% of the data points located between the $Q_1$ and $Q_3$.
+A wider $IQR$ indicates greater variability within a specific feature, whereas a narrow $IQR$ suggests that the observations are more densely clustered. 
 The features within the dataset exhibit significantly different scales of dispersion. 
-While Features 3, 4, 5, and 6 are characterized by relatively narrow IQR, Feature 12 displays a notably large IQR.
+While Features 3, 4, 5, and 6 are characterized by relatively narrow $IQR$, Feature 12 displays a notably large $IQR$.
 
 
 The whiskers extend to most extreme data points within $Q_1 -1.5 \times IQR$ and $Q_3 + 1.5 \times IQR$ respectively, where $Q_1$ and $Q_3$ represent the first and third quartiles of the data distribution.
 The relative lengths of the whiskers provide further evidence of distributional skewness. 
 A top whisker that is longer than the bottom whisker indicates a right-skewed distribution, whereas the inverse suggests left-skewness. 
 This asymmetry is particularly pronounced in Features 2, 6, 7, and 10, where the data distributions are notably skewed toward higher values. 
-\todo{check if this comlies with the IQR}
 
 
 Specific instances that exceed those thresholds represent univariate outliers.
@@ -87,12 +91,19 @@ Conversely, all other identified outliers across the remaining features are char
 
 
 The correctly identified outliers are highlighted in red. While the boxplot analysis captures 8 out of 10 ground-truth outliers, it also yields 18 false positives. 
-These eight correctly identified instances are characterized by extreme values within the Proline dimension, suggesting that the majority of the outlier class possesses an unusually high concentration of this component. 
+These eight correctly identified instances are characterized by extreme values within feature 13, suggesting that the majority of the outlier class possesses an unusually high concentration of this component. 
 However, such extreme values may not be inherently abnormal in a multivariate context, as their positioning could be explained by correlations with other dimensions.
 
 To further investigate the distributional characteristics, Q-Q plots \citep{wilk1968probability} for all features are provided in the Appendix. 
-Additionally, the Shapiro-Wilk test \citep[p. 592]{shapiro1965analysis} was applied to each feature. Of the 13 dimensions, only Features 2 and 3 did not show significant deviation from normality (p>0.05 and p>0.1, respectively). 
-Consequently, the assumption of multivariate normality must also be rejected \citep[p. 156]{korkmaz2014mvn}.
+Additionally, the Shapiro-Wilk test \citep[p. 592]{shapiro1965analysis} was applied to each feature. 
+The Shapiro-Wilk test evaluates the null hypothesis that a dataset is normally distributed and is specifically designed for continuous variables. 
+In their seminal work, Shapiro and Wilk originally developed the test for relatively small sample sizes, specifically where $n < 50$. 
+However, subsequent mathematical refinements by \citet{Royston82} extended the applicability of the calculation to larger datasets, allowing for the analysis of up to $n < 2000$ observations. 
+Given these parameters, the requirements for the application of the Shapiro-Wilk test are satisfied in the present context.
+
+
+Of the 13 analyzed dimensions, only Features 2 and 3 exhibited no significant deviation from a normal distribution, with recorded p-values of p>0.05 and p>0.1, respectively. 
+Because the remaining features do not follow a normal distribution, the broader assumption of multivariate normality for the dataset must be rejected \citep[p. 156]{korkmaz2014mvn}.
 
 \subsubsection*{Bivariate Analysis}
 To further analyse the relationships in the dataset, a bivariate examination of the correlations between features is conducted.
@@ -119,7 +130,6 @@ The strongest positive correlation is observed between features 6 and 7, with a 
 Similarly, a high positive correlation of $\approx 0.77$ exists between features 7 and  12. 
 Regarding inverse relationships, feature 11 and feature 10 exhibit a strong negative correlation of $\approx -0.61$. 
 The second most pronounced negative correlation, at approximately $\approx -0.60$, occurs between Features 12 and feature 10 and feature 2 and 11.
-\todo{multicollinearität? MCD nicht errechenbar?}
 
 
 \subsubsection*{Manifold Structure Analysis}
@@ -158,18 +168,19 @@ UMAP constructs the low dimensional depiction in two steps:
                 This continues until convergence is achieved.
     \end{itemize}
 \end{enumerate}
+\citep[p. 6]{mcinnes2018umap}
 
 Equation \ref{eq:sigma} describes how UMAP adapts the local connectivity and determines the parameter $\sigma_i$.
 
 \begin{equation}
-    \sum_{j=1}^{k} \exp \left( \frac{-\max(0, d(x_i, x_j) - \rho_i)}{\sigma_i} \right) = \log_2(k)
+    \sum_{j=1}^{k} \exp \left( \frac{-\max(0, d(x_i, x_j) - \rho_i)}{\sigma_i} \right) = \log_2(k).
      \label{eq:sigma}
 \end{equation}
 
 Where 
 
 \begin{equation}
-    \exp \left( {-\frac{d(x_i,x_j) - \rho_i}{\sigma_i}} \right)
+    \exp \left( {-\frac{d(x_i,x_j) - \rho_i}{\sigma_i}} \right),
 \end{equation}
 
 represents the weight of the connection between instance $x_i$ and its neighbor $x_j$.
@@ -198,8 +209,9 @@ This optimization results in a layout where clusters are grouped together even i
 
 
 \subsubsection*{Hyperparameters}
-The configuration of UMAP necessitates the specification of two primary hyperparameters that govern the construction of the low-dimensional embedding. 
-Because these parameters determine the balance between preserving local and global structures, a universally optimal setting does not exist; instead, the selection depends on the specific analytical objectives. 
+The configuration of UMAP necessitates the specification of two primary hyperparameters \citep[p. 23]{mcinnes2018umap}that govern the construction of the low-dimensional embedding.
+Because these parameters determine the balance between preserving local and global structures, a universally optimal setting does not exist.
+Instead, the selection depends on the specific analytical objectives. 
 
 
 
@@ -225,7 +237,7 @@ To ensure all attributes contribute proportionally to the manifold construction,
  
 
 The axes in the resulting UMAP plot are not directly interpretable because UMAP is a non-linear dimensionality reduction technique that projects high-dimensional data into an abstract manifold. 
-In this space, the coordinates do not correspond to specific physical units or original features because the algorithm prioritizes preserving topological relationships—such as neighborhood connectivity—over the linear distances or the variance of specific dimensions. 
+In this space, the coordinates do not correspond to specific physical units or original features because the algorithm prioritizes preserving topological relationships, such as neighborhood connectivity, over the linear distances or the variance of specific dimensions. 
 Consequently, while the absolute coordinates are arbitrary, the spatial proximity between points serves as a proxy for the similarity of instances in the original high-dimensional space, where smaller distances indicate greater characteristic resemblance. 
 
 
@@ -248,13 +260,10 @@ The inlier class appears as a relatively cohesive yet dispersed distribution par
 Within the inlier class, the proximity of the observations suggests further distinct sub-clusters, including an elongated manifold and a dense upper-center grouping, which indicates a heterogeneous manifold for the normal data. 
 Conversely, the clear spatial separation and high density of the outlier cluster, situated at the extreme right of the projection, indicate that these instances are distinct from the majority of the data. 
 A single inlier observation is positioned in relative proximity to the outlier cluster, suggesting a potential boundary case or a marginal increase in similarity between the classes at that specific coordinate. 
-This geometric isolation suggests that the profiles of the anomalies are significantly and consistently different from those of the inliers, which facilitates more effective detection by manifold-based and distance-based algorithms.
+This geometric isolation suggests that the profiles of the outliers are significantly and consistently different from those of the inliers.
  
 
-In summary the Wine dataset contains 13 dimensions from which 11 are univariatly not normally distributed, hence the multivariate distribtion is not normally distributed as well.
-This violated the assumption of MCD which was discussed in chapter \ref{sec:mcd}.
-The correlations of the dataset show a variety of different directions but nevertheless seems to be of linear nature.
-The UMAP showed 3 distinct clusters one of which is the outlier class.
-Nevertheless there are boundary cases of instances of the normal class to the outlier class.
-For the distance-based method $k$-NN and may present this a serious challenge to differentiate.
-
+In summary, the Wine dataset comprises 13 dimensions, 11 of which exhibit non-normal univariate distributions. 
+Consequently, the multivariate distribution deviates from normality, which contradicts the underlying assumptions of the Minimum Covariance Determinant (MCD) estimator as detailed in Section \ref{sec:mcd}. 
+The correlation analysis reveals diverse directional relationships, including several strong dependencies between variables. 
+While UMAP projections illustrate three distinct clusters—one of which represents the outlier class—certain instances of the normal class reside in close proximity to the outlier boundaries. 

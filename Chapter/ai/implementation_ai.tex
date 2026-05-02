@@ -37,18 +37,19 @@ To ensure computational efficiency, the authors included a logic sequence at the
 
 
 At the initialization of this module, a data pipeline is established through a specialized data wrapper, which can be found in the data\_loader.py. 
-For this implementation the function def build\_train\_test\_generic\_matfile is used, because it handles .mat files.
-This component determines the structural dimensions of the dataset and defines the mechanisms for individual row retrieval. 
+For this implementation the function def build\_train\_test\_generic\_matfile is used.
+This component determines the structural dimensions of the dataset and defines the  for individual row retrieval.
+
+
+This function is essential for the implementation of the benchmark methods. 
 To facilitate the subsequent evaluation of calculated anomaly scores, the wrapper preserves the original index identifiers. 
 This architectural choice ensures that the machine learning algorithm can accurately map each anomaly score back to its corresponding observation in the source data.
 
 
-The implementation utilizes a permutation-based approach to derive anomaly scores. 
-To introduce stochasticity into the permutation process, the authors utilized the PyTorch \citep{paszke2019pytorch} function torch.randperm().
-This function divides the normal data into halves and permutes the compositions and grading those halves into testing and training dataset.
+To introduce stochasticity into the shuffle process, the authors utilized the PyTorch \citep{paszke2019pytorch} function torch.randperm().
+This function divides the normal data into halves and shuffles the compositions and grading those halves into testing and training dataset.
 The testing dataset always includes all outliers.  
 To ensure the stability and reliability of the results, a shuffling procedure is integrated into the pipeline. 
-While the specific observations within the training and testing subsets remain constant, the internal order of the rows is permuted during the process. 
 The torch.randperm() function relies on a pseudo-random number generator.
 Since no specific generator argument was specified, the default engine was employed. 
 
@@ -56,13 +57,6 @@ Since no specific generator argument was specified, the default engine was emplo
 As the reproduction package did not include a native looping mechanism for these iterations, a custom loop.py was implemented to manage the process. 
 Finally, performance metrics were derived in accordance with the logic defined within the helper\_functions module.
 Consistent with the original study, the experiments were executed over 500 random splits. 
-
-
-The helper\_functions.py module contains the logic for calculating the F1-score, employing a dynamic thresholding mechanism. 
-In this implementation, the threshold is determined by incorporating the ground truth labels directly into the calculation process. 
-The model applies this threshold to the ranked outlier ratios to identify anomalous instances. 
-Because the number of instances selected by this threshold is constrained to equal the total number of actual outliers in the dataset, the Precision and Recall values are mathematically identical. 
-Consequently, the resulting F1-score is equivalent to both metrics, reflecting the model's performance under a fixed-count retrieval constraint.
 
 
 While the original codebase was designed to accommodate a vast array of datasets, including specialized logic within the data loader for .mat files, many components proved redundant for the specific dataset analyzed in this research. 
@@ -77,7 +71,6 @@ Minor adjustments were made to the source code to facilitate this additional met
 The k-NN algorithm was implemented in knn\_benchmark.py by using the PyOD library \citep{zhao2019pyod}. 
 To facilitate the experimental procedure and derive relevant performance metrics, components from the Scikit-learn library \citep{pedregosa2011scikit} were also employed. 
 Especially the F1-Score provided by Scikit-learn was used to estimate this metric. 
-As beforementioned the F1-Score in InterCont was estimated by a self-programmed function. 
 Nevertheless, by using the known outlier score, the use of both methods yield to the same result.
 
 
@@ -101,15 +94,17 @@ This calculation employs the Minkowski distance with the parameter $p=2$, which 
 The RobustScaler from Scikit-learn was implemented.
 
 \subsubsection*{FAST-MCD}
-The FAST-MCD algorithm was implemented in mcd\_benchmark.py by using the PyOD library.  
-To maintain experimental comparability, a training and testing phase was simulated. 
-During the training phase, the algorithm estimates the covariance matrix and the mean based on the training dataset. 
-This study utilizes the same resampling methodology as the InterCont authors, applying the resulting covariance matrix and mean to the testing dataset. 
-Observations exhibiting the 10 highest Mahalanobis distance relative to the estimated mean are classified as outliers (top\_k=10). 
+The FAST-MCD algorithm is implemented in mcd\_benchmark.py utilizing the PyOD library. 
+As an unsupervised method, FAST-MCD does not support a traditional separation into training and testing phases. 
+If a split-sample approach were attempted, the algorithm would collapse.
+Specifically, if $n=h$, the resulting  $\mu_MCD$ and $\sum_MCD$ matrix would be equivalent to the mean and covariance matrix of the training dataset \citep[p. 217]{rousseeuw1999fast}. 
+To ensure experimental comparability, the FAST-MCD algorithm is applied directly to the test dataset. 
+The training dataset is generated using the same shuffle function employed by the other evaluated methods. 
+Observations that exhibit the 10 highest Mahalanobis distances relative to the estimated mean and covariance matrix are classified as outliers, adhering to a top\_k=10 criterion. 
 
 
 To ensure parity with the implementation of InterCont, this cycle was repeated 500 times. 
-The final performance metrics represent the average values across these iterations, supplemented by the calculation of the standard deviation. 
+The final performance metrics represent the mean values across these iterations, supplemented by the calculation of the standard deviation. 
 The random\_state parameter was fixed at 42 to guarantee reproducibility, because FAST-MCD relies on selecting random initial subsets before performing subsequent C-steps.
 
 

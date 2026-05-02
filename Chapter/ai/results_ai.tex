@@ -1,7 +1,7 @@
 \section{Results}\label{sec:results}
 This section presents the results of the previously conducted experiments.
 The primary findings are summarized in Table \ref{tab:results_bench}, which details the mean and standard deviation (SD) of the F1-Score, ROC AUC, and AUPRC for each evaluated method. 
-To ensure a rigorous assessment of these findings, a Friedman test \citep{friedman1937use} is applied for global comparison, followed by a pairwise Wilcoxon signed-rank test \cite{wilcoxon1945individual}.
+To ensure a rigorous assessment of these findings, a Brunne Munzel test \citep{brunner2000nonparametric} is applied.
 The analysis is further extended through the plotting of AUPRC and ROC AUC curves to facilitate a more detailed performance comparison across all methods.
 
 
@@ -76,76 +76,51 @@ To further analyse the figure \ref{fig:aucprccurve} displayd the ROC AUC and AUP
     \label{fig:aucprccurve}
 \end{figure}
 
-The ROC AUC curves for all evaluated methods exhibit a rapid initial increase. 
-The InterCont method maintains a steep ascent until Recall reaches 0.8. 
-While the growth rate for $k$-NN is initially less pronounced, it surpasses InterCont at approximately 0.1 False Positive Rate (1-Specificity) and remains superior thereafter. 
-MCD initially demonstrates a faster increase than $k$-NN, yet the two methods intersect at a Recall of 0.6, where $k$-NN begins to outperform MCD. 
-Furthermore, the MCD curve intersects with InterCont at a False Positive Rate (1-Specificity) of approximately 0.75.
+The ROC AUC curves for InterCont and $k$-NN exhibit a rapid initial increase. 
+The InterCont method maintains a steeper ascent until Recall reaches 0.8. 
+While the growth rate for $k$-NN is initially less pronounced, it surpasses InterCont at $\approx 0.1$ False Positive Rate (1-Specificity) and remains superior thereafter. 
+Conversely, the MCD curve falls significantly below the diagonal dashed line, which represents the performance of a random classifier.
+This inverse curve indicates that the MCD model, under the current configuration, performs worse than chance.
+Furthermore, the MCD curve intersects with InterCont at a False Positive Rate of $\approx 0.75$.
 
 
-AUPRC demonstrates significant variance across the evaluated models. 
-While InterCont maintains a consistently high performance over an extended range, both $k$-NN and MCD exhibit a rapid decline in precision following minor increases in recall. 
-Eventually, both baseline models reach a plateau where precision stabilizes. 
-The initial decrease in precision is more pronounced for $k$-NN than for MCD.
-However, $k$-NN remains stable for a longer duration and surpasses the performance of MCD at a recall of approximately 0.6. 
-Although MCD stabilizes at a higher initial precision level, its performance subsequently degrades at a faster rate compared to $k$-NN.
+AUPRC demonstrates significant variance across the evaluated models.
+InterCont method exhibits the most stable and high precision across a wide range of recall values, maintaining a near-perfect precision until approximately 0.8 recall before declining. 
+While InterCont maintains a consistently high performance over an extended range, $k$-NN exhibits a rapid decline in precision following an increases in recall. 
+Eventually, $k$-NN reaches a plateau where precision stabilizes at $\approx 0.6$.
+That indicates a consistent but higher rate of false positives compared to InterCont.
+At high values for recall, $k$-NN crosses the AUPRC curve of InterCont and falls steeply thereafter. 
+
+
+The MCD method displays very low precision that increases slightly as recall grows, which reinforces the observation from the ROC plot that this specific implementation fails to accurately distinguish the underlying outlier distribution in this context.
+
 
 
 \subsubsection*{Statistical Inference}
 The validation of empirical results necessitates the application of rigorous statistical testing. 
-To mitigate the distributional challenges identified, the non-parametric Friedman test will be deployed. 
-This procedure serves as a global statistical test to determine whether significant differences exist across the three methods. 
-Rather than comparing absolute performance values, the Friedman test utilizes the ranks of the results within each individual run. 
+To mitigate the distributional challenges identified, the non-parametric pairwise Brunner Munzel test \citep{brunner2000nonparametric} will be deployed. 
+This procedure serves to determine whether significant differences exist across the three methods. 
 
-The Null hypothesis is defined as: 
-\begin{equation}
-    H_0 : R_1 = R_2 = R_3.
-\end{equation}
+This non-parametric procedure is utilized within the paper of \citet{shenkar2022anomaly}.
 
-This approach is suitable for analyzing differences between more than two groups. 
-The test assigns a rank of 1 to the best performing method within a run and the highest rank to the worst performer, thereby neutralizing the influence of absolute result magnitudes. 
-This transformation eliminates the impact of outliers. 
+The Brunner-Munzel test, also called generalized Wilcoxon test, is a test of the null hypothesis that, for two populations the porbability of one beging greater then the other equal as the other way around.
+This test is implemented in situations where the observations are independend.
+This assumption is met, because in the setup the shuffle function is excuted three different times, yielding different test set for all 500 runs.
 
-
-A fundamental requirement of the Friedman test is the independence of the observations. 
-This condition is satisfied in the current study because the runs are shuffled and conducted independently of one another. 
-Subsequently, the mean rank $R_j$ for each method is calculated.
-
-
-The test statistics is formally defined as:
-\begin{equation}
-    \chi_F^2 = \frac{12n}{k(k+1)} \left[ \sum_{j=1}^{k} R_j^2 - \frac{k(k+1)^2}{4} \right],
-\end{equation}
-
-whereas, $n = 500$ is the number of runs, $k = 3$ the number of methods. 
-
-
-The result follows a $\chi^2$ distribution and are displayed in table \ref{tab:friedman}.
-The application of the Friedman test across all metrics resulted in $p < 0.001$, which provides evidence that at least two methods exhibit statistically significant differences in every instance. 
-
-\begin{table}[h]
-\centering
-\caption{Results of the Friedman Test}
-\label{tab:friedman}
-\begin{tabular}{lcccccc} 
-\toprule
-\textbf{Metric}         & \textbf{Statistic}    & \textbf{p-value}  &    \\
-\midrule
-F1-Score                & 664.60                & 0.00              &    \\
-ROC AUC                 & 235.07                & 0.00              &    \\
-AUPRC                   & 421.12                & 0.00              &    \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Furthermore, the standard deviations reported in Table \ref{tab:results_bench} exhibit substantial variation, suggesting that the assumption of homoscedasticity may be violated. 
+Also this test is viable in situations where the variances of the populations differ.
+The standard deviations reported in Table \ref{tab:results_bench} exhibit substantial variation, suggesting that the assumption of homoscedasticity may be violated.
 To formally evaluate the homogeneity of variances, Levene's test is employed to determine whether the variances across the different groups are statistically equivalent. 
-The null hypothesis $H_0$ for Levene's test posits that the population variances are equal across all groups, which can be formally expressed as:
 
+
+The null hypothesis $H_0$ for Levene's test posits that the population variances are equal across all groups, which can be formally expressed as:
 
 \begin{equation}
     H_0 = \sigma_1^2 = \sigma_2^2 =  \sigma_3^2. 
 \end{equation}
+
+Levene's test also requires the assumption, that the observations are independend.
+This is satisfied as discussed above. 
+Levene's test  is robust against non-normally distributed populations, which is certainly not met seening in \ref{fig:result_boxplot}.
 
 
 If the resulting p-value is below the chosen significance level, the null hypothesis is rejected, indicating that the variances are significantly different.
@@ -154,7 +129,6 @@ The results across all evaluated metrics demonstrate a significance level of $p 
 
 
 Levene's test and the boxplots in Figure \ref{fig:result_boxplot} confirm substantial heteroscedasticity, the assumption of identical distribution shapes is not satisfied. 
-Under these conditions, the Friedman test is interpreted as a measure of stochastic dominance rather than a direct comparison of medians. 
 The results are displayed in table \ref{tab:levene}.
 \begin{table}[h]
 \centering
@@ -164,29 +138,56 @@ The results are displayed in table \ref{tab:levene}.
 \toprule
 \textbf{Metric}         & \textbf{Statistic} & \textbf{p-value} &           \\
 \midrule
-F1-Score                & 5.04             & 0.00  &    \\
-ROC AUC                 & 69.44            & 0.00  &    \\
-AUPRC                   & 180.82           & 0.00  &    \\
+F1-Score                & 182.98           & 0.00  &    \\
+ROC AUC                 & 69.15            & 0.00  &    \\
+AUPRC                   & 286.93           & 0.00  &    \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-This interpretation identifies which method consistently achieves superior rankings throughout the experimental runs, thereby accounting for the distributional variations present in the data.
+The null hypothesis is rejected across all evaluated metrics, indicating that the variances exhibit statistically significant differences. 
+To further delineate specific performance differentials, a pairwise Brunner-Munzel test is conducted. 
+The null hypothesis for this test is defined as: 
+
+\begin{equation}
+    H_0^p: p = P(X_1 < X_2) + \frac{1}{2} P(X_1 = X_2) = \frac{1}{2},
+\end{equation}
+
+which posits that the probability of an observation from one distribution exceeding an observation from the other is equal to the reciprocal probability, signifying stochastic equality between the two samples.
+
+To calculate the probabilities, the results from both methods are organized into a global ranking. 
+In instances where identical values occur, the mean rank is assigned to the respective observations. 
+Additionally, an intraclass ranking is established specifically for the method under observation. 
+The estimator $\hat{p}$ is subsequently calculated as follows:
+
+\begin{equation}
+    p = \frac{1}{n_1}(R_2-\frac{n_2+1}{2}).
+\end{equation}
 
 
-To further delineate specific performance differentials, a pairwise Wilcoxon signed-rank test is conducted. 
-This non-parametric procedure is utilized within the paper of \citet{shenkar2022anomaly}. 
-The test is appropriate for paired observations \citep[p. 80]{wilcoxon1945individual}, wherein each data point in one group corresponds directly to a specific observation in the comparison group. 
-Given that the evaluations are conducted on the same datasets, the observations are inherently linked across methods, satisfying the requirement for dependent samples despite the stochastic nature of individual runs.
+The median rank of the second method within the global ranking list is denoted by $R_2$. Given that $n$ represents the same sample size, for this thesis $n_1=n_2$ is satisfied. 
+This estimation is derived from the global ranking. 
+To assess whether the observed differences are equivalent, the discrepancy between the rank in the global ranking and the interclass ranking is calculated. 
+Subsequently, the variance of this difference is analyzed for both methods.
 
+The test statistic is estimated as follows:
 
-The test evaluates the null hypothesis that the median of the differences between the paired observations is zero. 
-By ranking the absolute differences between the pairs and assigning the sign of the original difference to these ranks, the Wilcoxon signed-rank test provides a robust assessment of whether one method systematically outperforms another without requiring the assumption of normally distributed differences.
+\begin{equation}
+    W_N^{BF} = \frac{\bar{R}_{2\cdot} - \bar{R}_{1\cdot}}{\sqrt{N \cdot \hat{\sigma}_N^2}}.
+\end{equation}
+
+This statistic quantifies the distance between the observed effect and the null hypothesis in units of standard deviations. 
+The test statistic follows an asymptotic standard normal distribution.
+
+As the analysis involves multiple pairwise comparisons between the three methods and three metrics, it is necessary to adjust the significance level. 
+Without such an adjustment, the probability of encountering at least one Type I error across the set of tests increases, potentially leading to false-positive conclusions. 
+To mitigate this, the Bonferroni correction is applied, which involves dividing the initial significance level ($\alpha=0.05$) by the number of comparisons being performed (m=9). 
+Consequently, for a result to be considered statistically significant and for the null hypothesis to be rejected, the calculated p-value must be lower than the adjusted threshold of 0.0055.
 
 \begin{table}[h]
 \centering
-\caption{Results of the Wilcoxon-Signed-Rank Test}
-\label{tab:wilcoxon}
+\caption{Results of the Brunner Munzel Test}
+\label{tab:brunnermunzel}
 \begin{tabular}{lcccccc} 
 \toprule
 \textbf{Metric}         & \textbf{F1-Score}            & \textbf{ROC AUC}                       & \textbf{AUPRC}                &    \\
@@ -197,36 +198,6 @@ k-NN vs MCD             & $p < 1.81 \times 10^{-45}$   &  \textbf{$p < 6.63 \tim
 \bottomrule
 \end{tabular}
 \end{table}
-
-The Wilcoxon signed-rank test involves a structured sequence of computational steps. 
-Initially, the difference $d_i$ is calculated for every paired observation between two methods. 
-Observations where $d_i = 0$ are excluded from the analysis. The remaining absolute differences $\mid d_i\mid$ are then ranked from smallest to largest, where the smallest non-zero difference is assigned rank 1. 
-In instances where multiple pairs exhibit identical absolute differences, a tie-breaking procedure is applied by assigning the mean of the ranks that would have otherwise been allocated to those positions. 
-Following the ranking process, the original signs of the differences are reapplied to the ranks, distinguishing between positive and negative deviations. 
-These signed ranks are then summed to determine the test statistic, which facilitates the assessment of whether the performance of one method significantly deviates from the other.
-
-
-The ranks are subsequently summed according to their respective signs, yielding $W^+$ for the sum of positive ranks and $W^-$ for the sum of negative ranks. 
-The test statistic $W$ is typically defined as the smaller of these two sums. 
-If the values of $W^+$ and $W^-$ are approximately equal, the resulting test statistic will fail to reach statistical significance, suggesting that there is no systematic difference between the methods. 
-Conversely, a substantial disparity between the two sums indicates that one method consistently outperforms the other, leading to a rejection of the null hypothesis. 
-This comparison effectively determines whether the direction of the differences between the paired runs is consistent enough to be considered statistically significant rather than the result of random variation.
-
-
-Given the large sample size of n=500, the Central Limit Theorem justifies a normal approximation of the Wilcoxon signed-rank statistic \citep{wilcoxon1945individual}. 
-Consequently, rather than determining the exact distribution, a Z-score is calculated. 
-The mean $\mu_w$ and standard deviation $\sigma_w$ of the null distribution are defined as follows:
-
-\begin{equation}
-    \mu_W = \frac{n(n+1)}{4} , \sigma_W = \sqrt{\frac{n(n+1)(2n+1)}{24}}
-\end{equation}
-
-The parameters are used to calculate the Z-Score.
-The results are displayed in table \ref{tab:wilcoxon}.
-To control the family-wise error rate due to multiple comparisons, we applied a Bonferroni correction \citep[p. 52]{dunn1961multiple}. 
-With three pairwise comparisons, the significance threshold was adjusted from $\alpha = 0.05$ to $\alpha = 0.0167$.
-Pairwise comparisons between InterCont and the baseline methods demonstrate that InterCont's performance is statistically superior across all evaluated metrics with $p < 0.001$, maintaining significance even after applying the Bonferroni correction. 
-MCD in comparison to k-NN shows no statisticall differences regarding the ROC AUC with $p > 0.5$.
 
 
 As discussed before, the normalization method applied in the $k$-NN could not be determined. 

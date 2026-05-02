@@ -550,10 +550,7 @@ This reduction leads to a more conservative test by widening the tails of the un
 Given the large sample size of n=500, the t-distribution effectively approximates a standard normal distribution, facilitating the reliable determination of statistical significance.
 
 
-As the analysis involves multiple pairwise comparisons between the three methods, it is necessary to adjust the significance level to maintain the family-wise error rate. 
-Without such an adjustment, the probability of encountering at least one Type I error across the set of tests increases, potentially leading to false-positive conclusions. 
-To mitigate this, the Bonferroni correction is applied, which involves dividing the initial significance level ($\alpha=0.05$) by the number of comparisons being performed (m=3). 
-Consequently, for a result to be considered statistically significant and for the null hypothesis to be rejected, the calculated p-value must be lower than the adjusted threshold of 0.0167.
+
 
 \begin{table}[h]
 \centering
@@ -581,3 +578,68 @@ In summary, the performance metrics for InterCont were higher across all categor
 
 
 
+The Null hypothesis is defined as: 
+\begin{equation}
+    H_0 : R_1 = R_2 = R_3.
+\end{equation}
+
+This approach is suitable for analyzing differences between more than two groups. 
+The test assigns a rank of 1 to the best performing method within a run and the highest rank to the worst performer, thereby neutralizing the influence of absolute result magnitudes. 
+This transformation eliminates the impact of outliers. 
+
+
+A fundamental requirement of the Friedman test is the independence of the observations. 
+This condition is satisfied in the current study because the runs are shuffled and conducted independently of one another. 
+Subsequently, the mean rank $R_j$ for each method is calculated.
+
+
+The test statistics is formally defined as:
+\begin{equation}
+    \chi_F^2 = \frac{12n}{k(k+1)} \left[ \sum_{j=1}^{k} R_j^2 - \frac{k(k+1)^2}{4} \right],
+\end{equation}
+
+whereas, $n = 500$ is the number of runs, $k = 3$ the number of methods. 
+
+
+The result follows a $\chi^2$ distribution and are displayed in table \ref{tab:friedman}.
+The application of the Friedman test across all metrics resulted in $p < 0.001$, which provides evidence that at least two methods exhibit statistically significant differences in every instance. 
+
+\begin{table}[h]
+\centering
+\caption{Results of the Friedman Test}
+\label{tab:friedman}
+\begin{tabular}{lcccccc} 
+\toprule
+\textbf{Metric}         & \textbf{Statistic}    & \textbf{p-value}  &    \\
+\midrule
+F1-Score                & 664.60                & 0.00              &    \\
+ROC AUC                 & 235.07                & 0.00              &    \\
+AUPRC                   & 421.12                & 0.00              &    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+This test ranks the the results of the 
+The ranks are subsequently summed according to their respective signs, yielding $W^+$ for the sum of positive ranks and $W^-$ for the sum of negative ranks. 
+The test statistic $W$ is typically defined as the smaller of these two sums. 
+If the values of $W^+$ and $W^-$ are approximately equal, the resulting test statistic will fail to reach statistical significance, suggesting that there is no systematic difference between the methods. 
+Conversely, a substantial disparity between the two sums indicates that one method consistently outperforms the other, leading to a rejection of the null hypothesis. 
+This comparison effectively determines whether the direction of the differences between the paired runs is consistent enough to be considered statistically significant rather than the result of random variation.
+
+
+Given the large sample size of n=500, the Central Limit Theorem justifies a normal approximation of the Wilcoxon signed-rank statistic \citep{wilcoxon1945individual}. 
+Consequently, rather than determining the exact distribution, a Z-score is calculated. 
+The mean $\mu_w$ and standard deviation $\sigma_w$ of the null distribution are defined as follows:
+
+\begin{equation}
+    \mu_W = \frac{n(n+1)}{4} , \sigma_W = \sqrt{\frac{n(n+1)(2n+1)}{24}}
+\end{equation}
+
+The parameters are used to calculate the Z-Score.
+The results are displayed in table \ref{tab:wilcoxon}.
+To control the family-wise error rate due to multiple comparisons, we applied a Bonferroni correction \citep[p. 52]{dunn1961multiple}. 
+With three pairwise comparisons, the significance threshold was adjusted from $\alpha = 0.05$ to $\alpha = 0.0167$.
+Pairwise comparisons between InterCont and the baseline methods demonstrate that InterCont's performance is statistically superior across all evaluated metrics with $p < 0.001$, maintaining significance even after applying the Bonferroni correction. 
+MCD in comparison to k-NN shows no statisticall differences regarding the ROC AUC with $p > 0.5$.
