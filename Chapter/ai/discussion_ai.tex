@@ -12,7 +12,7 @@ Based on the results presented in Table \ref{tab:results_bench}, InterCont attai
 The differences between InterCont and the benchmark methods are statistically significant at $p < 0.001$ within the Wilcoxon signed-rank test. 
 The empirical evidence leads to the rejection of both H1 and H2. 
 Contrary to the initial assumptions, the representation learning-based InterCont method did not remain secondary to the benchmarks but emerged as the superior approach, significantly outperforming both MCD and $k$-NN in all primary metrics.
-For this setup and the given dataset, the implementation of InterCont does provide a more presice outlier classification.
+For this setup and the given dataset, the implementation of InterCont does provide a more precise outlier classification.
 
 
 Figure \ref{fig:aucprccurve} illustrates the ROC AUC curves for the three evaluated methods. 
@@ -97,7 +97,7 @@ Table \ref{tab:comparison_knn} compares the results of this thesis with the perf
 
 \begin{table}[h]
 \centering
-\caption{Comparison of k-NN Performance}
+\caption{Comparison of $k$-NN Performance}
 \label{tab:comparison_knn}
 \begin{tabular}{lcccccc} 
 \toprule
@@ -109,7 +109,7 @@ Shenkar \& Wolf         & 94.00             & 4.9           \\
 \end{tabular}
 \end{table}
 
-Nevertheless the evaluation protocol has been followed, the F1 Score performance of $k$-NN in this thesis deviates from the performance of the paper.
+Nevertheless, the evaluation protocol has been followed, the F1 Score performance of $k$-NN in this thesis deviates from the performance of the paper.
 There is little information about the implementation of the benchmark $k$-NN in the paper of Shenkar Wolf, besides the evaluation protocol.
 It was not described which normalization method was used, hence a robustness check was executed and displayed in Table \ref{tab:normalizations}.
 
@@ -124,12 +124,12 @@ This can be explained by the compression of the inlier data \citep{shrivastava20
 When global outliers occupy the extreme ends of the scale, the remaining normal observations are pushed into a very narrow range.  
 
 
-For a distance-based algorithm like k-NN, this extreme compression can be advantageous for identifying global outliers that deviate significantly from the dense cluster of inliers. 
+For a distance-based algorithm like $k$-NN, this extreme compression can be advantageous for identifying global outliers that deviate significantly from the dense cluster of inliers. 
 However, such a transformation could be disadvantageous for datasets containing contextual or semantic anomalies, as these subtle irregularities might be compressed into the inlier distribution and become indistinguishable. Given that the dataset used in this study primarily contains global rather than contextual outliers, this specific disadvantage does not negatively impact the results.
 
 
 The Z-Score normalization does not compress the data as Min-Max Normalization, but it is not robust against global outliers. 
-It includes all instances for the normalisation not like the robust scaler.
+It includes all instances for the normalization not like the robust scaler.
 This could lead to higher F1 Score because the the information if the outliers is preserved, hence the recall increases and simultaneously constant Precision.
 In comparison the robust scaler could push instances outside the IQR further away increasing the noise and reducing the F1 Score.
 
@@ -139,7 +139,7 @@ Such discrepancies may arise from the specific experimental setup employed in th
 Although the experiments were implemented following the evaluation protocol described in the original paper, a semi-supervised approach was utilized across all methods to ensure comparability. 
 For instance, the InterCont method first processes the normal data to abstract underlying characteristics before being applied to the abnormal dataset. 
 A similar procedure was implemented for $k$-NN, where distances within the normal data are estimated prior to evaluating the abnormal dataset.
-Nevertheless, by permutating normal data into the test dataset, the varying degress of noise could explain difference in terms of F1 Score.
+Nevertheless, by permutating normal data into the test dataset, the varying degrees of noise could explain difference in terms of F1 Score.
 
 
 MCD is inherently a parameter estimation method.
@@ -204,5 +204,5 @@ H2, asserting a higher AUPRC of InterCont over MCD benchmarks but leaving it beh
 
 Despite the superior performance of InterCont, this study identified critical challenges regarding the reproducibility of results from high-complexity models and the inherent limitations of threshold-dependent metrics like the F1-score in imbalanced domains. 
 Future research should aim to extend this unified benchmarking framework to a broader spectrum of real world high-dimensional datasets. 
-In conclusion, this investigation affirms that for the specific task of identifying anomalies in multidimensional tabular datasets, Internal Contrastive Learning provides a significant and measurable advantage over Minimum Covariance Determant and the $k$-nearest neighbor algorithm.
+In conclusion, this investigation affirms that for the specific task of identifying anomalies in multidimensional tabular datasets, Internal Contrastive Learning provides a significant and measurable advantage over Minimum Covariance Determinant and the $k$-nearest neighbor algorithm.
 

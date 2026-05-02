@@ -8,7 +8,7 @@ Subsequently, the conceptual basis for InterCont is established through a concis
 Machine learning paradigms serve as overarching frameworks for interpreting data \citep[p. 4]{sarker2021machine}, providing the foundational logic for how algorithms process information. 
 While individual algorithms act as specific components, the paradigm defines the broader strategy for learning. 
 Consequently, many methods can be adapted across different paradigms depending on the data structure and the intended objective. 
-Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning and semi-supervised learning . 
+Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning and semi-supervised learning. 
 However, numerous specialized subtypes exist, such as reinforcement learning, multi-label, and transfer learning.
 To establish the necessary technical background, it is essential to categorize the traditional learning frameworks and identify the specific paradigm utilized by this method. 
 
@@ -34,9 +34,9 @@ By assuming that data points in close proximity share the same label, semi-super
 
 The authors of InterCont characterize their method within the self-supervised learning paradigm \citep[p. 3]{shenkar2022anomaly}. 
 This approach generates its own supervisory signals from the data structure itself \citep{jaiswal2020survey}. 
-Nevertheless, the network is trained on 50\% labled normal data and tested on the other 50\% of data that includes all labeled outliers.
-For this study, the same epxerimental setup will be implemented for the benchmark methods.
-In the proceeding thesis, this will be named semi-supervised.   
+Nevertheless, the network is trained on 50\% labeled normal data and tested on the other 50\% of data that includes all labeled outliers.
+For this study, the same experimental setup will be implemented for the benchmark methods.
+In the proceding thesis, this will be named semi-supervised.   
 
 
 \subsection{Neural Networks}
@@ -52,7 +52,7 @@ Deep learning \cite[p. 2]{lecun2015deep} allows for the extraction of complex pa
 Within these layers, connections between nodes are governed by weights, which signify the relative importance of a connection.
 
 
-During training, the network's output is evaluated against the ground truth using a loss function \citep{terven2025comprehensive}. 
+During training, the network's output is evaluated against the ground truth using a loss functions \citep{terven2025comprehensive}. 
 Common loss function include Mean Squared Error (MSE), Mean Absolute Error (MAE) or  Mean Absolute Percentage Error (MAPE) \cite[p. 6]{hassanat2024novel}. 
 To minimize this loss, the model employs backpropagation \cite[p. 1]{rumelhart1986learning}. 
 By applying the chain rule, the model calculates the gradient, hence the partial derivative of the loss function with respect to each weight. 

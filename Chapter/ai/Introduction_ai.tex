@@ -7,8 +7,8 @@ Outliers are observations that deviate so significantly from other observations 
 Depending on the research context, outliers may either represent operative failures (recording errors, misreporting, sampling errors) or primary targets of interest that provide critical information \citep{smiti2020critical}.
 
 
-For example in cybersecurity, it facilitates the detection of network intrusions or malware through unusual traffic patterns\citep[Chapter 3]{ahmed2016survey}. 
-In finance, these methods identify fraudulent activities, such as the unauthorized use of credit cards \citep[]{malini2017analysis}. 
+For example in cybersecurity, it facilitates the detection of network intrusions or malware through unusual traffic patterns \citep[Chapter 3]{ahmed2016survey}. 
+In finance, these methods identify fraudulent activities, such as the unauthorized use of credit cards \citep{malini2017analysis}. 
 In healthcare, outlier detection assists in diagnosing rare diseases and identifying anomalous patient data \citep[Chapter 2.3.]{wang2019progress}.
 
 
@@ -20,9 +20,8 @@ Taxonomically, outliers are categorized into three primary types \citep[Chapter 
 \end{itemize}           
 
 
-Distinct from outlier detection are related tasks such as Noisy Data Identification, which addresses incorrect or missing values.
-Novelty Detection, which seeks previously unobserved but potentially valid patterns \citet{domingues2019probabilistic}.
-Out-of-Distribution Detection (OOD), which identifies data points that do not belong to any of the known training classes \citep{yang2024generalized}. 
+Distinct from outlier detection are related tasks such as novelty detection, which seeks previously unobserved but potentially valid patterns \citet{domingues2019probabilistic},
+or Out-of-Distribution Detection (OOD), which identifies data points that do not belong to any of the known training classes \citep{yang2024generalized}. 
 
 
 High-dimensional datasets introduce the Curse of Dimensionality \citep[p. 220]{scott2015multivariate}, which is a significant challenge to the detection tasks. 
@@ -32,8 +31,8 @@ Furthermore, in cases where $p > n$, perfect multicollinearity may occur, where 
 High dimensionality also increases the risk of overfitting, where models capture stochastic noise rather than a generalizable signal \citep{altman2018curse}.
 
 
-The exceptional performance of the k-nearest neighbors (k-NN) algorithm in the analysis by \citet{shenkar2022anomaly}, where it surpassed the more complex architecture of InterCont in terms of F1 Score, serves as the primary catalyst for this research. 
-While F1-Score provided the initial insight, this thesis employs ROC AUC and AUPRC as the primary metrics to ensure a more transparent and threshold-independent valuation of the methods (see Section \ref{sec:metrics}).
+The exceptional performance of the $k$-nearest neighbors ($k$-NN) algorithm in the analysis by \citet{shenkar2022anomaly}, where it surpassed the more complex architecture of InterCont in terms of F1 Score, serves as the primary catalyst for this research. 
+While F1 Score provided the initial insight, this thesis employs ROC AUC and AUPRC as the primary metrics to ensure a more transparent and threshold-independent evaluation of the methods (see Section \ref{sec:metrics}).
 
 
 The fact that a distance-based approach can yield superior results compared to sophisticated representation learning methods raises critical questions regarding the necessity of algorithmic complexity in outlier detection. 
@@ -47,8 +46,8 @@ This discrepancy between theoretical sophistication and practical efficacy direc
 
 
 
-While \citet{shenkar2022anomaly} demonstrated k-NN's superiority via the F1-Score at a specific operating point, this thesis investigates whether this advantage persists globally across the AUPRC and ROC AUC. 
-By shifting the focus to ROC AUC and AUPRC, it will be tested if k-NN's distance-based logic inherently provides a more robust ranking of outliers than the representations learned by InterCont.
+While \citet{shenkar2022anomaly} demonstrated $k$-NN's superiority via the F1-Score at a specific operating point, this thesis investigates whether this advantage persists globally across the AUPRC and ROC AUC. 
+By shifting the focus to ROC AUC and AUPRC, it will be tested if $k$-NN's distance-based logic inherently provides a more robust ranking of outliers than the representations learned by InterCont.
 
 
 To further evaluate the necessity of modern machine learning architectures, this research incorporates the Minimum Covariance Determinant (MCD) as a traditional statistical benchmark. 
@@ -72,8 +71,8 @@ The analysis begins with a univariate approach, utilizing boxplots to describe p
 Subsequently, the analysis proceeds to a bivariate approach, where the data is described using a correlation heatmap. 
 The final stage of the analysis involves characterizing the geometry of the dataset through UMAP. 
 The most significant metrics used in outlier detection research, facilitated by the confusion matrix, are described alongside a discussion of their respective advantages and disadvantages. 
-The selection of metrics is finalized with the F1-Score, AUC ROC, and AUPRC. 
-The section \ref{sec:results} presents the findings, followed by the section \ref{sec:discussion}, where the results are explained and interpreted and limitations are illustrated. 
+The selection of metrics is finalized with the F1-Score, ROC AUC, and AUPRC. 
+The Section \ref{sec:results} presents the findings, followed by the Section \ref{sec:discussion}, where the results are explained and interpreted and limitations are illustrated. 
 The thesis concludes with the main findings of this thesis.
 
 
