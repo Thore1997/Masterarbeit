@@ -28,44 +28,38 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
 
     for i in range(num_splits):
         try:
-            # 1. Daten laden
+
             train_data, test_data, test_labels = dl.build_train_test_generic_matfile(file_path)
 
             X_train_np = train_data.numpy()
             X_test_np = test_data.numpy()
             y_test_np = test_labels.numpy().ravel()
 
-            # 2. Scaling
+
             scaler = RobustScaler()
             X_train_scaled = scaler.fit_transform(X_train_np)
             X_test_scaled = scaler.transform(X_test_np)
 
-            # 3. Model Training
-            # Contamination ist hier egal, da wir sie später manuell überschreiben
+
             clf = KNN(n_neighbors=5, method='largest')
             clf.fit(X_train_scaled)
 
-            # 4. DYNAMISCHER THRESHOLD (Paper-Logik)
-            # Wir holen die rohen Distanz-Scores
+
             test_scores = clf.decision_function(X_test_scaled)
 
-            # Zähle echte Anomalien im Testset (N)
             n_anomalies = int(np.sum(y_test_np))
 
-            # Wähle exakt die N höchsten Scores als Anomalien
-            # argsort sortiert aufsteigend -> die letzten N Indizes sind die Top-Scores
             top_indices = np.argsort(test_scores)[-n_anomalies:]
 
-            # Erstelle Vorhersage-Vektor: Alles 0, Top-N sind 1
             test_labels_pred = np.zeros_like(y_test_np)
             test_labels_pred[top_indices] = 1
 
-            # --- Ende Paper-Logik ---
+
 
             all_y_true.append(y_test_np)
             all_y_scores.append(test_scores)
 
-            # 5. Metriken speichern
+
             results['f1'].append(f1_score(y_test_np, test_labels_pred))
             results['auc'].append(roc_auc_score(y_test_np, test_scores))
             results['auprc'].append(average_precision_score(y_test_np, test_scores))
@@ -76,7 +70,7 @@ def start_semi_knn_benchmark(dataset_name='wineori', num_splits=500):
         except Exception as e:
             print(f"Fehler in Split {i}: {e}")
 
-    # --- Speicher- und Export-Logik (unverändert) ---
+
     if len(all_y_true) > 0:
         if not os.path.exists('Results'): os.makedirs('Results')
         final_y_true = np.concatenate(all_y_true)

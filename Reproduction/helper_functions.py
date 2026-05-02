@@ -65,26 +65,15 @@ def f1_calculator(classes, losses):
 
 
 def f1_macro_calculator(classes, losses):
-    # Convert inputs to numpy arrays safely
     y_true = classes.cpu().numpy() if torch.is_tensor(classes) else np.array(classes)
     y_scores = losses.cpu().numpy() if torch.is_tensor(losses) else np.array(losses)
-
-    # Identify how many actual anomalies exist
     Na = np.sum(y_true == 1)
-
-    # Handle the case where no anomalies are present to avoid errors
     if Na == 0:
         return 0.0
-
-    # Pick the top Na highest scores to create binary predictions (1 for anomaly)
     threshold_val = np.sort(y_scores)[-Na]
     y_pred = (y_scores >= threshold_val).astype(int)
-
-    # Ensure prediction array matches ground truth length
     if len(y_pred) > len(y_true):
         y_pred = y_pred[:len(y_true)]
-
-    # Calculate Macro F1 (arithmetic mean of F1 for each class)
     macro_f1 = f1_score(y_true, y_pred, average='macro')
     return macro_f1
 

@@ -16,7 +16,7 @@ def start_knn_grid_search(dataset_name='wine', num_splits=500):
     k_values = [5]
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.abspath(os.path.join(current_dir, "../../"))
+    repo_root = os.path.abspath(os.path.join(current_dir, "../../../"))
     file_path = os.path.join(repo_root, "Reproduction", "Data", f"{dataset_name}.mat")
 
     if not os.path.exists(file_path):

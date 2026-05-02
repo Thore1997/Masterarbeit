@@ -31,12 +31,9 @@ all_f1_macro = []
 all_aucs = []
 all_prc = []
 
-# Listen für das Sammeln aller Scores über alle Runs
 all_y_true = []
 all_y_scores = []
 
-# Anzahl der erfolgreichen Runs
-target_successful_runs = 500
 target_successful_runs = 500
 attempted_runs = 0
 
@@ -64,16 +61,13 @@ while len(all_f1_macro) < target_successful_runs:
         y_test = y_test[shuffle_idx]
         y_test_tensor = torch.as_tensor(y_test)
 
-        # Training und Evaluation
         f1_bin, f1_macro, auc, auprc, y_scores = my_trainer.train_and_evaluate(X_train_normal, X_test, y_test_tensor)
 
-        # Ergebnisse an Listen anhängen
         all_f1_bin.append(f1_bin)
         all_f1_macro.append(f1_macro)
         all_aucs.append(auc)
         all_prc.append(auprc)
 
-        # Scores und Labels für die spätere Gesamtspeicherung sammeln
         all_y_true.append(y_test)
         all_y_scores.append(y_scores)
 
@@ -94,11 +88,11 @@ while len(all_f1_macro) < target_successful_runs:
         print(f"Run {attempted_runs}: Error: {e}")
         continue
 
-# --- Finale Speicherung aller Scores in eine einzige Datei ---
+
 if not os.path.exists('Results'):
     os.makedirs('Results')
 
-# Speichern als object-arrays, falls die Test-Sets in den Runs minimal variieren
+
 np.savez('Results/scores_intercont.npz',
          y_true=np.array(all_y_true, dtype=object),
          y_scores=np.array(all_y_scores, dtype=object))

@@ -26,7 +26,7 @@ def run_extended_grid_search(dataset_name='wine', num_splits=500):
     keys, values = zip(*param_grid.items())
     combinations = [dict(zip(keys, v)) for v in product(*values)]
 
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
     file_path = os.path.join(repo_root, "Reproduction", "Data", f"{dataset_name}.mat")
 
     if not os.path.exists(file_path):
