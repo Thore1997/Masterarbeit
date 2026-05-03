@@ -10,11 +10,7 @@ Following this empirical investigation, the discourse shifts to a critical asses
 These metrics are argued and justified, culminating in a definitive selection based on the previously identified data characteristics. 
 The experimental framework is defined to ensure that all benchmarks maintain rigorous comparability with the InterCont methodology. 
 Upon establishing this foundation, the empirical results are presented. 
-
-
-To ensure statistical significance and validity, a Friedman test is employed during the evaluation process. 
-Subsequently, a Brunner-Munzel Test is applied to rank the methods' performance.
-These findings are subsequently interpreted within chapter \ref{sec:discussion}, while the final conclusions and implications of the research are synthesized in the terminal chapter of the thesis.
+\newpage
 
 
 \subsection{Analysis of the Wine Dataset}\label{sec:data_analytics}
@@ -87,9 +83,8 @@ Conversely, all other identified outliers across the remaining features are char
     \caption{Boxplots per Dimension.}
     \label{fig:boxplot}
 \end{figure}
-\todo{highlicht the labled outliers}
 
-
+\newpage
 The correctly identified outliers are highlighted in red. While the boxplot analysis captures 8 out of 10 ground-truth outliers, it also yields 18 false positives. 
 These eight correctly identified instances are characterized by extreme values within feature 13, suggesting that the majority of the outlier class possesses an unusually high concentration of this component. 
 However, such extreme values may not be inherently abnormal in a multivariate context, as their positioning could be explained by correlations with other dimensions.
@@ -112,7 +107,7 @@ The Spearman correlation was chosen because it does not require normally distrib
 Furthermore, it operates on the rank-order of values therefore the Spearman rank correlation is robust against outliers.
 This metric quantifies the strength and direction of the monotonic relationship between two variables, assigning a numerical value within the range of -1 to 1.
 
-
+\newpage
 The correlation coefficients between the dimensions exhibit significant variation. 
 A positive coefficient indicates that if the values of one feature increases the value of the other increases, whereas a negative coefficient implies an inverse relationship. 
 A coefficient of zero suggests that there is no monotonic relationship between the variables. 
@@ -194,13 +189,11 @@ A numerical optimzation process, known as binary search is applyied to find the 
 To meet this requirement, UMAP assigns in locally dense regions a smaller $\sigma_i$, which effectively stretches the space.
 Conversely, in sparse regions, a larger $\sigma_i$ compresses the space.
 This ensures the assumption of uniform distribution is met.
+On the one hand, that depicts an outlier as an isolated instance apart from the main cluster, which coincides with the global outlier definition.
 
-
-On the one hand, that depicts an outlier as an isolated instance apart from the main cluster, which coincides with the global outlier definition. 
+\newpage
 On the other hand, the outliers is still bound to the manifold through the nearest neighbor.
 Therefore, the absolute distance in the diagram loses its meaning. 
-
-
 When UMAP generates the low-dimensional representation, it employs a force-directed layout approach based on attraction and repulsion. 
 Attraction occurs between points that exhibit strong connectivity in the high-dimensional space. 
 Conversely, for instances with weak or non-existent connections, repulsion forces them apart in the two-dimensional embedding. 

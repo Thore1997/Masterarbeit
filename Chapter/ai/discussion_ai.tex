@@ -90,6 +90,7 @@ Shenkar \& Wolf         & 94.00             & 4.9           \\
 \end{tabular}
 \end{table}
 
+\newpage
 Nevertheless, the evaluation protocol has been followed, the F1 Score performance of $k$-NN in this thesis deviates from the performance of the paper.
 There is little information about the implementation of the benchmark $k$-NN in the paper of Shenkar Wolf (2020), besides the evaluation protocol.
 It was not described which normalization method was used, hence a robustness check was executed and displayed in Table \ref{tab:normalizations}.
@@ -174,7 +175,7 @@ Given that this test was utilized by \cite{shenkar2022anomaly}, its absence indi
 This thesis conducted a comparative performance analysis of three distinct outlier detection methodologies: the robust statistical MCD using the FAST-MCD algorithm, the distance-based k-NN approach, and the representation learning-based InterCont method. 
 The primary objective was to evaluate whether the increased algorithmic complexity of modern machine learning techniques translates into superior predictive efficacy compared to foundational statistical and distance-based benchmarks.
 
-
+\newpage
 The results suggest that representation learning, specifically through the mechanisms of internal contrastive learning, sliding window data augmentation, and feature permutation, effectively captures complex dependencies within tabular data that traditional distance-based or distribution-assumed methods may overlook. 
 While the MCD demonstrated high discriminative power as evidenced by its ROC AUC, its instability in AUPRC highlighted a sensitivity to specific data subsets and a reliance on Gaussian assumptions that are often violated in real-world datasets. 
 Similarly, while k-NN provided an intuitive baseline, it proved susceptible to local noise and lacked the robust generalization capabilities offered by the asymmetrical neural network architecture of InterCont.

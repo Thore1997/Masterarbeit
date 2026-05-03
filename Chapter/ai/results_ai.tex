@@ -29,7 +29,7 @@ The SD values indicate that MCD maintains the lowest variability at 4.14, while 
 The ROC AUC results show high discriminative performance across all methods, with InterCont reaching 97.97, $k$-NN 95.80 and MCD at 17.15. 
 The stability of these scores is evidenced by low SD values, with $k$-NN demonstrating the least variance at 1.81, compared to 2.13 for InterCont and 6.54 for MCD.
 
-
+\newpage
 For the AUPRC metric, InterCont achieves a mean of 92.93, significantly higher than $k$-NN at 73.06.
 MCD yields the lowest AUPRC at 9.72 and the lowest SD at 4.53. 
 The InterCont method exhibits a SD with an SD of 7.31. 
@@ -61,6 +61,8 @@ The entire boxplot for this method does not exceed 0.1, with the exception of tw
 The F1 Score results further distinguish the algorithms, as InterCont achieves a higher and more consistent score than its counterparts. 
 The median F1 Score for InterCont is  $\approx 0.9$, characterized by a relatively small interquartile range compared to $k$-NN. 
 The median F1 Score of $k$-NN represents the second highest value at  $\approx 0.7$, with whiskers extending from 1.0 down to  $\approx 0.5$. 
+
+
 The performance of MCD is visually indistinguishable from zero. 
 However, three outliers are displayed above the interquartile range, the highest of which reaches  $\approx 0.7$.
 
@@ -88,6 +90,8 @@ AUPRC demonstrates significant variance across the evaluated models.
 InterCont method exhibits the most stable and high precision across a wide range of recall values, maintaining a near-perfect precision until $\approx 0.8$ recall before declining. 
 While InterCont maintains a consistently high performance over an extended range, $k$-NN exhibits a rapid decline in precision following an increases in recall. 
 Eventually, $k$-NN reaches a plateau where precision stabilizes at $\approx 0.6$.
+
+\newpage
 That indicates a consistent but higher rate of false positives compared to InterCont.
 At high values for recall, $k$-NN crosses the AUPRC curve of InterCont and falls steeply thereafter. 
 
@@ -124,6 +128,8 @@ Levene's Test  is robust against non-normally distributed populations, which is 
 
 
 If the resulting p-value is below the chosen significance level, the null hypothesis is rejected, indicating that the variances are significantly different.
+
+
 The results are displayed in table \ref{tab:levene}.
 The results across all evaluated metrics demonstrate a significance level of $p < 0.001$, confirming that the results' variances are not homoscedastic. 
 
@@ -172,7 +178,7 @@ The test statistic is estimated as follows:
 \begin{equation}
     W_N^{BF} = \frac{\bar{R}_{2\cdot} - \bar{R}_{1\cdot}}{\sqrt{N \cdot \hat{\sigma}_N^2}}.
 \end{equation}
-
+\newpage
 This statistic quantifies the distance between the observed effect and the null hypothesis in units of standard deviations. 
 The test statistic follows an asymptotic standard normal distribution.
 
@@ -206,12 +212,6 @@ This indicates a high probability that a randomly selected value from one group 
 
 
 \subsubsection*{Normalization}
-As discussed before, the normalization method applied in the $k$-NN could not be determined. 
-Therefore, second experiment with two different normalization methods will be employed to show if the result will reach the results of the paper of \citet{shenkar2022anomaly}
-For that the same setup was used as before in the $k$-nn benchmark. 
-The most commonly used normalization methods were applied: Min-Max-Normalization and Z-Score normalization (StandardScaler)
-The normalization settings where changed after performing $k$-NN in 500 runs for different values of $k$.
-Because that is a comparison of the paper, only the mean and SD of the F1 Score is displayed in the table \ref{tab:normalizations}.
 
 \begin{table}[h]
 \centering
@@ -226,6 +226,17 @@ Z-Score Normalization   & 75.86              & 9.82             &       \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+
+As discussed before, the normalization method applied in the $k$-NN could not be determined. 
+Therefore, second experiment with two different normalization methods will be employed to show if the result will reach the results of the paper of \citet{shenkar2022anomaly}
+For that the same setup was used as before in the $k$-nn benchmark. 
+
+
+The most commonly used normalization methods were applied: Min-Max-Normalization and Z-Score normalization (StandardScaler)
+The normalization settings where changed after performing $k$-NN in 500 runs for different values of $k$.
+Because that is a comparison of the paper, only the mean and SD of the F1 Score is displayed in the table \ref{tab:normalizations}.
+
 
 
 

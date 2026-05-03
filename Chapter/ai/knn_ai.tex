@@ -48,8 +48,9 @@ For example by utilizing the average distance across the neighborhood enhances t
 Because  this method is constructed as a benchmark, the traditional version of $k$-NN will be implemented, which is based on Euclidean distance to the specific $k$-th nearest neighbor.
 The setup is described in chapter \ref{sec:setup}.
 
-
-The algorithm executes the following procedure:
+\newpage
+\vspace*{0.5cm}
+The algorithm executes the following procedure \citep[p. 429]{ramaswamy2000efficient}:
 
 \begin{enumerate}
     \item The distances between $k$th datapoints are calculated.
@@ -57,7 +58,7 @@ The algorithm executes the following procedure:
     \item The number of instances $n$ with the highest distances are defined as outliers.
 \end{enumerate}
 
-\citep[p. 429]{ramaswamy2000efficient}
+
 $K$-NN is characterized as a lazy learning algorithm \citep[p.273]{wettschereck1997review}, meaning it does not construct an explicit generalization or internal model during a training phase. 
 Consequently, the entire dataset must be retained. 
 If a new instance is introduced, the algorithm must re-evaluate the proximity metrics across the dataset to determine its status.
@@ -83,6 +84,7 @@ Those transformations include scaling, rotation, or translation.
 Because this metric treats all dimensions equally, variables with larger numerical ranges will dominate the distance calculation, potentially masking outliers that exist within the distribution of smaller-scaled variables. 
 Consequently, the relative scaling of variables directly influences the identification of potential outliers.
 
+\newpage
 \subsubsection*{Normalization}
 To mitigate the effects of variable scaling, the dataset must be normalized \citep[p. 3]{performance2021effect}. 
 Min-Max Normalization is frequently employed to rescale all features to a fixed range of [0,1]. 

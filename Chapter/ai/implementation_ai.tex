@@ -98,7 +98,7 @@ The FAST-MCD algorithm is implemented in mcd\_benchmark.py utilizing the PyOD li
 As an unsupervised method, FAST-MCD does not support a traditional separation into training and testing phases. 
 If a split-sample approach were attempted, the algorithm would collapse.
 Specifically, if $n=h$, the resulting  $\mu_MCD$ and $\sum_MCD$ matrix would be equivalent to the mean and covariance matrix of the training dataset \citep[p. 217]{rousseeuw1999fast}. 
-To ensure experimental comparability, the FAST-MCD algorithm is applied directly to the test dataset. 
+To ensure experimental comparability, the FAST-MCD algorithm is applied directly to the test dataset with $h = 0.75n$. 
 The training dataset is generated using the same shuffle function employed by the other evaluated methods. 
 Observations that exhibit the 10 highest Mahalanobis distances relative to the estimated mean and covariance matrix are classified as outliers, adhering to a top\_k=10 criterion. 
 

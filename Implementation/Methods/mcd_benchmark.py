@@ -38,7 +38,7 @@ def run_mcd_unsupervised_topk_benchmark(dataset_name, num_splits=500, top_k=10):
             scaler = RobustScaler()
             X_test_scaled = scaler.fit_transform(X_test)
 
-            clf = MCD(contamination=0.17, random_state=42)
+            clf = MCD(contamination=0.25, random_state=42)
             clf.fit(X_test_scaled)
 
             scores = clf.decision_scores_

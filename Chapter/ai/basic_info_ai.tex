@@ -4,8 +4,7 @@ Within an autoencoder architecture, the method transforms input data to extract 
 To establish the theoretical foundation for the experimental design detailed in Chapter \ref{sec:setup}, the primary paradigms of machine learning are first presented. 
 Subsequently, the conceptual basis for InterCont is established through a concise explanation of the core components of contrastive learning.
 
-
-Machine learning paradigms serve as overarching frameworks for interpreting data \citep[p. 4]{sarker2021machine}, providing the foundational logic for how algorithms process information. 
+\begin{sloppypar} Machine learning paradigms serve as overarching frameworks for interpreting data \citep[p. 4]{sarker2021machine}, providing the foundational logic for how algorithms process information. \end{sloppypar}
 While individual algorithms act as specific components, the paradigm defines the broader strategy for learning. 
 Consequently, many methods can be adapted across different paradigms depending on the data structure and the intended objective. 
 Traditionally, the field is categorized into three primary paradigms: supervised learning, unsupervised learning, and semi-supervised learning. 
@@ -22,6 +21,8 @@ While this paradigm achieves high performance for defined tasks, it is constrain
 
 In contrast, unsupervised learning is a data-driven approach that utilizes unlabeled data by identifying underlying patterns in data without explicit labels, making it highly scalable but often less precise for specific classification tasks.
 Without predefined output labels or external supervision, the model must explore the data to discover hidden patterns, underlying structures, or natural groupings \citep[p.4]{sarker2021machine}. 
+
+\newpage
 This paradigm is highly scalable and effective for identifying complex relationships within large volumes of data without the need for expensive human annotation. 
 However, because there are no ground truth labels to measure against, these models can be less accurate than supervised versions, and their results are often more difficult to interpret and computationally intensive.
 

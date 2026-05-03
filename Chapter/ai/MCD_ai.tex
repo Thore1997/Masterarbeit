@@ -13,7 +13,7 @@ While further variants such as DetMCD \citep{hubert2012deterministic} exist, the
 
 Following the detailed description of the algorithmic procedures, the relative advantages and disadvantages of this method are evaluated to justify its selection as a benchmark within the experimental design of this thesis.
 
-
+\newpage
 A naive approach to outlier detection could involve estimating the sample mean and covariance matrix for the entire dataset and labeling the $n$ observations with the largest distances as outliers.
 By utilizing the Mahalanobis distance \citep{mahalanobis2018generalized}, the analysis accounts for the underlying covariance structure of the data. 
 This standardizes the multidimensional space, effectively magnifying the relative distance of outliers that might otherwise remain hidden in a standard Euclidean framework \citep[Chapter 2]{leys2018detecting}. 
@@ -80,7 +80,7 @@ The FAST-MCD algorithm is as follows:
 \end{enumerate}
 \citep[Chapter 3]{rousseeuw1999fast}
 
-
+\newpage
 This selective iteration is efficient because the distinction between robust and non-robust solutions usually manifests within the first two steps. 
 The primary hyperparameter is $h$, and it is constrained by the range:
 
@@ -119,9 +119,9 @@ The implementation of the method will be described in Chapter \ref{sec:setup}.
 
 In summary, the MCD is defined by its high breakdown point and affine equivariance, which ensures reliability without the need for normalization. 
 It effectively solves the masking problem and provides transparent, quantifiable results through probability-based scoring. 
+
+
 However, it remains computationally demanding, assumes a Gaussian distribution, and is susceptible to the Curse of Dimensionality if $n$ is not sufficiently larger than $p$ \citep[p.5]{smiti2020critical}.
-
-
 The MCD estimator is primarily oriented toward the identification of global and contextual outliers, as it seeks a subset of observations that minimizes the determinant of the covariance matrix to define a robust location and shape of the data. 
 Consequently, the MCD is not inherently structured to identify collective outliers. 
 If a group of outlying observations is sufficiently large and dense, it can exert influence on the estimator, causing the resulting hyper-ellipsoid to dilate and accommodate the outlier cluster. 
