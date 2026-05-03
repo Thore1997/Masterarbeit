@@ -9,16 +9,16 @@ The hypotheses formulated for this thesis are defined as follows:
 \end{itemize}
 
 Based on the results presented in Table \ref{tab:results_bench}, InterCont attains the highest mean AUPRC of 92.93, while $k$-NN reaches a mean AUPRC of 73.06, MCD reaches the lowest mean AUPRC of 9.72. 
-The Brunner Munzel test indicated a significant stochastic difference between InterCont and the benchmark methods at $p < 0.001$. 
+The Brunner-Munzel Test indicated a significant stochastic difference between InterCont and the benchmark methods at $p < 0.001$. 
 The empirical evidence leads to the rejection of both H1 and H2. 
 Contrary to the initial assumptions, the representation learning-based InterCont method did not remain secondary to the benchmarks but emerged as the superior approach, significantly outperforming both $k$-NN and MCD in all primary metrics.
 For this setup and the given dataset, the implementation of InterCont does provide a more precise outlier classification.
 
 
 Figure \ref{fig:aucprccurve} illustrates the ROC AUC curves for the three evaluated methods. 
-Both curves of InterCont and $k$-NN converges toward the upper-right quadrant of the coordinate system, indicating that the models effectively distinguish between the respective classes.
-The curve of $k$-NN eventually cross and surpass InterCont. 
-MCD converges to the lower-right quadrant, indicating that the models effectively classifies inliers as outliers.
+Both curves of InterCont and $k$-NN converge toward the upper-right quadrant of the coordinate system, indicating that the models effectively distinguish between the respective classes.
+The curve of $k$-NN eventually crosses and surpass InterCont. 
+MCD converges to the lower-right quadrant, indicating that the models effectively classify inliers as outliers.
 
 
 As illustrated in the AUPRC plot, InterCont initially maintains a significantly higher precision than the alternative methods, demonstrating its robustness in identifying outliers under strict threshold conditions. 
@@ -67,7 +67,7 @@ The MCD estimator demonstrates the lowest performance among the evaluated method
 When estimating the mean and covariance matrix from the test data, the estimator fails to achieve a distinct separation between classes. To assess variability, the datasets are shuffled, and MCD is applied to 500 different iterations of the test data. 
 In instances where a specific iteration aligns more closely with the expected distribution, the MCD estimator successfully distinguishes outliers from inliers, as reflected by the outliers detected in Figure \ref{fig:result_boxplot}.
 
-As dicussed above, MCD does not actively misclassify the inliers and outliers.
+As discussed above, MCD does not actively misclassify the inliers and outliers.
 This indicates, that MCD estimates the covariance matrix around the outlier class.
 This further indicates that the outlier class is clustered. 
 The superior performance of methods like InterCont and $k$-NN suggests that specific characteristics for handling feature interactions are more critical for detection efficacy than geometric stability. 
@@ -109,7 +109,7 @@ Given that the dataset used in this study primarily contains global rather than 
 
 The Z-Score normalization does not compress the data as Min-Max Normalization, but it is not robust against global outliers. 
 It includes all instances for the normalization not like the robust scaler.
-This could lead to higher F1 Score because the the information if the outliers is preserved, hence the recall increases and simultaneously constant precision.
+This could lead to higher F1 Score because the information if the outliers is preserved, hence the recall increases and simultaneously constant precision.
 In comparison the robust scaler could push instances outside the IQR further away increasing the noise and reducing the F1 Score.
 
 
@@ -118,7 +118,7 @@ Such discrepancies may arise from the specific experimental setup employed in th
 Although the experiments were implemented following the evaluation protocol described in the original paper, a semi-supervised approach was utilized across all methods to ensure comparability. 
 For instance, the InterCont method first processes the normal data to abstract underlying characteristics before being applied to the abnormal dataset. 
 A similar procedure was implemented for $k$-NN, where distances within the normal data are estimated prior to evaluating the abnormal dataset.
-Nevertheless, by permutating normal data into the test dataset, the varying degrees of noise could explain difference in terms of F1 Score.
+Nevertheless, by permuting normal data into the test dataset, the varying degrees of noise could explain difference in terms of F1 Score.
 
 
 Criticism regarding the ODDS repository has emerged \citep[p. 923]{campos2016evaluation}, primarily because these datasets frequently contain easily identifiable global outliers rather than complex semantic anomalies. 
@@ -149,7 +149,7 @@ These results support the observations in this thesis, suggesting that neural ar
 
 In the paper of \citet{schindler2023towards} they conducted experiments comparing unsupervised autoencoder networks against traditional machine learning methods like Isolation Forest \citep{liu2008isolation}. 
 Their findings prove that autoencoder networks offer advantages in datasets that contain contextual outliers. 
-This further underlines the need for benchmark datasets, that are constructed with an increase hard to identify contextual outliers.
+This further underlines the need for benchmark datasets, that are constructed with an increasingly hard to identify contextual outliers.
 Nevertheless, their methodology includes outlier injection, in which artificial outliers are injected into a dataset. 
 This methodology necessitates a careful definition of the injected outliers, as the results depend on the decisions of the authors. 
 
@@ -158,7 +158,7 @@ In a recent paper, \citet{shrivastava2023anomaly} proposed a hybrid approach bet
 They used MCD in a first stage to determine Mahalanobis distances. 
 Subsequently, they expanded the dataset with those distances, and the machine learning methods used this additional information to detect outliers. 
 They found significant enhancements in F1-Score, precision, and recall for the methods that incorporated the robust Mahalanobis distances.
-While MCD is not practical for non-normal distributed dataset, its use as a feature generator or distance estimator for subsequent classification in multidimensional datasets calls for further investigation possible including InterCont. 
+While MCD is not practical for non-normally distributed dataset, its use as a feature generator or distance estimator for subsequent classification in multidimensional datasets calls for further investigation possible including InterCont. 
 
 
 While this thesis was successfully conducted, it is subject to several limitations. 

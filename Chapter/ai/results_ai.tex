@@ -1,7 +1,7 @@
 \section{Results}\label{sec:results}
 This section presents the results of the previously conducted experiments.
 The primary findings are summarized in Table \ref{tab:results_bench}, which details the mean and standard deviation (SD) of the F1-Score, ROC AUC, and AUPRC for each evaluated method. 
-To ensure a rigorous assessment of these findings, a Brunne Munzel test \citep{brunner2000nonparametric} is applied.
+To ensure a rigorous assessment of these findings, a Brunner-Munzel Test \citep{brunner2000nonparametric} is applied.
 The analysis is further extended through the plotting of AUPRC and ROC AUC curves to facilitate a more detailed performance comparison across all methods.
 
 
@@ -47,7 +47,7 @@ Conversely, $k$-NN records a SD of 11.72.
 The figure \ref{fig:result_boxplot} displays boxplots for the resulting metrics for each method.
 Regarding the ROC AUC metric, InterCont demonstrates the highest median performance, closely approaching a value of 1.0, while maintaining a relatively narrow interquartile range despite several lower-reaching outliers. 
 $K$-NN exhibits a lower median ROC AUC value at $\approx 0.75$.
-MCD displaying notable lower median ROC AUC under 0.2 and higher variance.
+MCD displays a notable lower median ROC AUC under 0.2 and higher variance.
 Notably one single outlier reaches a value above 0.9. 
 
 
@@ -65,9 +65,9 @@ The performance of MCD is visually indistinguishable from zero.
 However, three outliers are displayed above the interquartile range, the highest of which reaches  $\approx 0.7$.
 
 Across all three metrics, InterCont consistently outperforms MCD and $k$-NN in terms of both central tendency and overall stability, despite the presence of isolated performance drops indicated by the outlier points. 
-These results suggest that InterCont provides the most robust classification performance for the underlying dataset, particularly when considering the Precision-Recall trade-off captured by the AUPRC.
+These results suggest that InterCont provides the most robust classification performance for the underlying datasets, particularly when considering the precision-recall trade-off captured by the AUPRC.
 
-To further analyse the figure \ref{fig:aucprccurve} displayd the ROC AUC and AUPRC curves of the three methods.
+To further analyse the figure \ref{fig:aucprccurve} displays the ROC AUC and AUPRC curves of the three methods.
 
 \begin{figure}[h] 
     \centering
@@ -77,7 +77,7 @@ To further analyse the figure \ref{fig:aucprccurve} displayd the ROC AUC and AUP
 \end{figure}
 
 The ROC AUC curves for InterCont and $k$-NN exhibit a rapid initial increase. 
-The InterCont method maintains a steeper ascent until Recall reaches 0.8. 
+The InterCont method maintains a steeper ascent until recall reaches 0.8. 
 While the growth rate for $k$-NN is initially less pronounced, it surpasses InterCont at $\approx 0.1$ False Positive Rate (1-Specificity) and remains superior thereafter. 
 Conversely, the MCD curve falls significantly below the diagonal dashed line, which represents the performance of a random classifier.
 This inverse curve indicates that the MCD model, under the current configuration, performs worse than chance.
@@ -98,14 +98,14 @@ The MCD method displays very low precision that increases slightly as recall gro
 
 \subsubsection*{Statistical Testing}
 The validation of empirical results necessitates the application of rigorous statistical testing. 
-To mitigate the distributional challenges identified, the non-parametric pairwise Brunner Munzel test \citep{brunner2000nonparametric} will be deployed. 
+To mitigate the distributional challenges identified, the non-parametric pairwise Brunner-Munzel Test \citep{brunner2000nonparametric} will be deployed. 
 This procedure serves to determine whether significant differences exist across the three methods. 
 
 
 
-The Brunner-Munzel test is a non paramatric statistical test, which null hypothesis posits that the probability of an observation from one distribution exceeding an observation from the other is equal to the reciprocal probability, signifying stochastic equality between two samples.
-This test is implemented in situations where the observations are independend.
-This assumption is met, because in the setup the shuffle function is excuted three different times, yielding different test set for all 500 runs.
+The Brunner-Munzel Test is a non-paramatric statistical test, which null hypothesis posits that the probability of an observation from one distribution exceeding an observation from the other is equal to the reciprocal probability, signifying stochastic equality between two samples.
+This test is implemented in situations where the observations are independent.
+This assumption is met, because in the setup the shuffle function is executed three different times, yielding different test sets for all 500 runs.
 
 Also this test is viable in situations where the variances of the populations differ.
 The standard deviations reported in Table \ref{tab:results_bench} exhibit substantial variation, suggesting that homoscedasticity of variances may be violated.
@@ -118,9 +118,9 @@ The null hypothesis $H_0$ for Levene's test posits that the population variances
     H_0 = \sigma_1^2 = \sigma_2^2 =  \sigma_3^2. 
 \end{equation}
 
-Levene's test also requires the assumption, that the observations are independend.
+Levene's Test also requires the assumption, that the observations are independent.
 This is satisfied as discussed above. 
-Levene's test  is robust against non-normally distributed populations, which is certainly not met seening in Figure \ref{fig:result_boxplot}.
+Levene's Test  is robust against non-normally distributed populations, which is certainly not met seening in Figure \ref{fig:result_boxplot}.
 
 
 If the resulting p-value is below the chosen significance level, the null hypothesis is rejected, indicating that the variances are significantly different.
@@ -144,7 +144,7 @@ AUPRC                   & 286.93           & 0.00  &    \\
 \end{table}
 
 The null hypothesis is rejected across all evaluated metrics, indicating that the variances exhibit statistically significant differences. 
-To further delineate specific performance differentials, a pairwise Brunner Munzel test is conducted. 
+To further delineate specific performance differentials, a pairwise Brunner-Munzel Test is conducted. 
 The null hypothesis for this test is defined as: 
 
 \begin{equation}
@@ -201,17 +201,17 @@ $k$-NN vs. MCD       & -489.03 & -270.63 & -237.34    \\
 \end{table}
 
 The table omits specific p-values because all test results reached the limit of statistical significance. 
-In all cases, the Brunner-Munzel test confirmed that the groups are stochastically significantly different ($p<0.001$). 
+In all cases, the Brunner-Munzel Test confirmed that the groups are stochastically significantly different ($p<0.001$). 
 This indicates a high probability that a randomly selected value from one group will be different from a randomly selected value from the other.
 
 
 \subsubsection*{Normalization}
 As discussed before, the normalization method applied in the $k$-NN could not be determined. 
-Therefore second experiment with two different normalization methods will be employed to show if the result will reach the results of the paper of \citet{shenkar2022anomaly}
+Therefore, second experiment with two different normalization methods will be employed to show if the result will reach the results of the paper of \citet{shenkar2022anomaly}
 For that the same setup was used as before in the $k$-nn benchmark. 
 The most commonly used normalization methods were applied: Min-Max-Normalization and Z-Score normalization (StandardScaler)
 The normalization settings where changed after performing $k$-NN in 500 runs for different values of $k$.
-Because thats a comparison of the paper, only the mean and SD of the F1 Score is displayed in the table \ref{tab:normalizations}.
+Because that is a comparison of the paper, only the mean and SD of the F1 Score is displayed in the table \ref{tab:normalizations}.
 
 \begin{table}[h]
 \centering

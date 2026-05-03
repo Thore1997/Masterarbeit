@@ -17,13 +17,12 @@ This chapter is organized as follows:
 For each method, the frameworks are defined and their respective advantages and disadvantages are discussed.
 
 
-
 \subsection{Distance-based approaches for Outlier Detection}\label{sec:knn}
-The $k$-Nearest Neighbor (k-NN) algorithm is a non-parametric method that utilizes the Euclidean distances for outlier detection. 
+The $k$-Nearest Neighbor ($k$-NN) algorithm is a non-parametric method that utilizes the Euclidean distances for outlier detection. 
 Initially detailed in a technical report for the US Air Force by \citet{fix1951discriminatory}, its formal theoretical proof was later established by \citet{1053964}.
 
 
-The application of k-NN for outlier detection was pioneered by \citet{knox1998algorithms}. 
+The application of $k$-NN for outlier detection was pioneered by \citet{knox1998algorithms}. 
 They defined an observation as an outlier if a specific fraction of the dataset lies beyond a predefined distance $D$, thereby introducing a distance-based hyperparameter. 
 \citet{ramaswamy2000efficient} subsequently refined this approach by eliminating the distance threshold in favor of an internal outlier score, calculated based on the distances to an object's neighbors.
 Under this framework, the $n$ points exhibiting the highest scores are classified as outliers, where $n$ is determined by a user-defined outlier ratio.
@@ -32,7 +31,7 @@ Under this framework, the $n$ points exhibiting the highest scores are classifie
 \begin{figure}[h] 
     \centering
     \includegraphics[width=1\linewidth]{Images/k-NN.pdf}
-    \caption{Grapfical Depiction of $k$-NN Algorithm.}
+    \caption{Graphical Depiction of $k$-NN Algorithm.}
     \label{fig:my_example}
 \end{figure}
 
@@ -40,14 +39,14 @@ Under this framework, the $n$ points exhibiting the highest scores are classifie
 
 While the original InterCont publication does not explicitly specify the $k$-NN variant employed, the authors utilize the PyOD library \citep{zhao2019pyod}.
 Given that PyOD implements the version proposed by \citet{ramaswamy2000efficient}, this specific iteration is utilized as the benchmark for this thesis.
-$K$-NN is typically follows an unsupervised learning pradigm. 
+$K$-NN is typically an unsupervised learning paradigm. 
 Nevertheless, the experimental setup differs from this paradigm to make the benchmark comparable to InterCont.
 
 
 There are different variants of $k$-NN, mitigating disadvantages of the original algorithm.
 For example by utilizing the average distance across the neighborhood enhances the robustness and stability of detected outliers \citep{angiulli2002fast}. 
-Because  this methods is constructed as a benchmark, the traditional version of $k$-NN wil be implemented, which is based on Euclidean distance to the specific $k$-th nearest neighbor.
-The setup is discribed in chapter \ref{sec:setup}.
+Because  this method is constructed as a benchmark, the traditional version of $k$-NN will be implemented, which is based on Euclidean distance to the specific $k$-th nearest neighbor.
+The setup is described in chapter \ref{sec:setup}.
 
 
 The algorithm executes the following procedure:
@@ -55,11 +54,11 @@ The algorithm executes the following procedure:
 \begin{enumerate}
     \item The distances between $k$th datapoints are calculated.
     \item The distances are ranked from highest to lowest.
-    \item The number of instaces $n$ with the highest distances are defined as outliers.
+    \item The number of instances $n$ with the highest distances are defined as outliers.
 \end{enumerate}
 
 \citep[p. 429]{ramaswamy2000efficient}
-k-NN is characterized as a lazy learning algorithm \citep[p.273]{wettschereck1997review}, meaning it does not construct an explicit generalization or internal model during a training phase. 
+$K$-NN is characterized as a lazy learning algorithm \citep[p.273]{wettschereck1997review}, meaning it does not construct an explicit generalization or internal model during a training phase. 
 Consequently, the entire dataset must be retained. 
 If a new instance is introduced, the algorithm must re-evaluate the proximity metrics across the dataset to determine its status.
 

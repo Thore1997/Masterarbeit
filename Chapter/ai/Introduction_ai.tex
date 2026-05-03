@@ -7,7 +7,7 @@ Outliers are observations that deviate so significantly from other observations 
 Depending on the research context, outliers may either represent operative failures (recording errors, misreporting, sampling errors) or primary targets of interest that provide critical information \citep{smiti2020critical}.
 
 
-For example in cybersecurity, it facilitates the detection of network intrusions or malware through unusual traffic patterns \citep[Chapter 3]{ahmed2016survey}. 
+For example, in cybersecurity, it facilitates the detection of network intrusions or malware through unusual traffic patterns \citep[Chapter 3]{ahmed2016survey}. 
 In finance, these methods identify fraudulent activities, such as the unauthorized use of credit cards \citep{malini2017analysis}. 
 In healthcare, outlier detection assists in diagnosing rare diseases and identifying anomalous patient data \citep[Chapter 2.3.]{wang2019progress}.
 
@@ -45,32 +45,32 @@ This discrepancy between theoretical sophistication and practical efficacy direc
 \end{itemize}
 
 
-While \citet{shenkar2022anomaly} demonstrated $k$-NN's superiority via the F1-Score at a specific operating point, this thesis investigates whether this advantage persists globally across the AUPRC and ROC AUC. 
+While \citet{shenkar2022anomaly} demonstrated $k$-NN's superiority via the F1 Score at a specific operating point, this thesis investigates whether this advantage persists globally across the AUPRC and ROC AUC. 
 By shifting the focus to ROC AUC and AUPRC, it will be tested if $k$-NN's distance-based logic inherently provides a more robust ranking of outliers than the representations learned by InterCont.
 
 
 To further evaluate the necessity of modern machine learning architectures, this research incorporates the Minimum Covariance Determinant (MCD) as a traditional statistical benchmark. 
 MCD serves as a lower bound of algorithmic complexity, representing a robust approach to multivariate outlier detection that accounts for the masking effect \citep{hardin2005distribution}, where outliers distort classical estimators. 
-By establishing this baseline, the study can discern whether the performance gains of k-NN or InterCont are substantial enough to justify their increased computational overhead. 
-Furthermore, MCD provides a global distributional perspective, offering a vital contrast to the local neighborhood analysis of k-NN and the high-dimensional feature extraction of InterCont.
+By establishing this baseline, the study can discern whether the performance gains of $k$-NN or InterCont are substantial enough to justify their increased computational overhead. 
+Furthermore, MCD provides a global distributional perspective, offering a vital contrast to the local neighborhood analysis of $k$-NN and the high-dimensional feature extraction of InterCont.
 
 
 This thesis will proceed with the following: 
-In chapter \ref{sec:representation_learning} the theoretical foundations of machine learning, beginning with a brief description of neural network architecture before transitioning to the advanced topic of contrastive learning. 
+In Chapter \ref{sec:representation_learning} the theoretical foundations of machine learning, beginning with a brief description of neural network architecture before transitioning to the advanced topic of contrastive learning. 
 Thereafter the InterCont method will be explained. 
 The focus remains on the architecture of this method and the mechanisms through which it identifies outliers. 
-The subsequent chapter \ref{sec: benchmark_methods} introduces the first benchmark method, k-nearest neighbors (k-NN). 
-This section explains the underlying mechanics and architecture of k-NN while justifying its selection as a benchmark. 
+The subsequent chapter \ref{sec: benchmark_methods} introduces the first benchmark method, $k$-nearest neighbors (k-NN). 
+This section explains the underlying mechanics and architecture of $k$-NN while justifying its selection as a benchmark. 
 In the following chapter, the Minimum Covariance Determinant (MCD) is introduced. 
 It details how this method detects outliers and provides the rationale for its use as a benchmark against Internal Contrastive Learning.
 
 
-In chapter \ref{sec:Experiments}, the dataset is initially examined by describing its primary characteristics, which serve as the basis for interpreting and explaining the results. 
+In Chapter \ref{sec:Experiments}, the dataset is initially examined by describing its primary characteristics, which serve as the basis for interpreting and explaining the results. 
 The analysis begins with a univariate approach, utilizing boxplots to describe parameters such as the mean and distribution. 
 Subsequently, the analysis proceeds to a bivariate approach, where the data is described using a correlation heatmap. 
 The final stage of the analysis involves characterizing the geometry of the dataset through UMAP. 
 The most significant metrics used in outlier detection research, facilitated by the confusion matrix, are described alongside a discussion of their respective advantages and disadvantages. 
-The selection of metrics is finalized with the F1-Score, ROC AUC, and AUPRC. 
+The selection of metrics is finalized with the F1 Score, ROC AUC, and AUPRC. 
 The Section \ref{sec:results} presents the findings, followed by the Section \ref{sec:discussion}, where the results are explained and interpreted and limitations are illustrated. 
 The thesis concludes with the main findings of this thesis.
 

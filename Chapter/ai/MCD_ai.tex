@@ -73,7 +73,7 @@ The FAST-MCD algorithm is as follows:
     \begin{enumerate}
         \item Estimate $\mu_S$ and $\Sigma_S$
         \item Estimate Mahalanobis distance of all $n$ instances.
-        \item Chose $h$ instances with the smallest Mahalanobis distance
+        \item Choose $h$ instances with the smallest Mahalanobis distance
         \item End with convergence
     \end{enumerate}
     \item Report the mean $\mu^{MCD}$ and covariance $\Sigma^{MCD}$ from the subset with the overall lowest determinant.
@@ -88,7 +88,7 @@ The primary hyperparameter is $h$, and it is constrained by the range:
 \frac{n+p+1}{2} \le h \le n.
 \end{equation}
 
-The lower bound is set, so the subsample contains at leats halve of the dataset $\frac{n}{2}$.
+The lower bound is set, so the subsample contains at leats half of the dataset $\frac{n}{2}$.
 By definition, an outlier is an observation that deviates from the majority of the data. 
 If the contamination ratio exceeds 50\%, the anomalous points constitute the majority class, meaning the original data distribution is no longer statistically identifiable as the normal state.
 
@@ -99,8 +99,8 @@ To avoid excessive noise, it is recommended to maintain at least five observatio
 
 The breakdown point determines the maximum proportion of arbitrarily large outliers that a dataset can contain before the estimator produces unreliable results \citep[p. 1894]{hampel1971general}.
 There is a trade-off between robustness and statistical efficiency \citep[Chapter 4]{rousseeuw1999fast}.
-The higher the breakdownpoint is, the lower the statistical efficiency gets, resulting in a increased variance. 
-If the dataset contains less then 25\% of outliers, the subset can be set to $h = (0.75n)$
+The higher the breakdown point is, the lower the statistical efficiency gets, resulting in an increased variance. 
+If the dataset contains less than 25\% of outliers, the subset can be set to $h = (0.75n)$
 
 
 Once the estimators $\mu^{MCD}$ and $\Sigma^{MCD}$ are calculated, the Mahalanobis distance $D_i$ is computed for each observation:
@@ -114,7 +114,7 @@ D_i^2 = (\mathbf{x}_i - \hat{\mu}_{\text{MCD}})^T \hat{\Sigma}_{\text{MCD}}^{-1}
 Assuming the clean data follows a multivariate normal distribution, $D_i^2$ follows a $\chi^2$ distribution.
 This allows for a formal discordancy test: if $D_i^2$ exceeds a critical threshold defined by a significance level $\alpha$, the point is flagged as an outlier. 
 For this thesis, a fixed threshold approach is used to ensure comparability with the other methods. 
-The implementation of the method will be described in chapter \ref{sec:setup}.
+The implementation of the method will be described in Chapter \ref{sec:setup}.
 
 
 In summary, the MCD is defined by its high breakdown point and affine equivariance, which ensures reliability without the need for normalization. 

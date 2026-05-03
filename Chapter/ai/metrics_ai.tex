@@ -4,9 +4,9 @@ This selection process necessitates a balance between utilizing metrics widely e
 Consequently, this section focuses primarily on metrics derived from the confusion matrix. 
 
 
-The Area Under the Receiver Operating Characteristic curve (ROC AUC) and the Area Under the Precision-Recall Curve (AUPRC) are employed to determine the performance of the investigated methods, as these metrics are threshold-independent and provide a comprehensive evaluation of classification performance across various operating points. 
+The Area Under the Receiver Operating Characteristic curve (ROC AUC) and the Area Under the precision-recall Curve (AUPRC) are employed to determine the performance of the investigated methods, as these metrics are threshold-independent and provide a comprehensive evaluation of classification performance across various operating points. 
 Furthermore, the F1-score is included to ensure the reproducibility of the results presented by \cite{shenkar2022anomaly}. 
-To establish the necessary theoretical foundations, the fundamental components of these metrics, specifically Precision, Recall, and Specificity, are defined. 
+To establish the necessary theoretical foundations, the fundamental components of these metrics, specifically precision, recall, and specificity, are defined. 
 
 
 Although the evaluation utilizes benchmark datasets, the primary objective is to assess the methods within the context of real-world scenarios. 
@@ -14,8 +14,8 @@ Computational performance indicators, such as CPU utilization, execution time, a
 
 
 Within the context of outlier detection research, where benchmark datasets are available, the known outlier ratio is frequently utilized as the classification threshold to prevent the selection of arbitrary values. 
-Consequently, threshold-dependent metrics such as Accuracy, Precision, and the F-Score are common in the scientific literature. 
-An analysis by \citet{nassif2021} of 290 research articles regarding outlier detection found that 112 papers employed accuracy, 54 utilized Precision, and 51 used F-Score metrics \citep[p. 78664]{nassif2021}. 
+Consequently, threshold-dependent metrics such as accuracy, precision, and the F-Score are common in the scientific literature. 
+An analysis by \citet{nassif2021} of 290 research articles regarding outlier detection found that 112 papers employed accuracy, 54 utilized precision, and 51 used F-Score metrics \citep[p. 78664]{nassif2021}. 
 A significant finding of this literature review is that 64 of these 290 papers relied exclusively on a single metric, typically Accuracy or ROC AUC \citep[p. 78664]{nassif2021}. 
 Nevertheless, \cite{fawcett2006introduction} argue that threshold-dependent metrics are inferior to threshold-agnostic metrics because the selection of a specific cutoff remains arbitrary in real-world scenarios \citep[p. 864]{fawcett2006introduction}. 
 A threshold set excessively high increases the incidence of false negatives, whereas a threshold set too low elevates the number of false positives. 
@@ -42,7 +42,7 @@ The structure of the confusion matrix is organized such that the horizontal axis
 
 
 As seen in figure \ref{fig:confusionmatrix} the observations are assigned to one of the four cells: True positives (TP) and true negatives (TN) represent correct identifications of outliers and inliers, respectively, whereas false positives (FP) and false negatives (FN) represent misclassification errors. 
-This systematic categorization serves as the foundation for calculating Precision, Recall and Specificity.
+This systematic categorization serves as the foundation for calculating precision, recall and specificity.
 
 
 Precision quantifies the proportion of correctly identified outliers relative to the total number of instances classified as positive, encompassing both true positives and false positives. 
@@ -72,9 +72,9 @@ It is formally defined as:
 
 \subsubsection*{Area under the ROC-Curve}
 ROC AUC serves as an aggregate performance metric evaluating a model with values constrained between 0 and 1. 
-Those values represents the probability that a randomly selected outlier receives a higher anomaly score than a randomly selected inlier.
+Those values represent the probability that a randomly selected outlier receives a higher anomaly score than a randomly selected inlier.
 Consequently, higher values indicate a superior capability of the model to distinguish between these two classes. 
-The ROC curve plots the Recall on the ordinate against the False Positive Rate (1-Specificity) on the abscissa.
+The ROC curve plots the recall on the ordinate against the False Positive Rate (1-Specificity) on the abscissa.
 For a graphical depiction figure \ref{fig:aucprccurve} presents the resulting ROC AUC and AUPRC curves of the experiments.
 The area under this curve is mathematically defined by the integral.
 
@@ -84,7 +84,7 @@ A value of $ROC AUC=0.5$ indicates that the model's predictive performance is eq
 Conversely, $ROC AUC=0$ indicates that the model perfectly misclassifies outliers as inliers and vice versa, resulting in a curve that bends toward the coordinate (1,0).
 
 
-The ROC AUC has a distinct disadvantage in imbalanced datasets, because it can yield overly optimistic assessments by incorporates False Positive Rate. 
+The ROC AUC has a distinct disadvantage in imbalanced datasets, because it can yield overly optimistic assessments by incorporating the false positive rate. 
 In outlier detection the number of true negative instances typically far exceeds the number of true positives, the denominator of the False Positive Rate becomes dominated by true negatives \citep{davis2006relationship}. 
 Consequently, the shift in the False Positive Rate resulting from the misclassification of inliers remains marginal. 
 In imbalanced datasets, the False Positive Rate tends to remain low, which biases the curve toward the upper-left coordinate and may obscure poor model performance. 
@@ -98,7 +98,7 @@ Precision and Recall exhibit an inverse trade-off relationship, hence this repre
 
 \subsubsection*{Area under the Precision-Recall Curve}
 The AUPRC \citep{davis2006relationship} is bounded between 0 and 1, where a value of 1 signifies a perfect model that correctly identifies all outliers without false positives. 
-The AUPRC plots Recall on the abscissa against Precision on the ordinate, with superior model performance indicated by a curve that extends toward the upper-right coordinate. 
+The AUPRC plots recall on the abscissa against precision on the ordinate, with superior model performance indicated by a curve that extends toward the upper-right coordinate. 
 It is formally defined as the integral of the precision-recall curve, which is calculated by varying the classification threshold across its entire range.
 
 
@@ -136,8 +136,8 @@ By optimizing the F1-score, the model effectively seeks a balance that minimizes
 
 
 A primary critique of the F1-score is its exclusion of true negatives. 
-Furthermore, the F1-Score assigns equal weight to Precision and Recall.  
-Depending on the specific domain of the analysis, this can be addressed by reweighting the importance of Recall or Precision. 
+Furthermore, the F1-Score assigns equal weight to precision and recall.  
+Depending on the specific domain of the analysis, this can be addressed by reweighting the importance of recall or precision. 
 This leads to the $F_\beta$ family of metrics, such as the F2-score, which prioritizes recall, or the F0.5-score, which places greater emphasis on precision. 
 
 

@@ -62,7 +62,7 @@ Consistent with the original study, the experiments were executed over 500 rando
 While the original codebase was designed to accommodate a vast array of datasets, including specialized logic within the data loader for .mat files, many components proved redundant for the specific dataset analyzed in this research. 
 This code was retained to preserve the integrity of the reproduction package, as redundant logic does not influence the experimental outcomes. 
 Notably, several hyperparameters within the original implementation were optimized for larger, higher-dimensional datasets. 
-With exception of the bath size, none of the hyperparameters were changed.
+With exception of the batch size, none of the hyperparameters were changed.
 Furthermore, while the original authors restricted their evaluation to F1-Score and ROC AUC metrics, this study extends the analysis to include AUPRC. 
 Minor adjustments were made to the source code to facilitate this additional metric.
 
@@ -76,7 +76,7 @@ Nevertheless, by using the known outlier score, the use of both methods yield to
 
 A five-fold cross-validation procedure was implemented in knn\_cv.py.
 This was facilitated by the KFold function from the Scikit-learn library. 
-$K = 5$ is the optimal value for $k$, which corrosponds with the choice in the paper of the authors. 
+$K = 5$ is the optimal value for $k$, which corresponds with the choice in the paper of the authors. 
 Given the limited number of observations in the dataset, a five-fold approach was selected to maintain a sufficient volume of data in both the training and testing subsets for each iteration. 
 The shuffle parameter $random\_state$ was enabled to ensure that the observations were randomized prior to partitioning and was set to the default 42. 
 
@@ -85,8 +85,8 @@ To ensure a rigorous and consistent evaluation, the same framework utilizing the
 In this configuration, the $k$-NN algorithm establishes a representation based on the normal observations within the training set. 
 Subsequently, the method calculates the distances between each test observation and its $k$ nearest neighbors from the training data. 
 The anomaly score for each test point is derived from the maximum distance among these $k$ nearest neighbors. 
-The dataset includes 119 normal datapoints, which can not be seperated equally into training and testing.
-To align the model with the specific characteristics of the testdataset, the number of outliers are hardcoded into the script.
+The dataset includes 119 normal datapoints, which can not be separated equally into training and testing.
+To align the model with the specific characteristics of the test dataset, the number of outliers are hardcoded into the script.
 
 
 The $k$-NN implementation utilizes the default configuration for distance metrics, specifically selecting the largest distance to the $k$-nearest neighbors. 

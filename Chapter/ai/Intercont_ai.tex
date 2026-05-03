@@ -18,7 +18,7 @@ Specifically, the first hidden layer of $G$ comprises $\frac{u}{4}$ nodes, while
 
 
 
-The architecture utilizes the LeakyReLU activation function with a slop coefficient of 0.2 across its layers, with the sole exception of the first hidden layer in Network $F$, which employs a Tanh activation. 
+The architecture utilizes the LeakyReLU activation function with a slope coefficient of 0.2 across its layers, with the sole exception of the first hidden layer in Network $F$, which employs a Tanh activation. 
 The inclusion of Tanh in the initial layer of the anchor network serves to center the input data and bound activations within the range of -1 to 1, facilitating stability during the early stages of feature extraction for the larger input vector. 
 Furthermore, without this differentiation, the network might produce class-independent results lacking discriminative power. 
 Consequently, $a$ and $b$ are mapped into distinct mathematical spaces.
@@ -54,7 +54,7 @@ The authors proposed a sliding window approach for data augmentation to facilita
 
 A distinguishing feature of this method is that the negative samples are derived from the positive samples of other constructed pairs within the same data instance, which characterizes the internal nature of the contrastive learning process. 
 For a visual representation, see Figure \ref{fig:slidingwindow}.
-After this iterative procedure the resulting vectores of $b$ and $a$ are combined into network $F$ and $G$.
+After this iterative procedure the resulting vectors of $b$ and $a$ are combined into network $F$ and $G$.
 
 
 The networks, denoted as $F^N$ and $G^N$, incorporate a double $L2$ normalization process. 
@@ -63,10 +63,10 @@ Subsequently, a column-wise normalization is applied to standardize the distribu
 
 
 Through the specified embedding sizes, the vectors are projected into a higher-dimensional space and reconstructed thereafter. 
-The network aims to learn the most relevent relationships and discards noise within the data.
+The network aims to learn the most relevant relationships and discards noise within the data.
 
 
-The the Info-NCE loss function is implemented as follows:
+The Info-NCE loss function is implemented as follows:
 
 \begin{equation}
    \ell(F, G, \Phi(x_i), j) = -\ln \frac{\exp(F^N(b_i^j) \cdot G^N(a_i^j) / \tau)}{\sum_{j'=1}^{m} \exp(F^N(b_i^j) \cdot G^N(a_i^{j'}) / \tau)}.
@@ -86,7 +86,7 @@ Conversely, as the similarity between the anchor and the correct positive sample
 
 If $F^N(b_i)\cdot{G^N(a_i)=1}$, the two vectors point in an identical direction within the feature space. 
 A lower value signifies a lack of similarity, reaching 0 when the vectors are orthogonally placed.
-Conversely, the vectors are diametrically opposed reaching a minimum of -1 signifiying dissimilarity.
+Conversely, the vectors are diametrically opposed reaching a minimum of -1 signifying dissimilarity.
 Because $G^N(a_i)$ is distinct from $G^N(a_j)$, the cosine similarity $F^N(b_i)\cdot{G^N(a_i)}$ is expected to be greater than $F^N(b_i)\cdot{G^N(a_j)}$ 
 The relationships of all negative pairs are aggregated to compute the total loss, and this procedure is performed iteratively for all instances within the dataset.
 

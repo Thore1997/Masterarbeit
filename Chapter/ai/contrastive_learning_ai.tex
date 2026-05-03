@@ -79,7 +79,7 @@ By framing the contrastive task as a multi-class classification problem, the mod
 This mechanism encourages the encoder to extract high-dimensional features that are most salient for distinguishing related data pairs.
 
 
-The loss function operates on a predefined anchor and the postive sample. 
+The loss function operates on a predefined anchor and the positive sample. 
 Specifically, the model computes a score that reflects the density ratio between the anchor and each sample, representing the likelihood that a given pair originates from the joint distribution. 
 Consequently, the optimization process yields higher scores for positive pairs relative to negative pairs. 
 When the model incorrectly assigns a high probability to a noise sample, the resulting loss is not minimal, necessitating weight adjustments. 
