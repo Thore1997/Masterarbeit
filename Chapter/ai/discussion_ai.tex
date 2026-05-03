@@ -1,40 +1,30 @@
 \section{Discussion}\label{sec:discussion}
-This chapter synthesizes the empirical evidence with the theoretical frameworks of representation learning and robust statistics established in Chapters \ref{sec:representation_learning} and \ref{sec: benchmark_methods}. 
+This chapter synthesizes the empirical evidence with the theoretical frameworks of the methods described in Chapters \ref{sec:representation_learning} and \ref{sec: benchmark_methods}. 
 The following section summarizes the primary findings. 
 
 The hypotheses formulated for this thesis are defined as follows:
 \begin{itemize}
     \item H1: k-NN will achieve the highest predictive performance across AUPRC.
-    \item H2: While InterCont will outperform MCD, its AUPRC will remain secondary to $k$-NN.
+    \item H2: InterCont will achieve the second highest performance in terms of AUPRC.
 \end{itemize}
 
-Based on the results presented in Table \ref{tab:results_bench}, InterCont attains the highest mean AUPRC of 92.93, while MCD reaches a mean AUPRC of 77.82, $k$-NN reaches the lowest mean AUPRC of 73.06. 
-The differences between InterCont and the benchmark methods are statistically significant at $p < 0.001$ within the Wilcoxon signed-rank test. 
+Based on the results presented in Table \ref{tab:results_bench}, InterCont attains the highest mean AUPRC of 92.93, while $k$-NN reaches a mean AUPRC of 73.06, MCD reaches the lowest mean AUPRC of 9.72. 
+The Brunner Munzel test indicated a significant stochastic difference between InterCont and the benchmark methods at $p < 0.001$. 
 The empirical evidence leads to the rejection of both H1 and H2. 
-Contrary to the initial assumptions, the representation learning-based InterCont method did not remain secondary to the benchmarks but emerged as the superior approach, significantly outperforming both MCD and $k$-NN in all primary metrics.
+Contrary to the initial assumptions, the representation learning-based InterCont method did not remain secondary to the benchmarks but emerged as the superior approach, significantly outperforming both $k$-NN and MCD in all primary metrics.
 For this setup and the given dataset, the implementation of InterCont does provide a more precise outlier classification.
 
 
 Figure \ref{fig:aucprccurve} illustrates the ROC AUC curves for the three evaluated methods. 
-Each curve converges toward the upper-right quadrant of the coordinate system, indicating that the models effectively distinguish between the respective classes. 
-Furthermore, all methods demonstrate a high True Positive Rate while simultaneously maintaining a low false positive rate.
+Both curves of InterCont and $k$-NN converges toward the upper-right quadrant of the coordinate system, indicating that the models effectively distinguish between the respective classes.
+The curve of $k$-NN eventually cross and surpass InterCont. 
+MCD converges to the lower-right quadrant, indicating that the models effectively classifies inliers as outliers.
 
 
-Initially, InterCont maintains a significantly higher Precision than the other methods, which demonstrates its robustness in identifying outliers under strict threshold conditions. 
-In the ROC AUC plot, the curves of $k$-NN and MCD eventually cross and surpass InterCont. 
-This indicates that $k$-NN and MCD achieve a higher True Positive Rate more quickly. 
-However, the corresponding Precision-Recall curve reveals that this is achieved at the cost of a lower Precision due to increased false positives.
-
-
-While $k$-NN appears superior in the ROC AUC metric, this result is somewhat misleading as the large number of normal instances masks the impact of false positives. 
-The AUPRC confirms that InterCont is the more reliable model for precise anomaly detection, whereas $k$-NN is more effective at capturing a larger volume of anomalies if a lower Precision is acceptable.
-
-
-The UMAP visualization in Figure \ref{fig:umap} illustrates that the outliers in the Wine dataset form a concentrated and isolated cluster. 
-With few exceptions, the outlier class remains distinct from the cohesive yet more dispersed inlier distribution. 
-This topological formation suggests that the dataset primarily contains global and contextual anomalies rather than collective outliers. 
-While a clear geometric separation generally favors distance-based approaches such as $k$-NN, these dataset characteristics may facilitate a more effective distinction for the InterCont algorithm. 
-The application of MCD requires the assumption of normally distributed data, which was not satisfied, as depicted in Figure \ref{fig:qqpot}.
+As illustrated in the AUPRC plot, InterCont initially maintains a significantly higher precision than the alternative methods, demonstrating its robustness in identifying outliers under strict threshold conditions. 
+At the far right margin, the $k$-NN curve intersects with that of InterCont, suggesting that $k$-NN identifies a greater number of outliers than InterCont at lower threshold levels. 
+The MCD curve remains flat and exhibits only a very gradual increase. 
+This indicates that the method fails to distinguish effectively between inliers and outliers, performing no better than random classification.
 
 
 By utilizing a sliding window approach for data augmentation, InterCont effectively captures local feature dependencies in contrast to the global and distance-based perspectives of the benchmarks. 
@@ -54,42 +44,33 @@ Furthermore, the implementation of a double normalization process, applying both
 This ensures that classification is based solely on the cosine similarity of the anchor with its positive and negative counterparts. 
 The loss function maximizes the mutual information between positive pairs and minimizes it between negative pairs. 
 
-
-The $k$-NN algorithm yielded the lowest AUPRC of 73.06 and demonstrated performance equivalent to MCD in terms of ROC AUC. 
-Figure \ref{fig:aucprccurve} displays a sharp decrease in Precision at strict thresholds. 
-This indicates that $k$-NN identified false positives among the instances with the greatest distances, suggesting that true negatives are also scattered within low-density regions of the dataset.
+ 
+The $k$-NN algorithm utilizes Euclidean distances to the five nearest neighbors to determine the outlier status of a data point. 
+Due to the steep decrease in AUPRC, $k$-NN identified false positives among the instances with the greatest distances, suggesting that true negatives are also scattered within low-density regions of the dataset. 
 Following this, precision increases, which indicates that a significant portion of the true positives is concentrated at lower score values. 
-The $k$-NN algorithm successfully identifies more true positives than false positives in this range, resulting in an upward trend in the Precision-Recall curve.
+The $k$-NN algorithm successfully identifies more true positives than false positives in this range, resulting in an upward trend in the precision-recall curve.
 
 
-Subsequently, the curve stabilizes above a Precision of 0.6, which indicates that true positives and false positives are detected in equal proportions. 
-To achieve any further increase in Precision, the $k$-NN algorithm identifies an increased number of false positives.
-Consequently, the Precision-Recall curve decreases as it proceeds further toward the left.
-The curse of dimensionality may have negatively impacted the performance of the $k$-NN algorithm. 
-As dimensionality increases, the distances between neighbors tend to converge, which can lead to an increased misclassification of false positives and a subsequent reduction in the AUPRC.
+The curve subsequently stabilizes above a precision of 0.6, indicating that true positives and false positives are detected in comparable proportions. 
+To achieve further gains in precision, the $k$-NN algorithm identifies a higher number of false positives, which causes the precision-recall curve to decline as it extends toward the left. 
+This behavior is attributable to a cluster of outliers situated in close proximity to normal data, particularly when the normal data is sparsely distributed. 
+The stability of the AUPRC curve suggests that these outliers maintain a relatively uniform distance from the inliers.
+Thus, reducing the classification threshold leads to a proportional increase in detected instances. 
+Furthermore, the performance of the $k$-NN algorithm may be compromised by the curse of dimensionality. 
+As dimensionality increases, the distances between neighbors tend to converge, suggesting that the dataset contains noise characterized by significant feature overlap. 
+Datasets with this specific structure are disadvantageous for $k$-NN due to the underlying local density characteristics. 
+Since $k$-NN relies exclusively on local distances to neighbors, it fails to incorporate critical information such as global feature correlations. 
+Consequently, this approach provides less granularity than the InterCont algorithm.
 
 
-This observation remains consistent across all 500 iterations of the normal data. 
-Datasets possessing this specific structure prove disadvantageous for $k$-NN due to the underlying local density characteristics. 
-Furthermore, the dataset contains noise, which includes significant feature overlap. 
-Because $k$-NN relies solely on the local distances of its neighbors, critical information such as feature correlations is not incorporated into the model. 
-Consequently, this approach exhibits less granularity in comparison to the InterCont algorithm.
+The MCD estimator demonstrates the lowest performance among the evaluated methods. As evidenced by Figure \ref{fig:qqpot}, the data does not follow a Gaussian distribution, which violates the fundamental distributional assumptions required for the MCD estimator to function effectively. 
+When estimating the mean and covariance matrix from the test data, the estimator fails to achieve a distinct separation between classes. To assess variability, the datasets are shuffled, and MCD is applied to 500 different iterations of the test data. 
+In instances where a specific iteration aligns more closely with the expected distribution, the MCD estimator successfully distinguishes outliers from inliers, as reflected by the outliers detected in Figure \ref{fig:result_boxplot}.
 
-
-The MCD estimator demonstrated the second highest performance among the methods. 
-Even though the MCD estimation was done at the training dataset, the model fails 
-Notably, the inherent affine equivariance of MCD, which theoretically eliminates the necessity for data normalization, provided no measurable advantage here. 
-The superior performance of non-equivariant methods like InterCont and $k$-NN suggests that specific mechanics for handling feature interactions are more critical for detection efficacy than geometric stability. 
-Furthermore, as evidenced by figure \ref{fig:qqpot}, the data is not Gaussian distributed, violating the fundamental distributional assumptions of the MCD estimator. 
-Even when applying a semi-supervised approach, estimating the mean and covariance matrix from the normal training data, the estimator fails to achieve a clean separation. 
-This instability is reflected in the high standard deviation of MCD's AUPRC results (SD=16.43), indicating that the robust covariance estimator was highly sensitive to the specific data splits.
-
-
-The superiority of deep learning methods over traditional methods like $k$-NN aligns with the findings of \citet{thimonier2023beyond}. 
-In their study, they compared, among others, $k$-NN against their own NPT-AD method using the ODDS repository. 
-The NPT-AD yielded an average F1-Score of 68.8 compared to 65.8 for $k$-NN. 
-These results support the observations in this thesis, suggesting that neural architectures can capture more complex patterns than distance-based benchmarks.
-
+As dicussed above, MCD does not actively misclassify the inliers and outliers.
+This indicates, that MCD estimates the covariance matrix around the outlier class.
+This further indicates that the outlier class is clustered. 
+The superior performance of methods like InterCont and $k$-NN suggests that specific characteristics for handling feature interactions are more critical for detection efficacy than geometric stability. 
 
 The outstanding F1 Score of $k$-NN in the paper of Shenkar and Wolf was the main driver of this thesis. 
 This performance could not be reproduced in this thesis. 
@@ -110,11 +91,8 @@ Shenkar \& Wolf         & 94.00             & 4.9           \\
 \end{table}
 
 Nevertheless, the evaluation protocol has been followed, the F1 Score performance of $k$-NN in this thesis deviates from the performance of the paper.
-There is little information about the implementation of the benchmark $k$-NN in the paper of Shenkar Wolf, besides the evaluation protocol.
+There is little information about the implementation of the benchmark $k$-NN in the paper of Shenkar Wolf (2020), besides the evaluation protocol.
 It was not described which normalization method was used, hence a robustness check was executed and displayed in Table \ref{tab:normalizations}.
-
-
-Table \ref{tab:normalizations} presents the results of the Friedman test, indicating that the observed differences are statistically significant with p<0.001. 
 These findings can be attributed to the specific distributional transformations imposed by each normalization technique.  
 While the Robust Scaler is designed to preserve the underlying distribution by using median and interquartile ranges to mitigate the masking effect of outliers, Min-Max and Z-Score normalizations are more sensitive to extreme values. 
 
@@ -125,12 +103,13 @@ When global outliers occupy the extreme ends of the scale, the remaining normal 
 
 
 For a distance-based algorithm like $k$-NN, this extreme compression can be advantageous for identifying global outliers that deviate significantly from the dense cluster of inliers. 
-However, such a transformation could be disadvantageous for datasets containing contextual or semantic anomalies, as these subtle irregularities might be compressed into the inlier distribution and become indistinguishable. Given that the dataset used in this study primarily contains global rather than contextual outliers, this specific disadvantage does not negatively impact the results.
+However, such a transformation could be disadvantageous for datasets containing contextual or semantic anomalies, as these subtle irregularities might be compressed into the inlier distribution and become indistinguishable. 
+Given that the dataset used in this study primarily contains global rather than contextual outliers, this specific disadvantage does not negatively impact the results.
 
 
 The Z-Score normalization does not compress the data as Min-Max Normalization, but it is not robust against global outliers. 
 It includes all instances for the normalization not like the robust scaler.
-This could lead to higher F1 Score because the the information if the outliers is preserved, hence the recall increases and simultaneously constant Precision.
+This could lead to higher F1 Score because the the information if the outliers is preserved, hence the recall increases and simultaneously constant precision.
 In comparison the robust scaler could push instances outside the IQR further away increasing the noise and reducing the F1 Score.
 
 
@@ -142,33 +121,10 @@ A similar procedure was implemented for $k$-NN, where distances within the norma
 Nevertheless, by permutating normal data into the test dataset, the varying degrees of noise could explain difference in terms of F1 Score.
 
 
-MCD is inherently a parameter estimation method.
-While it does not involve iterative learning in a connectionist sense, its performance relies on robustly estimating the location and scatter of the underlying distribution.
-These parameters were subsequently applied to the abnormal dataset, representing a specific configuration that is not present in other implementations of MCD.
-
-
-\citet{schindler2023towards} conducted experiments comparing unsupervised autoencoder networks against traditional machine learning methods like Isolation Forest \citep{liu2008isolation}. 
-Their findings prove that autoencoder networks offer advantages in datasets that contain contextual outliers. 
-Nevertheless, their methodology includes outlier injection, in which artificial outliers are injected into a dataset. 
-This methodology necessitates a careful definition of the injected outliers, as the results depend on the decisions of the authors. 
-In contrast, the present work utilizes the Wine dataset which avoids this potential bias.
-
-
-In a recent paper, \citet{shrivastava2023anomaly} proposed a hybrid approach between machine learning and MCD. 
-They used MCD in a first stage to determine Mahalanobis distances. Subsequently, they expanded the dataset with those distances, and the machine learning methods used this additional information to detect outliers. 
-They found significant enhancements in F1-Score, Precision, and Recall for the methods that incorporated the robust Mahalanobis distances.
-
-
-The application of MCD in this thesis follows the logic of hybrid approaches, such as the one proposed by \citet{shrivastava2023anomaly}. 
-While MCD is traditionally an unsupervised tool, its use as a feature generator or distance estimator for subsequent classification proves to be effective. 
-The significant enhancements in F1-Score reported by \citet{shrivastava2023anomaly} support the decision to incorporate robust distance measures into the detection pipeline.
-
-
 Criticism regarding the ODDS repository has emerged \citep[p. 923]{campos2016evaluation}, primarily because these datasets frequently contain easily identifiable global outliers rather than complex semantic anomalies. 
 Furthermore, authors such as \citet{han2022adbench} have criticized the construction of the ODDS datasets.
 For instance, the Wine dataset was created by downsampling and repurposing existing classes to mimic anomalous behavior. 
 Such artificial construction may not accurately reflect the challenges associated with detecting real-world outliers.
-
 
 To standardize outlier detection procedures, \citet{han2022adbench} developed the ADBench framework. 
 The authors evaluated 30 popular algorithms across 57 distinct datasets to test the models. 
@@ -183,6 +139,35 @@ However, this procedure might bias results towards specific distribution assumpt
 The researchers observed that foundational algorithms frequently outperform complex representation learning methods, suggesting that the primary findings of their study support the hypothesis presented in this work. 
 Although ADBench suggests that foundational algorithms often outperform complex models, the results in this thesis demonstrate that under the specific conditions of semi supervised learning, deep learning methods provide a clear advantage. 
 This discrepancy highlights that there is no 'one-size-fits-all' solution in outlier detection.
+
+
+Nevertheless, the superiority of deep learning methods over traditional methods like $k$-NN aligns with the findings of \citet{thimonier2023beyond}. 
+In their study, they compared, among others, $k$-NN against their own NPT-AD method using the ODDS repository. 
+The NPT-AD yielded an average F1-Score of 68.8 compared to 65.8 for $k$-NN. 
+These results support the observations in this thesis, suggesting that neural architectures can capture more complex patterns than distance-based benchmarks.
+
+
+In the paper of \citet{schindler2023towards} they conducted experiments comparing unsupervised autoencoder networks against traditional machine learning methods like Isolation Forest \citep{liu2008isolation}. 
+Their findings prove that autoencoder networks offer advantages in datasets that contain contextual outliers. 
+This further underlines the need for benchmark datasets, that are constructed with an increase hard to identify contextual outliers.
+Nevertheless, their methodology includes outlier injection, in which artificial outliers are injected into a dataset. 
+This methodology necessitates a careful definition of the injected outliers, as the results depend on the decisions of the authors. 
+
+
+In a recent paper, \citet{shrivastava2023anomaly} proposed a hybrid approach between machine learning and MCD. 
+They used MCD in a first stage to determine Mahalanobis distances. 
+Subsequently, they expanded the dataset with those distances, and the machine learning methods used this additional information to detect outliers. 
+They found significant enhancements in F1-Score, precision, and recall for the methods that incorporated the robust Mahalanobis distances.
+While MCD is not practical for non-normal distributed dataset, its use as a feature generator or distance estimator for subsequent classification in multidimensional datasets calls for further investigation possible including InterCont. 
+
+
+While this thesis was successfully conducted, it is subject to several limitations. 
+The application was restricted to a single dataset, which renders the findings specific to this particular data environment. 
+As previously noted, the use of a synthetic dataset likely involves clusters of outliers that are relatively easy to detect. 
+Consequently, the insights gained may not be directly transferable to real-world problems, as outliers in authentic datasets are typically not generated through downsampling techniques. 
+Furthermore, a methodological shortcoming exists in the failure to record individual runs and apply the methods to identical iterations, which precluded the performance of a Wilcoxon signed-rank test.
+The results of this thesis are therefore interpretable in a stochastic sense specifically regarding the probability of stochastic dominance.
+Given that this test was utilized by \cite{shenkar2022anomaly}, its absence indicates a divergence in the experimental setup.
 
 
 \section{Conclusion}
